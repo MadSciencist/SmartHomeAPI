@@ -9,7 +9,7 @@ using SmartHome.API.Persistence.Identity;
 namespace SmartHome.API.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20190412160020_init")]
+    [Migration("20190412165721_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -100,6 +100,24 @@ namespace SmartHome.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("NodeId");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NodeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("appuser_node");
+                });
+
             modelBuilder.Entity("SmartHome.Domain.Entity.ControllableNode", b =>
                 {
                     b.Property<int>("Id")
@@ -129,7 +147,7 @@ namespace SmartHome.API.Migrations
 
             modelBuilder.Entity("SmartHome.Domain.Entity.Node", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("ControllableNodeId");
@@ -299,6 +317,19 @@ namespace SmartHome.API.Migrations
                 {
                     b.HasOne("SmartHome.Domain.User.AppUser")
                         .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
+                {
+                    b.HasOne("SmartHome.Domain.Entity.Node", "Node")
+                        .WithMany("AllowedUsers")
+                        .HasForeignKey("NodeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Domain.User.AppUser", "User")
+                        .WithMany("EligibleNodes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

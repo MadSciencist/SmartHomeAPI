@@ -207,8 +207,8 @@ namespace SmartHome.API.Migrations
                     Identifier = table.Column<string>(maxLength: 50, nullable: false),
                     TypeId = table.Column<int>(nullable: true),
                     ControllableNodeId = table.Column<int>(nullable: true),
-                    CreatedById = table.Column<int>(nullable: false),
-                    Created = table.Column<DateTime>(nullable: false)
+                    Created = table.Column<DateTime>(nullable: false),
+                    CreatedById = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,6 +233,32 @@ namespace SmartHome.API.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "appuser_node",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    NodeId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_appuser_node", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_appuser_node_node_NodeId",
+                        column: x => x.NodeId,
+                        principalTable: "node",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_appuser_node_appuser_UserId",
+                        column: x => x.UserId,
+                        principalTable: "appuser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_appuser_ActivatedById",
                 table: "appuser",
@@ -248,6 +274,16 @@ namespace SmartHome.API.Migrations
                 table: "appuser",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_appuser_node_NodeId",
+                table: "appuser_node",
+                column: "NodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_appuser_node_UserId",
+                table: "appuser_node",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -293,6 +329,9 @@ namespace SmartHome.API.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "appuser_node");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

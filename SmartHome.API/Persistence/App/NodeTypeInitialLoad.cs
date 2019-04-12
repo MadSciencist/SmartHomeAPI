@@ -19,7 +19,6 @@ namespace SmartHome.API.Persistence.App
                 var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>()
                     .CreateLogger(nameof(NodeTypeInitialLoad));
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                var repository = scope.ServiceProvider.GetRequiredService<IGenericRepository<NodeType>>();
 
                 var nodeTypes = new List<NodeType>()
                 {
@@ -37,16 +36,18 @@ namespace SmartHome.API.Persistence.App
                     },
                 };
 
-                if (repository.GetAll().Count() != nodeTypes.Count)
+                if (!context.NodeTypes.Any())
                 {
                     logger.LogInformation("Truncating node_type table");
                     await context.Database.ExecuteSqlCommandAsync("SET FOREIGN_KEY_CHECKS = 0;TRUNCATE TABLE node_type;SET FOREIGN_KEY_CHECKS = 1;");
-                }
 
-                foreach (var nodeType in nodeTypes)
-                {
-                    logger.LogInformation("Loading node types into node_type table");
-                    await repository.CreateAsync(nodeType);
+                    foreach (var nodeType in nodeTypes)
+                    {
+                        logger.LogInformation("Loading node types into node_type table");
+                        await context.AddAsync(nodeType);
+                    }
+
+                    await context.SaveChangesAsync();
                 }
             }
         }

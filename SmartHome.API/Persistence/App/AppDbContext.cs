@@ -17,12 +17,7 @@ namespace SmartHome.API.Persistence.App
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<Node>(node =>
-            {
-                node.HasOne(x => x.CreatedBy)
-                    .WithMany(u => u.CreatedNodes)
-                    .HasForeignKey(n => n.CreatedById);
-            });
+
         }
     }
 }

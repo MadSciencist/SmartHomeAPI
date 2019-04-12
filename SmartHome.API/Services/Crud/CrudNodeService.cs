@@ -6,6 +6,8 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SmartHome.API.Persistence.App;
+using SmartHome.Domain.User;
 
 namespace SmartHome.API.Services.Crud
 {
@@ -14,12 +16,14 @@ namespace SmartHome.API.Services.Crud
         private readonly INodeRepository _nodeRepository;
         private readonly AppIdentityDbContext _identityDbContext;
         private readonly IGenericRepository<NodeType> _nodeTypeRepo;
-        
-        public CrudNodeService(INodeRepository nodeRepository, AppIdentityDbContext identityDbContext, IGenericRepository<NodeType> nodeTypeRepo)
+        private readonly AppDbContext _context;
+
+        public CrudNodeService(INodeRepository nodeRepository, AppIdentityDbContext identityDbContext, IGenericRepository<NodeType> nodeTypeRepo, AppDbContext context)
         {
             _nodeRepository = nodeRepository;
             _identityDbContext = identityDbContext;
             _nodeTypeRepo = nodeTypeRepo;
+            _context = context;
         }
 
         public async Task<Node> CreateNode(ClaimsPrincipal principal, string name, string identifier, string description, string type)
@@ -37,7 +41,33 @@ namespace SmartHome.API.Services.Crud
                 Description = description,
             };
 
-            return await _nodeRepository.CreateAsync(node);
+            Node createdNode;
+            _context.Database.BeginTransaction();
+
+            try
+            {
+                createdNode = await _nodeRepository.CreateAsync(node);
+
+                // create entry in link table - using Id's works fine
+                _context.Add(new AppUserNode()
+                {
+                    NodeId = createdNode.Id,
+                    UserId = userId
+                });
+
+                _context.SaveChanges();
+            }
+            catch
+            {
+                _context.Database.RollbackTransaction();
+                return null;
+            }
+            finally
+            {
+                _context.Database.CommitTransaction();
+            }
+
+            return createdNode;
         }
     }
 }

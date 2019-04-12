@@ -1,5 +1,6 @@
-﻿using System;
-using SmartHome.Domain.User;
+﻿using SmartHome.Domain.User;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,8 +9,8 @@ namespace SmartHome.Domain.Entity
     [Table("node")]
     public class Node
     {
-        //[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? Id { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
         [MaxLength(50)]
         public string Name { get; set; }
@@ -25,9 +26,11 @@ namespace SmartHome.Domain.Entity
 
         public ControllableNode ControllableNode { get; set; }
 
-        public int CreatedById { get; set; }
-        public virtual AppUser CreatedBy { get; set; }
-
         public DateTime Created { get; set; }
+
+        // Navigation & relationship properties
+        public int CreatedById { get; set; }
+        public AppUser CreatedBy { get; set; }
+        public ICollection<AppUserNode> AllowedUsers { get; set; }
     }
 }

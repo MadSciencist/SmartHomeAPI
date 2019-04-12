@@ -95,8 +95,8 @@ namespace SmartHome.API
                 //identityContext.Database.Migrate();
                 //identityContext.SaveChanges();
 
-                //IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
-               // NodeTypeInitialLoad.Seed(app.ApplicationServices).Wait();
+                IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
+                NodeTypeInitialLoad.Seed(app.ApplicationServices).Wait();
             }
         }
     }
