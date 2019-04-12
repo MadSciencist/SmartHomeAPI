@@ -41,33 +41,29 @@ namespace SmartHome.API.Services.Crud
                 Description = description,
             };
 
-            Node createdNode;
-            _context.Database.BeginTransaction();
-
-            try
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                createdNode = await _nodeRepository.CreateAsync(node);
-
-                // create entry in link table - using Id's works fine
-                _context.Add(new AppUserNode()
+                try
                 {
-                    NodeId = createdNode.Id,
-                    UserId = userId
-                });
+                    Node createdNode = await _nodeRepository.CreateAsync(node);
 
-                _context.SaveChanges();
-            }
-            catch
-            {
-                _context.Database.RollbackTransaction();
-                return null;
-            }
-            finally
-            {
-                _context.Database.CommitTransaction();
-            }
+                    // create entry in link table - using Id's works fine
+                    _context.Add(new AppUserNode()
+                    {
+                        NodeId = createdNode.Id,
+                        UserId = userId
+                    });
 
-            return createdNode;
+                    _context.SaveChanges();
+                    transaction.Commit();
+                    return createdNode;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    return null;
+                }
+            }
         }
     }
 }
