@@ -19,8 +19,8 @@ namespace SmartHome.API.Controllers
         [HttpGet("create")]
         public async Task<IActionResult> Create()
         {
-            var node = await _crudNodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
-            return Ok(ModelState);
+            await _crudNodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
+            return Ok();
         }
     }
 }

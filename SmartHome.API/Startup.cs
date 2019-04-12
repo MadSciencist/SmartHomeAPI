@@ -10,6 +10,7 @@ using SmartHome.API.Security.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
 using SmartHome.API.Persistence;
+using SmartHome.API.Persistence.App;
 using SmartHome.API.Services.Extensions;
 
 namespace SmartHome.API
@@ -90,11 +91,11 @@ namespace SmartHome.API
         {
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var identityContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
-                identityContext.Database.Migrate();
-                identityContext.SaveChanges();
+                //var identityContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+                //identityContext.Database.Migrate();
+                //identityContext.SaveChanges();
 
-                IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
+                //IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
                // NodeTypeInitialLoad.Seed(app.ApplicationServices).Wait();
             }
         }

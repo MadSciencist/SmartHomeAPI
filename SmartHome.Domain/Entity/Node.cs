@@ -25,7 +25,8 @@ namespace SmartHome.Domain.Entity
 
         public ControllableNode ControllableNode { get; set; }
 
-        public AppUser CreatedBy { get; set; }
+        public int CreatedById { get; set; }
+        public virtual AppUser CreatedBy { get; set; }
 
         public DateTime Created { get; set; }
     }

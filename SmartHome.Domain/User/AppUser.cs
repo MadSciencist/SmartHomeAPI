@@ -10,6 +10,6 @@ namespace SmartHome.Domain.User
         public AppUser ActivatedBy { get; set; }
         public DateTime ActivationDate { get; set; }
         public bool IsActive { get; set; }
-        public virtual ICollection<Node> EligibleNodes { get; set; }
+        public virtual ICollection<Node> CreatedNodes { get; set; }
     }
 }
