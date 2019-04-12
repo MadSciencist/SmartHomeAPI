@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SmartHome.Domain.User;
 
-namespace SmartHome.Security.Token
+namespace SmartHome.API.Security.Token
 {
     public interface ITokenBuilder
     {

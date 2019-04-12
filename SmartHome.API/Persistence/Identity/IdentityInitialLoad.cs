@@ -1,31 +1,29 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using SmartHome.Domain.User;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SmartHome.Domain.Role;
+using SmartHome.Domain.User;
 
-namespace SmartHome.Security.Persistence
+namespace SmartHome.API.Persistence.Identity
 {
-    public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, int>
+    public static class IdentityInitialLoad
     {
-        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
-        {
-        }
-
-        public static async Task SeedRolesAndUser(IServiceProvider provider)
+        public static async Task Seed(IServiceProvider provider)
         {
             using (var scope = provider.CreateScope())
             {
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>()
+                    .CreateLogger(nameof(IdentityInitialLoad));
 
-                if (!await roleManager.RoleExistsAsync("admin") 
+                if (!await roleManager.RoleExistsAsync("admin")
                     && !await roleManager.RoleExistsAsync("user")
                     && !await roleManager.RoleExistsAsync("sensor"))
                 {
+                    logger.LogInformation("Creating roles");
                     await roleManager.CreateAsync(new AppRole("admin"));
                     await roleManager.CreateAsync(new AppRole("user"));
                     await roleManager.CreateAsync(new AppRole("sensor"));
@@ -45,8 +43,11 @@ namespace SmartHome.Security.Persistence
 
                 const string password = "admin1";
 
+                logger.LogInformation("Creating admin user");
                 await userManager.CreateAsync(adminUser, password);
                 await userManager.AddToRoleAsync(adminUser, "admin");
+                await userManager.AddToRoleAsync(adminUser, "user");
+                await userManager.AddToRoleAsync(adminUser, "sensor");
             }
         }
     }

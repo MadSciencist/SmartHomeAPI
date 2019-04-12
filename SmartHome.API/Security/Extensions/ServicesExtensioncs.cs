@@ -5,14 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SmartHome.Security.Persistence;
-using System;
-using System.Text;
+using SmartHome.API.Persistence.Identity;
+using SmartHome.API.Security.Token;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
-using SmartHome.Security.Token;
+using System;
+using System.Text;
 
-namespace SmartHome.Security.Extensions
+namespace SmartHome.API.Security.Extensions
 {
     public static class ServicesExtensions
     {
@@ -30,24 +30,25 @@ namespace SmartHome.Security.Extensions
                 options.UseMySql(connectionString, mySqlOptions =>
                     {
                         mySqlOptions.ServerVersion(new Version(10, 1, 38), ServerType.MariaDb);
+                        mySqlOptions.MigrationsHistoryTable("__IdentityMigrationHistory");
                     });
             });
+
+            services.AddIdentity<AppUser, AppRole>(options =>
+                {
+                    options.Password.RequiredLength = 5; // Sample validator
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedEmail = false;
+                })
+            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddDefaultTokenProviders()
+            .AddRoles<AppRole>();
         }
 
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<AppUser, AppRole>(options =>
-            {
-                options.Password.RequiredLength = 5; // Sample validator
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.User.RequireUniqueEmail = true;
-                options.SignIn.RequireConfirmedEmail = false;
-            })
-            .AddEntityFrameworkStores<AppIdentityDbContext>()
-            .AddDefaultTokenProviders()
-            .AddRoles<AppRole>();
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -76,6 +77,12 @@ namespace SmartHome.Security.Extensions
                 options.AddPolicy("Admin", policy => policy.RequireClaim("admin"));
                 options.AddPolicy("User", policy => policy.RequireClaim("user"));
                 options.AddPolicy("Sensor", policy => policy.RequireClaim("sensor"));
+            });
+
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("admin"));
             });
         }
     }

@@ -8,9 +8,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace SmartHome.Security.Token
+namespace SmartHome.API.Security.Token
 {
-    public class TokenBuilder : ITokenBuilder
+    public class TokenBuilder : API.Security.Token.ITokenBuilder
     {
         private readonly IConfiguration _config;
 

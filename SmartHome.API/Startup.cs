@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using SmartHome.Repositories.Extensions;
-using SmartHome.Security.Extensions;
-using SmartHome.Security.Persistence;
+using SmartHome.API.Persistence.Identity;
+using SmartHome.API.Security.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
+using System.Collections.Generic;
+using SmartHome.API.Persistence;
+using SmartHome.API.Services.Extensions;
 
 namespace SmartHome.API
 {
@@ -34,6 +37,10 @@ namespace SmartHome.API
 
             // DAL
             services.RegisterRepositoriesToIocContainer();
+            services.AddSqlPersistence(_configuration);
+
+            // Services
+            services.RegisterServicesToIocContainer();
 
             // CORS for dev env
             services.AddDefaultCorsPolicy();
@@ -42,6 +49,17 @@ namespace SmartHome.API
             services.AddSwaggerGen(swagger =>
             {
                 swagger.SwaggerDoc("dev", new Info { Title = "Home Sensor Server API", Version = "v1", Contact = new Contact { Email = "mkrysz1337@gmail.com" } });
+                swagger.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = "header",
+                    Type = "apiKey"
+                });
+                swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer",new string[]{}}
+                });
             });
         }
 
@@ -50,7 +68,8 @@ namespace SmartHome.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors("CorsPolicy");
+                app.UseDatabaseErrorPage();
+                app.UseCors("CorsPolicy");               
             }
 
             app.UseDefaultFiles();
@@ -64,7 +83,20 @@ namespace SmartHome.API
                 swagger.SwaggerEndpoint("/swagger/dev/swagger.json", "Home Sensor Server API");
             });
 
-            AppIdentityDbContext.SeedRolesAndUser(app.ApplicationServices).Wait();
+            InitializeDatabase(app);
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var identityContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
+                identityContext.Database.Migrate();
+                identityContext.SaveChanges();
+
+                IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
+               // NodeTypeInitialLoad.Seed(app.ApplicationServices).Wait();
+            }
         }
     }
 

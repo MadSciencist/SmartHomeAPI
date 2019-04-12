@@ -1,9 +1,8 @@
-﻿using Microsoft.IdentityModel.JsonWebTokens;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
-namespace SmartHome.Security.Utils
+namespace SmartHome.API.Security.Utils
 {
     public static class ClaimsPrincipalHelper
     {
@@ -12,8 +11,11 @@ namespace SmartHome.Security.Utils
             return GetClaimedIdentifier(principal).Equals(claimedId);
         }
 
-        public static string GetClaimedIdentifier(ClaimsPrincipal principal) =>
-            principal.FindFirstValue(JwtRegisteredClaimNames.Jti);
+        public static string GetClaimedIdentifier(ClaimsPrincipal principal)
+        {
+            //return principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            return principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+        }
 
         public static bool IsUserAdmin(ClaimsPrincipal principal) => GetClaimedRoles(principal).Contains("admin");
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using SmartHome.API.Persistence.App;
 using SmartHome.Domain.Entity;
+using SmartHome.Repositories;
 
-namespace SmartHome.Repositories
+namespace SmartHome.API.Repository
 {
     public class NodeRepository : GenericRepository<Node>, INodeRepository
     {

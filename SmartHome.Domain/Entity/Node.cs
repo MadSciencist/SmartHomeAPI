@@ -1,26 +1,32 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using System;
 using SmartHome.Domain.User;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Domain.Entity
 {
-    [Table("nodes")]
+    [Table("node")]
     public class Node
     {
+        //[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int? Id { get; set; }
+
+        [MaxLength(50)]
         public string Name { get; set; }
+
+        [MaxLength(500)]
         public string Description { get; set; }
 
+        [MaxLength(50)]
+        [Required]
         public string Identifier { get; set; }
 
-        [BindNever]
-        public AppUser Creator { get; set; }
+        public NodeType Type { get; set; }
 
-        public string LoginName { get; set; }
-        public string LoginPassword { get; set; }
-        public string NodeType { get; set; }
-        public string RegistredProperties { get; set; }
-        public string IpAddress { get; set; }
-        public string GatewayAddress { get; set; }
-        public bool IsOn { get; set; }
+        public ControllableNode ControllableNode { get; set; }
+
+        public AppUser CreatedBy { get; set; }
+
+        public DateTime Created { get; set; }
     }
 }

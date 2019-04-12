@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.DTO;
-using SmartHome.Security.Token;
-using SmartHome.Security.Utils;
-using System.Threading.Tasks;
+using SmartHome.API.Security.Token;
 using SmartHome.Domain.User;
+using System.Threading.Tasks;
+using SmartHome.API.Security.Utils;
 
 namespace SmartHome.API.Controllers
 {
