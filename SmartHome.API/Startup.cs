@@ -58,17 +58,27 @@ namespace SmartHome.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseStatusCodePages();
                 app.UseCors("CorsPolicy");               
             }
 
+            // custom logging middleware 
+            app.UseLoggingExceptionHandler();
+
+            // serve statics
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseStatusCodePages();
+
+            // auth middleware
             app.UseAuthentication();
+
+            // standard MVC middleware
             app.UseMvc();
+
+            // docs gen and UI
             app.UseSwagger();
             app.UseSwaggerUI(s => s.SwaggerEndpoint("/swagger/dev/swagger.json", "Home Sensor Server API"));
-
+            
             InitializeDatabase(app);
         }
 

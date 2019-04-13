@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Autofac;
@@ -39,7 +40,8 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> A(string test)
         {
             var strategy = _container.ResolveNamed(test, typeof(IControlStrategy)) as IControlStrategy;
-            strategy?.Execute();
+            
+            strategy.Execute();
             return Ok();
         }
 

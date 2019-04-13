@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Autofac;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,17 +11,16 @@ using SmartHome.API.Persistence.Identity;
 using SmartHome.API.Repository;
 using SmartHome.API.Security.Token;
 using SmartHome.API.Services.Crud;
-using SmartHome.Domain.Role;
-using SmartHome.Domain.User;
-using SmartHome.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Autofac;
 using SmartHome.DeviceController;
 using SmartHome.DeviceController.Mqtt;
 using SmartHome.DeviceController.Rest;
+using SmartHome.Domain.Role;
+using SmartHome.Domain.User;
+using SmartHome.Repositories;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace SmartHome.API.Extensions
 {
