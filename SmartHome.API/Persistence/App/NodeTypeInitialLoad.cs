@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Domain.DictionaryEntity;
 
 namespace SmartHome.API.Persistence.App
 {
@@ -72,6 +73,108 @@ namespace SmartHome.API.Persistence.App
                     };
 
                     await context.AddRangeAsync(controlStrategies);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Dictionaries.Any(x => x.Name == "gender"))
+                {
+                    var dictionaries = new List<Dictionary>
+                    {
+                        new Dictionary
+                        {
+                            Id = 1,
+                            Name = "gender",
+                            Values = new List<DictionaryValue>
+                            {
+                                new DictionaryValue
+                                {
+                                    Id = 1,
+                                    Value = "Male",
+                                    IsActive = true,
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 2,
+                                    Value = "Female",
+                                    IsActive = true
+                                }
+                            }
+                        }
+                    };
+
+                    await context.Dictionaries.AddRangeAsync(dictionaries);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Dictionaries.Any(x => x.Name == "nodeType"))
+                {
+                    var dictionaries = new List<Dictionary>
+                    {
+                        new Dictionary
+                        {
+                            Id = 100,
+                            Name = "NodeType",
+                            Values = new List<DictionaryValue>
+                            {
+                                new DictionaryValue
+                                {
+                                    Id = 100,
+                                    Value = "Sensor",
+                                    IsActive = true,
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 101,
+                                    Value = "Controllable device",
+                                    IsActive = true
+                                }
+                            }
+                        }
+                    };
+
+                    await context.Dictionaries.AddRangeAsync(dictionaries);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Dictionaries.Any(x => x.Name == "sensorType"))
+                {
+                    var dictionaries = new List<Dictionary>
+                    {
+                        new Dictionary
+                        {
+                            Id = 200,
+                            Name = "sensorType",
+                            Values = new List<DictionaryValue>
+                            {
+                                new DictionaryValue
+                                {
+                                    Id = 200,
+                                    Value = "Temperature",
+                                    IsActive = true,
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 201,
+                                    Value = "Sunlight",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 202,
+                                    Value = "Current",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 203,
+                                    Value = "Other",
+                                    IsActive = true
+                                }
+                            }
+                        }
+                    };
+
+                    await context.Dictionaries.AddRangeAsync(dictionaries);
                     await context.SaveChangesAsync();
                 }
             }

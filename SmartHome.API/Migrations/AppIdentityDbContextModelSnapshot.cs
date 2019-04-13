@@ -98,6 +98,38 @@ namespace SmartHome.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.Dictionary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("dictionary");
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.DictionaryValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("DictionaryId");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DictionaryId");
+
+                    b.ToTable("dictionary_value");
+                });
+
             modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
                 {
                     b.Property<int>("Id")
@@ -343,6 +375,14 @@ namespace SmartHome.API.Migrations
                     b.HasOne("SmartHome.Domain.User.AppUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.DictionaryValue", b =>
+                {
+                    b.HasOne("SmartHome.Domain.DictionaryEntity.Dictionary", "Dictionary")
+                        .WithMany("Values")
+                        .HasForeignKey("DictionaryId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

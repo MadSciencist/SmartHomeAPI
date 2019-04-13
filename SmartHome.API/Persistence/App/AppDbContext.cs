@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartHome.Domain.DictionaryEntity;
 using SmartHome.Domain.Entity;
 
 namespace SmartHome.API.Persistence.App
@@ -13,6 +14,8 @@ namespace SmartHome.API.Persistence.App
         public DbSet<NodeType> NodeTypes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<ControllableNode> ControllableNodes { get; set; }
+        public DbSet<Dictionary> Dictionaries { get; set; }
+        public DbSet<DictionaryValue> DictionaryValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

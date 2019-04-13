@@ -9,8 +9,8 @@ using SmartHome.API.Persistence.Identity;
 namespace SmartHome.API.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20190412211305_strat")]
-    partial class strat
+    [Migration("20190413172338_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,6 +100,40 @@ namespace SmartHome.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.Dictionary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("dictionary");
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.DictionaryValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("DictionaryId");
+
+                    b.Property<int?>("DictionaryId1");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DictionaryId1");
+
+                    b.ToTable("dictionary_value");
+                });
+
             modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
                 {
                     b.Property<int>("Id")
@@ -128,13 +162,17 @@ namespace SmartHome.API.Migrations
 
                     b.Property<bool>("IsActive");
 
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
                     b.Property<string>("Strategy")
                         .IsRequired()
                         .HasMaxLength(100);
 
                     b.HasKey("Id");
 
-                    b.ToTable("ControlStrategy");
+                    b.ToTable("control_strategy");
                 });
 
             modelBuilder.Entity("SmartHome.Domain.Entity.ControllableNode", b =>
@@ -342,6 +380,13 @@ namespace SmartHome.API.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.DictionaryValue", b =>
+                {
+                    b.HasOne("SmartHome.Domain.DictionaryEntity.Dictionary", "Dictionary")
+                        .WithMany("Values")
+                        .HasForeignKey("DictionaryId1");
                 });
 
             modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>

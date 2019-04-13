@@ -59,21 +59,32 @@ namespace SmartHome.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "controllable_node",
+                name: "control_strategy",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    BasicAuthLogin = table.Column<string>(maxLength: 50, nullable: true),
-                    BasicAuhPassword = table.Column<string>(maxLength: 50, nullable: true),
-                    RegisteredProperties = table.Column<string>(maxLength: 250, nullable: true),
-                    IpAddress = table.Column<string>(maxLength: 20, nullable: true),
-                    GatewayIpAddress = table.Column<string>(maxLength: 20, nullable: true),
-                    IsOn = table.Column<bool>(nullable: false)
+                    Strategy = table.Column<string>(maxLength: 100, nullable: false),
+                    Key = table.Column<string>(maxLength: 50, nullable: false),
+                    Description = table.Column<string>(maxLength: 250, nullable: true),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_controllable_node", x => x.Id);
+                    table.PrimaryKey("PK_control_strategy", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "dictionary",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_dictionary", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,6 +208,53 @@ namespace SmartHome.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "controllable_node",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    BasicAuthLogin = table.Column<string>(maxLength: 50, nullable: true),
+                    BasicAuhPassword = table.Column<string>(maxLength: 50, nullable: true),
+                    RegisteredProperties = table.Column<string>(maxLength: 250, nullable: true),
+                    IpAddress = table.Column<string>(maxLength: 20, nullable: true),
+                    GatewayIpAddress = table.Column<string>(maxLength: 20, nullable: true),
+                    IsOn = table.Column<bool>(nullable: false),
+                    ControlStrategyId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_controllable_node", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_controllable_node_control_strategy_ControlStrategyId",
+                        column: x => x.ControlStrategyId,
+                        principalTable: "control_strategy",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "dictionary_value",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Value = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    DictionaryId = table.Column<string>(nullable: true),
+                    DictionaryId1 = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_dictionary_value", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_dictionary_value_dictionary_DictionaryId1",
+                        column: x => x.DictionaryId1,
+                        principalTable: "dictionary",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "node",
                 columns: table => new
                 {
@@ -312,6 +370,16 @@ namespace SmartHome.API.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_controllable_node_ControlStrategyId",
+                table: "controllable_node",
+                column: "ControlStrategyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_dictionary_value_DictionaryId1",
+                table: "dictionary_value",
+                column: "DictionaryId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_node_ControllableNodeId",
                 table: "node",
                 column: "ControllableNodeId");
@@ -348,10 +416,16 @@ namespace SmartHome.API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "dictionary_value");
+
+            migrationBuilder.DropTable(
                 name: "node");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "dictionary");
 
             migrationBuilder.DropTable(
                 name: "controllable_node");
@@ -361,6 +435,9 @@ namespace SmartHome.API.Migrations
 
             migrationBuilder.DropTable(
                 name: "node_type");
+
+            migrationBuilder.DropTable(
+                name: "control_strategy");
         }
     }
 }

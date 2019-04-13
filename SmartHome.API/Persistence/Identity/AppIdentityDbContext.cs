@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SmartHome.Domain.DictionaryEntity;
 using SmartHome.Domain.Entity;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
@@ -25,7 +26,6 @@ namespace SmartHome.API.Persistence.Identity
                 .HasOne(x => x.CreatedBy)
                 .WithMany(u => u.CreatedNodes)
                 .HasForeignKey(n => n.CreatedById);
-            
 
             // Configure many-to-many user-node relationship
             builder.Entity<AppUserNode>()
@@ -40,6 +40,22 @@ namespace SmartHome.API.Persistence.Identity
                 .HasOne(x => x.User)
                 .WithMany(x => x.EligibleNodes)
                 .HasForeignKey(x => x.UserId);
+
+            // Configure dictionaries one-to-many relationship
+            builder.Entity<Dictionary>()
+                .HasKey(x => x.Id);
+
+            builder.Entity<DictionaryValue>()
+              .HasKey(x => x.Id);
+
+            builder.Entity<DictionaryValue>()
+                .Property(x => x.IsActive)
+                .HasDefaultValue(true);
+
+            builder.Entity<DictionaryValue>()
+                .HasOne(x => x.Dictionary)
+                .WithMany(x => x.Values)
+                .HasForeignKey(x => x.DictionaryId);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace SmartHome.API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class UsersController : ControllerBase
     {
         // TODO create userService to cleanup this mess

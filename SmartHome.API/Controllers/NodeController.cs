@@ -14,6 +14,7 @@ namespace SmartHome.API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class NodeController : ControllerBase
     {
         private readonly ICrudNodeService _crudNodeService;
@@ -31,6 +32,7 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> Create()
         {
             await _crudNodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
+            //ModelState.AddModelError();
             
             return Ok();
         }

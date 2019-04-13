@@ -9,8 +9,8 @@ using SmartHome.API.Persistence.Identity;
 namespace SmartHome.API.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20190412165721_init")]
-    partial class init
+    [Migration("20190413172813_2")]
+    partial class _2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,6 +100,38 @@ namespace SmartHome.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.Dictionary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("dictionary");
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.DictionaryValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("DictionaryId");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DictionaryId");
+
+                    b.ToTable("dictionary_value");
+                });
+
             modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
                 {
                     b.Property<int>("Id")
@@ -118,6 +150,29 @@ namespace SmartHome.API.Migrations
                     b.ToTable("appuser_node");
                 });
 
+            modelBuilder.Entity("SmartHome.Domain.Entity.ControlStrategy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250);
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Strategy")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("control_strategy");
+                });
+
             modelBuilder.Entity("SmartHome.Domain.Entity.ControllableNode", b =>
                 {
                     b.Property<int>("Id")
@@ -128,6 +183,8 @@ namespace SmartHome.API.Migrations
 
                     b.Property<string>("BasicAuthLogin")
                         .HasMaxLength(50);
+
+                    b.Property<int>("ControlStrategyId");
 
                     b.Property<string>("GatewayIpAddress")
                         .HasMaxLength(20);
@@ -141,6 +198,8 @@ namespace SmartHome.API.Migrations
                         .HasMaxLength(250);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ControlStrategyId");
 
                     b.ToTable("controllable_node");
                 });
@@ -321,6 +380,14 @@ namespace SmartHome.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("SmartHome.Domain.DictionaryEntity.DictionaryValue", b =>
+                {
+                    b.HasOne("SmartHome.Domain.DictionaryEntity.Dictionary", "Dictionary")
+                        .WithMany("Values")
+                        .HasForeignKey("DictionaryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
                 {
                     b.HasOne("SmartHome.Domain.Entity.Node", "Node")
@@ -331,6 +398,14 @@ namespace SmartHome.API.Migrations
                     b.HasOne("SmartHome.Domain.User.AppUser", "User")
                         .WithMany("EligibleNodes")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.Entity.ControllableNode", b =>
+                {
+                    b.HasOne("SmartHome.Domain.Entity.ControlStrategy", "ControlStrategy")
+                        .WithMany()
+                        .HasForeignKey("ControlStrategyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
