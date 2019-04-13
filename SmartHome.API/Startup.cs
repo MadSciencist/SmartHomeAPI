@@ -1,23 +1,15 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using SmartHome.API.Persistence.Identity;
-using SmartHome.API.Security.Extensions;
-using Swashbuckle.AspNetCore.Swagger;
-using System.Collections.Generic;
-using Autofac;
-using Autofac.Extensions.DependencyInjection;
-using SmartHome.API.Persistence;
+using SmartHome.API.Extensions;
 using SmartHome.API.Persistence.App;
-using SmartHome.API.Services.Extensions;
-using SmartHome.DeviceController;
-using SmartHome.DeviceController.Mqtt;
-using SmartHome.DeviceController.Rest;
+using SmartHome.API.Persistence.Identity;
+using System;
 
 namespace SmartHome.API
 {
@@ -38,45 +30,23 @@ namespace SmartHome.API
                 .AddJsonOptions(json => json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             // Security
-            services.RegisterIdentityToIocContainer();
             services.AddSqlIdentityPersistence(_configuration);
             services.AddJwtAuthentication(_configuration);
             services.AddAuthorizationPolicies();
 
-            // DAL
-            services.RegisterRepositoriesToIocContainer();
+            // BL & Services
+            services.RegisterAppServicesToIocContainer();
             services.AddSqlPersistence(_configuration);
-
-            // Services
-            services.RegisterServicesToIocContainer();
 
             // CORS for dev env
             services.AddDefaultCorsPolicy();
 
             // Api docs gen
-            services.AddSwaggerGen(swagger =>
-            {
-                swagger.SwaggerDoc("dev", new Info { Title = "Home Sensor Server API", Version = "v1", Contact = new Contact { Email = "mkrysz1337@gmail.com" } });
-                swagger.AddSecurityDefinition("Bearer", new ApiKeyScheme()
-                {
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
-                });
-                swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
-                {
-                    {"Bearer",new string[]{}}
-                });
-            });
-
+            services.AddConfiguredSwagger();
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
-
-            builder.RegisterType<RestControlStrategy>().Named<IControlStrategy>("SmartHome.DeviceController.Rest.RestControlStrategy");
-            builder.RegisterType<MqttControlStrategy>().Named<IControlStrategy>("SmartHome.DeviceController.Mqtt.MqttControlStrategy");
-
+            builder.RegisterAppServicesToAutofacContainer();
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
@@ -97,10 +67,7 @@ namespace SmartHome.API
             app.UseAuthentication();
             app.UseMvc();
             app.UseSwagger();
-            app.UseSwaggerUI(swagger =>
-            {
-                swagger.SwaggerEndpoint("/swagger/dev/swagger.json", "Home Sensor Server API");
-            });
+            app.UseSwaggerUI(s => s.SwaggerEndpoint("/swagger/dev/swagger.json", "Home Sensor Server API"));
 
             InitializeDatabase(app);
         }
@@ -116,25 +83,6 @@ namespace SmartHome.API
                 IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
                 NodeTypeInitialLoad.Seed(app.ApplicationServices).Wait();
             }
-        }
-    }
-
-    public static class CorsExtensions
-    {
-        public static IServiceCollection AddDefaultCorsPolicy(this IServiceCollection services)
-        {
-            services.AddCors(settings =>
-            {
-                settings.AddPolicy("CorsPolicy", builder =>
-                {
-                    builder.WithOrigins("http://localhost:3000")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                });
-            });
-
-            return services;
         }
     }
 }
