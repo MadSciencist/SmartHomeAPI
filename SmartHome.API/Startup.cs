@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +10,20 @@ using SmartHome.API.Persistence.Identity;
 using SmartHome.API.Security.Extensions;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using SmartHome.API.Persistence;
 using SmartHome.API.Persistence.App;
 using SmartHome.API.Services.Extensions;
+using SmartHome.DeviceController;
+using SmartHome.DeviceController.Mqtt;
+using SmartHome.DeviceController.Rest;
 
 namespace SmartHome.API
 {
     public class Startup
     {
+        public IContainer ApplicationContainer { get; private set; }
         private readonly IConfiguration _configuration;
 
         public Startup(IConfiguration configuration)
@@ -24,7 +31,7 @@ namespace SmartHome.API
             _configuration = configuration;
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
@@ -62,6 +69,17 @@ namespace SmartHome.API
                     {"Bearer",new string[]{}}
                 });
             });
+
+
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+
+            builder.RegisterType<RestControlStrategy>().Named<IControlStrategy>("SmartHome.DeviceController.Rest.RestControlStrategy");
+            builder.RegisterType<MqttControlStrategy>().Named<IControlStrategy>("SmartHome.DeviceController.Mqtt.MqttControlStrategy");
+
+            ApplicationContainer = builder.Build();
+
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

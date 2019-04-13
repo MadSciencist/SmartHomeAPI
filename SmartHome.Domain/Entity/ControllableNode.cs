@@ -4,11 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SmartHome.Domain.Entity
 {
     [Table("controllable_node")]
-    public class ControllableNode
+    public class ControllableNode : EntityBase
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
         [MaxLength(50)]
         public string BasicAuthLogin { get; set; }
 
@@ -25,5 +22,10 @@ namespace SmartHome.Domain.Entity
         public string GatewayIpAddress { get; set; }
 
         public bool IsOn { get; set; }
+
+
+        // Navigation & relationship properties
+        public ControlStrategy ControlStrategy { get; set; }
+        public int ControlStrategyId { get; set; }
     }
 }

@@ -11,13 +11,12 @@ namespace SmartHome.API.Persistence.App
 
         public DbSet<Node> Nodes { get; set; }
         public DbSet<NodeType> NodeTypes { get; set; }
+        public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<ControllableNode> ControllableNodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-
         }
     }
 }

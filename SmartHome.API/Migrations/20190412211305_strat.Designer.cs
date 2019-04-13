@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartHome.API.Persistence.Identity;
 
 namespace SmartHome.API.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190412211305_strat")]
+    partial class strat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,17 +128,13 @@ namespace SmartHome.API.Migrations
 
                     b.Property<bool>("IsActive");
 
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
                     b.Property<string>("Strategy")
                         .IsRequired()
                         .HasMaxLength(100);
 
                     b.HasKey("Id");
 
-                    b.ToTable("control_strategy");
+                    b.ToTable("ControlStrategy");
                 });
 
             modelBuilder.Entity("SmartHome.Domain.Entity.ControllableNode", b =>

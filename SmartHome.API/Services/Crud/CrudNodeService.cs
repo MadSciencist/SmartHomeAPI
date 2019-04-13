@@ -31,7 +31,7 @@ namespace SmartHome.API.Services.Crud
             int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
             NodeType nodeType = _nodeTypeRepo.Find(x => x.Name == type).First();
 
-            var node = new Node()
+            var node = new Node
             {
                 Identifier = identifier,
                 Created = DateTime.Now,
