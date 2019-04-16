@@ -45,20 +45,20 @@ namespace SmartHome.API.Controllers
         }
 
         [HttpGet("getByName/{name}")]
-        [ProducesResponseType(typeof(IEnumerable<Dictionary>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Dictionary), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult GetByName(string name)
         {
-            IEnumerable<Dictionary> dictionaries = _dictRepository.AsQueryableNoTrack()
+            Dictionary dictionary = _dictRepository.AsQueryableNoTrack()
                 .Include(x => x.Values)
-                .Where(x => x.Name == name);
+                .FirstOrDefault(x => x.Name == name);
 
-            if (!dictionaries.Any())
+            if (dictionary == null)
             {
                 return NotFound();
             }
 
-            return Ok(dictionaries);
+            return Ok(dictionary);
         }
     }
 }

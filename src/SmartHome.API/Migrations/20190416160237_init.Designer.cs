@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SmartHome.API.Persistence.Identity;
+using SmartHome.API.Persistence;
 
 namespace SmartHome.API.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20190413172813_2")]
-    partial class _2
+    [Migration("20190416160237_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.539
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API", "SmartHome.API\SmartHome.API.csproj", "{42D6CC80-881F-4FCF-A576-5C04090BCEF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API", "src\SmartHome.API\SmartHome.API.csproj", "{42D6CC80-881F-4FCF-A576-5C04090BCEF5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Domain", "SmartHome.Domain\SmartHome.Domain.csproj", "{F9E405AE-75D7-4CDF-BCBB-6E78FA7AD567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Domain", "src\SmartHome.Domain\SmartHome.Domain.csproj", "{F9E405AE-75D7-4CDF-BCBB-6E78FA7AD567}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.DeviceController", "SmartHome.DeviceController\SmartHome.DeviceController.csproj", "{2BF9D23E-C397-4816-943B-5A440CB5AD9B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.DeviceController", "src\SmartHome.DeviceController\SmartHome.DeviceController.csproj", "{2BF9D23E-C397-4816-943B-5A440CB5AD9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

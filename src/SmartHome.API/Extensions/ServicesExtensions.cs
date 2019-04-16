@@ -6,11 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SmartHome.API.Persistence.App;
-using SmartHome.API.Persistence.Identity;
+using SmartHome.API.Persistence;
 using SmartHome.API.Repository;
 using SmartHome.API.Security.Token;
-using SmartHome.API.Services.Crud;
+using SmartHome.API.Services;
 using SmartHome.DeviceController;
 using SmartHome.DeviceController.Mqtt;
 using SmartHome.DeviceController.Rest;
@@ -31,7 +30,7 @@ namespace SmartHome.API.Extensions
             services.AddTransient<ITokenBuilder, TokenBuilder>();
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<INodeRepository, NodeRepository>();
-            services.AddTransient<ICrudNodeService, CrudNodeService>();
+            services.AddTransient<INodeService, NodeService>();
         }
 
         public static void RegisterAppServicesToAutofacContainer(this ContainerBuilder builder)
@@ -40,23 +39,6 @@ namespace SmartHome.API.Extensions
                 .Named<IControlStrategy>("SmartHome.DeviceController.Rest.RestControlStrategy");
             builder.RegisterType<MqttControlStrategy>()
                 .Named<IControlStrategy>("SmartHome.DeviceController.Mqtt.MqttControlStrategy");
-        }
-
-        public static void AddSqlPersistence(this IServiceCollection services, IConfiguration configuration)
-        {
-            var connectionString = configuration["ConnectionStrings:MySql"];
-
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseMySql(connectionString, mysqlOptions =>
-                    {
-                        mysqlOptions.ServerVersion(new Version(10, 1, 29), ServerType.MariaDb)
-                            .MigrationsHistoryTable("__AppMigrationHistory");
-                    })
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors();
-                // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)
@@ -68,8 +50,11 @@ namespace SmartHome.API.Extensions
                 options.UseMySql(connectionString, mySqlOptions =>
                 {
                     mySqlOptions.ServerVersion(new Version(10, 1, 38), ServerType.MariaDb);
-                    mySqlOptions.MigrationsHistoryTable("__IdentityMigrationHistory");
-                });
+                    mySqlOptions.MigrationsHistoryTable("__MigrationHistory");
+                })
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors();
+                // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             services.AddIdentity<AppUser, AppRole>(options =>

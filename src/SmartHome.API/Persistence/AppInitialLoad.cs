@@ -1,25 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SmartHome.Domain.DictionaryEntity;
 using SmartHome.Domain.Entity;
-using SmartHome.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Domain.DictionaryEntity;
 
-namespace SmartHome.API.Persistence.App
+namespace SmartHome.API.Persistence
 {
-    public static class NodeTypeInitialLoad
+    public static class AppInitialLoad
     {
         public static async Task Seed(IServiceProvider provider)
         {
             using (IServiceScope scope = provider.CreateScope())
             {
                 var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>()
-                    .CreateLogger(nameof(NodeTypeInitialLoad));
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                    .CreateLogger(nameof(AppInitialLoad));
+                var context = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
 
 
 

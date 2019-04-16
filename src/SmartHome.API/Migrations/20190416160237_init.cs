@@ -240,18 +240,17 @@ namespace SmartHome.API.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Value = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
-                    DictionaryId = table.Column<string>(nullable: true),
-                    DictionaryId1 = table.Column<int>(nullable: true)
+                    DictionaryId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_dictionary_value", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_dictionary_value_dictionary_DictionaryId1",
-                        column: x => x.DictionaryId1,
+                        name: "FK_dictionary_value_dictionary_DictionaryId",
+                        column: x => x.DictionaryId,
                         principalTable: "dictionary",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -375,9 +374,9 @@ namespace SmartHome.API.Migrations
                 column: "ControlStrategyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_dictionary_value_DictionaryId1",
+                name: "IX_dictionary_value_DictionaryId",
                 table: "dictionary_value",
-                column: "DictionaryId1");
+                column: "DictionaryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_node_ControllableNodeId",

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.API.Persistence.App;
+using SmartHome.API.Persistence;
 using SmartHome.Repositories;
 using System;
 using System.Collections.Generic;
@@ -11,10 +11,10 @@ namespace SmartHome.API.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
     {
-        protected readonly AppDbContext _context;
+        protected readonly AppIdentityDbContext _context;
         private readonly ILogger _logger;
 
-        public GenericRepository(AppDbContext context, ILoggerFactory loggerFactory)
+        public GenericRepository(AppIdentityDbContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("Repository logger");

@@ -7,9 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
-using SmartHome.API.Persistence.App;
-using SmartHome.API.Persistence.Identity;
 using System;
+using SmartHome.API.Persistence;
 
 namespace SmartHome.API
 {
@@ -36,7 +35,6 @@ namespace SmartHome.API
 
             // BL & Services
             services.RegisterAppServicesToIocContainer();
-            services.AddSqlPersistence(_configuration);
 
             // CORS for dev env
             services.AddDefaultCorsPolicy();
@@ -91,7 +89,7 @@ namespace SmartHome.API
                 //identityContext.SaveChanges();
 
                 IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
-                NodeTypeInitialLoad.Seed(app.ApplicationServices).Wait();
+                AppInitialLoad.Seed(app.ApplicationServices).Wait();
             }
         }
     }

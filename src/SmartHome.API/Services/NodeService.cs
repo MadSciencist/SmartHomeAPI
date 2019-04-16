@@ -1,4 +1,4 @@
-﻿using SmartHome.API.Persistence.Identity;
+﻿using SmartHome.API.Persistence;
 using SmartHome.API.Security.Utils;
 using SmartHome.Domain.Entity;
 using SmartHome.Repositories;
@@ -6,22 +6,18 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using SmartHome.API.Persistence.App;
-using SmartHome.Domain.User;
 
-namespace SmartHome.API.Services.Crud
+namespace SmartHome.API.Services
 {
-    public class CrudNodeService : ICrudNodeService
+    public class NodeService : INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly AppIdentityDbContext _identityDbContext;
+        private readonly AppIdentityDbContext _context;
         private readonly IGenericRepository<NodeType> _nodeTypeRepo;
-        private readonly AppDbContext _context;
 
-        public CrudNodeService(INodeRepository nodeRepository, AppIdentityDbContext identityDbContext, IGenericRepository<NodeType> nodeTypeRepo, AppDbContext context)
+        public NodeService(INodeRepository nodeRepository, IGenericRepository<NodeType> nodeTypeRepo, AppIdentityDbContext context)
         {
             _nodeRepository = nodeRepository;
-            _identityDbContext = identityDbContext;
             _nodeTypeRepo = nodeTypeRepo;
             _context = context;
         }

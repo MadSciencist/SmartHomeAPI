@@ -1,13 +1,10 @@
-﻿using System;
+﻿using Autofac;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Autofac;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.API.Persistence.App;
-using SmartHome.API.Services.Crud;
+using SmartHome.API.Persistence;
 using SmartHome.DeviceController;
-using System.Reflection;
+using System.Threading.Tasks;
+using SmartHome.API.Services;
 
 namespace SmartHome.API.Controllers
 {
@@ -17,13 +14,13 @@ namespace SmartHome.API.Controllers
     [Produces("application/json")]
     public class NodeController : ControllerBase
     {
-        private readonly ICrudNodeService _crudNodeService;
-        private readonly AppDbContext _context;
+        private readonly INodeService _nodeService;
+        private readonly AppIdentityDbContext _context;
         private readonly ILifetimeScope _container;
 
-        public NodeController(ICrudNodeService crudNodeService, AppDbContext context, ILifetimeScope container)
+        public NodeController(INodeService crudNodeService, AppIdentityDbContext context, ILifetimeScope container)
         {
-            _crudNodeService = crudNodeService;
+            _nodeService = crudNodeService;
             _context = context;
             _container = container;
         }
@@ -31,7 +28,7 @@ namespace SmartHome.API.Controllers
         [HttpGet("create")]
         public async Task<IActionResult> Create()
         {
-            await _crudNodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
+            await _nodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
             //ModelState.AddModelError();
             
             return Ok();

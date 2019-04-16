@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using SmartHome.Domain.Entity;
 
-namespace SmartHome.API.Services.Crud
+namespace SmartHome.API.Services
 {
-    public interface ICrudNodeService
+    public interface INodeService
     {
         Task<Node> CreateNode(ClaimsPrincipal principal, string name, string identifier, string description, string type);
     }

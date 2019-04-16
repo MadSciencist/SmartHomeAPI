@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
 
-namespace SmartHome.API.Persistence.Identity
+namespace SmartHome.API.Persistence
 {
     public static class IdentityInitialLoad
     {

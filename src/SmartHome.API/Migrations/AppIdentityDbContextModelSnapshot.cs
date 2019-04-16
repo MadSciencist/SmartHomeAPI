@@ -2,17 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SmartHome.API.Persistence.Identity;
+using SmartHome.API.Persistence;
 
 namespace SmartHome.API.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20190413172338_init")]
-    partial class init
+    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,9 +115,7 @@ namespace SmartHome.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("DictionaryId");
-
-                    b.Property<int?>("DictionaryId1");
+                    b.Property<int>("DictionaryId");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -129,7 +125,7 @@ namespace SmartHome.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DictionaryId1");
+                    b.HasIndex("DictionaryId");
 
                     b.ToTable("dictionary_value");
                 });
@@ -386,7 +382,8 @@ namespace SmartHome.API.Migrations
                 {
                     b.HasOne("SmartHome.Domain.DictionaryEntity.Dictionary", "Dictionary")
                         .WithMany("Values")
-                        .HasForeignKey("DictionaryId1");
+                        .HasForeignKey("DictionaryId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
