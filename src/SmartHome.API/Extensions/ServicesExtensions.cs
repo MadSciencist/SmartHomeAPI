@@ -12,7 +12,6 @@ using SmartHome.Core.Control.Mqtt;
 using SmartHome.Core.Control.Rest;
 using SmartHome.Core.Persistence;
 using SmartHome.Core.Repository;
-using SmartHome.Core.Services;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
 using Swashbuckle.AspNetCore.Swagger;

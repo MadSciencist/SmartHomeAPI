@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Core.Control;
 using SmartHome.Core.Persistence;
-using SmartHome.Core.Services;
 using System.Threading.Tasks;
+using SmartHome.Core.BusinessLogic;
 
 namespace SmartHome.API.Controllers
 {
@@ -21,6 +21,9 @@ namespace SmartHome.API.Controllers
         public NodeController(INodeService nodeService, AppDbContext context, ILifetimeScope container)
         {
             _nodeService = nodeService;
+            // _nodeService.ClaimsPrincipal = this.User; //TODO assigns null?
+            _nodeService.MyProperty = "asdadsasd";
+
             _context = context;
             _container = container;
         }
@@ -30,15 +33,26 @@ namespace SmartHome.API.Controllers
         {
             await _nodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
             //ModelState.AddModelError();
-            
+
             return Ok();
         }
 
-        [AllowAnonymous]
         [HttpPost("getState/{nodeId}")]
-        public async Task<IActionResult> Control(int nodeId)
+        public async Task<IActionResult> GetState(int nodeId)
         {
-            var response = await _nodeService.Control(nodeId, new ControlCommand{ CommandType = EControlCommand.GetState });
+            var response = await _nodeService.Control(this.User, nodeId, new ControlCommand { CommandType = EControlCommand.GetState });
+            return Ok(response);
+        }
+
+        [HttpPost("setState/{nodeId}")]
+        public async Task<IActionResult> SetState(int nodeId)
+        {
+            var command = new ControlCommand
+            {
+                CommandType = EControlCommand.SetState,
+                Payload = ""
+            };
+            var response = await _nodeService.Control(this.User, nodeId, command);
             return Ok(response);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -39,6 +40,18 @@ namespace SmartHome.Core.Control.Rest
 
 
             var response = await _httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+
+            return string.Empty;
+        }
+
+        public async Task<string> PutAsync(string url, HttpContent body)
+        {
+            var response = await _httpClient.PutAsync(url, body);
+
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsStringAsync();

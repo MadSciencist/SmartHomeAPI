@@ -161,7 +161,6 @@ namespace SmartHome.API.Persistence
                         IpAddress = "http://192.168.0.100",
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
-                        //AllowedUsers = 
                     };
 
                     var createdNode = await context.Nodes.AddAsync(node);

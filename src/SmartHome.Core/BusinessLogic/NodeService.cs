@@ -1,18 +1,21 @@
-﻿using Autofac;
-using SmartHome.Core.BusinessLogic;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Autofac;
 using SmartHome.Core.Control;
 using SmartHome.Core.Persistence;
 using SmartHome.Core.Repository;
 using SmartHome.Core.Utils;
 using SmartHome.Domain.Entity;
-using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace SmartHome.Core.Services
+namespace SmartHome.Core.BusinessLogic
 {
     public class NodeService : INodeService
     {
+        public ClaimsPrincipal ClaimsPrincipal { get; set; }
+        public string MyProperty { get; set; }
+
         private readonly INodeRepository _nodeRepository;
         private readonly ILifetimeScope _container;
         private readonly AppDbContext _context;
@@ -60,11 +63,19 @@ namespace SmartHome.Core.Services
             }
         }
 
-        public async Task<object> Control(int nodeId, ControlCommand command)
+        public async Task<object> Control(ClaimsPrincipal principal, int nodeId, ControlCommand command)
         {
             // get the node
             Node node = await _nodeRepository.GetByIdAsync(nodeId);
             string controlStrategyExecutorClass = node.ControlStrategy.Strategy;
+
+            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
+
+            // check permissions
+            if(node.AllowedUsers.Where(x => x.NodeId == node.Id).All(x => x.UserId != userId))
+            {
+                throw new InvalidOperationException("No access");
+            }
 
             // resolve control executor
             var strategy = _container.ResolveNamed(controlStrategyExecutorClass, typeof(IControlStrategy)) as IControlStrategy;
