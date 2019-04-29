@@ -10,7 +10,7 @@ install:
   - dotnet restore
  script
  - dotnet build
- - dotnet test test/SmaartHome.UnitTests/SmartHome.UnitTests.csproj
+ - dotnet test test/SmartHome.UnitTests/SmartHome.UnitTests.csproj
 notifications:
   email:
     on_success: never
