@@ -6,9 +6,11 @@ dotnet: 2.2
 branches:
   only:
     - master
-script:
+install:
   - dotnet restore
-  - dotnet build
+ script
+ - dotnet build
+ - dotnet test test/SmaartHome.UnitTests/SmartHome.UnitTests.csproj
 notifications:
   email:
     on_success: never
