@@ -5,7 +5,7 @@ using SmartHome.API.DTO;
 using SmartHome.API.Security.Token;
 using SmartHome.Domain.User;
 using System.Threading.Tasks;
-using SmartHome.API.Security.Utils;
+using SmartHome.Core.Utils;
 
 namespace SmartHome.API.Controllers
 {

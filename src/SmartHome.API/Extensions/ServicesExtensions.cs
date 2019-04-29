@@ -6,16 +6,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SmartHome.API.Persistence;
-using SmartHome.API.Repository;
-using SmartHome.API.Security.Token;
-using SmartHome.API.Services;
-using SmartHome.DeviceController;
-using SmartHome.DeviceController.Mqtt;
-using SmartHome.DeviceController.Rest;
+using SmartHome.Core.BusinessLogic;
+using SmartHome.Core.Control;
+using SmartHome.Core.Control.Mqtt;
+using SmartHome.Core.Control.Rest;
+using SmartHome.Core.Persistence;
+using SmartHome.Core.Repository;
+using SmartHome.Core.Services;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
-using SmartHome.Repositories;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
@@ -27,25 +26,27 @@ namespace SmartHome.API.Extensions
     {
         public static void RegisterAppServicesToIocContainer(this IServiceCollection services)
         {
-            services.AddTransient<ITokenBuilder, TokenBuilder>();
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<INodeRepository, NodeRepository>();
             services.AddTransient<INodeService, NodeService>();
+            services.AddTransient<IRestTemplateBuilder, RestTemplateBuilder>();
+
+            services.AddSingleton(typeof(PersistentHttpClient));
         }
 
         public static void RegisterAppServicesToAutofacContainer(this ContainerBuilder builder)
         {
             builder.RegisterType<RestControlStrategy>()
-                .Named<IControlStrategy>("SmartHome.DeviceController.Rest.RestControlStrategy");
+                .Named<IControlStrategy>(typeof(RestControlStrategy).FullName);
             builder.RegisterType<MqttControlStrategy>()
-                .Named<IControlStrategy>("SmartHome.DeviceController.Mqtt.MqttControlStrategy");
+                .Named<IControlStrategy>(typeof(MqttControlStrategy).FullName);
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration["ConnectionStrings:MySql"];
 
-            services.AddDbContext<AppIdentityDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseMySql(connectionString, mySqlOptions =>
                 {
@@ -65,7 +66,7 @@ namespace SmartHome.API.Extensions
                     options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedEmail = false;
                 })
-                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders()
                 .AddRoles<AppRole>();
         }

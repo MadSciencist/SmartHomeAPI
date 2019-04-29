@@ -1,10 +1,10 @@
 ﻿using Autofac;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartHome.API.Persistence;
-using SmartHome.DeviceController;
+using SmartHome.Core.Control;
+using SmartHome.Core.Persistence;
+using SmartHome.Core.Services;
 using System.Threading.Tasks;
-using SmartHome.API.Services;
 
 namespace SmartHome.API.Controllers
 {
@@ -15,12 +15,12 @@ namespace SmartHome.API.Controllers
     public class NodeController : ControllerBase
     {
         private readonly INodeService _nodeService;
-        private readonly AppIdentityDbContext _context;
+        private readonly AppDbContext _context;
         private readonly ILifetimeScope _container;
 
-        public NodeController(INodeService crudNodeService, AppIdentityDbContext context, ILifetimeScope container)
+        public NodeController(INodeService nodeService, AppDbContext context, ILifetimeScope container)
         {
-            _nodeService = crudNodeService;
+            _nodeService = nodeService;
             _context = context;
             _container = container;
         }
@@ -35,23 +35,11 @@ namespace SmartHome.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{test}")]
-        public async Task<IActionResult> A(string test)
+        [HttpPost("getState/{nodeId}")]
+        public async Task<IActionResult> Control(int nodeId)
         {
-            var strategy = _container.ResolveNamed(test, typeof(IControlStrategy)) as IControlStrategy;
-            
-            strategy.Execute();
-            return Ok();
+            var response = await _nodeService.Control(nodeId, new ControlCommand{ CommandType = EControlCommand.GetState });
+            return Ok(response);
         }
-
-
-
-        //[AllowAnonymous]
-        //[HttpGet("test")]
-        //public async Task<IActionResult> A()
-        //{
-        //    var nodesWithIncludedUsers = _context.Nodes.Include(x => x.AllowedUsers).ThenInclude(x => x.User);
-        //    return Ok(usnodesWithIncludedUsersers);
-        //}
     }
 }

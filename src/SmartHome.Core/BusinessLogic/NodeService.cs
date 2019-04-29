@@ -1,38 +1,36 @@
-﻿using SmartHome.API.Persistence;
-using SmartHome.API.Security.Utils;
+﻿using Autofac;
+using SmartHome.Core.BusinessLogic;
+using SmartHome.Core.Control;
+using SmartHome.Core.Persistence;
+using SmartHome.Core.Repository;
+using SmartHome.Core.Utils;
 using SmartHome.Domain.Entity;
-using SmartHome.Repositories;
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace SmartHome.API.Services
+namespace SmartHome.Core.Services
 {
     public class NodeService : INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly AppIdentityDbContext _context;
-        private readonly IGenericRepository<NodeType> _nodeTypeRepo;
+        private readonly ILifetimeScope _container;
+        private readonly AppDbContext _context;
 
-        public NodeService(INodeRepository nodeRepository, IGenericRepository<NodeType> nodeTypeRepo, AppIdentityDbContext context)
+        public NodeService(INodeRepository nodeRepository, ILifetimeScope container, AppDbContext context)
         {
             _nodeRepository = nodeRepository;
-            _nodeTypeRepo = nodeTypeRepo;
-            _context = context;
+            _container = container;
         }
 
         public async Task<Node> CreateNode(ClaimsPrincipal principal, string name, string identifier, string description, string type)
         {
             int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
-            NodeType nodeType = _nodeTypeRepo.Find(x => x.Name == type).First();
 
             var node = new Node
             {
-                Identifier = identifier,
                 Created = DateTime.Now,
                 CreatedById = userId,
-                Type = nodeType,
                 Name = name,
                 Description = description,
             };
@@ -60,6 +58,18 @@ namespace SmartHome.API.Services
                     return null;
                 }
             }
+        }
+
+        public async Task<object> Control(int nodeId, ControlCommand command)
+        {
+            // get the node
+            Node node = await _nodeRepository.GetByIdAsync(nodeId);
+            string controlStrategyExecutorClass = node.ControlStrategy.Strategy;
+
+            // resolve control executor
+            var strategy = _container.ResolveNamed(controlStrategyExecutorClass, typeof(IControlStrategy)) as IControlStrategy;
+
+            return await strategy.Execute(node, command);
         }
     }
 }

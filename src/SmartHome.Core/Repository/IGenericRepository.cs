@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartHome.Repositories
+namespace SmartHome.Core.Repository
 {
     public interface IGenericRepository<T> where T : class, new()
     {

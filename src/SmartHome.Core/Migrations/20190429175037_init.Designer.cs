@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SmartHome.API.Persistence;
+using SmartHome.Core.Persistence;
 
-namespace SmartHome.API.Migrations
+namespace SmartHome.Core.Migrations
 {
-    [DbContext(typeof(AppIdentityDbContext))]
-    partial class AppIdentityDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20190429175037_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -171,43 +173,12 @@ namespace SmartHome.API.Migrations
                     b.ToTable("control_strategy");
                 });
 
-            modelBuilder.Entity("SmartHome.Domain.Entity.ControllableNode", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("BasicAuhPassword")
-                        .HasMaxLength(50);
-
-                    b.Property<string>("BasicAuthLogin")
-                        .HasMaxLength(50);
-
-                    b.Property<int>("ControlStrategyId");
-
-                    b.Property<string>("GatewayIpAddress")
-                        .HasMaxLength(20);
-
-                    b.Property<string>("IpAddress")
-                        .HasMaxLength(20);
-
-                    b.Property<bool>("IsOn");
-
-                    b.Property<string>("RegisteredProperties")
-                        .HasMaxLength(250);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ControlStrategyId");
-
-                    b.ToTable("controllable_node");
-                });
-
             modelBuilder.Entity("SmartHome.Domain.Entity.Node", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ControllableNodeId");
+                    b.Property<int>("ControlStrategyId");
 
                     b.Property<DateTime>("Created");
 
@@ -216,40 +187,63 @@ namespace SmartHome.API.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(500);
 
-                    b.Property<string>("Identifier")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("GatewayIpAddress")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(20);
 
                     b.Property<string>("Name")
                         .HasMaxLength(50);
 
-                    b.Property<int?>("TypeId");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ControllableNodeId");
+                    b.HasIndex("ControlStrategyId");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("TypeId");
 
                     b.ToTable("node");
                 });
 
-            modelBuilder.Entity("SmartHome.Domain.Entity.NodeType", b =>
+            modelBuilder.Entity("SmartHome.Domain.Entity.RestTemplate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(250);
+                    b.Property<string>("BodyTemplate");
+
+                    b.Property<string>("HttpVerb")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Name")
+                        .HasMaxLength(20);
+
+                    b.Property<string>("UrlTemplate")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("rest_template");
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.Entity.RestTemplateValues", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Key")
+                        .HasMaxLength(20);
+
+                    b.Property<int>("RestTemplateId");
+
+                    b.Property<string>("Value")
                         .HasMaxLength(50);
 
                     b.HasKey("Id");
 
-                    b.ToTable("node_type");
+                    b.HasIndex("RestTemplateId");
+
+                    b.ToTable("rest_template_value");
                 });
 
             modelBuilder.Entity("SmartHome.Domain.Role.AppRole", b =>
@@ -399,28 +393,25 @@ namespace SmartHome.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SmartHome.Domain.Entity.ControllableNode", b =>
+            modelBuilder.Entity("SmartHome.Domain.Entity.Node", b =>
                 {
                     b.HasOne("SmartHome.Domain.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany()
                         .HasForeignKey("ControlStrategyId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartHome.Domain.Entity.Node", b =>
-                {
-                    b.HasOne("SmartHome.Domain.Entity.ControllableNode", "ControllableNode")
-                        .WithMany()
-                        .HasForeignKey("ControllableNodeId");
 
                     b.HasOne("SmartHome.Domain.User.AppUser", "CreatedBy")
                         .WithMany("CreatedNodes")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
 
-                    b.HasOne("SmartHome.Domain.Entity.NodeType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId");
+            modelBuilder.Entity("SmartHome.Domain.Entity.RestTemplateValues", b =>
+                {
+                    b.HasOne("SmartHome.Domain.Entity.RestTemplate", "RestTemplate")
+                        .WithMany("TemplateValues")
+                        .HasForeignKey("RestTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartHome.Domain.User.AppUser", b =>

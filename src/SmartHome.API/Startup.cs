@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using System;
 using SmartHome.API.Persistence;
+using SmartHome.API.Security.Token;
 
 namespace SmartHome.API
 {
@@ -32,6 +33,8 @@ namespace SmartHome.API
             services.AddSqlIdentityPersistence(_configuration);
             services.AddJwtAuthentication(_configuration);
             services.AddAuthorizationPolicies();
+
+            services.AddTransient<ITokenBuilder, TokenBuilder>();
 
             // BL & Services
             services.RegisterAppServicesToIocContainer();

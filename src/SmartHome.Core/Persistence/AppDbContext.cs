@@ -5,18 +5,19 @@ using SmartHome.Domain.Entity;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
 
-namespace SmartHome.API.Persistence
+namespace SmartHome.Core.Persistence
 {
-    public class AppIdentityDbContext : IdentityDbContext<AppUser, AppRole, int>
+    public class AppDbContext : IdentityDbContext<AppUser, AppRole, int>
     {
-        public AppIdentityDbContext(DbContextOptions<AppIdentityDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
         public DbSet<Node> Nodes { get; set; }
-        public DbSet<NodeType> NodeTypes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
-        public DbSet<ControllableNode> ControllableNodes { get; set; }
+        public DbSet<RestTemplate> RestTemplates  { get; set; }
+        public DbSet<RestTemplateValues> RestTemplateValues { get; set; }
+
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<DictionaryValue> DictionaryValues { get; set; }
 

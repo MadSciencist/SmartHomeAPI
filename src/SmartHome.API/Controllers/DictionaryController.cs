@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Domain.DictionaryEntity;
-using SmartHome.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using SmartHome.Core.Repository;
 
 namespace SmartHome.API.Controllers
 {

@@ -15,19 +15,21 @@ namespace SmartHome.Domain.Entity
         [MaxLength(500)]
         public string Description { get; set; }
 
-        [MaxLength(50)]
-        [Required]
-        public string Identifier { get; set; }
+        [MaxLength(20)]
+        public string IpAddress { get; set; }
 
-        public NodeType Type { get; set; }
+        [MaxLength(20)]
+        public string GatewayIpAddress { get; set; }
 
-        public ControllableNode ControllableNode { get; set; }
-
-        public DateTime Created { get; set; }
 
         // Navigation & relationship properties
+        public ControlStrategy ControlStrategy { get; set; }
+        public int ControlStrategyId { get; set; }
+
         public int CreatedById { get; set; }
         public AppUser CreatedBy { get; set; }
         public ICollection<AppUserNode> AllowedUsers { get; set; }
+
+        public DateTime Created { get; set; }
     }
 }

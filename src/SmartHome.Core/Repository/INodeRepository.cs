@@ -1,6 +1,6 @@
 ﻿using SmartHome.Domain.Entity;
 
-namespace SmartHome.Repositories
+namespace SmartHome.Core.Repository
 {
     public interface INodeRepository : IGenericRepository<Node>
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 
-namespace SmartHome.API.Security.Utils
+namespace SmartHome.Core.Utils
 {
     public static class ClaimsPrincipalHelper
     {

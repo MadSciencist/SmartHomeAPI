@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SmartHome.Core.Control.Mqtt;
+using SmartHome.Core.Control.Rest;
+using SmartHome.Core.Persistence;
 using SmartHome.Domain.DictionaryEntity;
 using SmartHome.Domain.Entity;
 using System;
@@ -17,36 +20,7 @@ namespace SmartHome.API.Persistence
             {
                 var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>()
                     .CreateLogger(nameof(AppInitialLoad));
-                var context = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
-
-
-
-                if (!context.NodeTypes.Any())
-                {
-                    var nodeTypes = new List<NodeType>()
-                    {
-                        new NodeType()
-                        {
-                            Id = 1,
-                            Name = "device",
-                            Description = "Node which can be controlled"
-                        },
-                        new NodeType()
-                        {
-                            Id = 2,
-                            Name = "sensor",
-                            Description = "Node which sends data"
-                        },
-                    };
-
-                    //logger.LogInformation("Truncating node_type table");
-                    //await context.Database.ExecuteSqlCommandAsync("SET FOREIGN_KEY_CHECKS = 0;TRUNCATE TABLE node_type;SET FOREIGN_KEY_CHECKS = 1;");
-
-
-                    logger.LogInformation("Loading node types into node_type table");
-                    await context.AddRangeAsync(nodeTypes);
-                    await context.SaveChangesAsync();
-                }
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                 if (!context.ControlStrategies.Any())
                 {
@@ -57,7 +31,7 @@ namespace SmartHome.API.Persistence
                             Id = 1,
                             IsActive = true,
                             Description = "Control over HTTP and REST",
-                            Strategy = "SmartHome.DeviceController.Rest.RestControlStrategy",
+                            Strategy = typeof(RestControlStrategy).FullName,
                             Key = "rest"
                         },
                         new ControlStrategy
@@ -65,7 +39,7 @@ namespace SmartHome.API.Persistence
                             Id = 2,
                             IsActive = true,
                             Description = "Control over MQTT",
-                            Strategy = "SmartHome.DeviceController.Mqtt.MqttControlStrategy",
+                            Strategy = typeof(MqttControlStrategy).FullName,
                             Key = "mqtt"
                         }
                     };
@@ -173,6 +147,32 @@ namespace SmartHome.API.Persistence
                     };
 
                     await context.Dictionaries.AddRangeAsync(dictionaries);
+                    await context.SaveChangesAsync();
+                }
+
+                if(!context.Nodes.Any(x => x.Name == "Dev"))
+                {
+                    var node = new Node()
+                    {
+                        Name = "Dev",
+                        ControlStrategyId = 1,
+                        Created = DateTime.UtcNow,
+                        CreatedById = 1,
+                        IpAddress = "http://192.168.0.100",
+                        GatewayIpAddress = "http://192.168.0.1",
+                        Description = "Dev test node",
+                        //AllowedUsers = 
+                    };
+
+                    var createdNode = await context.Nodes.AddAsync(node);
+                    await context.SaveChangesAsync();
+
+                    context.Add(new AppUserNode()
+                    {
+                        NodeId = createdNode.Entity.Id,
+                        UserId = 1
+                    });
+
                     await context.SaveChangesAsync();
                 }
             }
