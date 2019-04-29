@@ -6,6 +6,9 @@ dotnet: 2.2
 branches:
   only:
     - master
+script:
+  - dotnet restore
+  - dotnet build
 notifications:
   email:
     on_success: never
