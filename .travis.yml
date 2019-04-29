@@ -8,7 +8,7 @@ branches:
     - master
 install:
   - dotnet restore
- script
+script:
  - dotnet build
  - dotnet test test/SmartHome.UnitTests/SmartHome.UnitTests.csproj
 notifications:
