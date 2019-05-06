@@ -19,8 +19,15 @@ namespace SmartHome.Core.Persistence
         public DbSet<RestTemplate> RestTemplates  { get; set; }
         public DbSet<RestTemplateValues> RestTemplateValues { get; set; }
 
+
+
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<DictionaryValue> DictionaryValues { get; set; }
+
+        // Navigation properties
+        public DbSet<AppUserNodeLink> AppUserNodeLink { get; set; }
+        public DbSet<NodeCommandNodeLink> NodeCommandNodeLink { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
