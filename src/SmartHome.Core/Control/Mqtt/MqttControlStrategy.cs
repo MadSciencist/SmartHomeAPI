@@ -6,7 +6,7 @@ namespace SmartHome.Core.Control.Mqtt
 {
     public class MqttControlStrategy : IControlStrategy
     {
-        public async Task<object> Execute(Node node, ControlCommand command)
+        public async Task<object> Execute(Node node, NodeCommand command)
         {
             throw new NotImplementedException();
         }

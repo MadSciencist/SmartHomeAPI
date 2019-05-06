@@ -256,11 +256,6 @@ namespace SmartHome.API.Persistence
                         {
                             NodeId = 1,
                             NodeCommandId = 3
-                        },
-                        new NodeCommandNodeLink
-                        {
-                            NodeId = 1,
-                            NodeCommandId = 4
                         }
                     };
 

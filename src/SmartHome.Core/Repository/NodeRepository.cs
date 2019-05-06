@@ -24,6 +24,8 @@ namespace SmartHome.Core.Repository
                 .Include(x => x.ControlStrategy)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
+                .Include(x => x.AllowedCommands)
+                    .ThenInclude(x => x.NodeCommand)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
     }

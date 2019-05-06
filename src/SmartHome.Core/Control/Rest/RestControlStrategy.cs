@@ -1,62 +1,55 @@
-﻿using SmartHome.Core.BusinessLogic;
+﻿using Newtonsoft.Json;
+using SmartHome.Core.BusinessLogic;
 using SmartHome.Domain.Entity;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Web;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace SmartHome.Core.Control.Rest
 {
     public class RestControlStrategy : IControlStrategy
     {
         private readonly PersistentHttpClient _httpClient;
-        private readonly IRestTemplateBuilder _builder;
 
-        public RestControlStrategy(PersistentHttpClient httpClient, IRestTemplateBuilder builder)
+        public RestControlStrategy(PersistentHttpClient httpClient)
         {
             _httpClient = httpClient;
-            _builder = builder;
         }
 
-        public async Task<object> Execute(Node node, ControlCommand command)
+        public async Task<object> Execute(Node node, NodeCommand command)
         {
-            switch (command.CommandType)
+            switch (command.Type)
             {
-                case EControlCommand.GetState:
+                case "GET":
                     return await _httpClient.GetAsync(GetUri(node, command));
 
-                case EControlCommand.SetState:
+                case "SET":
                     return await _httpClient.GetAsync(GetUri(node, command));
 
                 default:
-                    throw new NotImplementedException($"Command {command.CommandType} is not implemented");
+                    throw new NotImplementedException($"Command {JsonConvert.SerializeObject(command)} is not implemented");
             }
         }
 
-        private static string GetUri(Node node, ControlCommand command)
+        private static string GetUri(Node node, NodeCommand command)
         {
             var queryParams = new Dictionary<string, string>
             {
-                { "apikey", "03102E55CD7BBE35"},
-                { "value", "2"}
+                // ReSharper disable once StringLiteralTypo
+                { "apikey", node.ApiKey},
+                { "value", command.Value}
             };
 
-            string baseUri = @"http://192.168.0.101:80";
-            string cmd = "/api/relay/0";
+            var baseUri = $"{node.IpAddress}:{node.Port}";
 
-            QueryStringBuilder builder = new QueryStringBuilder(baseUri + cmd);
+            var builder = new QueryStringBuilder(baseUri + command.BaseUri);
 
             foreach (var queryParam in queryParams)
             {
                 builder.Add(queryParam);
             }
 
-            string uri = builder.ToString();
-
-            return uri;
+            return builder.ToString();
         }
     }
 }

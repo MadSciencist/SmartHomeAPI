@@ -1,10 +1,13 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Core.Control;
 using SmartHome.Core.Persistence;
 using System.Threading.Tasks;
+using SmartHome.API.DTO;
 using SmartHome.Core.BusinessLogic;
+using SmartHome.Domain.Entity;
 
 namespace SmartHome.API.Controllers
 {
@@ -43,22 +46,28 @@ namespace SmartHome.API.Controllers
             return Ok();
         }
 
-        [HttpPost("getState/{nodeId}")]
+        [HttpPost("{nodeId}/getState")]
         public async Task<IActionResult> GetState(int nodeId)
         {
-            var response = await _nodeService.Control(this.User, nodeId, new ControlCommand { CommandType = EControlCommand.GetState });
-            return Ok(response);
+            //var response = await _nodeService.Control(this.User, nodeId, new NodeCommand();
+            return Ok();
         }
 
-        [HttpPost("setState/{nodeId}")]
-        public async Task<IActionResult> SetState(int nodeId)
+        [HttpPost("{nodeId}/command/{command}")]
+        public async Task<IActionResult> SetState(int nodeId, string command)
         {
-            var command = new ControlCommand
+            var response = new DtoContainer<object>();
+
+            try
             {
-                CommandType = EControlCommand.SetState,
-                Payload = ""
-            };
-            var response = await _nodeService.Control(this.User, nodeId, command);
+                response.Data = await _nodeService.Control(this.User, nodeId, command);
+            }
+            catch (InvalidOperationException ex)
+            {
+                response.Errors.Add(new ErrorDetailsDto { Message = ex.Message }); // TODO fill rest errordto properties (create some exception handling helper)
+                return BadRequest(response);
+            }
+
             return Ok(response);
         }
     }
