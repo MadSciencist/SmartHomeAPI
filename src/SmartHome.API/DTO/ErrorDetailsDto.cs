@@ -10,7 +10,7 @@ namespace SmartHome.API.DTO
         public int StatusCode { get; set; }
         public string Message { get; set; }
 
-        [JsonProperty("RequestDetails")]
+        [JsonProperty("requestDetails")]
         public ErrorDetailsLocationDto Location { get; set; }
     }
 

@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Control;
 using SmartHome.Core.Persistence;
 using SmartHome.Core.Repository;
 using SmartHome.Core.Utils;
 using SmartHome.Domain.Entity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.BusinessLogic
 {
