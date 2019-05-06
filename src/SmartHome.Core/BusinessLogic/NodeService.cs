@@ -95,24 +95,34 @@ namespace SmartHome.Core.BusinessLogic
             }
         }
 
-        public async Task<object> Control(ClaimsPrincipal principal, int nodeId, ControlCommand command)
+        public async Task<object> Control(ClaimsPrincipal principal, int nodeId, string command)
         {
             // get the node
             Node node = await _nodeRepository.GetByIdAsync(nodeId);
-            string controlStrategyExecutorClass = node.ControlStrategy.Strategy;
-
             int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
 
             // check permissions
-            if(node.AllowedUsers.Where(x => x.NodeId == node.Id).All(x => x.UserId != userId))
+            if(node.AllowedUsers.Any(x => x.UserId != userId))
             {
                 throw new InvalidOperationException("No access");
             }
 
+            var commandEntity = node.AllowedCommands?.FirstOrDefault(x => x.NodeCommand?.Name == command);
+            if (commandEntity == null)
+            {
+                throw new InvalidOperationException("Command not allowed");
+            }
+
             // resolve control executor
+            string controlStrategyExecutorClass = node.ControlStrategy.Strategy;
             var strategy = _container.ResolveNamed(controlStrategyExecutorClass, typeof(IControlStrategy)) as IControlStrategy;
 
-            return await strategy.Execute(node, command);
+            if (strategy == null)
+            {
+                throw new InvalidOperationException("Not existing strategy");
+            }
+
+            return await strategy.Execute(node, commandEntity.NodeCommand);
         }
     }
 }

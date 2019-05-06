@@ -38,7 +38,7 @@ namespace SmartHome.API.Extensions
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var response = JsonConvert.SerializeObject(new ErrorDetailsDto
+            var errorDetails = new ErrorDetailsDto
             {
                 CorrelationId = correlationId,
                 StatusCode = context.Response.StatusCode,
@@ -49,9 +49,12 @@ namespace SmartHome.API.Extensions
                     Path = context.Request.Path,
                     Method = context.Request.Method
                 }
-            });
+            };
 
-            return context.Response.WriteAsync(response);
+            var responseDto = new DtoContainer<object>();
+            responseDto.Errors.Add(errorDetails);
+
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(responseDto));
         }
     }
 }
