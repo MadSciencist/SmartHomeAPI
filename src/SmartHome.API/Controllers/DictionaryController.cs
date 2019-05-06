@@ -37,7 +37,6 @@ namespace SmartHome.API.Controllers
         public IActionResult GetNames()
         {
             IEnumerable<string> dictionaries = _dictRepository.AsQueryableNoTrack()
-                .Include(x => x.Values)
                 .Distinct()
                 .Select(x => x.Name);
 

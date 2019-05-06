@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Control;
 using SmartHome.Core.Persistence;
 using SmartHome.Core.Repository;
@@ -24,6 +28,34 @@ namespace SmartHome.Core.BusinessLogic
         {
             _nodeRepository = nodeRepository;
             _container = container;
+        }
+
+        public IEnumerable<NodeCommand> GetNodeCommands(ClaimsPrincipal principal, int nodeId)
+        {
+            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
+
+            //TODO check if user has permissions
+
+            // TODO move this to repo
+            var nodeCommands = _nodeRepository
+                .AsQueryableNoTrack()
+                .Include(x => x.AllowedCommands)
+                .ThenInclude(x => x.NodeCommand)
+                .FirstOrDefault(x => x.Id == nodeId)
+                ?.AllowedCommands
+                .Select(x => new NodeCommand
+                {
+                    Id = x.NodeCommand.Id,
+                    BaseUri = x.NodeCommand.BaseUri,
+                    Name = x.NodeCommand.Name,
+                    Description = x.NodeCommand.Description,
+                    Type = x.NodeCommand.Type,
+                    Value = x.NodeCommand.Value
+                    // we want to avoid nodes to get rid off circular dependencies 
+                    // TODO create NodeCommandDTO without nodes property
+                });
+
+            return nodeCommands;
         }
 
         public async Task<Node> CreateNode(ClaimsPrincipal principal, string name, string identifier, string description, string type)

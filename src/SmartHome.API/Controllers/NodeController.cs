@@ -28,6 +28,12 @@ namespace SmartHome.API.Controllers
             _container = container;
         }
 
+        [HttpGet("{nodeId}/commands")]
+        public async Task<IActionResult> GetCommands(int nodeId)
+        {
+            return Ok(_nodeService.GetNodeCommands(this.User, nodeId));
+        }
+
         [HttpGet("create")]
         public async Task<IActionResult> Create()
         {
