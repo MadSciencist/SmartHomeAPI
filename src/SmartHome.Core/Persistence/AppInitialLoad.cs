@@ -7,6 +7,7 @@ using SmartHome.Domain.DictionaryEntity;
 using SmartHome.Domain.Entity;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -150,7 +151,7 @@ namespace SmartHome.API.Persistence
                     await context.SaveChangesAsync();
                 }
 
-                if(!context.Nodes.Any(x => x.Name == "Dev"))
+                if (!context.Nodes.Any(x => x.Name == "Dev"))
                 {
                     var node = new Node()
                     {
@@ -158,7 +159,8 @@ namespace SmartHome.API.Persistence
                         ControlStrategyId = 1,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
-                        IpAddress = "http://192.168.0.100",
+                        IpAddress = "http://192.168.0.101",
+                        Port = 80,
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
                     };
@@ -166,13 +168,108 @@ namespace SmartHome.API.Persistence
                     var createdNode = await context.Nodes.AddAsync(node);
                     await context.SaveChangesAsync();
 
-                    context.Add(new AppUserNode()
+                    context.Add(new AppUserNodeLink()
                     {
                         NodeId = createdNode.Entity.Id,
                         UserId = 1
                     });
 
                     await context.SaveChangesAsync();
+                }
+
+                if (!context.Commands.Any())
+                {
+                    var commands = new Collection<NodeCommand>
+                    {
+                        new NodeCommand()
+                        {
+                            Id = 1,
+                            Name = "Relay0On",
+                            BaseUri = "/api/relay/0",
+                            Value = "1",
+                            Type = "SET",
+                            Description = "Espurna relay controller"
+                        },
+                        new NodeCommand()
+                        {
+                            Id = 2,
+                            Name = "Relay0Off",
+                            BaseUri = "/api/relay/0",
+                            Value = "0",
+                            Type = "SET",
+                            Description = "Espurna relay controller"
+                        },
+                        new NodeCommand()
+                        {
+                            Id = 3,
+                            Name = "Relay0Toggle",
+                            BaseUri = "/api/relay/0",
+                            Value = "2",
+                            Type = "SET",
+                            Description = "Espurna relay controller"
+                        },
+                        new NodeCommand()
+                        {
+                            Id = 4,
+                            Name = "Relay1On",
+                            BaseUri = "/api/relay/1",
+                            Value = "1",
+                            Type = "SET",
+                            Description = "Espurna relay controller"
+                        },
+                        new NodeCommand()
+                        {
+                            Id = 5,
+                            Name = "Relay1Off",
+                            BaseUri = "/api/relay/1",
+                            Value = "0",
+                            Type = "SET",
+                            Description = "Espurna relay controller"
+                        },
+                        new NodeCommand()
+                        {
+                            Id = 6,
+                            Name = "Relay1Toggle",
+                            BaseUri = "/api/relay/1",
+                            Value = "2",
+                            Type = "SET",
+                            Description = "Espurna relay controller"
+                        }
+                    };
+
+                    await context.Commands.AddRangeAsync(commands);
+                    await context.SaveChangesAsync();
+
+                    var links = new Collection<NodeCommandNodeLink>
+                    {
+                        new NodeCommandNodeLink
+                        {
+                            NodeId = 1,
+                            NodeCommandId = 1
+                        },
+                        new NodeCommandNodeLink
+                        {
+                            NodeId = 1,
+                            NodeCommandId = 2
+                        },
+                        new NodeCommandNodeLink
+                        {
+                            NodeId = 1,
+                            NodeCommandId = 3
+                        },
+                        new NodeCommandNodeLink
+                        {
+                            NodeId = 1,
+                            NodeCommandId = 4
+                        }
+                    };
+
+                    foreach (var link in links)
+                    {
+                        context.Add(link);
+                    }
+                    await context.SaveChangesAsync();
+
                 }
             }
         }

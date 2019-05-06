@@ -45,7 +45,7 @@ namespace SmartHome.Core.BusinessLogic
                     Node createdNode = await _nodeRepository.CreateAsync(node);
 
                     // create entry in link table - using Id's works fine
-                    _context.Add(new AppUserNode()
+                    _context.Add(new AppUserNodeLink()
                     {
                         NodeId = createdNode.Id,
                         UserId = userId

@@ -13,6 +13,6 @@ namespace SmartHome.Domain.User
 
         // Navigation property
         public ICollection<Node> CreatedNodes { get; set; }
-        public ICollection<AppUserNode> EligibleNodes { get; set; }
+        public ICollection<AppUserNodeLink> EligibleNodes { get; set; }
     }
 }

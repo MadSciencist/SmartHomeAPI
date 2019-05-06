@@ -130,7 +130,7 @@ namespace SmartHome.Core.Migrations
                     b.ToTable("dictionary_value");
                 });
 
-            modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
+            modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNodeLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
@@ -145,7 +145,7 @@ namespace SmartHome.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("appuser_node");
+                    b.ToTable("appuser_node_link");
                 });
 
             modelBuilder.Entity("SmartHome.Domain.Entity.ControlStrategy", b =>
@@ -176,6 +176,9 @@ namespace SmartHome.Core.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ApiKey")
+                        .HasMaxLength(30);
+
                     b.Property<int>("ControlStrategyId");
 
                     b.Property<DateTime>("Created");
@@ -194,6 +197,8 @@ namespace SmartHome.Core.Migrations
                     b.Property<string>("Name")
                         .HasMaxLength(50);
 
+                    b.Property<int>("Port");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ControlStrategyId");
@@ -201,6 +206,44 @@ namespace SmartHome.Core.Migrations
                     b.HasIndex("CreatedById");
 
                     b.ToTable("node");
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.Entity.NodeCommand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("BaseUri");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Type");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("node_commands");
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.Entity.NodeCommandNodeLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("NodeCommandId");
+
+                    b.Property<int>("NodeId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NodeCommandId");
+
+                    b.HasIndex("NodeId");
+
+                    b.ToTable("node_command_link");
                 });
 
             modelBuilder.Entity("SmartHome.Domain.Entity.RestTemplate", b =>
@@ -378,7 +421,7 @@ namespace SmartHome.Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNode", b =>
+            modelBuilder.Entity("SmartHome.Domain.Entity.AppUserNodeLink", b =>
                 {
                     b.HasOne("SmartHome.Domain.Entity.Node", "Node")
                         .WithMany("AllowedUsers")
@@ -401,6 +444,19 @@ namespace SmartHome.Core.Migrations
                     b.HasOne("SmartHome.Domain.User.AppUser", "CreatedBy")
                         .WithMany("CreatedNodes")
                         .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Domain.Entity.NodeCommandNodeLink", b =>
+                {
+                    b.HasOne("SmartHome.Domain.Entity.NodeCommand", "NodeCommand")
+                        .WithMany("Nodes")
+                        .HasForeignKey("NodeCommandId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Domain.Entity.Node", "Node")
+                        .WithMany("AllowedCommands")
+                        .HasForeignKey("NodeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
