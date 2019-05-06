@@ -51,6 +51,7 @@ namespace SmartHome.Core.Control.Rest
         public async Task<string> PutAsync(string url, HttpContent body)
         {
             var response = await _httpClient.PutAsync(url, body);
+            var asd = await body.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {

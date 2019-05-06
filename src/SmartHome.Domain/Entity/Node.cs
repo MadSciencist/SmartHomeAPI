@@ -18,11 +18,17 @@ namespace SmartHome.Domain.Entity
         [MaxLength(20)]
         public string IpAddress { get; set; }
 
+        [Range(80, 99999)]
+        public int Port { get; set; }
+
         [MaxLength(20)]
         public string GatewayIpAddress { get; set; }
 
-        //[MaxLength(30)]
-        //public string ApiKey { get; set; }
+        [MaxLength(30)]
+        public string ApiKey { get; set; }
+
+        // Many-to-many relationship
+        public ICollection<NodeCommandNodeLink> AllowedCommands { get; set; }
 
 
         // Navigation & relationship properties
@@ -31,7 +37,7 @@ namespace SmartHome.Domain.Entity
 
         public int CreatedById { get; set; }
         public AppUser CreatedBy { get; set; }
-        public ICollection<AppUserNode> AllowedUsers { get; set; }
+        public ICollection<AppUserNodeLink> AllowedUsers { get; set; }
 
         public DateTime Created { get; set; }
     }
