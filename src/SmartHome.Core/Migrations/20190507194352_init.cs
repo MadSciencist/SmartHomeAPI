@@ -65,7 +65,7 @@ namespace SmartHome.Core.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    Namespace = table.Column<string>(maxLength: 100, nullable: false)
+                    ExecutorClassName = table.Column<string>(maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,7 +79,8 @@ namespace SmartHome.Core.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    Namespace = table.Column<string>(maxLength: 100, nullable: false),
+                    ExecutorClassNamespace = table.Column<string>(maxLength: 100, nullable: false),
+                    Type = table.Column<byte>(maxLength: 20, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using SmartHome.API.DTO;
 using SmartHome.Core.BusinessLogic;
 using SmartHome.Domain.Entity;
+using Newtonsoft.Json.Linq;
+using SmartHome.Core.Infrastructure;
 
 namespace SmartHome.API.Controllers
 {
@@ -32,15 +34,15 @@ namespace SmartHome.API.Controllers
         }
 
         [HttpPost("{nodeId}/command/{command}")]
-        public async Task<IActionResult> ExecuteCommand(int nodeId, string command)
+        public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams)
         {
             var response = new DtoContainer<object>();
 
             try
             {
-                response.Data = await _nodeService.Control(this.User, nodeId, command);
+                response.Data = await _nodeService.Control(this.User, nodeId, command, commandParams);
             }
-            catch (InvalidOperationException ex)
+            catch (SmartHomeException ex)
             {
                 response.Errors.Add(new ErrorDetailsDto { Message = ex.Message }); // TODO fill rest errordto properties (create some exception handling helper)
                 return BadRequest(response);

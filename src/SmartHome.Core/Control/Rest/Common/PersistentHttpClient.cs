@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using SmartHome.Core.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -20,6 +22,7 @@ namespace SmartHome.Core.Control.Rest.Common
 
         public async Task<string> GetAsync(string url)
         {
+            //TODO move to http client factory
             //    Random jitterer = new Random();
             //    var polly = Policy
             //        .Handle<HttpRequestException>()
@@ -45,7 +48,7 @@ namespace SmartHome.Core.Control.Rest.Common
                 return await response.Content.ReadAsStringAsync();
             }
 
-            return string.Empty;
+            throw new SmartHomeException("Sensor malfunction");
         }
 
         public async Task<string> PutAsync(string url, HttpContent body)
@@ -58,7 +61,7 @@ namespace SmartHome.Core.Control.Rest.Common
                 return await response.Content.ReadAsStringAsync();
             }
 
-            return string.Empty;
+            throw new SmartHomeException("Sensor malfunction");
         }
 
         public void Dispose()

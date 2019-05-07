@@ -64,6 +64,7 @@ namespace SmartHome.API.Persistence
                         Port = 80,
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
+                        ApiKey = "03102E55CD7BBE35"
                     };
 
                     var createdNode = await context.Nodes.AddAsync(node);
@@ -91,8 +92,14 @@ namespace SmartHome.API.Persistence
                         new Command()
                         {
                             Id = 100,
-                            Name = "toggleRelay0",
+                            Name = "toggleRelay",
                             ExecutorClassName = "ToggleRelay" // class name, move namespace to controlStrategy
+                        },
+                         new Command()
+                        {
+                            Id = 101,
+                            Name = "setRelay",
+                            ExecutorClassName = "SetRelay" // class name, move namespace to controlStrategy
                         },
                     };
 
@@ -110,6 +117,11 @@ namespace SmartHome.API.Persistence
                         {
                             ControlStrategyId = 1,
                             CommandId = 100
+                        },
+                        new ControlStrategyCommandLink
+                        {
+                            ControlStrategyId = 1,
+                            CommandId = 101
                         }
                     };
 

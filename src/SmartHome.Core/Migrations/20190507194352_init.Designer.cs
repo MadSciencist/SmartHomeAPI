@@ -9,8 +9,8 @@ using SmartHome.Core.Persistence;
 namespace SmartHome.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190507173215_sec")]
-    partial class sec
+    [Migration("20190507194352_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

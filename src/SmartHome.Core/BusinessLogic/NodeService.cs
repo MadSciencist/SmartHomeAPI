@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
+using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Persistence;
 using SmartHome.Core.Repository;
 using SmartHome.Core.Utils;
@@ -95,36 +97,33 @@ namespace SmartHome.Core.BusinessLogic
             }
         }
 
-        public async Task<object> Control(ClaimsPrincipal principal, int nodeId, string command)
+        public async Task<object> Control(ClaimsPrincipal principal, int nodeId, string command, JObject commandParams)
         {
             // get the node
             Node node = await _nodeRepository.GetByIdAsync(nodeId);
             int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
 
             // check permissions
-            if(node.AllowedUsers.Any(x => x.UserId != userId))
+            if (node.AllowedUsers.Any(x => x.UserId != userId))
             {
-                throw new InvalidOperationException("No access");
+                throw new SmartHomeException("No access");
             }
 
-            var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Name == command);
+            var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Name?.ToLower() == command.ToLower());
             if (commandEntity == null)
             {
-                throw new InvalidOperationException("Command not allowed");
+                throw new SmartHomeException("Command not allowed");
             }
-
-            //var aasd = _container.Resolve<IControlStrategy>();
 
             // resolve control executor
             var executorClassName = node.ControlStrategy.ExecutorClassNamespace + "." + commandEntity.Command.ExecutorClassName;
-            var strategy = _container.ResolveNamed<object>(executorClassName) as IControlStrategy;
 
-            if (strategy == null)
+            if (!(_container.ResolveNamed<object>(executorClassName) is IControlStrategy strategy))
             {
-                throw new InvalidOperationException("Not existing strategy");
+                throw new SmartHomeException("Not existing strategy");
             }
 
-            return await strategy.Execute(node, commandEntity.Command);
+            return await strategy.Execute(node, commandEntity.Command, commandParams);
         }
     }
 }

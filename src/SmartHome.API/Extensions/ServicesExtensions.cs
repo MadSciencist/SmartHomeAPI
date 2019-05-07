@@ -35,18 +35,14 @@ namespace SmartHome.API.Extensions
 
         public static void RegisterAppServicesToAutofacContainer(this ContainerBuilder builder)
         {
-            //builder.RegisterType<RestControlStrategy>()
-            //    .Named<IControlStrategy>(typeof(RestControlStrategy).FullName);
-            //builder.RegisterType<MqttControlStrategy>()
-            //    .Named<IControlStrategy>(typeof(MqttControlStrategy).FullName);
-
+            // TODO refactor
             var executors = new Dictionary<string, Type>();
             var commandExecutorAsm = Assembly.GetAssembly(typeof(IControlStrategy))
                 .GetTypes();
+
             foreach(var ex in commandExecutorAsm)
             {
                 executors.Add(ex.FullName, ex);
-
             }
 
             var filtered = executors.Where(x => x.Key.Contains("Implementations"));
@@ -56,9 +52,6 @@ namespace SmartHome.API.Extensions
                 builder.RegisterType(asd.Value)
                         .Named<object>(asd.Key);
             }
-
-
-
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)
