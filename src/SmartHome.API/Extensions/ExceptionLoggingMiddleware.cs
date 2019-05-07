@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SmartHome.API.DTO;
+using SmartHome.API.Utils;
 using System;
 using System.Net;
 using System.Threading.Tasks;

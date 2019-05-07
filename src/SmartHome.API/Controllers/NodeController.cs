@@ -10,6 +10,8 @@ using SmartHome.Core.BusinessLogic;
 using SmartHome.Domain.Entity;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Infrastructure;
+using SmartHome.API.Utils;
+using System.Net;
 
 namespace SmartHome.API.Controllers
 {
@@ -44,7 +46,7 @@ namespace SmartHome.API.Controllers
             }
             catch (SmartHomeException ex)
             {
-                response.Errors.Add(new ErrorDetailsDto { Message = ex.Message }); // TODO fill rest errordto properties (create some exception handling helper)
+                response.Errors.Add(ExceptionLogHelper.CreateErrorDetails(ex.Message, (int)HttpStatusCode.BadRequest, HttpContext));
                 return BadRequest(response);
             }
 
