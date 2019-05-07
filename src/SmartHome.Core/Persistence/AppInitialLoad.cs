@@ -31,17 +31,19 @@ namespace SmartHome.API.Persistence
                         {
                             Id = 1,
                             IsActive = true,
-                            Description = "Control over HTTP and REST",
-                            Strategy = typeof(RestControlStrategy).FullName,
-                            Key = "rest"
+                            Description = "Control ESPURNA device over HTTP and REST",
+                            ExecutorClassNamespace = "SmartHome.Core.Control.Rest.Implementations.Espurna",
+                            Name = "rest",
+                            Type = ControlStrategyType.Rest
                         },
                         new ControlStrategy
                         {
                             Id = 2,
                             IsActive = true,
                             Description = "Control over MQTT",
-                            Strategy = typeof(MqttControlStrategy).FullName,
-                            Key = "mqtt"
+                            ExecutorClassNamespace = "SmartHome.Core.Control.Mqtt.Implementations.Espurna",
+                            Name = "mqtt",
+                            Type = ControlStrategyType.Mqtt
                         }
                     };
 
@@ -49,6 +51,78 @@ namespace SmartHome.API.Persistence
                     await context.SaveChangesAsync();
                 }
 
+
+                if (!context.Nodes.Any(x => x.Name == "Dev"))
+                {
+                    var node = new Node()
+                    {
+                        Name = "Dev",
+                        ControlStrategyId = 1,
+                        Created = DateTime.UtcNow,
+                        CreatedById = 1,
+                        IpAddress = "http://192.168.0.101",
+                        Port = 80,
+                        GatewayIpAddress = "http://192.168.0.1",
+                        Description = "Dev test node",
+                    };
+
+                    var createdNode = await context.Nodes.AddAsync(node);
+                    await context.SaveChangesAsync();
+
+                    context.Add(new AppUserNodeLink()
+                    {
+                        NodeId = createdNode.Entity.Id,
+                        UserId = 1
+                    });
+
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Commands.Any())
+                {
+                    var commands = new Collection<Command>
+                    {
+                        new Command()
+                        {
+                            Id = 1,
+                            Name = "getAvailableSensors",
+                            ExecutorClassName = ""
+                        },
+                        new Command()
+                        {
+                            Id = 100,
+                            Name = "toggleRelay0",
+                            ExecutorClassName = "ToggleRelay" // class name, move namespace to controlStrategy
+                        },
+                    };
+
+                    await context.Commands.AddRangeAsync(commands);
+                    await context.SaveChangesAsync();
+
+                    var links = new Collection<ControlStrategyCommandLink>
+                    {
+                        new ControlStrategyCommandLink
+                        {
+                            ControlStrategyId = 1,
+                            CommandId = 1
+                        },
+                        new ControlStrategyCommandLink
+                        {
+                            ControlStrategyId = 1,
+                            CommandId = 100
+                        }
+                    };
+
+                    foreach (var link in links)
+                    {
+                        context.Add(link);
+                    }
+
+                    await context.SaveChangesAsync();
+                }
+
+
+                // currently not used
                 if (!context.Dictionaries.Any(x => x.Name == "gender"))
                 {
                     var dictionaries = new List<Dictionary>
@@ -149,122 +223,6 @@ namespace SmartHome.API.Persistence
 
                     await context.Dictionaries.AddRangeAsync(dictionaries);
                     await context.SaveChangesAsync();
-                }
-
-                if (!context.Nodes.Any(x => x.Name == "Dev"))
-                {
-                    var node = new Node()
-                    {
-                        Name = "Dev",
-                        ControlStrategyId = 1,
-                        Created = DateTime.UtcNow,
-                        CreatedById = 1,
-                        IpAddress = "http://192.168.0.101",
-                        Port = 80,
-                        GatewayIpAddress = "http://192.168.0.1",
-                        Description = "Dev test node",
-                    };
-
-                    var createdNode = await context.Nodes.AddAsync(node);
-                    await context.SaveChangesAsync();
-
-                    context.Add(new AppUserNodeLink()
-                    {
-                        NodeId = createdNode.Entity.Id,
-                        UserId = 1
-                    });
-
-                    await context.SaveChangesAsync();
-                }
-
-                if (!context.Commands.Any())
-                {
-                    var commands = new Collection<NodeCommand>
-                    {
-                        new NodeCommand()
-                        {
-                            Id = 1,
-                            Name = "Relay0On",
-                            BaseUri = "/api/relay/0",
-                            Value = "1",
-                            Type = "SET",
-                            Description = "Espurna relay controller"
-                        },
-                        new NodeCommand()
-                        {
-                            Id = 2,
-                            Name = "Relay0Off",
-                            BaseUri = "/api/relay/0",
-                            Value = "0",
-                            Type = "SET",
-                            Description = "Espurna relay controller"
-                        },
-                        new NodeCommand()
-                        {
-                            Id = 3,
-                            Name = "Relay0Toggle",
-                            BaseUri = "/api/relay/0",
-                            Value = "2",
-                            Type = "SET",
-                            Description = "Espurna relay controller"
-                        },
-                        new NodeCommand()
-                        {
-                            Id = 4,
-                            Name = "Relay1On",
-                            BaseUri = "/api/relay/1",
-                            Value = "1",
-                            Type = "SET",
-                            Description = "Espurna relay controller"
-                        },
-                        new NodeCommand()
-                        {
-                            Id = 5,
-                            Name = "Relay1Off",
-                            BaseUri = "/api/relay/1",
-                            Value = "0",
-                            Type = "SET",
-                            Description = "Espurna relay controller"
-                        },
-                        new NodeCommand()
-                        {
-                            Id = 6,
-                            Name = "Relay1Toggle",
-                            BaseUri = "/api/relay/1",
-                            Value = "2",
-                            Type = "SET",
-                            Description = "Espurna relay controller"
-                        }
-                    };
-
-                    await context.Commands.AddRangeAsync(commands);
-                    await context.SaveChangesAsync();
-
-                    var links = new Collection<NodeCommandNodeLink>
-                    {
-                        new NodeCommandNodeLink
-                        {
-                            NodeId = 1,
-                            NodeCommandId = 1
-                        },
-                        new NodeCommandNodeLink
-                        {
-                            NodeId = 1,
-                            NodeCommandId = 2
-                        },
-                        new NodeCommandNodeLink
-                        {
-                            NodeId = 1,
-                            NodeCommandId = 3
-                        }
-                    };
-
-                    foreach (var link in links)
-                    {
-                        context.Add(link);
-                    }
-                    await context.SaveChangesAsync();
-
                 }
             }
         }

@@ -21,12 +21,12 @@ namespace SmartHome.API.Persistence
 
                 if (!await roleManager.RoleExistsAsync("admin")
                     && !await roleManager.RoleExistsAsync("user")
-                    && !await roleManager.RoleExistsAsync("sensor"))
+                    && !await roleManager.RoleExistsAsync("node"))
                 {
                     logger.LogInformation("Creating roles");
                     await roleManager.CreateAsync(new AppRole("admin"));
                     await roleManager.CreateAsync(new AppRole("user"));
-                    await roleManager.CreateAsync(new AppRole("sensor"));
+                    await roleManager.CreateAsync(new AppRole("node"));
                 }
 
                 if (await userManager.FindByNameAsync("admin") != null) return;
@@ -47,7 +47,7 @@ namespace SmartHome.API.Persistence
                 await userManager.CreateAsync(adminUser, password);
                 await userManager.AddToRoleAsync(adminUser, "admin");
                 await userManager.AddToRoleAsync(adminUser, "user");
-                await userManager.AddToRoleAsync(adminUser, "sensor");
+                await userManager.AddToRoleAsync(adminUser, "node");
             }
         }
     }

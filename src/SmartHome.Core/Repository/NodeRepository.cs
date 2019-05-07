@@ -22,10 +22,10 @@ namespace SmartHome.Core.Repository
         {
             return await _context.Nodes
                 .Include(x => x.ControlStrategy)
+                    .ThenInclude(x => x.AllowedCommands)
+                    .ThenInclude(x => x.Command)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
-                .Include(x => x.AllowedCommands)
-                    .ThenInclude(x => x.NodeCommand)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
     }

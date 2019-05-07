@@ -2,7 +2,7 @@
 
 namespace SmartHome.Core.Migrations
 {
-    public partial class asdasd : Migration
+    public partial class thr : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

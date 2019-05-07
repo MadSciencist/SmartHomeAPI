@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SmartHome.Core.Control.Rest
+namespace SmartHome.Core.Control.Rest.Common
 {
     public class QueryStringBuilder
     {

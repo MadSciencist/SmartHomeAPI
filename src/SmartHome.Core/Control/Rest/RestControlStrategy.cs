@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SmartHome.Core.BusinessLogic;
+using SmartHome.Core.Control.Rest.Common;
 using SmartHome.Domain.Entity;
 using System;
 using System.Collections.Generic;
@@ -16,40 +16,40 @@ namespace SmartHome.Core.Control.Rest
             _httpClient = httpClient;
         }
 
-        public async Task<object> Execute(Node node, NodeCommand command)
+        public async Task<object> Execute(Node node, Command command)
         {
-            switch (command.Type)
+            switch ("GET")
             {
                 case "GET":
-                    return await _httpClient.GetAsync(GetUri(node, command));
+                    return await _httpClient.GetAsync("");
 
-                case "SET":
-                    return await _httpClient.GetAsync(GetUri(node, command));
+                //case "SET":
+                    //return await _httpClient.GetAsync(GetUri(node, command));
 
                 default:
                     throw new NotImplementedException($"Command {JsonConvert.SerializeObject(command)} is not implemented");
             }
         }
 
-        private static string GetUri(Node node, NodeCommand command)
-        {
-            var queryParams = new Dictionary<string, string>
-            {
-                // ReSharper disable once StringLiteralTypo
-                { "apikey", node.ApiKey},
-                { "value", command.Value}
-            };
+        //private static string GetUri(Node node, Command command)
+        //{
+        //    var queryParams = new Dictionary<string, string>
+        //    {
+        //        // ReSharper disable once StringLiteralTypo
+        //        { "apikey", node.ApiKey},
+        //        { "value", command.Value}
+        //    };
 
-            var baseUri = $"{node.IpAddress}:{node.Port}";
+        //    var baseUri = $"{node.IpAddress}:{node.Port}";
 
-            var builder = new QueryStringBuilder(baseUri + command.BaseUri);
+        //    var builder = new QueryStringBuilder(baseUri + command.BaseUri);
 
-            foreach (var queryParam in queryParams)
-            {
-                builder.Add(queryParam);
-            }
+        //    foreach (var queryParam in queryParams)
+        //    {
+        //        builder.Add(queryParam);
+        //    }
 
-            return builder.ToString();
-        }
+        //    return builder.ToString();
+        //}
     }
 }

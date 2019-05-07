@@ -59,13 +59,27 @@ namespace SmartHome.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "command",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Namespace = table.Column<string>(maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_command", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "control_strategy",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Strategy = table.Column<string>(maxLength: 100, nullable: false),
-                    Key = table.Column<string>(maxLength: 50, nullable: false),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Namespace = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },
@@ -85,39 +99,6 @@ namespace SmartHome.Core.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_dictionary", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "node_commands",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    BaseUri = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_node_commands", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "rest_template",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 20, nullable: true),
-                    HttpVerb = table.Column<string>(maxLength: 10, nullable: true),
-                    UrlTemplate = table.Column<string>(maxLength: 255, nullable: true),
-                    BodyTemplate = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_rest_template", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -260,6 +241,32 @@ namespace SmartHome.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "strategy_command_link",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CommandId = table.Column<int>(nullable: false),
+                    ControlStrategyId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_strategy_command_link", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_strategy_command_link_command_CommandId",
+                        column: x => x.CommandId,
+                        principalTable: "command",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_strategy_command_link_control_strategy_ControlStrategyId",
+                        column: x => x.ControlStrategyId,
+                        principalTable: "control_strategy",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "dictionary_value",
                 columns: table => new
                 {
@@ -276,27 +283,6 @@ namespace SmartHome.Core.Migrations
                         name: "FK_dictionary_value_dictionary_DictionaryId",
                         column: x => x.DictionaryId,
                         principalTable: "dictionary",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "rest_template_value",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RestTemplateId = table.Column<int>(nullable: false),
-                    Key = table.Column<string>(maxLength: 20, nullable: true),
-                    Value = table.Column<string>(maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_rest_template_value", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_rest_template_value_rest_template_RestTemplateId",
-                        column: x => x.RestTemplateId,
-                        principalTable: "rest_template",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -323,32 +309,6 @@ namespace SmartHome.Core.Migrations
                         name: "FK_appuser_node_link_appuser_UserId",
                         column: x => x.UserId,
                         principalTable: "appuser",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "node_command_link",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    NodeId = table.Column<int>(nullable: false),
-                    NodeCommandId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_node_command_link", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_node_command_link_node_commands_NodeCommandId",
-                        column: x => x.NodeCommandId,
-                        principalTable: "node_commands",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_node_command_link_node_NodeId",
-                        column: x => x.NodeId,
-                        principalTable: "node",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -421,19 +381,14 @@ namespace SmartHome.Core.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_node_command_link_NodeCommandId",
-                table: "node_command_link",
-                column: "NodeCommandId");
+                name: "IX_strategy_command_link_CommandId",
+                table: "strategy_command_link",
+                column: "CommandId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_node_command_link_NodeId",
-                table: "node_command_link",
-                column: "NodeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_rest_template_value_RestTemplateId",
-                table: "rest_template_value",
-                column: "RestTemplateId");
+                name: "IX_strategy_command_link_ControlStrategyId",
+                table: "strategy_command_link",
+                column: "ControlStrategyId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -460,10 +415,10 @@ namespace SmartHome.Core.Migrations
                 name: "dictionary_value");
 
             migrationBuilder.DropTable(
-                name: "node_command_link");
+                name: "strategy_command_link");
 
             migrationBuilder.DropTable(
-                name: "rest_template_value");
+                name: "node");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -472,13 +427,7 @@ namespace SmartHome.Core.Migrations
                 name: "dictionary");
 
             migrationBuilder.DropTable(
-                name: "node_commands");
-
-            migrationBuilder.DropTable(
-                name: "node");
-
-            migrationBuilder.DropTable(
-                name: "rest_template");
+                name: "command");
 
             migrationBuilder.DropTable(
                 name: "control_strategy");

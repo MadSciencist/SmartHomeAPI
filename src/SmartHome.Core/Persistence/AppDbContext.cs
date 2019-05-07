@@ -15,9 +15,9 @@ namespace SmartHome.Core.Persistence
 
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
-        public DbSet<NodeCommand> Commands { get; set; }
-        public DbSet<RestTemplate> RestTemplates  { get; set; }
-        public DbSet<RestTemplateValues> RestTemplateValues { get; set; }
+        public DbSet<Command> Commands { get; set; }
+
+
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<DictionaryValue> DictionaryValues { get; set; }
 
@@ -51,18 +51,18 @@ namespace SmartHome.Core.Persistence
                 .HasForeignKey(x => x.UserId);
 
             // Configure many-to-many node-nodeCommand relationship
-            builder.Entity<NodeCommandNodeLink>()
+            builder.Entity<ControlStrategyCommandLink>()
                 .HasKey(x => x.Id);
 
-            builder.Entity<NodeCommandNodeLink>()
-                .HasOne(x => x.Node)
+            builder.Entity<ControlStrategyCommandLink>()
+                .HasOne(x => x.ControlStrategy)
                 .WithMany(x => x.AllowedCommands)
-                .HasForeignKey(x => x.NodeId);
+                .HasForeignKey(x => x.ControlStrategyId);
 
-            builder.Entity<NodeCommandNodeLink>()
-                .HasOne(x => x.NodeCommand)
+            builder.Entity<ControlStrategyCommandLink>()
+                .HasOne(x => x.Command)
                 .WithMany(x => x.Nodes)
-                .HasForeignKey(x => x.NodeCommandId);
+                .HasForeignKey(x => x.CommandId);
 
             // Configure dictionaries one-to-many relationship
             builder.Entity<Dictionary>()

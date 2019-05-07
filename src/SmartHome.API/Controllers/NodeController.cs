@@ -31,30 +31,8 @@ namespace SmartHome.API.Controllers
             _container = container;
         }
 
-        [HttpGet("{nodeId}/commands")]
-        public async Task<IActionResult> GetCommands(int nodeId)
-        {
-            return Ok(_nodeService.GetNodeCommands(this.User, nodeId));
-        }
-
-        [HttpGet("create")]
-        public async Task<IActionResult> Create()
-        {
-            await _nodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
-            //ModelState.AddModelError();
-
-            return Ok();
-        }
-
-        [HttpPost("{nodeId}/getState")]
-        public async Task<IActionResult> GetState(int nodeId)
-        {
-            //var response = await _nodeService.Control(this.User, nodeId, new NodeCommand();
-            return Ok();
-        }
-
         [HttpPost("{nodeId}/command/{command}")]
-        public async Task<IActionResult> SetState(int nodeId, string command)
+        public async Task<IActionResult> ExecuteCommand(int nodeId, string command)
         {
             var response = new DtoContainer<object>();
 
@@ -70,5 +48,27 @@ namespace SmartHome.API.Controllers
 
             return Ok(response);
         }
+        
+        //[HttpGet("{nodeId}/commands")]
+        //public async Task<IActionResult> GetCommands(int nodeId)
+        //{
+        //    return Ok(_nodeService.GetNodeCommands(this.User, nodeId));
+        //}
+
+        //[HttpGet("create")]
+        //public async Task<IActionResult> Create()
+        //{
+        //    await _nodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
+        //    //ModelState.AddModelError();
+
+        //    return Ok();
+        //}
+
+        //[HttpPost("{nodeId}/getState")]
+        //public async Task<IActionResult> GetState(int nodeId)
+        //{
+        //    //var response = await _nodeService.Control(this.User, nodeId, new NodeCommand();
+        //    return Ok();
+        //}
     }
 }

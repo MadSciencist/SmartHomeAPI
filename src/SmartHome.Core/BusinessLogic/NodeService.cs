@@ -28,32 +28,34 @@ namespace SmartHome.Core.BusinessLogic
             _container = container;
         }
 
-        public IEnumerable<NodeCommand> GetNodeCommands(ClaimsPrincipal principal, int nodeId)
+        public IEnumerable<Command> GetNodeCommands(ClaimsPrincipal principal, int nodeId)
         {
-            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
+            //int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
 
-            //TODO check if user has permissions
+            ////TODO check if user has permissions
 
-            // TODO move this to repo
-            var nodeCommands = _nodeRepository
-                .AsQueryableNoTrack()
-                .Include(x => x.AllowedCommands)
-                .ThenInclude(x => x.NodeCommand)
-                .FirstOrDefault(x => x.Id == nodeId)
-                ?.AllowedCommands
-                .Select(x => new NodeCommand
-                {
-                    Id = x.NodeCommand.Id,
-                    BaseUri = x.NodeCommand.BaseUri,
-                    Name = x.NodeCommand.Name,
-                    Description = x.NodeCommand.Description,
-                    Type = x.NodeCommand.Type,
-                    Value = x.NodeCommand.Value
-                    // we want to avoid nodes to get rid off circular dependencies 
-                    // TODO create NodeCommandDTO without nodes property
-                });
+            //// TODO move this to repo
+            //var nodeCommands = _nodeRepository
+            //    .AsQueryableNoTrack()
+            //    .Include(x => x.AllowedCommands)
+            //    .ThenInclude(x => x.NodeCommand)
+            //    .FirstOrDefault(x => x.Id == nodeId)
+            //    ?.AllowedCommands
+            //    .Select(x => new NodeCommand
+            //    {
+            //        Id = x.NodeCommand.Id,
+            //        BaseUri = x.NodeCommand.BaseUri,
+            //        Name = x.NodeCommand.Name,
+            //        Description = x.NodeCommand.Description,
+            //        Type = x.NodeCommand.Type,
+            //        Value = x.NodeCommand.Value
+            //        // we want to avoid nodes to get rid off circular dependencies 
+            //        // TODO create NodeCommandDTO without nodes property
+            //    });
 
-            return nodeCommands;
+            //return nodeCommands;
+
+            return new List<Command>();
         }
 
         public async Task<Node> CreateNode(ClaimsPrincipal principal, string name, string identifier, string description, string type)
@@ -105,22 +107,24 @@ namespace SmartHome.Core.BusinessLogic
                 throw new InvalidOperationException("No access");
             }
 
-            var commandEntity = node.AllowedCommands?.FirstOrDefault(x => x.NodeCommand?.Name == command);
+            var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Name == command);
             if (commandEntity == null)
             {
                 throw new InvalidOperationException("Command not allowed");
             }
 
+            //var aasd = _container.Resolve<IControlStrategy>();
+
             // resolve control executor
-            string controlStrategyExecutorClass = node.ControlStrategy.Strategy;
-            var strategy = _container.ResolveNamed(controlStrategyExecutorClass, typeof(IControlStrategy)) as IControlStrategy;
+            var executorClassName = node.ControlStrategy.ExecutorClassNamespace + "." + commandEntity.Command.ExecutorClassName;
+            var strategy = _container.ResolveNamed<object>(executorClassName) as IControlStrategy;
 
             if (strategy == null)
             {
                 throw new InvalidOperationException("Not existing strategy");
             }
 
-            return await strategy.Execute(node, commandEntity.NodeCommand);
+            return await strategy.Execute(node, commandEntity.Command);
         }
     }
 }

@@ -27,10 +27,6 @@ namespace SmartHome.Domain.Entity
         [MaxLength(30)]
         public string ApiKey { get; set; }
 
-        // Many-to-many relationship
-        public ICollection<NodeCommandNodeLink> AllowedCommands { get; set; }
-
-
         // Navigation & relationship properties
         public ControlStrategy ControlStrategy { get; set; }
         public int ControlStrategyId { get; set; }
