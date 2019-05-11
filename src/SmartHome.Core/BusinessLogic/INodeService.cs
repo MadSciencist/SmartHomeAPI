@@ -12,6 +12,5 @@ namespace SmartHome.Core.BusinessLogic
         Task<object> Control(ClaimsPrincipal principal, int nodeId, string operations, JObject commandParams);
         IEnumerable<Command> GetNodeCommands(ClaimsPrincipal principal, int nodeId);
         ClaimsPrincipal ClaimsPrincipal { get; set; }
-        string MyProperty { get; set; }
     }
 }

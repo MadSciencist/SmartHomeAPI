@@ -1,14 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control.Rest.Common;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Domain.Entity;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace SmartHome.Core.Control.Rest.Implementations.Espurna
+namespace SmartHome.Core.Providers.Rest.Contracts.Espurna
 {
-    public class ToggleRelay : IControlStrategy
+    public class ToggleRelay : IRestControlStrategy
     {
         private readonly PersistentHttpClient _httpClient;
 
@@ -17,6 +16,16 @@ namespace SmartHome.Core.Control.Rest.Implementations.Espurna
             _httpClient = httpClient;
         }
 
+        /// <summary>
+        /// Example commandParams: 
+        /// {
+        //	    "relayNo": 0,
+        //  }
+        /// </summary>
+        /// <param name="node">Target node</param>
+        /// <param name="command">Control command</param>
+        /// <param name="commandParams">Params from request body</param>
+        /// <returns>RAW espurna response</returns>
         public async Task<object> Execute(Node node, Command command, JObject commandParams)
         {
             var relayNo = commandParams.Value<string>("relayNo");

@@ -1,10 +1,9 @@
 ﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
+using SmartHome.Core.DataAccess;
+using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Core.Persistence;
-using SmartHome.Core.Repository;
 using SmartHome.Core.Utils;
 using SmartHome.Domain.Entity;
 using System;

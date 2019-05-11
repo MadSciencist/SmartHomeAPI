@@ -3,7 +3,6 @@ using Autofac;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Core.Control;
-using SmartHome.Core.Persistence;
 using System.Threading.Tasks;
 using SmartHome.API.DTO;
 using SmartHome.Core.BusinessLogic;
@@ -12,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using SmartHome.Core.Infrastructure;
 using SmartHome.API.Utils;
 using System.Net;
+using SmartHome.Core.DataAccess;
 
 namespace SmartHome.API.Controllers
 {
@@ -29,7 +29,6 @@ namespace SmartHome.API.Controllers
         {
             _nodeService = nodeService;
             // _nodeService.ClaimsPrincipal = this.User; //TODO assigns null?
-            _nodeService.MyProperty = "asdadsasd";
 
             _context = context;
             _container = container;

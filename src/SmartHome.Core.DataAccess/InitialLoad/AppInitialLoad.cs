@@ -1,17 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SmartHome.Core.Control.Mqtt;
-using SmartHome.Core.Control.Rest;
-using SmartHome.Core.Persistence;
-using SmartHome.Domain.DictionaryEntity;
-using SmartHome.Domain.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SmartHome.Domain.DictionaryEntity;
+using SmartHome.Domain.Entity;
 
-namespace SmartHome.API.Persistence
+namespace SmartHome.Core.DataAccess.InitialLoad
 {
     public static class AppInitialLoad
     {

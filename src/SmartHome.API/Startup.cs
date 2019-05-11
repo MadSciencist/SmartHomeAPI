@@ -8,8 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using System;
-using SmartHome.API.Persistence;
 using SmartHome.API.Security.Token;
+using SmartHome.Core.DataAccess.InitialLoad;
+using SmartHome.Core.Providers.Rest.Contracts.Extensions;
 
 namespace SmartHome.API
 {
@@ -47,7 +48,10 @@ namespace SmartHome.API
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.RegisterAppServicesToAutofacContainer();
+
+            // Add REST contracts
+            builder.RegisterRestNodeContracts();
+
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);

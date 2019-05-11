@@ -24,6 +24,12 @@ namespace SmartHome.Domain.Entity
         [MaxLength(20)]
         public string GatewayIpAddress { get; set; }
 
+        [MaxLength(40)]
+        public string Login { get; set; }
+
+        [MaxLength(40)]
+        public string Password { get; set; }
+
         [MaxLength(30)]
         public string ApiKey { get; set; }
 

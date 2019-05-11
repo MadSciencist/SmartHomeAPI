@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartHome.Domain.DictionaryEntity;
 using System.Collections.Generic;
 using System.Linq;
-using SmartHome.Core.Repository;
+using SmartHome.Core.DataAccess.Repository;
 
 namespace SmartHome.API.Controllers
 {

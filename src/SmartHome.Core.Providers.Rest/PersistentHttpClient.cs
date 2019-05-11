@@ -1,12 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
-using SmartHome.Core.Infrastructure;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using SmartHome.Core.Infrastructure;
 
-namespace SmartHome.Core.Control.Rest.Common
+namespace SmartHome.Core.Providers.Rest
 {
     public class PersistentHttpClient : IDisposable
     {

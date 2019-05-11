@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>SmartHome.Core.Providers.Rest.Contracts</AssemblyName>
+    <RootNamespace>SmartHome.Core.Providers.Rest.Contracts</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartHome.Core.Providers.Rest\SmartHome.Core.Providers.Rest.csproj" />
+  </ItemGroup>
+
+</Project>

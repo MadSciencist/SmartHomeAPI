@@ -9,7 +9,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Domain", "src\Sma
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core", "src\SmartHome.Core\SmartHome.Core.csproj", "{2BF9D23E-C397-4816-943B-5A440CB5AD9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.UnitTests", "test\SmartHome.UnitTests\SmartHome.UnitTests.csproj", "{47BABBDC-39DB-461B-A7EE-D2813981DE99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.UnitTests", "test\SmartHome.UnitTests\SmartHome.UnitTests.csproj", "{47BABBDC-39DB-461B-A7EE-D2813981DE99}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Providers.Rest.Contracts", "src\SmartHome.Core.Providers.Rest.Contracts\SmartHome.Core.Providers.Rest.Contracts.csproj", "{119A20A6-F13E-4434-B1F0-5DFF95A3CEAB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Providers.Mqtt.Contracts", "src\SmartHome.Core.Providers.Mqtt.Contracts\SmartHome.Core.Providers.Mqtt.Contracts.csproj", "{01A2C3A9-2570-4463-AA34-A7D47B00337E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Providers.Rest", "src\SmartHome.Core.Providers.Rest\SmartHome.Core.Providers.Rest.csproj", "{BD376278-2D77-4D80-B8D0-92C8B5CCF140}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NodeContracts", "NodeContracts", "{B5FDE069-AFF7-4D6C-886B-CE3E018C941C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Providers.Mqtt", "src\SmartHome.Core.Providers.Mqtt\SmartHome.Core.Providers.Mqtt.csproj", "{D67EFB8B-002A-4178-874E-B609368B8B80}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.Core.DataAccess", "src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +45,33 @@ Global
 		{47BABBDC-39DB-461B-A7EE-D2813981DE99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47BABBDC-39DB-461B-A7EE-D2813981DE99}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47BABBDC-39DB-461B-A7EE-D2813981DE99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{119A20A6-F13E-4434-B1F0-5DFF95A3CEAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{119A20A6-F13E-4434-B1F0-5DFF95A3CEAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{119A20A6-F13E-4434-B1F0-5DFF95A3CEAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{119A20A6-F13E-4434-B1F0-5DFF95A3CEAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01A2C3A9-2570-4463-AA34-A7D47B00337E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01A2C3A9-2570-4463-AA34-A7D47B00337E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01A2C3A9-2570-4463-AA34-A7D47B00337E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01A2C3A9-2570-4463-AA34-A7D47B00337E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD376278-2D77-4D80-B8D0-92C8B5CCF140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD376278-2D77-4D80-B8D0-92C8B5CCF140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD376278-2D77-4D80-B8D0-92C8B5CCF140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD376278-2D77-4D80-B8D0-92C8B5CCF140}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D67EFB8B-002A-4178-874E-B609368B8B80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D67EFB8B-002A-4178-874E-B609368B8B80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D67EFB8B-002A-4178-874E-B609368B8B80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D67EFB8B-002A-4178-874E-B609368B8B80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{119A20A6-F13E-4434-B1F0-5DFF95A3CEAB} = {B5FDE069-AFF7-4D6C-886B-CE3E018C941C}
+		{01A2C3A9-2570-4463-AA34-A7D47B00337E} = {B5FDE069-AFF7-4D6C-886B-CE3E018C941C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68CAEBA0-5529-44C7-82DC-114D2B13A91E}

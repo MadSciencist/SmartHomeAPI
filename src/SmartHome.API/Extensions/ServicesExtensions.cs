@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,18 +6,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SmartHome.Core.BusinessLogic;
-using SmartHome.Core.Control;
-using SmartHome.Core.Control.Rest.Common;
-using SmartHome.Core.Persistence;
-using SmartHome.Core.Repository;
+using SmartHome.Core.Providers.Rest;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Text;
+using SmartHome.Core.DataAccess;
+using SmartHome.Core.DataAccess.Repository;
 
 namespace SmartHome.API.Extensions
 {
@@ -31,27 +27,6 @@ namespace SmartHome.API.Extensions
             services.AddTransient<INodeService, NodeService>();
 
             services.AddSingleton(typeof(PersistentHttpClient));
-        }
-
-        public static void RegisterAppServicesToAutofacContainer(this ContainerBuilder builder)
-        {
-            // TODO refactor
-            var executors = new Dictionary<string, Type>();
-            var commandExecutorAsm = Assembly.GetAssembly(typeof(IControlStrategy))
-                .GetTypes();
-
-            foreach(var ex in commandExecutorAsm)
-            {
-                executors.Add(ex.FullName, ex);
-            }
-
-            var filtered = executors.Where(x => x.Key.Contains("Implementations"));
-
-            foreach(var asd in filtered)
-            {
-                builder.RegisterType(asd.Value)
-                        .Named<object>(asd.Key);
-            }
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)

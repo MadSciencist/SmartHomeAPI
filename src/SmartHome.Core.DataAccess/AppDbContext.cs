@@ -5,7 +5,7 @@ using SmartHome.Domain.Entity;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
 
-namespace SmartHome.Core.Persistence
+namespace SmartHome.Core.DataAccess
 {
     public class AppDbContext : IdentityDbContext<AppUser, AppRole, int>
     {

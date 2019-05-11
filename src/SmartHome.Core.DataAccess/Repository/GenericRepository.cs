@@ -1,12 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using SmartHome.Core.Persistence;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
-namespace SmartHome.Core.Repository
+namespace SmartHome.Core.DataAccess.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
     {

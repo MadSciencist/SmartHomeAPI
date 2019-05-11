@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using SmartHome.Domain.Role;
 using SmartHome.Domain.User;
 
-namespace SmartHome.API.Persistence
+namespace SmartHome.Core.DataAccess.InitialLoad
 {
     public static class IdentityInitialLoad
     {
@@ -21,12 +21,12 @@ namespace SmartHome.API.Persistence
 
                 if (!await roleManager.RoleExistsAsync("admin")
                     && !await roleManager.RoleExistsAsync("user")
-                    && !await roleManager.RoleExistsAsync("node"))
+                    && !await roleManager.RoleExistsAsync("sensor"))
                 {
                     logger.LogInformation("Creating roles");
                     await roleManager.CreateAsync(new AppRole("admin"));
                     await roleManager.CreateAsync(new AppRole("user"));
-                    await roleManager.CreateAsync(new AppRole("node"));
+                    await roleManager.CreateAsync(new AppRole("sensor"));
                 }
 
                 if (await userManager.FindByNameAsync("admin") != null) return;
@@ -47,7 +47,7 @@ namespace SmartHome.API.Persistence
                 await userManager.CreateAsync(adminUser, password);
                 await userManager.AddToRoleAsync(adminUser, "admin");
                 await userManager.AddToRoleAsync(adminUser, "user");
-                await userManager.AddToRoleAsync(adminUser, "node");
+                await userManager.AddToRoleAsync(adminUser, "sensor");
             }
         }
     }
