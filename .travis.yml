@@ -3,11 +3,13 @@ mono: none
 sudo: required
 dist: xenial
 dotnet: 2.2
+
 addons:
   sonarcloud:
     organization: "madsciencist-github"
     token:
-    secure: $SONAR_TOKEN
+      secure: $SONAR_TOKEN
+
 branches:
   only:
     - develop
