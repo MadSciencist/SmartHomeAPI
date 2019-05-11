@@ -5,7 +5,7 @@ dist: xenial
 dotnet: 2.2
 addons:
   sonarcloud:
-    organization: "madsciencist-github" # the key of the org you chose at step #3
+    organization: "madsciencist-github"
 branches:
   only:
     - master

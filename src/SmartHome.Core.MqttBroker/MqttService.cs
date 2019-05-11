@@ -5,7 +5,6 @@ using MQTTnet.Server;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Client.Publishing;
-using Newtonsoft.Json;
 
 namespace SmartHome.Core.MqttBroker
 {
