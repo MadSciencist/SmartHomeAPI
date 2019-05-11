@@ -11,6 +11,7 @@ addons:
 branches:
   only:
     - develop
+    - master
 install:
   - dotnet tool install --global dotnet-sonarscanner
   - dotnet restore
