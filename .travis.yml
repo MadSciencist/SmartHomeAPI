@@ -12,6 +12,7 @@ branches:
   only:
     - develop
 install:
+  - dotnet tool install --global dotnet-sonarscanner
   - dotnet restore
 script:
  - dotnet build
