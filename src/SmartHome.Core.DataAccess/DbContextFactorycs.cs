@@ -8,7 +8,7 @@ namespace SmartHome.Core.DataAccess
     /// <summary>
     /// Used by EF CLI
     /// </summary>
-    public class DbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         public AppDbContext CreateDbContext(string[] args)
         {

@@ -29,7 +29,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Id = 1,
                             IsActive = true,
                             Description = "Control ESPURNA device over HTTP and REST",
-                            ExecutorClassNamespace = "SmartHome.Core.Control.Rest.Implementations.Espurna",
+                            ExecutorClassNamespace = "SmartHome.Core.Providers.Rest.Contracts.Espurna",
                             Name = "rest",
                             Type = ControlStrategyType.Rest
                         },
@@ -38,7 +38,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Id = 2,
                             IsActive = true,
                             Description = "Control over MQTT",
-                            ExecutorClassNamespace = "SmartHome.Core.Control.Mqtt.Implementations.Espurna",
+                            ExecutorClassNamespace = "SmartHome.Core.Providers.Mqtt.Contracts.Espurna",
                             Name = "mqtt",
                             Type = ControlStrategyType.Mqtt
                         }
