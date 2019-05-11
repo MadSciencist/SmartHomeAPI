@@ -4,6 +4,8 @@ using MQTTnet;
 using MQTTnet.Server;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MQTTnet.Client.Publishing;
+using Newtonsoft.Json;
 
 namespace SmartHome.Core.MqttBroker
 {
@@ -30,6 +32,11 @@ namespace SmartHome.Core.MqttBroker
         {
             await _mqttServer.StartAsync(ServerOptions);
             _logger.LogInformation("Mqtt broker stopped");
+        }
+
+        public async Task<MqttClientPublishResult> PublishSystemMessageAsync(MqttApplicationMessage message)
+        {
+            return await _mqttServer.PublishAsync(message);
         }
 
         public void Log()

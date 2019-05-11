@@ -108,21 +108,23 @@ namespace SmartHome.Core.BusinessLogic
                 throw new SmartHomeException("No access");
             }
 
-            var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Name?.ToLower() == command.ToLower());
+            var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Alias?.ToLower() == command.ToLower());
             if (commandEntity == null)
             {
                 throw new SmartHomeException("Command not allowed");
             }
 
             // resolve control executor
-            var executorClassName = node.ControlStrategy.ExecutorClassNamespace + "." + commandEntity.Command.ExecutorClassName;
+            var strategy = node.ControlStrategy;
+            var executorFullyQualifiedName =
+                $"SmartHome.Core.Providers.{strategy.ProviderName}.Contracts.{strategy.ContextName}.{commandEntity.Command.ExecutorClassName}";
 
-            if (!(_container.ResolveNamed<object>(executorClassName) is IControlStrategy strategy))
+            if (!(_container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
             {
                 throw new SmartHomeException("Not existing strategy");
             }
 
-            return await strategy.Execute(node, commandEntity.Command, commandParams);
+            return await strategyExecutor.Execute(node, commandEntity.Command, commandParams);
         }
     }
 }

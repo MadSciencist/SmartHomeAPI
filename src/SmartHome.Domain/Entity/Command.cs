@@ -8,7 +8,7 @@ namespace SmartHome.Domain.Entity
     public class Command : EntityBase
     {
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public string Alias { get; set; }
 
         [Required, MaxLength(100)]
         public string ExecutorClassName { get; set; }

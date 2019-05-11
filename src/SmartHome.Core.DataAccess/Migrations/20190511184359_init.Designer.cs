@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190511135516_init")]
+    [Migration("20190511184359_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -155,13 +155,13 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Alias")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
                     b.Property<string>("ExecutorClassName")
                         .IsRequired()
                         .HasMaxLength(100);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -173,21 +173,18 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("ExecutorClassNamespace")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.Property<bool>("IsActive");
-
-                    b.Property<string>("Name")
+                    b.Property<string>("ContextName")
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<byte>("Type")
-                        .HasMaxLength(20);
+                    b.Property<string>("Description")
+                        .HasMaxLength(250);
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("ProviderName")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.HasKey("Id");
 
@@ -219,6 +216,12 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.Property<string>("ApiKey")
                         .HasMaxLength(30);
+
+                    b.Property<string>("BaseTopic")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ConfigMetadata")
+                        .HasMaxLength(2147483647);
 
                     b.Property<int>("ControlStrategyId");
 

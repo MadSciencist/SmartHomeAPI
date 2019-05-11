@@ -13,6 +13,7 @@ using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.Providers.Rest.Contracts.Extensions;
 using System;
+using SmartHome.Core.Providers.Mqtt.Contracts.Extensions;
 
 namespace SmartHome.API
 {
@@ -52,8 +53,9 @@ namespace SmartHome.API
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
-            // Add REST contracts
+            // Add REST and MQTT contracts
             builder.RegisterRestNodeContracts();
+            builder.RegisterMqttNodeContracts();
 
             ApplicationContainer = builder.Build();
 

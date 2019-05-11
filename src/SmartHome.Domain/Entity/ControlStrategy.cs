@@ -8,13 +8,13 @@ namespace SmartHome.Domain.Entity
     public class ControlStrategy : EntityBase
     {
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public string ProviderName { get; set; }
 
-        [Required, MaxLength(100)]
-        public string ExecutorClassNamespace { get; set; }
+        [Required, MaxLength(50)]
+        public string ContextName { get; set; }
 
-        [Required, MaxLength(20)]
-        public ControlStrategyType Type { get; set; }
+        //[Required, MaxLength(100)]
+        //public string ExecutorClassNamespace { get; set; } // not needed ? get asm by reflection then join with context and class name
 
         [MaxLength(250)]
         public string Description { get; set; }
@@ -23,11 +23,5 @@ namespace SmartHome.Domain.Entity
 
         // Many-to-many relationship
         public ICollection<ControlStrategyCommandLink> AllowedCommands { get; set; }
-    }
-
-    public enum ControlStrategyType : byte
-    {
-        Rest = 0,
-        Mqtt = 100
     }
 }

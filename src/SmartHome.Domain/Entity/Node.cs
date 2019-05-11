@@ -33,6 +33,12 @@ namespace SmartHome.Domain.Entity
         [MaxLength(30)]
         public string ApiKey { get; set; }
 
+        [MaxLength(100)]
+        public string BaseTopic { get; set; }
+
+        [MaxLength(Int32.MaxValue)]
+        public string ConfigMetadata { get; set; }
+
         // Navigation & relationship properties
         public ControlStrategy ControlStrategy { get; set; }
         public int ControlStrategyId { get; set; }

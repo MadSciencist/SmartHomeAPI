@@ -20,7 +20,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     .CreateLogger(nameof(AppInitialLoad));
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                if (!context.ControlStrategies.Any())
+
+                    if (!context.ControlStrategies.Any())
                 {
                     var controlStrategies = new List<ControlStrategy>
                     {
@@ -29,18 +30,16 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Id = 1,
                             IsActive = true,
                             Description = "Control ESPURNA device over HTTP and REST",
-                            ExecutorClassNamespace = "SmartHome.Core.Providers.Rest.Contracts.Espurna",
-                            Name = "rest",
-                            Type = ControlStrategyType.Rest
+                            ProviderName = "Mqtt",
+                            ContextName = "Espurna",
                         },
                         new ControlStrategy
                         {
                             Id = 2,
                             IsActive = true,
                             Description = "Control over MQTT",
-                            ExecutorClassNamespace = "SmartHome.Core.Providers.Mqtt.Contracts.Espurna",
-                            Name = "mqtt",
-                            Type = ControlStrategyType.Mqtt
+                            ProviderName = "Mqtt",
+                            ContextName = "Espurna"
                         }
                     };
 
@@ -51,10 +50,10 @@ namespace SmartHome.Core.DataAccess.InitialLoad
 
                 if (!context.Nodes.Any(x => x.Name == "Dev"))
                 {
-                    var node = new Node()
+                    var node = new Node
                     {
                         Name = "Dev",
-                        ControlStrategyId = 1,
+                        ControlStrategyId = 2,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
                         IpAddress = "http://192.168.0.101",
@@ -80,22 +79,22 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                 {
                     var commands = new Collection<Command>
                     {
-                        new Command()
+                        new Command
                         {
                             Id = 1,
-                            Name = "getAvailableSensors",
+                            Alias = "getAvailableSensors",
                             ExecutorClassName = ""
                         },
-                        new Command()
+                        new Command
                         {
                             Id = 100,
-                            Name = "toggleRelay",
+                            Alias = "toggleRelay",
                             ExecutorClassName = "ToggleRelay" // class name, move namespace to controlStrategy
                         },
-                         new Command()
+                         new Command
                         {
                             Id = 101,
-                            Name = "setRelay",
+                            Alias = "setRelay",
                             ExecutorClassName = "SetRelay" // class name, move namespace to controlStrategy
                         },
                     };
@@ -118,6 +117,21 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         new ControlStrategyCommandLink
                         {
                             ControlStrategyId = 1,
+                            CommandId = 101
+                        },
+                        new ControlStrategyCommandLink
+                        {
+                            ControlStrategyId = 2,
+                            CommandId = 1
+                        },
+                        new ControlStrategyCommandLink
+                        {
+                            ControlStrategyId = 2,
+                            CommandId = 100
+                        },
+                        new ControlStrategyCommandLink
+                        {
+                            ControlStrategyId = 2,
                             CommandId = 101
                         }
                     };
@@ -162,26 +176,26 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     await context.SaveChangesAsync();
                 }
 
-                if (!context.Dictionaries.Any(x => x.Name == "nodeType"))
+                if (!context.Dictionaries.Any(x => x.Name == "ControlProvider"))
                 {
                     var dictionaries = new List<Dictionary>
                     {
                         new Dictionary
                         {
                             Id = 100,
-                            Name = "NodeType",
+                            Name = "ControlProvider",
                             Values = new List<DictionaryValue>
                             {
                                 new DictionaryValue
                                 {
                                     Id = 100,
-                                    Value = "Sensor",
+                                    Value = "Mqtt",
                                     IsActive = true,
                                 },
                                 new DictionaryValue
                                 {
                                     Id = 101,
-                                    Value = "Controllable device",
+                                    Value = "Mqtt",
                                     IsActive = true
                                 }
                             }
@@ -192,38 +206,26 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     await context.SaveChangesAsync();
                 }
 
-                if (!context.Dictionaries.Any(x => x.Name == "sensorType"))
+                if (!context.Dictionaries.Any(x => x.Name == "ControlContext"))
                 {
                     var dictionaries = new List<Dictionary>
                     {
                         new Dictionary
                         {
                             Id = 200,
-                            Name = "sensorType",
+                            Name = "ControlContext",
                             Values = new List<DictionaryValue>
                             {
                                 new DictionaryValue
                                 {
                                     Id = 200,
-                                    Value = "Temperature",
+                                    Value = "Espurna",
                                     IsActive = true,
                                 },
                                 new DictionaryValue
                                 {
                                     Id = 201,
-                                    Value = "Sunlight",
-                                    IsActive = true
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 202,
-                                    Value = "Current",
-                                    IsActive = true
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 203,
-                                    Value = "Other",
+                                    Value = "Custom",
                                     IsActive = true
                                 }
                             }

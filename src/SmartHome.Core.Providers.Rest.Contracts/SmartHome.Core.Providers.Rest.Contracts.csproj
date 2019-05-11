@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartHome.Core.Providers.Rest\SmartHome.Core.Providers.Rest.csproj" />
+    <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
   </ItemGroup>
 
 </Project>

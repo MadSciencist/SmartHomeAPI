@@ -64,7 +64,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Alias = table.Column<string>(maxLength: 50, nullable: false),
                     ExecutorClassName = table.Column<string>(maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -78,9 +78,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 50, nullable: false),
-                    ExecutorClassNamespace = table.Column<string>(maxLength: 100, nullable: false),
-                    Type = table.Column<byte>(maxLength: 20, nullable: false),
+                    ProviderName = table.Column<string>(maxLength: 50, nullable: false),
+                    ContextName = table.Column<string>(maxLength: 50, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },
@@ -222,6 +221,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                     Login = table.Column<string>(maxLength: 40, nullable: true),
                     Password = table.Column<string>(maxLength: 40, nullable: true),
                     ApiKey = table.Column<string>(maxLength: 30, nullable: true),
+                    BaseTopic = table.Column<string>(maxLength: 100, nullable: true),
+                    ConfigMetadata = table.Column<string>(maxLength: 2147483647, nullable: true),
                     ControlStrategyId = table.Column<int>(nullable: false),
                     CreatedById = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false)
