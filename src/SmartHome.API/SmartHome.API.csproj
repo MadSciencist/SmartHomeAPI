@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SmartHome.Core.MqttBroker\SmartHome.Core.MqttBroker.csproj" />
     <ProjectReference Include="..\SmartHome.Core.Providers.Mqtt.Contracts\SmartHome.Core.Providers.Mqtt.Contracts.csproj" />
     <ProjectReference Include="..\SmartHome.Core.Providers.Rest.Contracts\SmartHome.Core.Providers.Rest.Contracts.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />

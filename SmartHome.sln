@@ -21,7 +21,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NodeContracts", "NodeContra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Providers.Mqtt", "src\SmartHome.Core.Providers.Mqtt\SmartHome.Core.Providers.Mqtt.csproj", "{D67EFB8B-002A-4178-874E-B609368B8B80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.Core.DataAccess", "src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.DataAccess", "src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.Core.MqttBroker", "SmartHome.Core.MqttBroker\SmartHome.Core.MqttBroker.csproj", "{86A23A1D-2035-44E2-9440-4D87585E843E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86A23A1D-2035-44E2-9440-4D87585E843E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86A23A1D-2035-44E2-9440-4D87585E843E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86A23A1D-2035-44E2-9440-4D87585E843E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86A23A1D-2035-44E2-9440-4D87585E843E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

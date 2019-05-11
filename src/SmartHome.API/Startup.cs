@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
-using System;
 using SmartHome.API.Security.Token;
 using SmartHome.Core.DataAccess.InitialLoad;
+using SmartHome.Core.MqttBroker;
 using SmartHome.Core.Providers.Rest.Contracts.Extensions;
+using System;
 
 namespace SmartHome.API
 {
@@ -18,6 +20,7 @@ namespace SmartHome.API
     {
         public IContainer ApplicationContainer { get; private set; }
         private readonly IConfiguration _configuration;
+        private IMqttService _mqttService;
 
         public Startup(IConfiguration configuration)
         {
@@ -57,7 +60,7 @@ namespace SmartHome.API
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf)
         {
             if (env.IsDevelopment())
             {
@@ -85,16 +88,23 @@ namespace SmartHome.API
             app.UseSwaggerUI(s => s.SwaggerEndpoint("/swagger/dev/swagger.json", "Home Sensor Server API"));
             
             InitializeDatabase(app);
+
+            var mqttOptions = new MqttServerOptionsBuilder()
+                .WithDefaultEndpointPort(conf.GetValue<int>("MqttBroker:Port"))
+                .WithConnectionBacklog(conf.GetValue<int>("MqttBroker:MaxBacklog"))
+                .WithClientId(conf.GetValue<string>("MqttBroker:ClientId"))
+                .Build();
+
+            _mqttService = ApplicationContainer.Resolve<IMqttService>();
+            _mqttService.ServerOptions = mqttOptions;
+            _mqttService.Start().Wait();
+            _mqttService.Log();
         }
 
         private void InitializeDatabase(IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                //var identityContext = scope.ServiceProvider.GetRequiredService<AppIdentityDbContext>();
-                //identityContext.Database.Migrate();
-                //identityContext.SaveChanges();
-
                 IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
                 AppInitialLoad.Seed(app.ApplicationServices).Wait();
             }
