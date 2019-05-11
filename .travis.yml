@@ -6,6 +6,7 @@ dotnet: 2.2
 addons:
   sonarcloud:
     organization: "madsciencist-github"
+    token: $SONAR_TOKEN
 branches:
   only:
     - master
