@@ -1,11 +1,10 @@
-﻿using Autofac;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using SmartHome.API.DTO;
 using SmartHome.API.Utils;
 using SmartHome.Core.BusinessLogic;
-using SmartHome.Core.DataAccess;
 using SmartHome.Core.Infrastructure;
 using System.Net;
 using System.Threading.Tasks;
@@ -19,16 +18,11 @@ namespace SmartHome.API.Controllers
     public class NodeController : ControllerBase
     {
         private readonly INodeService _nodeService;
-        private readonly AppDbContext _context;
-        private readonly ILifetimeScope _container;
 
-        public NodeController(INodeService nodeService, AppDbContext context, ILifetimeScope container)
+        public NodeController(IHttpContextAccessor contextAccessor, INodeService nodeService)
         {
             _nodeService = nodeService;
-            // _nodeService.ClaimsPrincipal = this.User; //TODO assigns null?
-
-            _context = context;
-            _container = container;
+            _nodeService.ClaimsOwner = contextAccessor.HttpContext.User;
         }
 
         [HttpPost("{nodeId}/command/{command}")]
@@ -38,7 +32,7 @@ namespace SmartHome.API.Controllers
 
             try
             {
-                response.Data = await _nodeService.Control(this.User, nodeId, command, commandParams);
+                response.Data = await _nodeService.Control(nodeId, command, commandParams);
             }
             catch (SmartHomeException ex)
             {
@@ -58,7 +52,7 @@ namespace SmartHome.API.Controllers
         //[HttpGet("create")]
         //public async Task<IActionResult> Create()
         //{
-        //    await _nodeService.CreateNode(this.User, "TestNodeName", "TestIdentifier", "aaaa", "sensor");
+        //    await _nodeService.CreateNode("TestNodeName", "TestIdentifier", "aaaa", "sensor");
         //    //ModelState.AddModelError();
 
         //    return Ok();
@@ -67,7 +61,7 @@ namespace SmartHome.API.Controllers
         //[HttpPost("{nodeId}/getState")]
         //public async Task<IActionResult> GetState(int nodeId)
         //{
-        //    //var response = await _nodeService.Control(this.User, nodeId, new NodeCommand();
+        //    //var response = await _nodeService.Control(nodeId, new NodeCommand();
         //    return Ok();
         //}
     }

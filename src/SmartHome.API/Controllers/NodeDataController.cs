@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.DTO;
-using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.BusinessLogic;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
+using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {
@@ -14,18 +15,19 @@ namespace SmartHome.API.Controllers
     [Produces("application/json")]
     public class NodeDataController : Controller
     {
-        private readonly INodeDataRepository _dataRepository;
+        private readonly INodeDataService _nodeDataService;
 
-        public NodeDataController(INodeDataRepository dataRepository)
+        public NodeDataController(INodeDataService nodeDataService, IHttpContextAccessor contextAccessor)
         {
-            _dataRepository = dataRepository;
+            _nodeDataService = nodeDataService;
+            _nodeDataService.ClaimsOwner = contextAccessor.HttpContext.User;
         }
 
         [AllowAnonymous]
         [HttpPost("add")]
         public async Task<IActionResult> PostData()
         {
-            var data = await _dataRepository.AddSingleAsync(EDataRequestReason.User, new NodeDataMagnitudes
+            var data = await _nodeDataService.AddSingleAsync(EDataRequestReason.User, new NodeDataMagnitudes
             {
                 Magnitude = "temperature",
                 Unit = "celc",

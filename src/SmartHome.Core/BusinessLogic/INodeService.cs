@@ -1,16 +1,15 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Utils;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.BusinessLogic
 {
-    public interface INodeService
+    public interface INodeService : IUserAuditable
     {
-        Task<Node> CreateNode(ClaimsPrincipal principal, string name, string identifier, string description, string type);
-        Task<object> Control(ClaimsPrincipal principal, int nodeId, string operations, JObject commandParams);
-        IEnumerable<Command> GetNodeCommands(ClaimsPrincipal principal, int nodeId);
-        ClaimsPrincipal ClaimsPrincipal { get; set; }
+        Task<Node> CreateNode(string name, string identifier, string description, string type);
+        Task<object> Control(int nodeId, string operations, JObject commandParams);
+        IEnumerable<Command> GetNodeCommands(int nodeId);
     }
 }

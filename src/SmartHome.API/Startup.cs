@@ -50,6 +50,9 @@ namespace SmartHome.API
             // Api docs gen
             services.AddConfiguredSwagger();
 
+            // This allows access http context and user in constructor
+            services.AddHttpContextAccessor();
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
