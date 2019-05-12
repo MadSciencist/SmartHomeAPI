@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Domain.Entity
 {
-    [Table("control_strategy")]
+    [Table("tbl_control_strategy")]
     public class ControlStrategy : EntityBase
     {
         [Required, MaxLength(50)]
@@ -12,9 +12,6 @@ namespace SmartHome.Core.Domain.Entity
 
         [Required, MaxLength(50)]
         public string ContextName { get; set; }
-
-        //[Required, MaxLength(100)]
-        //public string ExecutorClassNamespace { get; set; } // not needed ? get asm by reflection then join with context and class name
 
         [MaxLength(250)]
         public string Description { get; set; }

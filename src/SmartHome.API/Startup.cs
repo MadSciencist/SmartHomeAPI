@@ -100,7 +100,7 @@ namespace SmartHome.API
             _mqttService = ApplicationContainer.Resolve<IMqttService>();
             _mqttService.ServerOptions = mqttOptions;
             _mqttService.Start().Wait();
-            _mqttService.Log();
+            //_mqttService.Log();
         }
 
         private void InitializeDatabase(IApplicationBuilder app)

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.Domain.DictionaryEntity;
 using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {
@@ -20,8 +21,36 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     .CreateLogger(nameof(AppInitialLoad));
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+                if (!context.RequestReasons.Any())
+                {
+                    var requestReasons = new List<DataRequestReason>
+                    {
+                        new DataRequestReason
+                        {
+                            Id = (int)EDataRequestReason.Node,
+                            Reason = "Node",
+                            Description = "Node was initiator"
+                        },
+                        new DataRequestReason
+                        {
+                            Id = (int)EDataRequestReason.Scheduler,
+                            Reason = "Scheduler",
+                            Description = "Task scheduler was initiator"
+                        },
+                        new DataRequestReason
+                        {
+                        Id = (int)EDataRequestReason.User,
+                        Reason = "User",
+                        Description = "User was initiator"
+                    }
+                    };
 
-                    if (!context.ControlStrategies.Any())
+                    await context.AddRangeAsync(requestReasons);
+                    await context.SaveChangesAsync();
+                }
+
+
+                if (!context.ControlStrategies.Any())
                 {
                     var controlStrategies = new List<ControlStrategy>
                     {

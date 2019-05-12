@@ -3,7 +3,7 @@ using SmartHome.Core.Domain.Entity;
 
 namespace SmartHome.Core.Domain.DictionaryEntity
 {
-    [Table("dictionary_value")]
+    [Table("tbl_dictionary_value")]
     public class DictionaryValue : EntityBase
     {
         public string Value { get; set; }

@@ -25,6 +25,7 @@ namespace SmartHome.API.Extensions
         {
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<INodeRepository, NodeRepository>();
+            services.AddTransient<INodeDataRepository, NodeDataRepository>();
             services.AddTransient<INodeService, NodeService>();
             services.AddSingleton<IMqttService, MqttService>();
 

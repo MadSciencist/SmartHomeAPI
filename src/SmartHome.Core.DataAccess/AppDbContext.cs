@@ -16,20 +16,27 @@ namespace SmartHome.Core.DataAccess
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<Command> Commands { get; set; }
+        public DbSet<NodeData> NodeData { get; set; }
+        public DbSet<NodeDataMagnitudes> DataMagnitudes { get; set; }
+        public DbSet<DataRequestReason> RequestReasons { get; set; }
 
 
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<DictionaryValue> DictionaryValues { get; set; }
 
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUser>().ToTable("appuser");
+            builder.Entity<AppUser>().ToTable("tbl_user");
+            builder.Entity<AppRole>().ToTable("tbl_role");
 
             builder.Entity<Node>()
                 .HasKey(x => x.Id);
+
+            builder.Entity<Node>()
+                .HasIndex(x => x.ClientId)
+                .IsUnique();
 
             builder.Entity<Node>()
                 .HasOne(x => x.CreatedBy)

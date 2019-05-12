@@ -2,7 +2,7 @@
 
 namespace SmartHome.Core.Domain.Entity
 {
-    [Table("strategy_command_link")]
+    [Table("tbl_strategy_command_link")]
     public class ControlStrategyCommandLink : EntityBase
     {
         public int CommandId { get; set; }
