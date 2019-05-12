@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SmartHome.Domain.DictionaryEntity;
-using SmartHome.Domain.Entity;
+using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Domain.Entity;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {

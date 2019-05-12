@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>SmartHome.Core.Domain</AssemblyName>
+    <RootNamespace>SmartHome.Core.Domain</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

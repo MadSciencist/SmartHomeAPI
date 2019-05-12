@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace SmartHome.Domain.Role
+namespace SmartHome.Core.Domain.Role
 {
     public class AppRole : IdentityRole<int>
     {

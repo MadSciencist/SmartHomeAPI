@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SmartHome.Domain.User;
+using SmartHome.Core.Domain.User;
 
 namespace SmartHome.API.Security.Token
 {

@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SmartHome.Domain.DictionaryEntity;
+using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Domain.DictionaryEntity;
 using System.Collections.Generic;
 using System.Linq;
-using SmartHome.Core.DataAccess.Repository;
 
 namespace SmartHome.API.Controllers
 {

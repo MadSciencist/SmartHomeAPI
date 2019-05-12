@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SmartHome.Domain.DictionaryEntity;
-using SmartHome.Domain.Entity;
-using SmartHome.Domain.Role;
-using SmartHome.Domain.User;
+using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Role;
+using SmartHome.Core.Domain.User;
 
 namespace SmartHome.Core.DataAccess
 {

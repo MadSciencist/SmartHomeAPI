@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
-using SmartHome.Domain.Entity;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SmartHome.Core.Domain.Entity;
 
 namespace SmartHome.Core.BusinessLogic
 {

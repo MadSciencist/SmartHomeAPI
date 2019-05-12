@@ -1,17 +1,14 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SmartHome.Core.Control;
-using System.Threading.Tasks;
-using SmartHome.API.DTO;
-using SmartHome.Core.BusinessLogic;
-using SmartHome.Domain.Entity;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Infrastructure;
+using SmartHome.API.DTO;
 using SmartHome.API.Utils;
-using System.Net;
+using SmartHome.Core.BusinessLogic;
 using SmartHome.Core.DataAccess;
+using SmartHome.Core.Infrastructure;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {

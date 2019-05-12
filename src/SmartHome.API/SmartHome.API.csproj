@@ -30,7 +30,7 @@
     <ProjectReference Include="..\SmartHome.Core.Providers.Mqtt.Contracts\SmartHome.Core.Providers.Mqtt.Contracts.csproj" />
     <ProjectReference Include="..\SmartHome.Core.Providers.Rest.Contracts\SmartHome.Core.Providers.Rest.Contracts.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
-    <ProjectReference Include="..\SmartHome.Domain\SmartHome.Domain.csproj" />
+    <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>
 
 </Project>

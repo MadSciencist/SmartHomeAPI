@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.539
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API", "src\SmartHome.API\SmartHome.API.csproj", "{42D6CC80-881F-4FCF-A576-5C04090BCEF5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Domain", "src\SmartHome.Domain\SmartHome.Domain.csproj", "{F9E405AE-75D7-4CDF-BCBB-6E78FA7AD567}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Domain", "src\SmartHome.Domain\SmartHome.Core.Domain.csproj", "{F9E405AE-75D7-4CDF-BCBB-6E78FA7AD567}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core", "src\SmartHome.Core\SmartHome.Core.csproj", "{2BF9D23E-C397-4816-943B-5A440CB5AD9B}"
 EndProject

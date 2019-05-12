@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartHome.Domain.Entity
+namespace SmartHome.Core.Domain.Entity
 {
     [Table("strategy_command_link")]
     public class ControlStrategyCommandLink : EntityBase

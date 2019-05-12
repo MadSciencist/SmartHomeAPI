@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SmartHome.Domain.User;
+using SmartHome.Core.Domain.User;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,7 +10,7 @@ using System.Text;
 
 namespace SmartHome.API.Security.Token
 {
-    public class TokenBuilder : API.Security.Token.ITokenBuilder
+    public class TokenBuilder : ITokenBuilder
     {
         private readonly IConfiguration _config;
 

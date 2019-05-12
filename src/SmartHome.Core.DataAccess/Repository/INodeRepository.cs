@@ -1,4 +1,4 @@
-﻿using SmartHome.Domain.Entity;
+﻿using SmartHome.Core.Domain.Entity;
 
 namespace SmartHome.Core.DataAccess.Repository
 {

@@ -2,8 +2,8 @@
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.MqttBroker;
 using System.Threading.Tasks;
+using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Domain.Entity;
 
 namespace SmartHome.Core.Providers.Mqtt.Contracts.Espurna
 {

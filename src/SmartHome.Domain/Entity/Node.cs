@@ -1,10 +1,10 @@
-﻿using SmartHome.Domain.User;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SmartHome.Core.Domain.User;
 
-namespace SmartHome.Domain.Entity
+namespace SmartHome.Core.Domain.Entity
 {
     [Table("node")]
     public class Node : EntityBase

@@ -5,12 +5,12 @@ using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Utils;
-using SmartHome.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SmartHome.Core.Domain.Entity;
 
 namespace SmartHome.Core.BusinessLogic
 {
