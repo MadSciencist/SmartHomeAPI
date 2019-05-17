@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using SmartHome.Core.BusinessLogic.TopicResolvers;
 using System.Linq;
 using System.Reflection;
+using SmartHome.Core.BusinessLogic.MqttMessageResolvers;
 
 namespace SmartHome.Core.Extensions
 {
@@ -14,13 +14,13 @@ namespace SmartHome.Core.Extensions
         /// <param name="builder"></param>
         public static void RegisterTopicResolvers(this ContainerBuilder builder)
         {
-            var resolversAsm = Assembly.GetAssembly(typeof(ITopicResolver)).GetTypes();
+            var resolversAsm = Assembly.GetAssembly(typeof(IMqttMessageResolver)).GetTypes();
 
             var resolvers = resolversAsm.ToDictionary(ex => ex.FullName);
 
             foreach (var resolver in resolvers)
             {
-                if(resolver.Key.Contains("TopicResolvers"))
+                if(resolver.Key.Contains("MqttMessageResolvers"))
                 builder.RegisterType(resolver.Value)
                     .Named<object>(resolver.Key);
             }

@@ -1,10 +1,10 @@
 ﻿using Autofac;
-using SmartHome.Core.BusinessLogic.TopicResolvers;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using System;
 using System.Threading.Tasks;
+using SmartHome.Core.BusinessLogic.MqttMessageResolvers;
 
 namespace SmartHome.Core.BusinessLogic
 {
@@ -30,9 +30,9 @@ namespace SmartHome.Core.BusinessLogic
             if (string.Compare(node.ControlStrategy.ProviderName, "Mqtt", StringComparison.InvariantCultureIgnoreCase) != 0)
                 throw new SmartHomeException($"Received message from clientId: {node.ClientId} with invalid control strategy");
 
-            var resolverClassName = $"SmartHome.Core.BusinessLogic.TopicResolvers.{node.ControlStrategy.ContextName}";
+            var resolverClassName = $"SmartHome.Core.BusinessLogic.MqttMessageResolvers.{node.ControlStrategy.ContextName}";
 
-            if (!(_container.ResolveNamed<object>(resolverClassName) is ITopicResolver topicResolver))
+            if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageResolver topicResolver))
                 throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");
 
             await topicResolver.Resolve(node, message);

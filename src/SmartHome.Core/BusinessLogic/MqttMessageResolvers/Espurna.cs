@@ -1,15 +1,15 @@
-﻿using SmartHome.Core.Domain;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Dto;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Domain;
+using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Dto;
 
-namespace SmartHome.Core.BusinessLogic.TopicResolvers
+namespace SmartHome.Core.BusinessLogic.MqttMessageResolvers
 {
-    public class Espurna : ITopicResolver
+    public class Espurna : IMqttMessageResolver
     {
         private readonly INodeDataService _nodeDataService;
 

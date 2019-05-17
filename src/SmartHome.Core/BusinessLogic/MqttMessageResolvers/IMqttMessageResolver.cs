@@ -2,9 +2,10 @@
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
 
-namespace SmartHome.Core.BusinessLogic.TopicResolvers
+namespace SmartHome.Core.BusinessLogic.MqttMessageResolvers
 {
-    public interface ITopicResolver
+    // all the resolvers should be in this namespace
+    public interface IMqttMessageResolver
     {
         Task Resolve(Node node, MqttMessageDto messageDto);
     }
