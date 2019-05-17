@@ -108,12 +108,12 @@ namespace SmartHome.API
             _mqttService.StartBroker().Wait();
         }
 
-        private void InitializeDatabase(IApplicationBuilder app)
+        private static void InitializeDatabase(IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
-                AppInitialLoad.Seed(app.ApplicationServices).Wait();
+                var initialLoadFacade = new InitialLoadFacade(scope.ServiceProvider);
+                initialLoadFacade.Seed().Wait();
             }
         }
     }
