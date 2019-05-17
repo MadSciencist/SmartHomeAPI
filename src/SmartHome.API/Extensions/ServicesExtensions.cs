@@ -8,10 +8,11 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SmartHome.Core.BusinessLogic;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Domain.Role;
+using SmartHome.Core.Domain.User;
 using SmartHome.Core.MqttBroker;
-using SmartHome.Core.Providers.Rest;
-using SmartHome.Domain.Role;
-using SmartHome.Domain.User;
+using SmartHome.Core.MqttBroker.MessageHandling;
+using SmartHome.Core.Providers.Rest.Contracts;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
@@ -25,9 +26,13 @@ namespace SmartHome.API.Extensions
         {
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<INodeRepository, NodeRepository>();
+            services.AddTransient<INodeDataRepository, NodeDataRepository>();
             services.AddTransient<INodeService, NodeService>();
-            services.AddSingleton<IMqttService, MqttService>();
+            services.AddTransient<INodeDataService, NodeDataService>();
+            services.AddTransient<MqttMessageProcessor>();
+            services.AddTransient<MessageInterceptor>();
 
+            services.AddSingleton<IMqttService, MqttService>();
             services.AddSingleton(typeof(PersistentHttpClient));
         }
 

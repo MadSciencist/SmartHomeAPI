@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SmartHome.Domain.Role;
-using SmartHome.Domain.User;
+using SmartHome.Core.Domain.Role;
+using SmartHome.Core.Domain.User;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {

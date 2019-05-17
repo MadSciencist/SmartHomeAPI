@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartHome.Domain.Entity
+namespace SmartHome.Core.Domain.Entity
 {
-    [Table("command")]
+    [Table("tbl_command")]
     public class Command : EntityBase
     {
         [Required, MaxLength(50)]

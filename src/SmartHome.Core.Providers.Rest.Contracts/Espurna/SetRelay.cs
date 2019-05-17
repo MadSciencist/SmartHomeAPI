@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control.Rest.Common;
+using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Domain.Entity;
 
 namespace SmartHome.Core.Providers.Rest.Contracts.Espurna
 {

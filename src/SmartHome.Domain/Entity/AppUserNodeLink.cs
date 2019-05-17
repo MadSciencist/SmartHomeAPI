@@ -1,9 +1,9 @@
-﻿using SmartHome.Domain.User;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using SmartHome.Core.Domain.User;
 
-namespace SmartHome.Domain.Entity
+namespace SmartHome.Core.Domain.Entity
 {
-    [Table("appuser_node_link")]
+    [Table("tbl_user_node_link")]
     public class AppUserNodeLink : EntityBase
     {
         public int NodeId { get; set; }

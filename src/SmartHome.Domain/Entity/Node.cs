@@ -1,12 +1,12 @@
-﻿using SmartHome.Domain.User;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SmartHome.Core.Domain.User;
 
-namespace SmartHome.Domain.Entity
+namespace SmartHome.Core.Domain.Entity
 {
-    [Table("node")]
+    [Table("tbl_node")]
     public class Node : EntityBase
     {
         [MaxLength(50)]
@@ -36,8 +36,13 @@ namespace SmartHome.Domain.Entity
         [MaxLength(100)]
         public string BaseTopic { get; set; }
 
+        [MaxLength(100)]
+        public string ClientId { get; set; }
+
         [MaxLength(Int32.MaxValue)]
         public string ConfigMetadata { get; set; }
+
+        public ICollection<NodeData> NodeData { get; set; }
 
         // Navigation & relationship properties
         public ControlStrategy ControlStrategy { get; set; }

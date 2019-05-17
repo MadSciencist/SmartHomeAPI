@@ -5,8 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SmartHome.Domain.DictionaryEntity;
-using SmartHome.Domain.Entity;
+using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {
@@ -20,8 +21,36 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     .CreateLogger(nameof(AppInitialLoad));
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+                if (!context.RequestReasons.Any())
+                {
+                    var requestReasons = new List<DataRequestReason>
+                    {
+                        new DataRequestReason
+                        {
+                            Id = (int)EDataRequestReason.Node,
+                            Reason = "Node",
+                            Description = "Node was initiator"
+                        },
+                        new DataRequestReason
+                        {
+                            Id = (int)EDataRequestReason.Scheduler,
+                            Reason = "Scheduler",
+                            Description = "Task scheduler was initiator"
+                        },
+                        new DataRequestReason
+                        {
+                        Id = (int)EDataRequestReason.User,
+                        Reason = "User",
+                        Description = "User was initiator"
+                    }
+                    };
 
-                    if (!context.ControlStrategies.Any())
+                    await context.AddRangeAsync(requestReasons);
+                    await context.SaveChangesAsync();
+                }
+
+
+                if (!context.ControlStrategies.Any())
                 {
                     var controlStrategies = new List<ControlStrategy>
                     {
@@ -39,7 +68,15 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control over MQTT",
                             ProviderName = "Mqtt",
-                            ContextName = "Espurna"
+                            ContextName = "Espurna",
+                            RegisteredSensors = new List<RegisteredSensors>()
+                            {
+                                new RegisteredSensors
+                                {
+                                    Name = "analog",
+                                    Description = "Generic built-in analog sensor"
+                                }
+                            }
                         }
                     };
 
@@ -60,7 +97,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         Port = 80,
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
-                        ApiKey = "03102E55CD7BBE35"
+                        ApiKey = "03102E55CD7BBE35",
+                        ClientId = "clientId"
                     };
 
                     var createdNode = await context.Nodes.AddAsync(node);

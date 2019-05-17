@@ -1,35 +1,35 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
-using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Utils;
-using SmartHome.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SmartHome.Core.DataAccess;
 
 namespace SmartHome.Core.BusinessLogic
 {
     public class NodeService : INodeService
     {
-        public ClaimsPrincipal ClaimsPrincipal { get; set; }
-        public string MyProperty { get; set; }
+        public ClaimsPrincipal ClaimsOwner { get; set; }
 
         private readonly INodeRepository _nodeRepository;
         private readonly ILifetimeScope _container;
         private readonly AppDbContext _context;
 
-        public NodeService(INodeRepository nodeRepository, ILifetimeScope container, AppDbContext context)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, AppDbContext context)
         {
-            _nodeRepository = nodeRepository;
             _container = container;
+            _nodeRepository = nodeRepository;
+            _context = context;
         }
 
-        public IEnumerable<Command> GetNodeCommands(ClaimsPrincipal principal, int nodeId)
+        public IEnumerable<Command> GetNodeCommands(int nodeId)
         {
             //int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
 
@@ -59,9 +59,9 @@ namespace SmartHome.Core.BusinessLogic
             return new List<Command>();
         }
 
-        public async Task<Node> CreateNode(ClaimsPrincipal principal, string name, string identifier, string description, string type)
+        public async Task<Node> CreateNode(string name, string identifier, string description, string type)
         {
-            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
+            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
 
             var node = new Node
             {
@@ -96,11 +96,11 @@ namespace SmartHome.Core.BusinessLogic
             }
         }
 
-        public async Task<object> Control(ClaimsPrincipal principal, int nodeId, string command, JObject commandParams)
+        public async Task<object> Control(int nodeId, string command, JObject commandParams)
         {
             // get the node
             Node node = await _nodeRepository.GetByIdAsync(nodeId);
-            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
+            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
 
             // check permissions
             if (node.AllowedUsers.Any(x => x.UserId != userId))

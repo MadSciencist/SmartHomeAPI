@@ -1,10 +1,10 @@
-﻿using SmartHome.Domain.Entity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using SmartHome.Core.Domain.Entity;
 
-namespace SmartHome.Domain.DictionaryEntity
+namespace SmartHome.Core.Domain.DictionaryEntity
 {
-    [Table("dictionary")]
+    [Table("tbl_dictionary")]
     public class Dictionary : EntityBase
     { 
         public string Name { get; set; }

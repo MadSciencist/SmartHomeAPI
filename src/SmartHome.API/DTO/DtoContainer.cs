@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace SmartHome.API.DTO
 {
-    public class DtoContainer<T> where T : class
+    public class ResponseDtoContainer<T> where T : class
     {
         [JsonProperty("data")]
         public T Data { get; set; }
@@ -14,7 +14,7 @@ namespace SmartHome.API.DTO
         [JsonProperty("errors")]
         public Collection<ErrorDetailsDto> Errors { get; set; }
 
-        public DtoContainer()
+        public ResponseDtoContainer()
         {
             Messages = new Collection<string>();
             Errors = new Collection<ErrorDetailsDto>();

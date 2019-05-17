@@ -13,6 +13,7 @@ using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.Providers.Rest.Contracts.Extensions;
 using System;
+using SmartHome.Core.Extensions;
 using SmartHome.Core.Providers.Mqtt.Contracts.Extensions;
 
 namespace SmartHome.API
@@ -50,12 +51,17 @@ namespace SmartHome.API
             // Api docs gen
             services.AddConfiguredSwagger();
 
+            // This allows access http context and user in constructor
+            services.AddHttpContextAccessor();
+
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
             // Add REST and MQTT contracts
             builder.RegisterRestNodeContracts();
             builder.RegisterMqttNodeContracts();
+
+            builder.RegisterTopicResolvers();
 
             ApplicationContainer = builder.Build();
 
@@ -99,8 +105,7 @@ namespace SmartHome.API
 
             _mqttService = ApplicationContainer.Resolve<IMqttService>();
             _mqttService.ServerOptions = mqttOptions;
-            _mqttService.Start().Wait();
-            _mqttService.Log();
+            _mqttService.StartBroker().Wait();
         }
 
         private void InitializeDatabase(IApplicationBuilder app)

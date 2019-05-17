@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using SmartHome.Domain.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using SmartHome.Core.Domain.Entity;
 
-namespace SmartHome.Domain.User
+namespace SmartHome.Core.Domain.User
 {
     public class AppUser : IdentityUser<int>
     {
