@@ -57,7 +57,7 @@ namespace SmartHome.API.Extensions
                 }
             };
 
-            var responseDto = new DtoContainer<object>();
+            var responseDto = new ResponseDtoContainer<object>();
             responseDto.Errors.Add(errorDetails);
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(responseDto));

@@ -3,7 +3,7 @@
 namespace SmartHome.Core.Domain.Entity
 {
     [Table("tbl_node_data_magnitude")]
-    public class NodeDataMagnitudes : EntityBase
+    public class NodeDataMagnitude : EntityBase
     {
         public string Magnitude { get; set; }
         public string Value { get; set; }

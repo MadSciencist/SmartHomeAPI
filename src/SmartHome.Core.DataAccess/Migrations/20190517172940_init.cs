@@ -116,6 +116,27 @@ namespace SmartHome.Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_registered_sensors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    ControlStrategyId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_registered_sensors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_registered_sensors_tbl_control_strategy_ControlStrategyId",
+                        column: x => x.ControlStrategyId,
+                        principalTable: "tbl_control_strategy",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_strategy_command_link",
                 columns: table => new
                 {
@@ -438,6 +459,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "NodeDataId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_registered_sensors_ControlStrategyId",
+                table: "tbl_registered_sensors",
+                column: "ControlStrategyId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "tbl_role",
                 column: "NormalizedName",
@@ -502,6 +528,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_node_data_magnitude");
+
+            migrationBuilder.DropTable(
+                name: "tbl_registered_sensors");
 
             migrationBuilder.DropTable(
                 name: "tbl_strategy_command_link");

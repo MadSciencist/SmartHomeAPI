@@ -8,7 +8,7 @@ namespace SmartHome.Core.Domain.Entity
     public class NodeData : EntityBase
     {
         public DateTime TimeStamp { get; set; }
-        public ICollection<NodeDataMagnitudes> Magnitudes { get; set; }
+        public ICollection<NodeDataMagnitude> Magnitudes { get; set; }
 
         public int NodeId { get; set; }
         public Node Node { get; set; }

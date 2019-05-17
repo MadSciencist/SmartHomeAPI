@@ -17,7 +17,8 @@ namespace SmartHome.Core.DataAccess
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<Command> Commands { get; set; }
         public DbSet<NodeData> NodeData { get; set; }
-        public DbSet<NodeDataMagnitudes> DataMagnitudes { get; set; }
+        public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
+        public DbSet<RegisteredSensors> RegisteredSensors { get; set; }
         public DbSet<DataRequestReason> RequestReasons { get; set; }
 
 

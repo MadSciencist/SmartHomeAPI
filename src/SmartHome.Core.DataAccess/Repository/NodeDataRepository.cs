@@ -10,21 +10,19 @@ namespace SmartHome.Core.DataAccess.Repository
     public class NodeDataRepository : GenericRepository<NodeData>, INodeDataRepository
     {
         private readonly ILogger _logger;
-        private readonly AppDbContext _context;
 
         public NodeDataRepository(AppDbContext context, ILoggerFactory loggerFactory) : base(context, loggerFactory)
         {
             _logger = loggerFactory.CreateLogger(typeof(NodeRepository));
-            _context = context;
         }
 
-        public async Task<NodeData> AddSingleAsync(EDataRequestReason reason, NodeDataMagnitudes data)
+        public async Task<NodeData> AddSingleAsync(EDataRequestReason reason, NodeDataMagnitude data)
         {
             var nodeData = new NodeData
             {
                 RequestReasonId = (int) reason,
                 TimeStamp = DateTime.UtcNow,
-                Magnitudes = new List<NodeDataMagnitudes>
+                Magnitudes = new List<NodeDataMagnitude>
                 {
                     data
                 },
@@ -35,7 +33,7 @@ namespace SmartHome.Core.DataAccess.Repository
             return nodeData;
         }
 
-        public async Task<NodeData> AddManyAsync(EDataRequestReason reason, ICollection<NodeDataMagnitudes> data)
+        public async Task<NodeData> AddManyAsync(EDataRequestReason reason, ICollection<NodeDataMagnitude> data)
         {
             var nodeData = new NodeData
             {

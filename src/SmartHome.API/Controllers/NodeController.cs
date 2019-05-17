@@ -28,7 +28,7 @@ namespace SmartHome.API.Controllers
         [HttpPost("{nodeId}/command/{command}")]
         public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams)
         {
-            var response = new DtoContainer<object>();
+            var response = new ResponseDtoContainer<object>();
 
             try
             {

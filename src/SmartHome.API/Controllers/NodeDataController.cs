@@ -27,19 +27,19 @@ namespace SmartHome.API.Controllers
         [HttpPost("add")]
         public async Task<IActionResult> PostData()
         {
-            var data = await _nodeDataService.AddSingleAsync(EDataRequestReason.User, new NodeDataMagnitudes
-            {
-                Magnitude = "temperature",
-                Unit = "celc",
-                Value = "25"
-            });
+            //var data = await _nodeDataService.AddSingleAsync(EDataRequestReason.User, new NodeDataMagnitude
+            //{
+            //    Magnitude = "temperature",
+            //    Unit = "celc",
+            //    Value = "25"
+            //});
 
-            var response = new DtoContainer<NodeData>
-            {
-                Data = data
-            };
+            //var response = new ResponseDtoContainer<NodeData>
+            //{
+            //    Data = data
+            //};
 
-            return Ok(response);
+            return Ok();
         }
     }
 }

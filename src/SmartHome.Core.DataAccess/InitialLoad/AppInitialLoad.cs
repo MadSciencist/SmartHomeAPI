@@ -68,7 +68,15 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control over MQTT",
                             ProviderName = "Mqtt",
-                            ContextName = "Espurna"
+                            ContextName = "Espurna",
+                            RegisteredSensors = new List<RegisteredSensors>()
+                            {
+                                new RegisteredSensors
+                                {
+                                    Name = "analog",
+                                    Description = "Generic built-in analog sensor"
+                                }
+                            }
                         }
                     };
 
@@ -89,7 +97,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         Port = 80,
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
-                        ApiKey = "03102E55CD7BBE35"
+                        ApiKey = "03102E55CD7BBE35",
+                        ClientId = "clientId"
                     };
 
                     var createdNode = await context.Nodes.AddAsync(node);
