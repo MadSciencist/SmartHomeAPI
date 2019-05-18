@@ -40,6 +40,16 @@ namespace SmartHome.Core.DataAccess
                 .IsUnique();
 
             builder.Entity<Node>()
+                .HasIndex(x => x.Name)
+                .IsUnique();
+
+            builder.Entity<Node>()
+                .HasOne(x => x.ControlStrategy)
+                .WithMany(x => x.Nodes)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
+                
+            builder.Entity<Node>()
                 .HasOne(x => x.CreatedBy)
                 .WithMany(u => u.CreatedNodes)
                 .HasForeignKey(n => n.CreatedById);

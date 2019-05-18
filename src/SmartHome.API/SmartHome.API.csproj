@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="2.2.0" />
@@ -33,9 +34,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.Control\SmartHome.Core.Contracts.Mqtt.Control.csproj" />
+    <ProjectReference Include="..\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.MessageHandling\SmartHome.Core.Contracts.Mqtt.MessageHandling.csproj" />
+    <ProjectReference Include="..\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj" />
     <ProjectReference Include="..\SmartHome.Core.MqttBroker\SmartHome.Core.MqttBroker.csproj" />
-    <ProjectReference Include="..\SmartHome.Core.Providers.Mqtt.Contracts\SmartHome.Core.Providers.Mqtt.Contracts.csproj" />
-    <ProjectReference Include="..\SmartHome.Core.Providers.Rest.Contracts\SmartHome.Core.Providers.Rest.Contracts.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>

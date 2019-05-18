@@ -28,12 +28,12 @@ namespace SmartHome.Core.DataAccess.Repository
             }
             catch (DbUpdateConcurrencyException e)
             {
-                _logger.LogError(e, "Error while updading entity - concurrency");
+                _logger.LogError(e, "Error while creating entity - concurrency");
                 throw;
             }
             catch (DbUpdateException e)
             {
-                _logger.LogError(e, "Error while updading entity");
+                _logger.LogError(e, "Error while creating entity");
                 throw;
             }
 

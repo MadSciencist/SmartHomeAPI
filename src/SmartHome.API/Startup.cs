@@ -9,12 +9,15 @@ using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.API.Security.Token;
+using SmartHome.Core.Contracts.Mqtt.Control.Extensions;
+using SmartHome.Core.Contracts.Rest.Control.Extensions;
 using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.MqttBroker;
-using SmartHome.Core.Providers.Rest.Contracts.Extensions;
 using System;
-using SmartHome.Core.Extensions;
-using SmartHome.Core.Providers.Mqtt.Contracts.Extensions;
+using System.Reflection;
+using AutoMapper;
+using SmartHome.Core.Contracts.Mqtt.MessageHandling.Extensions;
+using SmartHome.Core.Services;
 
 namespace SmartHome.API
 {
@@ -40,10 +43,10 @@ namespace SmartHome.API
             services.AddJwtAuthentication(_configuration);
             services.AddAuthorizationPolicies();
 
-            services.AddTransient<ITokenBuilder, TokenBuilder>();
-
             // BL & Services
             services.RegisterAppServicesToIocContainer();
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService)));
 
             // CORS for dev env
             services.AddDefaultCorsPolicy();
@@ -61,14 +64,14 @@ namespace SmartHome.API
             builder.RegisterRestNodeContracts();
             builder.RegisterMqttNodeContracts();
 
-            builder.RegisterTopicResolvers();
+            builder.RegisterMqttMessageHandlers();
 
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf, IMapper autoMapper)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +80,8 @@ namespace SmartHome.API
                 app.UseStatusCodePages();
                 app.UseCors("CorsPolicy");               
             }
+
+            autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             // custom logging middleware 
             app.UseLoggingExceptionHandler();
@@ -108,12 +113,12 @@ namespace SmartHome.API
             _mqttService.StartBroker().Wait();
         }
 
-        private void InitializeDatabase(IApplicationBuilder app)
+        private static void InitializeDatabase(IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                IdentityInitialLoad.Seed(app.ApplicationServices).Wait();
-                AppInitialLoad.Seed(app.ApplicationServices).Wait();
+                var initialLoadFacade = new InitialLoadFacade(scope.ServiceProvider);
+                initialLoadFacade.Seed().Wait();
             }
         }
     }

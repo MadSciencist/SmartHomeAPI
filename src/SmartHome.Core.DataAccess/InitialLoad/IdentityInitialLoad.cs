@@ -1,33 +1,48 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.Domain.Role;
 using SmartHome.Core.Domain.User;
+using System;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {
-    public static class IdentityInitialLoad
+    public class IdentityInitialLoad
     {
-        public static async Task Seed(IServiceProvider provider)
-        {
-            using (var scope = provider.CreateScope())
-            {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
-                var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>()
-                    .CreateLogger(nameof(IdentityInitialLoad));
+        private readonly IServiceProvider _provider;
+        private readonly ILogger _logger;
 
+        public IdentityInitialLoad(IServiceProvider provider)
+        {
+            _provider = provider;
+            var loggerFactory = _provider.GetService(typeof(ILoggerFactory)) as ILoggerFactory;
+            _logger = loggerFactory?.CreateLogger(nameof(IdentityInitialLoad));
+        }
+
+        public async Task SeedRoles()
+        {
+            using (var scope = _provider.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
+   
                 if (!await roleManager.RoleExistsAsync("admin")
                     && !await roleManager.RoleExistsAsync("user")
                     && !await roleManager.RoleExistsAsync("sensor"))
                 {
-                    logger.LogInformation("Creating roles");
+                    _logger.LogInformation("Creating roles");
                     await roleManager.CreateAsync(new AppRole("admin"));
                     await roleManager.CreateAsync(new AppRole("user"));
                     await roleManager.CreateAsync(new AppRole("sensor"));
                 }
+            }
+        }
+
+        public async Task SeedUsers()
+        {
+            using (var scope = _provider.CreateScope())
+            {
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
                 if (await userManager.FindByNameAsync("admin") != null) return;
 
@@ -43,7 +58,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
 
                 const string password = "admin1";
 
-                logger.LogInformation("Creating admin user");
+                _logger.LogInformation("Creating admin user");
                 await userManager.CreateAsync(adminUser, password);
                 await userManager.AddToRoleAsync(adminUser, "admin");
                 await userManager.AddToRoleAsync(adminUser, "user");

@@ -12,8 +12,9 @@ namespace SmartHome.Core.MqttBroker
 {
     public class MqttService : IMqttService
     {
-        private readonly ILogger _logger;
         public IMqttServerOptions ServerOptions { get; set; }
+
+        private readonly ILogger _logger;
         private readonly IMqttServer _mqttServer;
         private readonly MessageInterceptor _messageInterceptor;
 
@@ -29,7 +30,7 @@ namespace SmartHome.Core.MqttBroker
         {
             await _mqttServer.StartAsync(ServerOptions);
             StartIntecepting();
-            _logger.LogInformation("Mqtt broker started");
+            _logger.LogInformation($"Mqtt broker started on port: {ServerOptions.DefaultEndpointOptions.Port}");
         }
 
         public async Task StopBroker()

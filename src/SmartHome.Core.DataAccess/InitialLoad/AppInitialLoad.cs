@@ -1,53 +1,20 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SmartHome.Core.Domain.Entity;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SmartHome.Core.Domain.DictionaryEntity;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {
-    public static class AppInitialLoad
+    public static class DevelopInitialLoad
     {
         public static async Task Seed(IServiceProvider provider)
         {
             using (IServiceScope scope = provider.CreateScope())
             {
-                var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>()
-                    .CreateLogger(nameof(AppInitialLoad));
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                if (!context.RequestReasons.Any())
-                {
-                    var requestReasons = new List<DataRequestReason>
-                    {
-                        new DataRequestReason
-                        {
-                            Id = (int)EDataRequestReason.Node,
-                            Reason = "Node",
-                            Description = "Node was initiator"
-                        },
-                        new DataRequestReason
-                        {
-                            Id = (int)EDataRequestReason.Scheduler,
-                            Reason = "Scheduler",
-                            Description = "Task scheduler was initiator"
-                        },
-                        new DataRequestReason
-                        {
-                        Id = (int)EDataRequestReason.User,
-                        Reason = "User",
-                        Description = "User was initiator"
-                    }
-                    };
-
-                    await context.AddRangeAsync(requestReasons);
-                    await context.SaveChangesAsync();
-                }
 
 
                 if (!context.ControlStrategies.Any())
@@ -60,7 +27,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control ESPURNA device over HTTP and REST",
                             ProviderName = "Mqtt",
-                            ContextName = "Espurna",
+                            ControlContext = "Espurna",
+                            MessageReceiveContext = "Espurna",
                         },
                         new ControlStrategy
                         {
@@ -68,7 +36,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control over MQTT",
                             ProviderName = "Mqtt",
-                            ContextName = "Espurna",
+                            ControlContext = "Espurna",
+                            MessageReceiveContext = "Espurna",
                             RegisteredSensors = new List<RegisteredSensors>()
                             {
                                 new RegisteredSensors
@@ -179,98 +148,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         context.Add(link);
                     }
 
-                    await context.SaveChangesAsync();
-                }
-
-
-                // currently not used
-                if (!context.Dictionaries.Any(x => x.Name == "gender"))
-                {
-                    var dictionaries = new List<Dictionary>
-                    {
-                        new Dictionary
-                        {
-                            Id = 1,
-                            Name = "gender",
-                            Values = new List<DictionaryValue>
-                            {
-                                new DictionaryValue
-                                {
-                                    Id = 1,
-                                    Value = "Male",
-                                    IsActive = true,
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 2,
-                                    Value = "Female",
-                                    IsActive = true
-                                }
-                            }
-                        }
-                    };
-
-                    await context.Dictionaries.AddRangeAsync(dictionaries);
-                    await context.SaveChangesAsync();
-                }
-
-                if (!context.Dictionaries.Any(x => x.Name == "ControlProvider"))
-                {
-                    var dictionaries = new List<Dictionary>
-                    {
-                        new Dictionary
-                        {
-                            Id = 100,
-                            Name = "ControlProvider",
-                            Values = new List<DictionaryValue>
-                            {
-                                new DictionaryValue
-                                {
-                                    Id = 100,
-                                    Value = "Mqtt",
-                                    IsActive = true,
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 101,
-                                    Value = "Mqtt",
-                                    IsActive = true
-                                }
-                            }
-                        }
-                    };
-
-                    await context.Dictionaries.AddRangeAsync(dictionaries);
-                    await context.SaveChangesAsync();
-                }
-
-                if (!context.Dictionaries.Any(x => x.Name == "ControlContext"))
-                {
-                    var dictionaries = new List<Dictionary>
-                    {
-                        new Dictionary
-                        {
-                            Id = 200,
-                            Name = "ControlContext",
-                            Values = new List<DictionaryValue>
-                            {
-                                new DictionaryValue
-                                {
-                                    Id = 200,
-                                    Value = "Espurna",
-                                    IsActive = true,
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 201,
-                                    Value = "Custom",
-                                    IsActive = true
-                                }
-                            }
-                        }
-                    };
-
-                    await context.Dictionaries.AddRangeAsync(dictionaries);
                     await context.SaveChangesAsync();
                 }
             }

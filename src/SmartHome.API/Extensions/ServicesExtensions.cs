@@ -5,18 +5,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SmartHome.Core.BusinessLogic;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Role;
 using SmartHome.Core.Domain.User;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
-using SmartHome.Core.Providers.Rest.Contracts;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartHome.API.Security.Token;
+using SmartHome.Core.Contracts.Rest.Control;
+using SmartHome.Core.Services;
 
 namespace SmartHome.API.Extensions
 {
@@ -24,11 +25,13 @@ namespace SmartHome.API.Extensions
     {
         public static void RegisterAppServicesToIocContainer(this IServiceCollection services)
         {
+            services.AddTransient<ITokenBuilder, TokenBuilder>();
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddTransient<INodeRepository, NodeRepository>();
             services.AddTransient<INodeDataRepository, NodeDataRepository>();
             services.AddTransient<INodeService, NodeService>();
             services.AddTransient<INodeDataService, NodeDataService>();
+            services.AddTransient<IDictionaryService, DictionaryService>();
             services.AddTransient<MqttMessageProcessor>();
             services.AddTransient<MessageInterceptor>();
 

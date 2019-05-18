@@ -11,12 +11,17 @@ namespace SmartHome.Core.Domain.Entity
         public string ProviderName { get; set; }
 
         [Required, MaxLength(50)]
-        public string ContextName { get; set; }
+        public string ControlContext { get; set; }
+
+        [Required, MaxLength(50)]
+        public string MessageReceiveContext { get; set; }
 
         [MaxLength(250)]
         public string Description { get; set; }
 
         public bool IsActive { get; set; }
+
+        public ICollection<Node> Nodes { get; set; }
 
         public ICollection<RegisteredSensors> RegisteredSensors { get; set; }
 
