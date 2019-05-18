@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
 using SmartHome.Core.Domain.User;
 
 namespace SmartHome.Core.Domain.Entity
@@ -9,7 +10,7 @@ namespace SmartHome.Core.Domain.Entity
     [Table("tbl_node")]
     public class Node : EntityBase
     {
-        [MaxLength(50)]
+        [Required, MaxLength(50)]
         public string Name { get; set; }
 
         [MaxLength(500)]
@@ -46,7 +47,7 @@ namespace SmartHome.Core.Domain.Entity
 
         // Navigation & relationship properties
         public ControlStrategy ControlStrategy { get; set; }
-        public int ControlStrategyId { get; set; }
+        public int? ControlStrategyId { get; set; }
 
         public int CreatedById { get; set; }
         public AppUser CreatedBy { get; set; }

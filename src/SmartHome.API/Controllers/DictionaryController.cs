@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.Core.Domain.DictionaryEntity;
 using SmartHome.Core.Services;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]

@@ -244,7 +244,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<string>("ConfigMetadata")
                         .HasMaxLength(2147483647);
 
-                    b.Property<int>("ControlStrategyId");
+                    b.Property<int?>("ControlStrategyId");
 
                     b.Property<DateTime>("Created");
 
@@ -263,6 +263,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .HasMaxLength(40);
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50);
 
                     b.Property<string>("Password")
@@ -278,6 +279,9 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasIndex("ControlStrategyId");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("tbl_node");
                 });
@@ -503,9 +507,9 @@ namespace SmartHome.Core.DataAccess.Migrations
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.Node", b =>
                 {
                     b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
-                        .WithMany()
+                        .WithMany("Nodes")
                         .HasForeignKey("ControlStrategyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("SmartHome.Core.Domain.User.AppUser", "CreatedBy")
                         .WithMany("CreatedNodes")

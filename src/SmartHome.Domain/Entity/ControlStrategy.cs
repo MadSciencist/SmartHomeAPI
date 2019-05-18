@@ -21,6 +21,8 @@ namespace SmartHome.Core.Domain.Entity
 
         public bool IsActive { get; set; }
 
+        public ICollection<Node> Nodes { get; set; }
+
         public ICollection<RegisteredSensors> RegisteredSensors { get; set; }
 
         // Many-to-many relationship

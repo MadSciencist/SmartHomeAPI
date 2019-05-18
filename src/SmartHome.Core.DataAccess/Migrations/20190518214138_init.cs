@@ -296,7 +296,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 50, nullable: true),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: true),
                     IpAddress = table.Column<string>(maxLength: 20, nullable: true),
                     Port = table.Column<int>(nullable: false),
@@ -307,7 +307,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                     BaseTopic = table.Column<string>(maxLength: 100, nullable: true),
                     ClientId = table.Column<string>(maxLength: 100, nullable: true),
                     ConfigMetadata = table.Column<string>(maxLength: 2147483647, nullable: true),
-                    ControlStrategyId = table.Column<int>(nullable: false),
+                    ControlStrategyId = table.Column<int>(nullable: true),
                     CreatedById = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false)
                 },
@@ -319,7 +319,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                         column: x => x.ControlStrategyId,
                         principalTable: "tbl_control_strategy",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_tbl_node_tbl_user_CreatedById",
                         column: x => x.CreatedById,
@@ -443,6 +443,12 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "IX_tbl_node_CreatedById",
                 table: "tbl_node",
                 column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_node_Name",
+                table: "tbl_node",
+                column: "Name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_node_data_NodeId",

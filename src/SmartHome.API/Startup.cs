@@ -14,7 +14,10 @@ using SmartHome.Core.Contracts.Rest.Control.Extensions;
 using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.MqttBroker;
 using System;
+using System.Reflection;
+using AutoMapper;
 using SmartHome.Core.Contracts.Mqtt.MessageHandling.Extensions;
+using SmartHome.Core.Services;
 
 namespace SmartHome.API
 {
@@ -40,10 +43,10 @@ namespace SmartHome.API
             services.AddJwtAuthentication(_configuration);
             services.AddAuthorizationPolicies();
 
-            services.AddTransient<ITokenBuilder, TokenBuilder>();
-
             // BL & Services
             services.RegisterAppServicesToIocContainer();
+
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService)));
 
             // CORS for dev env
             services.AddDefaultCorsPolicy();
@@ -68,7 +71,7 @@ namespace SmartHome.API
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf, IMapper autoMapper)
         {
             if (env.IsDevelopment())
             {
@@ -77,6 +80,8 @@ namespace SmartHome.API
                 app.UseStatusCodePages();
                 app.UseCors("CorsPolicy");               
             }
+
+            autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             // custom logging middleware 
             app.UseLoggingExceptionHandler();

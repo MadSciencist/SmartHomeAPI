@@ -13,7 +13,6 @@ namespace SmartHome.Core.Utils
 
         public static string GetClaimedIdentifier(ClaimsPrincipal principal)
         {
-            //return principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
             return principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
         }
 
