@@ -71,6 +71,7 @@ namespace SmartHome.Core.Services
                 Description = description,
             };
 
+            // TODO is transcation needed right now?
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try

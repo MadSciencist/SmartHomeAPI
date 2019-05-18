@@ -18,7 +18,10 @@ namespace SmartHome.Core.DataAccess.InitialLoad
             await identitySeeder.SeedRoles();
             await identitySeeder.SeedUsers();
 
-            AppInitialLoad.Seed(_serviceProvider).Wait(); // TODO
+            await DictionaryInitialLoad.Seed(_serviceProvider);
+            await ConfigInitialLoad.Seed(_serviceProvider);
+
+            DevelopInitialLoad.Seed(_serviceProvider).Wait();
         }
     }
 }
