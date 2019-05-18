@@ -60,7 +60,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control ESPURNA device over HTTP and REST",
                             ProviderName = "Mqtt",
-                            ContextName = "Espurna",
+                            ControlContext = "Espurna",
+                            MessageReceiveContext = "Espurna",
                         },
                         new ControlStrategy
                         {
@@ -68,7 +69,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control over MQTT",
                             ProviderName = "Mqtt",
-                            ContextName = "Espurna",
+                            ControlContext = "Espurna",
+                            MessageReceiveContext = "Espurna",
                             RegisteredSensors = new List<RegisteredSensors>()
                             {
                                 new RegisteredSensors

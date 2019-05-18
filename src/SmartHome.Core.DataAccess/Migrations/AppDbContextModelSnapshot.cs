@@ -171,7 +171,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ContextName")
+                    b.Property<string>("ControlContext")
                         .IsRequired()
                         .HasMaxLength(50);
 
@@ -179,6 +179,10 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .HasMaxLength(250);
 
                     b.Property<bool>("IsActive");
+
+                    b.Property<string>("MessageReceiveContext")
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.Property<string>("ProviderName")
                         .IsRequired()

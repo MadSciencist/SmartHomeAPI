@@ -1,11 +1,11 @@
-﻿using MQTTnet;
+﻿using System.Threading.Tasks;
+using MQTTnet;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.MqttBroker;
-using System.Threading.Tasks;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.MqttBroker;
 
-namespace SmartHome.Core.Providers.Mqtt.Contracts.Espurna
+namespace SmartHome.Core.Contracts.Mqtt.Control.Espurna
 {
     public class SetRelay : IMqttControlStrategy
     {

@@ -24,13 +24,14 @@ namespace SmartHome.Core.BusinessLogic
             if(message == null) return;
 
             var node = await _nodeRepository.GetByClientIdAsync(message.ClientId);
-            if(node == null)
-                throw new SmartHomeException("Received message with invalid ClientId");
+            if (node == null)
+                return;
+                //throw new SmartHomeException("Received message with invalid ClientId");
 
             if (string.Compare(node.ControlStrategy.ProviderName, "Mqtt", StringComparison.InvariantCultureIgnoreCase) != 0)
                 throw new SmartHomeException($"Received message from clientId: {node.ClientId} with invalid control strategy");
 
-            var resolverClassName = $"SmartHome.Core.BusinessLogic.MqttMessageResolvers.{node.ControlStrategy.ContextName}";
+            var resolverClassName = $"SmartHome.Core.BusinessLogic.MqttMessageResolvers.{node.ControlStrategy.MessageReceiveContext}";
 
             if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageResolver topicResolver))
                 throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");

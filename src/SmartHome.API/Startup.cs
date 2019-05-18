@@ -11,10 +11,10 @@ using SmartHome.API.Extensions;
 using SmartHome.API.Security.Token;
 using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.MqttBroker;
-using SmartHome.Core.Providers.Rest.Contracts.Extensions;
 using System;
+using SmartHome.Core.Contracts.Mqtt.Control.Extensions;
+using SmartHome.Core.Contracts.Rest.Control.Extensions;
 using SmartHome.Core.Extensions;
-using SmartHome.Core.Providers.Mqtt.Contracts.Extensions;
 
 namespace SmartHome.API
 {

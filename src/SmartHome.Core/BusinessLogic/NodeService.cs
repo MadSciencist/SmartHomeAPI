@@ -117,7 +117,7 @@ namespace SmartHome.Core.BusinessLogic
             // resolve control executor
             var strategy = node.ControlStrategy;
             var executorFullyQualifiedName =
-                $"SmartHome.Core.Providers.{strategy.ProviderName}.Contracts.{strategy.ContextName}.{commandEntity.Command.ExecutorClassName}";
+                $"SmartHome.Core.Contracts.{strategy.ProviderName}.Control.{strategy.ControlContext}.{commandEntity.Command.ExecutorClassName}";
 
             if (!(_container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
             {

@@ -1,8 +1,8 @@
-﻿using Autofac;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
+using Autofac;
 
-namespace SmartHome.Core.Providers.Rest.Contracts.Extensions
+namespace SmartHome.Core.Contracts.Rest.Control.Extensions
 {
     public static class IoCExtensions
     {

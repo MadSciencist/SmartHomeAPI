@@ -4,7 +4,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using SmartHome.Core.Infrastructure;
 
-namespace SmartHome.Core.Providers.Rest.Contracts
+namespace SmartHome.Core.Contracts.Rest.Control
 {
     public class PersistentHttpClient : IDisposable
     {

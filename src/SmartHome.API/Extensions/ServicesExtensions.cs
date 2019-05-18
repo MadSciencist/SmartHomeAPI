@@ -12,11 +12,11 @@ using SmartHome.Core.Domain.Role;
 using SmartHome.Core.Domain.User;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
-using SmartHome.Core.Providers.Rest.Contracts;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartHome.Core.Contracts.Rest.Control;
 
 namespace SmartHome.API.Extensions
 {

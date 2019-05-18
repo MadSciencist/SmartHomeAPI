@@ -2,7 +2,7 @@
 using System.Reflection;
 using Autofac;
 
-namespace SmartHome.Core.Providers.Mqtt.Contracts.Extensions
+namespace SmartHome.Core.Contracts.Mqtt.Control.Extensions
 {
     public static class IoCExtensions
     {
