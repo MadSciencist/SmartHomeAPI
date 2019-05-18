@@ -9,12 +9,12 @@ using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.API.Security.Token;
+using SmartHome.Core.Contracts.Mqtt.Control.Extensions;
+using SmartHome.Core.Contracts.Rest.Control.Extensions;
 using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.MqttBroker;
 using System;
-using SmartHome.Core.Contracts.Mqtt.Control.Extensions;
-using SmartHome.Core.Contracts.Rest.Control.Extensions;
-using SmartHome.Core.Extensions;
+using SmartHome.Core.Contracts.Mqtt.MessageHandling.Extensions;
 
 namespace SmartHome.API
 {
@@ -61,7 +61,7 @@ namespace SmartHome.API
             builder.RegisterRestNodeContracts();
             builder.RegisterMqttNodeContracts();
 
-            builder.RegisterTopicResolvers();
+            builder.RegisterMqttMessageHandlers();
 
             ApplicationContainer = builder.Build();
 

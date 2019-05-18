@@ -1,12 +1,12 @@
-﻿using Autofac;
+﻿using System;
+using System.Threading.Tasks;
+using Autofac;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
-using System;
-using System.Threading.Tasks;
-using SmartHome.Core.BusinessLogic.MqttMessageResolvers;
+using SmartHome.Core.MessageHandlers;
 
-namespace SmartHome.Core.BusinessLogic
+namespace SmartHome.Core.Services
 {
     public class MqttMessageProcessor
     {
@@ -21,22 +21,20 @@ namespace SmartHome.Core.BusinessLogic
 
         public async Task ProcessMessage(MqttMessageDto message)
         {
-            if(message == null) return;
+            if (message == null) return;
 
             var node = await _nodeRepository.GetByClientIdAsync(message.ClientId);
-            if (node == null)
-                return;
-                //throw new SmartHomeException("Received message with invalid ClientId");
+            if (node == null) return;
 
             if (string.Compare(node.ControlStrategy.ProviderName, "Mqtt", StringComparison.InvariantCultureIgnoreCase) != 0)
                 throw new SmartHomeException($"Received message from clientId: {node.ClientId} with invalid control strategy");
 
-            var resolverClassName = $"SmartHome.Core.BusinessLogic.MqttMessageResolvers.{node.ControlStrategy.MessageReceiveContext}";
+            var resolverClassName = $"SmartHome.Core.Contracts.Mqtt.MessageHandling.{node.ControlStrategy.MessageReceiveContext}";
 
-            if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageResolver topicResolver))
+            if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageHandler topicResolver))
                 throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");
 
-            await topicResolver.Resolve(node, message);
+            await topicResolver.Handle(node, message);
         }
     }
 }

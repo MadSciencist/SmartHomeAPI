@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SmartHome.Core.BusinessLogic;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Role;
@@ -17,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SmartHome.Core.Contracts.Rest.Control;
+using SmartHome.Core.Services;
 
 namespace SmartHome.API.Extensions
 {
@@ -29,6 +29,7 @@ namespace SmartHome.API.Extensions
             services.AddTransient<INodeDataRepository, NodeDataRepository>();
             services.AddTransient<INodeService, NodeService>();
             services.AddTransient<INodeDataService, NodeDataService>();
+            services.AddTransient<IDictionaryService, DictionaryService>();
             services.AddTransient<MqttMessageProcessor>();
             services.AddTransient<MessageInterceptor>();
 

@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.DTO;
-using SmartHome.Core.BusinessLogic;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using System.Threading.Tasks;
+using SmartHome.Core.Services;
 
 namespace SmartHome.API.Controllers
 {

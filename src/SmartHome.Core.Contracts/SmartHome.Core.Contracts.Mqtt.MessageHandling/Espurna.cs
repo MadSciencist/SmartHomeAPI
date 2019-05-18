@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SmartHome.Core.Domain;
+﻿using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SmartHome.Core.MessageHandlers;
+using SmartHome.Core.Services;
 
-namespace SmartHome.Core.BusinessLogic.MqttMessageResolvers
+namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 {
-    public class Espurna : IMqttMessageResolver
+    public class Espurna : IMqttMessageHandler
     {
         private readonly INodeDataService _nodeDataService;
 
@@ -18,7 +20,7 @@ namespace SmartHome.Core.BusinessLogic.MqttMessageResolvers
             _nodeDataService = nodeDataService;
         }
 
-        public async Task Resolve(Node node, MqttMessageDto message)
+        public async Task Handle(Node node, MqttMessageDto message)
         {
             // check if topic contains valid espurna sensor element
             foreach (var validSensorName in ValidSensors.Select(x => x.Magnitude))

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Services;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {
@@ -14,30 +13,19 @@ namespace SmartHome.API.Controllers
     [Produces("application/json")]
     public class DictionaryController : ControllerBase
     {
-        private readonly IGenericRepository<Dictionary> _dictRepository;
+        private readonly IDictionaryService _dictionaryService;
 
-        public DictionaryController(IGenericRepository<Dictionary> dictRepository)
+        public DictionaryController(IHttpContextAccessor contextAccessor, IDictionaryService dictionaryService)
         {
-            _dictRepository = dictRepository;
-        }
-
-        [HttpGet("getAll")]
-        [ProducesResponseType(typeof(IEnumerable<Dictionary>), StatusCodes.Status200OK)]
-        public IActionResult GetAll()
-        {
-            IEnumerable<Dictionary> dictionaries = _dictRepository.AsQueryableNoTrack()
-                .Include(x => x.Values);
-
-            return Ok(dictionaries);
+            _dictionaryService = dictionaryService;
+            _dictionaryService.ClaimsOwner = contextAccessor.HttpContext.User;
         }
 
         [HttpGet("getNames")]
         [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
-        public IActionResult GetNames()
+        public async Task<IActionResult> GetNames()
         {
-            IEnumerable<string> dictionaries = _dictRepository.AsQueryableNoTrack()
-                .Distinct()
-                .Select(x => x.Name);
+            var dictionaries = await _dictionaryService.GetDictionaryNames();
 
             return Ok(dictionaries);
         }
@@ -45,16 +33,12 @@ namespace SmartHome.API.Controllers
         [HttpGet("getByName/{name}")]
         [ProducesResponseType(typeof(Dictionary), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetByName(string name)
+        public async Task<IActionResult> GetByName(string name)
         {
-            Dictionary dictionary = _dictRepository.AsQueryableNoTrack()
-                .Include(x => x.Values)
-                .FirstOrDefault(x => x.Name == name);
+            var dictionary = await _dictionaryService.GetDictionaryByName(name);
 
             if (dictionary == null)
-            {
                 return NotFound();
-            }
 
             return Ok(dictionary);
         }

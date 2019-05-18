@@ -1,7 +1,7 @@
-﻿using SmartHome.Core.BusinessLogic;
-using SmartHome.Core.Dto;
+﻿using SmartHome.Core.Dto;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using SmartHome.Core.Services;
 
 namespace SmartHome.Core.MqttBroker.MessageHandling
 {

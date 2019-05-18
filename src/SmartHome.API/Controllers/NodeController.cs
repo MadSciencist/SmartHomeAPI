@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using SmartHome.API.DTO;
 using SmartHome.API.Utils;
-using SmartHome.Core.BusinessLogic;
 using SmartHome.Core.Infrastructure;
 using System.Net;
 using System.Threading.Tasks;
+using SmartHome.Core.Services;
 
 namespace SmartHome.API.Controllers
 {

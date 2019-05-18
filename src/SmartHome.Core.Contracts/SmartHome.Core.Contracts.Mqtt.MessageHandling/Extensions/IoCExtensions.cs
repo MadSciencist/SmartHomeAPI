@@ -1,9 +1,9 @@
 ﻿using Autofac;
+using SmartHome.Core.MessageHandlers;
 using System.Linq;
 using System.Reflection;
-using SmartHome.Core.BusinessLogic.MqttMessageResolvers;
 
-namespace SmartHome.Core.Extensions
+namespace SmartHome.Core.Contracts.Mqtt.MessageHandling.Extensions
 {
     public static class IoCExtensions
     {
@@ -12,15 +12,15 @@ namespace SmartHome.Core.Extensions
         /// They can be resolved using fully qualified name
         /// </summary>
         /// <param name="builder"></param>
-        public static void RegisterTopicResolvers(this ContainerBuilder builder)
+        public static void RegisterMqttMessageHandlers(this ContainerBuilder builder)
         {
-            var resolversAsm = Assembly.GetAssembly(typeof(IMqttMessageResolver)).GetTypes();
+            var resolversAsm = Assembly.GetExecutingAssembly().GetTypes();
 
             var resolvers = resolversAsm.ToDictionary(ex => ex.FullName);
 
             foreach (var resolver in resolvers)
             {
-                if(resolver.Key.Contains("MqttMessageResolvers"))
+                if(resolver.Key.Contains("MessageHandling"))
                 builder.RegisterType(resolver.Value)
                     .Named<object>(resolver.Key);
             }

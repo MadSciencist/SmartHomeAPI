@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Utils;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace SmartHome.Core.BusinessLogic
+namespace SmartHome.Core.Services
 {
     public interface INodeService : IUserAuditable
     {
