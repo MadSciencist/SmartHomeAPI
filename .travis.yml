@@ -20,7 +20,7 @@ before_script:
 script:
  - dotnet sonarscanner begin /k:"MadSciencist_SmartHomeAPI" /n:"SmartHomeAPI" /v:"1.0.0" /o:"madsciencist-github" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="$SONAR_TOKEN" /d:sonar.language="cs" /d:sonar.exclusions="**/bin/**/*,**/obj/**/*" /d:sonar.cs.opencover.reportsPaths="lcov.opencover.xml" || true
  - dotnet build
- - dotnet test test/SmartHome.UnitTests/SmartHome.UnitTests.csproj
+ - dotnet test test/SmartHome.UnitTests/SmartHome.DataAccess.Tests.csproj
  - dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN" || true
 notifications:
   email:
