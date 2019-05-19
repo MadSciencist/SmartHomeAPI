@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using AutoMapper;
+using FluentValidation;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess;
@@ -12,7 +8,13 @@ using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
@@ -22,14 +24,16 @@ namespace SmartHome.Core.Services
 
         private readonly INodeRepository _nodeRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<NodeDto> _validator;
         private readonly ILifetimeScope _container;
         private readonly AppDbContext _context;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, AppDbContext context)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, IValidator<NodeDto> validator, AppDbContext context)
         {
             _container = container;
             _nodeRepository = nodeRepository;
             _mapper = mapper;
+            _validator = validator;
             _context = context;
         }
 
@@ -63,10 +67,18 @@ namespace SmartHome.Core.Services
             return new List<Command>();
         }
 
-        public async Task<CreateNodeDto> CreateNode(CreateNodeDto nodeData)
+        public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
         {
-            var userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
+            var response = new ServiceResult<NodeDto>();
+            var validationResult = _validator.Validate(nodeData);
 
+            if (!validationResult.IsValid)
+            {
+                response.Alerts = validationResult.GetValidationMessages();
+                return response;
+            }
+
+            var userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
             var nodeToCreate = _mapper.Map<Node>(nodeData);
 
             nodeToCreate.CreatedById = userId;
@@ -76,10 +88,10 @@ namespace SmartHome.Core.Services
             {
                 try
                 {
-                    Node createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
+                    var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
 
-                    // create entry in link table - using Id's works fine
-                    _context.Add(new AppUserNodeLink()
+                    // create entry in link table
+                    _context.Add(new AppUserNodeLink
                     {
                         NodeId = createdNode.Id,
                         UserId = userId
@@ -87,12 +99,14 @@ namespace SmartHome.Core.Services
 
                     _context.SaveChanges();
                     transaction.Commit();
-                    return _mapper.Map<CreateNodeDto>(createdNode);
+                    response.Data = _mapper.Map<NodeDto>(createdNode);
+                    return response;
                 }
-                catch
+                catch(Exception ex)
                 {
                     transaction.Rollback();
-                    return null;
+                    response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                    return response;
                 }
             }
         }

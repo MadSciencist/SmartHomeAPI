@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -27,22 +28,20 @@ namespace SmartHome.API.Controllers
         }
 
         [HttpPost("create")]
-        [ProducesResponseType(typeof(ResponseDtoContainer<CreateNodeDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ResponseDtoContainer<object>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(CreateNodeDto node)
+        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Create(NodeDto node)
         {
-            var response = new ResponseDtoContainer<object>();
+            var serviceResult = await _nodeService.CreateNode(node);
+            serviceResult.HideExceptionMessages();
 
-            try
-            {
-                response.Data = await _nodeService.CreateNode(node);
-                return Ok(response);
-            }
-            catch (SmartHomeException ex)
-            {
-                response.Errors.Add(ExceptionLogHelper.CreateErrorDetails(ex.Message, (int)HttpStatusCode.BadRequest, HttpContext));
-                return BadRequest(response);
-            }
+            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Error))
+                return BadRequest(serviceResult);
+
+            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
+                return StatusCode(StatusCodes.Status500InternalServerError, serviceResult);
+
+            return Ok(serviceResult);
         }
 
         [HttpPost("{nodeId}/command/{command}")]
@@ -57,11 +56,11 @@ namespace SmartHome.API.Controllers
             }
             catch (SmartHomeException ex)
             {
-                response.Errors.Add(ExceptionLogHelper.CreateErrorDetails(ex.Message, (int) HttpStatusCode.BadRequest, HttpContext));
+                response.Errors.Add(ExceptionLogHelper.CreateErrorDetails(ex.Message, (int)HttpStatusCode.BadRequest, HttpContext));
                 return BadRequest(response);
             }
         }
-        
+
         //[HttpGet("{nodeId}/commands")]
         //public async Task<IActionResult> GetCommands(int nodeId)
         //{

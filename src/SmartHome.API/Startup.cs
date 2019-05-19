@@ -16,7 +16,9 @@ using SmartHome.Core.MqttBroker;
 using System;
 using System.Reflection;
 using AutoMapper;
+using FluentValidation.AspNetCore;
 using SmartHome.Core.Contracts.Mqtt.MessageHandling.Extensions;
+using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Services;
 
 namespace SmartHome.API
@@ -36,7 +38,14 @@ namespace SmartHome.API
         {
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(json => json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+                .AddJsonOptions(json => json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
+                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>());
+
+            // remove default ASP.NET Core validator - We are going to use FluentValidation
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
 
             // Security
             services.AddSqlIdentityPersistence(_configuration);
@@ -46,6 +55,7 @@ namespace SmartHome.API
             // BL & Services
             services.RegisterAppServicesToIocContainer();
 
+            // Add AutoMapper configs
             services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService)));
 
             // CORS for dev env
