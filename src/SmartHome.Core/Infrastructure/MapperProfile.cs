@@ -8,7 +8,7 @@ namespace SmartHome.Core.Infrastructure
     {
         public MapperProfile()
         {
-            CreateMap<CreateNodeDto, Node>()
+            CreateMap<NodeDto, Node>()
                 .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
                 .ForMember(x => x.IpAddress, opt => opt.MapFrom(x => x.IpAddress))

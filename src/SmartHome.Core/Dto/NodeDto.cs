@@ -1,6 +1,6 @@
 ﻿namespace SmartHome.Core.Dto
 {
-    public class CreateNodeDto
+    public class NodeDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

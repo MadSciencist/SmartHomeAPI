@@ -57,8 +57,8 @@ namespace SmartHome.API.Extensions
                 }
             };
 
-            var responseDto = new ResponseDtoContainer<object>();
-            responseDto.Errors.Add(errorDetails);
+            var responseDto = new ServiceResult<object> {Data = errorDetails};
+            responseDto.Alerts.Add(new Alert("System error occured", MessageType.Exception));
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(responseDto));
         }

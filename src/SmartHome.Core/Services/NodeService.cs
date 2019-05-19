@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using AutoMapper;
+using FluentValidation;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess;
@@ -12,7 +8,14 @@ using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace SmartHome.Core.Services
 {
@@ -22,64 +25,44 @@ namespace SmartHome.Core.Services
 
         private readonly INodeRepository _nodeRepository;
         private readonly IMapper _mapper;
+        private readonly IValidator<NodeDto> _validator;
         private readonly ILifetimeScope _container;
         private readonly AppDbContext _context;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, AppDbContext context)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, IValidator<NodeDto> validator, AppDbContext context)
         {
             _container = container;
             _nodeRepository = nodeRepository;
             _mapper = mapper;
+            _validator = validator;
             _context = context;
         }
 
-        public IEnumerable<Command> GetNodeCommands(int nodeId)
+        public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
         {
-            //int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
+            var response = new ServiceResult<NodeDto>();
+            var validationResult = _validator.Validate(nodeData);
 
-            ////TODO check if user has permissions
+            if (!validationResult.IsValid)
+            {
+                response.Alerts = validationResult.GetValidationMessages();
+                return response;
+            }
 
-            //// TODO move this to repo
-            //var nodeCommands = _nodeRepository
-            //    .AsQueryableNoTrack()
-            //    .Include(x => x.AllowedCommands)
-            //    .ThenInclude(x => x.NodeCommand)
-            //    .FirstOrDefault(x => x.Id == nodeId)
-            //    ?.AllowedCommands
-            //    .Select(x => new NodeCommand
-            //    {
-            //        Id = x.NodeCommand.Id,
-            //        BaseUri = x.NodeCommand.BaseUri,
-            //        Name = x.NodeCommand.Name,
-            //        Description = x.NodeCommand.Description,
-            //        Type = x.NodeCommand.Type,
-            //        Value = x.NodeCommand.Value
-            //        // we want to avoid nodes to get rid off circular dependencies 
-            //        // TODO create NodeCommandDTO without nodes property
-            //    });
-
-            //return nodeCommands;
-
-            return new List<Command>();
-        }
-
-        public async Task<CreateNodeDto> CreateNode(CreateNodeDto nodeData)
-        {
             var userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
-
             var nodeToCreate = _mapper.Map<Node>(nodeData);
 
             nodeToCreate.CreatedById = userId;
             nodeToCreate.Created = DateTime.UtcNow;
 
-            using (var transaction = _context.Database.BeginTransaction())
+            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    Node createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
+                    var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
 
-                    // create entry in link table - using Id's works fine
-                    _context.Add(new AppUserNodeLink()
+                    // create entry in link table
+                    _context.Add(new AppUserNodeLink
                     {
                         NodeId = createdNode.Id,
                         UserId = userId
@@ -87,18 +70,23 @@ namespace SmartHome.Core.Services
 
                     _context.SaveChanges();
                     transaction.Commit();
-                    return _mapper.Map<CreateNodeDto>(createdNode);
+                    response.Data = _mapper.Map<NodeDto>(createdNode);
+                    response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+                    return response;
                 }
-                catch
+                catch(Exception ex)
                 {
                     transaction.Rollback();
-                    return null;
+                    response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                    return response;
                 }
             }
         }
 
-        public async Task<object> Control(int nodeId, string command, JObject commandParams)
+        public async Task<ServiceResult<object>> Control(int nodeId, string command, JObject commandParams)
         {
+            var response = new ServiceResult<object>();
+
             // get the node
             Node node = await _nodeRepository.GetByIdAsync(nodeId);
             int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
@@ -106,13 +94,15 @@ namespace SmartHome.Core.Services
             // check permissions
             if (node.AllowedUsers.Any(x => x.UserId != userId))
             {
-                throw new SmartHomeException("No access");
+                response.Alerts.Add(new Alert("Permissions error", MessageType.Error));
+                return response;
             }
 
             var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Alias?.ToLower() == command.ToLower());
             if (commandEntity == null)
             {
-                throw new SmartHomeException("Command not allowed");
+                response.Alerts.Add(new Alert("Command not allowed", MessageType.Error));
+                return response;
             }
 
             // resolve control executor
@@ -122,10 +112,14 @@ namespace SmartHome.Core.Services
 
             if (!(_container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
             {
-                throw new SmartHomeException("Not existing strategy");
+                response.Alerts.Add(new Alert("Not existing control strategy", MessageType.Error));
+                return response;
             }
 
-            return await strategyExecutor.Execute(node, commandEntity.Command, commandParams);
+            var executionResult =  await strategyExecutor.Execute(node, commandEntity.Command, commandParams);
+            response.Data = executionResult;
+
+            return response;
         }
     }
 }

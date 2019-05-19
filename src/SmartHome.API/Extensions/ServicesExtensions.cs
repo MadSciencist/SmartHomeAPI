@@ -15,8 +15,11 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using FluentValidation;
 using SmartHome.API.Security.Token;
 using SmartHome.Core.Contracts.Rest.Control;
+using SmartHome.Core.Dto;
+using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Services;
 
 namespace SmartHome.API.Extensions
