@@ -36,9 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.Control\SmartHome.Core.Contracts.Mqtt.Control.csproj" />
-    <ProjectReference Include="..\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.MessageHandling\SmartHome.Core.Contracts.Mqtt.MessageHandling.csproj" />
-    <ProjectReference Include="..\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj" />
+    <ProjectReference Include="..\..\SmartHome.Core.IoC\SmartHome.Core.IoC.csproj" />
     <ProjectReference Include="..\SmartHome.Core.MqttBroker\SmartHome.Core.MqttBroker.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />

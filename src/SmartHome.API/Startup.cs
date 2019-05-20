@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -8,18 +10,13 @@ using Microsoft.Extensions.DependencyInjection;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
-using SmartHome.API.Security.Token;
-using SmartHome.Core.Contracts.Mqtt.Control.Extensions;
-using SmartHome.Core.Contracts.Rest.Control.Extensions;
 using SmartHome.Core.DataAccess.InitialLoad;
+using SmartHome.Core.Infrastructure.Validators;
+using SmartHome.Core.IoC;
 using SmartHome.Core.MqttBroker;
+using SmartHome.Core.Services;
 using System;
 using System.Reflection;
-using AutoMapper;
-using FluentValidation.AspNetCore;
-using SmartHome.Core.Contracts.Mqtt.MessageHandling.Extensions;
-using SmartHome.Core.Infrastructure.Validators;
-using SmartHome.Core.Services;
 
 namespace SmartHome.API
 {
@@ -67,14 +64,10 @@ namespace SmartHome.API
             // This allows access http context and user in constructor
             services.AddHttpContextAccessor();
 
-            var builder = new ContainerBuilder();
+            // Register SmartHome dependencies using Autofac container
+            var builder = CoreDependencies.Register();
+
             builder.Populate(services);
-
-            // Add REST and MQTT contracts
-            builder.RegisterRestNodeContracts();
-            builder.RegisterMqttNodeContracts();
-
-            builder.RegisterMqttMessageHandlers();
 
             ApplicationContainer = builder.Build();
 
