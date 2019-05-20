@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.Control\SmartHome.Core.Contracts.Mqtt.Control.csproj" />
+    <ProjectReference Include="..\src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.MessageHandling\SmartHome.Core.Contracts.Mqtt.MessageHandling.csproj" />
+    <ProjectReference Include="..\src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj" />
+  </ItemGroup>
+
+</Project>
