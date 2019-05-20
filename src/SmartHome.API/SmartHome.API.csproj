@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SmartHome.Core.IoC\SmartHome.Core.IoC.csproj" />
-    <ProjectReference Include="..\SmartHome.Core.MqttBroker\SmartHome.Core.MqttBroker.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>

@@ -12,6 +12,8 @@
     <ProjectReference Include="..\src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.Control\SmartHome.Core.Contracts.Mqtt.Control.csproj" />
     <ProjectReference Include="..\src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.MessageHandling\SmartHome.Core.Contracts.Mqtt.MessageHandling.csproj" />
     <ProjectReference Include="..\src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj" />
+    <ProjectReference Include="..\src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj" />
+    <ProjectReference Include="..\src\SmartHome.Core\SmartHome.Core.csproj" />
   </ItemGroup>
 
 </Project>

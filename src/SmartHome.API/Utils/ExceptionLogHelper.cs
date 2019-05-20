@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using SmartHome.API.DTO;
+using SmartHome.API.Dto;
 using System;
 
 namespace SmartHome.API.Utils

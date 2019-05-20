@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.DataAccess.Tests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.DataAccess", "src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.MqttBroker", "src\SmartHome.Core.MqttBroker\SmartHome.Core.MqttBroker.csproj", "{86A23A1D-2035-44E2-9440-4D87585E843E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Mqtt.MessageHandling", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.MessageHandling\SmartHome.Core.Contracts.Mqtt.MessageHandling.csproj", "{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}"
@@ -23,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Mq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Rest.Control", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj", "{C17498C5-6A12-4DAF-A8CA-5C75B80F7221}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.Core.IoC", "SmartHome.Core.IoC\SmartHome.Core.IoC.csproj", "{97FA0EE5-3E1C-450A-A625-6149A7555807}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.IoC", "SmartHome.Core.IoC\SmartHome.Core.IoC.csproj", "{97FA0EE5-3E1C-450A-A625-6149A7555807}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,10 +49,6 @@ Global
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86A23A1D-2035-44E2-9440-4D87585E843E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86A23A1D-2035-44E2-9440-4D87585E843E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86A23A1D-2035-44E2-9440-4D87585E843E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86A23A1D-2035-44E2-9440-4D87585E843E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}.Release|Any CPU.ActiveCfg = Release|Any CPU

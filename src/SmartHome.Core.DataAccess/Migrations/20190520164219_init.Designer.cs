@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190518214138_init")]
+    [Migration("20190520164219_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -177,16 +177,20 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<string>("ControlProviderName")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
                     b.Property<string>("Description")
                         .HasMaxLength(250);
 
                     b.Property<bool>("IsActive");
 
-                    b.Property<string>("MessageReceiveContext")
+                    b.Property<string>("ReceiveContext")
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("ProviderName")
+                    b.Property<string>("ReceiveProviderName")
                         .IsRequired()
                         .HasMaxLength(50);
 

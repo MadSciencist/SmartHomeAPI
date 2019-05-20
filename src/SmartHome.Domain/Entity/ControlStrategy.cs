@@ -8,13 +8,16 @@ namespace SmartHome.Core.Domain.Entity
     public class ControlStrategy : EntityBase
     {
         [Required, MaxLength(50)]
-        public string ProviderName { get; set; }
+        public string ControlProviderName { get; set; }
 
         [Required, MaxLength(50)]
         public string ControlContext { get; set; }
 
         [Required, MaxLength(50)]
-        public string MessageReceiveContext { get; set; }
+        public string ReceiveProviderName { get; set; }
+
+        [Required, MaxLength(50)]
+        public string ReceiveContext { get; set; }
 
         [MaxLength(250)]
         public string Description { get; set; }

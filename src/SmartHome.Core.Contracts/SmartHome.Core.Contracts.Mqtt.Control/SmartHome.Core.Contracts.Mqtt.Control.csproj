@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SmartHome.Core.MqttBroker\SmartHome.Core.MqttBroker.csproj" />
     <ProjectReference Include="..\..\SmartHome.Core\SmartHome.Core.csproj" />
   </ItemGroup>
 

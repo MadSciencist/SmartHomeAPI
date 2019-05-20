@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using SmartHome.Core.DataAccess.Repository;
+﻿using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Utils;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeDataService : INodeDataService
+    public class NodeDataService : ServiceBase, INodeDataService
     {
-        public ClaimsPrincipal ClaimsOwner { get; set; }
-
         private readonly INodeDataRepository _nodeDataRepository;
 
         public NodeDataService(INodeDataRepository nodeDataRepository)

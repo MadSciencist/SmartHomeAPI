@@ -28,9 +28,10 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ProviderName = table.Column<string>(maxLength: 50, nullable: false),
+                    ControlProviderName = table.Column<string>(maxLength: 50, nullable: false),
                     ControlContext = table.Column<string>(maxLength: 50, nullable: false),
-                    MessageReceiveContext = table.Column<string>(maxLength: 50, nullable: false),
+                    ReceiveProviderName = table.Column<string>(maxLength: 50, nullable: false),
+                    ReceiveContext = table.Column<string>(maxLength: 50, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false)
                 },

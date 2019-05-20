@@ -5,41 +5,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using SmartHome.API.Security.Token;
 using SmartHome.Core.DataAccess;
-using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Role;
 using SmartHome.Core.Domain.User;
-using SmartHome.Core.MqttBroker;
-using SmartHome.Core.MqttBroker.MessageHandling;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using FluentValidation;
-using SmartHome.API.Security.Token;
-using SmartHome.Core.Contracts.Rest.Control;
-using SmartHome.Core.Dto;
-using SmartHome.Core.Infrastructure.Validators;
-using SmartHome.Core.Services;
 
 namespace SmartHome.API.Extensions
 {
     public static class ServicesExtensions
     {
-        public static void RegisterAppServicesToIocContainer(this IServiceCollection services)
+        public static void AddTokenBuilder(this IServiceCollection services)
         {
             services.AddTransient<ITokenBuilder, TokenBuilder>();
-            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddTransient<INodeRepository, NodeRepository>();
-            services.AddTransient<INodeDataRepository, NodeDataRepository>();
-            services.AddTransient<INodeService, NodeService>();
-            services.AddTransient<INodeDataService, NodeDataService>();
-            services.AddTransient<IDictionaryService, DictionaryService>();
-            services.AddTransient<MqttMessageProcessor>();
-            services.AddTransient<MessageInterceptor>();
-
-            services.AddSingleton<IMqttService, MqttService>();
-            services.AddSingleton(typeof(PersistentHttpClient));
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)

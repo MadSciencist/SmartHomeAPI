@@ -23,14 +23,16 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
         public async Task Handle(Node node, MqttMessageDto message)
         {
             // check if topic contains valid espurna sensor element
-            foreach (var validSensorName in ValidSensors.Select(x => x.Magnitude))
+            foreach (var validSensorName in ValidEspurnaSensors.Select(x => x.Magnitude))
             {
                 // if the topic contains valid sensor for espurna
                 if (message.Topic.Contains(validSensorName))
                 {
                     // if the user wants to save such sensor data
                     if (node.ControlStrategy.RegisteredSensors.Any(x => string.Compare(x.Name, validSensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
+                    {
                         await ExtractSaveData(message);
+                    }
                 }
             }
         }
@@ -38,7 +40,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
         private async Task ExtractSaveData(MqttMessageDto message)
         {
             var magnitude = message.Topic.Split("/").Last();
-            var unit = ValidSensors.First(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
+            var unit = ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
 
             await _nodeDataService.AddSingleAsync(EDataRequestReason.Node, new NodeDataDto
             {
@@ -49,7 +51,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
         }
 
         // https://github.com/xoseperez/espurna/wiki/MQTT
-        public static readonly ICollection<PhysicalValue> ValidSensors = new List<PhysicalValue>
+        public static readonly ICollection<PhysicalValue> ValidEspurnaSensors = new List<PhysicalValue>
         {
             new PhysicalValue("temperature", "C"),
             new PhysicalValue("humidity", "%"),

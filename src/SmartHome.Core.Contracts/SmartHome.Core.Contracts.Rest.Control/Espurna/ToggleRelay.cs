@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.RestClient;
 
 namespace SmartHome.Core.Contracts.Rest.Control.Espurna
 {
@@ -48,7 +50,7 @@ namespace SmartHome.Core.Contracts.Rest.Control.Espurna
 
             var uri = builder.ToString();
 
-            return await _httpClient.GetAsync(uri);
+            return await _httpClient.InvokeAsync(uri, Method.GET);
         }
     }
 }

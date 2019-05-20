@@ -4,15 +4,13 @@ using SmartHome.Core.Domain.DictionaryEntity;
 using SmartHome.Core.Utils;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class DictionaryService : IUserAuditable, IDictionaryService
+    public class DictionaryService : ServiceBase, IUserAuditable, IDictionaryService
     {
         private readonly IGenericRepository<Dictionary> _dictRepository;
-        public ClaimsPrincipal ClaimsOwner { get; set; }
 
         public DictionaryService(IGenericRepository<Dictionary> dictRepository)
         {

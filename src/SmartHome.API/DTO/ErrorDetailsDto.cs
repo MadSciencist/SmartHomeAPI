@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace SmartHome.API.DTO
+namespace SmartHome.API.Dto
 {
     public class ErrorDetailsDto
     {
