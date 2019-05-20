@@ -10,5 +10,4 @@ Develop:
 
 Metrics:
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=MadSciencist_SmartHomeAPI&metric=alert_status)](https://sonarcloud.io/dashboard?id=MadSciencist_SmartHomeAPI)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=MadSciencist_SmartHomeAPI&metric=coverage)](https://sonarcloud.io/dashboard?id=MadSciencist_SmartHomeAPI)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=MadSciencist_SmartHomeAPI&metric=ncloc)](https://sonarcloud.io/dashboard?id=MadSciencist_SmartHomeAPI)
