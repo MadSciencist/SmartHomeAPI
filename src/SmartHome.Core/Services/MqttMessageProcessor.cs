@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Autofac;
+using Microsoft.Extensions.Logging;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
@@ -12,11 +13,13 @@ namespace SmartHome.Core.Services
     {
         private readonly ILifetimeScope _container;
         private readonly INodeRepository _nodeRepository;
+        private readonly ILogger _logger;
 
-        public MqttMessageProcessor(ILifetimeScope container, INodeRepository nodeRepository)
+        public MqttMessageProcessor(ILifetimeScope container, INodeRepository nodeRepository, ILoggerFactory loggerFactory)
         {
             _container = container;
             _nodeRepository = nodeRepository;
+            _logger = loggerFactory.CreateLogger(typeof(MqttMessageProcessor));
         }
 
         public async Task ProcessMessage(MqttMessageDto message)
@@ -31,10 +34,18 @@ namespace SmartHome.Core.Services
 
             var resolverClassName = $"SmartHome.Core.Contracts.Mqtt.MessageHandling.{node.ControlStrategy.MessageReceiveContext}";
 
-            if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageHandler topicResolver))
+            if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageHandler messageHandler))
                 throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");
 
-            await topicResolver.Handle(node, message);
+            try
+            {
+                await messageHandler.Handle(node, message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "MQTT Broker exception");
+                throw;
+            }
         }
     }
 }

@@ -24,7 +24,6 @@ namespace SmartHome.API
     {
         public IContainer ApplicationContainer { get; private set; }
         private readonly IConfiguration _configuration;
-        private IMqttService _mqttService;
 
         public Startup(IConfiguration configuration)
         {
@@ -49,8 +48,8 @@ namespace SmartHome.API
             services.AddJwtAuthentication(_configuration);
             services.AddAuthorizationPolicies();
 
-            // BL & Services
-            services.RegisterAppServicesToIocContainer();
+            // JWT Token handling
+            services.AddTokenBuilder();
 
             // Add AutoMapper configs
             services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService)));
@@ -66,9 +65,7 @@ namespace SmartHome.API
 
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
-
             builder.Populate(services);
-
             ApplicationContainer = builder.Build();
 
             return new AutofacServiceProvider(ApplicationContainer);
@@ -111,9 +108,9 @@ namespace SmartHome.API
                 .WithClientId(conf.GetValue<string>("MqttBroker:ClientId"))
                 .Build();
 
-            _mqttService = ApplicationContainer.Resolve<IMqttService>();
-            _mqttService.ServerOptions = mqttOptions;
-            _mqttService.StartBroker().Wait();
+            var mqttService = ApplicationContainer.Resolve<IMqttService>();
+            mqttService.ServerOptions = mqttOptions;
+            mqttService.StartBroker().Wait();
         }
 
         private static void InitializeDatabase(IApplicationBuilder app)

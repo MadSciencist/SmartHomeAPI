@@ -11,18 +11,13 @@ using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeService : INodeService
+    public class NodeService : ServiceBase, INodeService
     {
-        public ClaimsPrincipal ClaimsOwner { get; set; }
-
         private readonly INodeRepository _nodeRepository;
         private readonly IMapper _mapper;
         private readonly IValidator<NodeDto> _validator;
@@ -55,7 +50,12 @@ namespace SmartHome.Core.Services
             nodeToCreate.CreatedById = userId;
             nodeToCreate.Created = DateTime.UtcNow;
 
-            using (IDbContextTransaction transaction = _context.Database.BeginTransaction())
+            return await SaveNode(nodeToCreate, userId, response);
+        }
+
+        private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
@@ -74,7 +74,7 @@ namespace SmartHome.Core.Services
                     response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
                     return response;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                     response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
