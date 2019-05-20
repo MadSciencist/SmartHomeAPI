@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SmartHome.API.DTO;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
-using System.Threading.Tasks;
 using SmartHome.Core.Services;
+using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {

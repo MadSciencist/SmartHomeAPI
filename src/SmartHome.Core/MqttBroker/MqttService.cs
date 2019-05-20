@@ -54,7 +54,6 @@ namespace SmartHome.Core.MqttBroker
         {
             try
             {
-
                 _mqttServer.UseApplicationMessageReceivedHandler(async e =>
                 {
                     await _messageInterceptor.Intercept(new ReceivedMessage

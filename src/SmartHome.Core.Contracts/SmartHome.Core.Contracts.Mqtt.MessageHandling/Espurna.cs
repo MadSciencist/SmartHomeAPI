@@ -30,7 +30,9 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                 {
                     // if the user wants to save such sensor data
                     if (node.ControlStrategy.RegisteredSensors.Any(x => string.Compare(x.Name, validSensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
+                    {
                         await ExtractSaveData(message);
+                    }
                 }
             }
         }

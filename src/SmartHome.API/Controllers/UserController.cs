@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SmartHome.API.DTO;
+using SmartHome.API.Dto;
 using SmartHome.API.Security.Token;
 using SmartHome.Core.Domain.User;
 using SmartHome.Core.Utils;

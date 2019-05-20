@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SmartHome.API.DTO;
 using SmartHome.Core.Infrastructure;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SmartHome.API.Dto;
 
 namespace SmartHome.API.Extensions
 {

@@ -7,6 +7,7 @@ using SmartHome.Core.MqttBroker.MessageHandling;
 using SmartHome.Core.Services;
 using System.Linq;
 using System.Reflection;
+using SmartHome.Core.RestClient;
 
 namespace SmartHome.Core.IoC
 {

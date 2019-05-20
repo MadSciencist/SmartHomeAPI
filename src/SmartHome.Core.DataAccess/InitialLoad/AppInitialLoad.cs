@@ -26,18 +26,20 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Id = 1,
                             IsActive = true,
                             Description = "Control ESPURNA device over HTTP and REST",
-                            ProviderName = "Mqtt",
+                            ControlProviderName = "Rest",
                             ControlContext = "Espurna",
-                            MessageReceiveContext = "Espurna",
+                            ReceiveProviderName = "Mqtt",
+                            ReceiveContext = "Espurna",
                         },
                         new ControlStrategy
                         {
                             Id = 2,
                             IsActive = true,
                             Description = "Control over MQTT",
-                            ProviderName = "Mqtt",
+                            ControlProviderName = "Rest",
                             ControlContext = "Espurna",
-                            MessageReceiveContext = "Espurna",
+                            ReceiveProviderName = "Mqtt",
+                            ReceiveContext = "Espurna",
                             RegisteredSensors = new List<RegisteredSensors>()
                             {
                                 new RegisteredSensors

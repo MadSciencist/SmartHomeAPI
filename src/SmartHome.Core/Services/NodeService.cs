@@ -108,7 +108,7 @@ namespace SmartHome.Core.Services
             // resolve control executor
             var strategy = node.ControlStrategy;
             var executorFullyQualifiedName =
-                $"SmartHome.Core.Contracts.{strategy.ProviderName}.Control.{strategy.ControlContext}.{commandEntity.Command.ExecutorClassName}";
+                $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{commandEntity.Command.ExecutorClassName}";
 
             if (!(_container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
             {

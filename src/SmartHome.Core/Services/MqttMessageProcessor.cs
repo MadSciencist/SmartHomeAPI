@@ -29,21 +29,21 @@ namespace SmartHome.Core.Services
             var node = await _nodeRepository.GetByClientIdAsync(message.ClientId);
             if (node == null) return;
 
-            if (string.Compare(node.ControlStrategy.ProviderName, "Mqtt", StringComparison.InvariantCultureIgnoreCase) != 0)
-                throw new SmartHomeException($"Received message from clientId: {node.ClientId} with invalid control strategy");
-
-            var resolverClassName = $"SmartHome.Core.Contracts.Mqtt.MessageHandling.{node.ControlStrategy.MessageReceiveContext}";
-
-            if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageHandler messageHandler))
-                throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");
-
             try
             {
+                if (string.Compare(node.ControlStrategy.ReceiveProviderName, "Mqtt", StringComparison.InvariantCultureIgnoreCase) != 0)
+                    throw new SmartHomeException($"Received message from clientId: {node.ClientId} with invalid control strategy");
+
+                var resolverClassName = $"SmartHome.Core.Contracts.Mqtt.MessageHandling.{node.ControlStrategy.ReceiveContext}";
+
+                if (!(_container.ResolveNamed<object>(resolverClassName) is IMqttMessageHandler messageHandler))
+                    throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");
+
                 await messageHandler.Handle(node, message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "MQTT Broker exception");
+                _logger.LogError(ex, "MQTT processing exception");
                 throw;
             }
         }
