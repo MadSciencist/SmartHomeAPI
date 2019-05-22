@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Polly.Retry;
 using RestSharp;
 using SmartHome.Core.Infrastructure;
 using System;
