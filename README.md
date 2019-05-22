@@ -1,8 +1,8 @@
 # SmartHomeAPI
 An open-source home automation system server.
 
-Build status:
-Master:
+### Build status:
+## Master:
 [![Build Status](https://travis-ci.org/MadSciencist/SmartHomeAPI.svg?branch=master)](https://travis-ci.org/MadSciencist/SmartHomeAPI)
 
 Develop:
