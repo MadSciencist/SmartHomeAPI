@@ -5,7 +5,7 @@ using SmartHome.Core.Infrastructure;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using SmartHome.API.Dto;
+using SmartHome.API.DTO;
 
 namespace SmartHome.API.Extensions
 {
@@ -57,7 +57,7 @@ namespace SmartHome.API.Extensions
                 }
             };
 
-            var responseDto = new ServiceResult<object> {Data = errorDetails};
+            var responseDto = new ServiceResult<ErrorDetailsDto> { Data = errorDetails };
             responseDto.Alerts.Add(new Alert("System error occured", MessageType.Exception));
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(responseDto));

@@ -51,7 +51,8 @@ namespace SmartHome.Core.Contracts.Rest.Control.Espurna
 
             var uri = builder.ToString();
 
-            return await _httpClient.InvokeAsync(uri, Method.GET);
+            var nodeResponse = await _httpClient.InvokeAsync<Dictionary<string, string>>(uri, Method.GET);
+            return nodeResponse;
         }
     }
 }

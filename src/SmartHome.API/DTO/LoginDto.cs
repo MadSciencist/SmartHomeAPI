@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SmartHome.API.Dto
+namespace SmartHome.API.DTO
 {
     public class LoginDto
     {

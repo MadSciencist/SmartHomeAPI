@@ -1,40 +1,31 @@
-﻿using System.Net;
-using Polly;
+﻿using Polly;
 using Polly.Retry;
 using RestSharp;
+using System.Net;
 
 namespace SmartHome.Core.RestClient
 {
     public class RetryPolicy
-    {
-        public AsyncRetryPolicy<IRestResponse> AsyncPolicy { get; set; }
-        private readonly int _retryCount;
+    { 
+        public int RetryCount { get; set; }
 
         public RetryPolicy(int retryCount)
         {
-            _retryCount = retryCount;
-        }
-
-        public AsyncRetryPolicy<IRestResponse> GetDefaultAsyncPolicy()
-        {
-            AsyncPolicy = Polly.Policy.HandleResult<IRestResponse>(ResultPredicate)
-                .Or<WebException>()
-                .RetryAsync(_retryCount);
-
-            return AsyncPolicy;
+            RetryCount = retryCount;
         }
 
         public AsyncRetryPolicy<IRestResponse<T>> GetDefaultAsyncPolicy<T>()
         {
-            return Polly.Policy.HandleResult<IRestResponse<T>>(ResultPredicate)
-                .Or<WebException>()
-                .RetryAsync(_retryCount);
+            return Policy.HandleResult<IRestResponse<T>>(ResultPredicate)
+                .RetryAsync(RetryCount);
         }
 
-
-        private bool ResultPredicate(IRestResponse response)
+        private static bool ResultPredicate(IRestResponse response)
         {
-            return response.StatusCode != HttpStatusCode.OK;
+            var isCompleted = response.ResponseStatus == ResponseStatus.Completed;
+            var isNotOk =  response.StatusCode != HttpStatusCode.OK;
+
+            return isCompleted && isNotOk;
         }
     }
 }

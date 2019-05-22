@@ -34,17 +34,18 @@ namespace SmartHome.Core.Contracts.Mqtt.Control.Espurna
 
             if (string.IsNullOrEmpty(relayState)) throw new SmartHomeException("Relay state cannot be null: missing 'state' key");
             if (string.IsNullOrEmpty(relayNo)) throw new SmartHomeException("Relay number cannot be null: missing 'relayNo' key");
-            if (string.IsNullOrEmpty(node.ApiKey)) throw new SmartHomeException("API key cannot be empty"); // TODO topic
+            if (string.IsNullOrEmpty(node.ApiKey)) throw new SmartHomeException("API key cannot be empty");
+            if (string.IsNullOrEmpty(node.BaseTopic)) throw new SmartHomeException("Base topic cannot be empty");
 
-   
             var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"ESPURNA-0C51A5/relay/{relayNo}/set")
+                .WithTopic($"{node.BaseTopic}/relay/{relayNo}/set")
                 .WithPayload(relayState)
                 .WithExactlyOnceQoS()
                 .WithRetainFlag()
                 .Build();
 
-             return await _mqttService.PublishSystemMessageAsync(message);
+             var result = await _mqttService.PublishSystemMessageAsync(message);
+             return new {publishResult = result.ReasonCode.ToString()};
         }
     }
 }

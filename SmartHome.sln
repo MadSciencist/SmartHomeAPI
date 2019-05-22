@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Mq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Rest.Control", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj", "{C17498C5-6A12-4DAF-A8CA-5C75B80F7221}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.IoC", "SmartHome.Core.IoC\SmartHome.Core.IoC.csproj", "{97FA0EE5-3E1C-450A-A625-6149A7555807}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.IoC", "src\SmartHome.Core.IoC\SmartHome.Core.IoC.csproj", "{97FA0EE5-3E1C-450A-A625-6149A7555807}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
