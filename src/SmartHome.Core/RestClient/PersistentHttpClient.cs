@@ -10,17 +10,23 @@ namespace SmartHome.Core.RestClient
 {
     public class PersistentHttpClient
     {
+        private readonly ILogger _logger;
         private readonly IRestClient _client;
         private readonly RetryPolicy _retryPolicyProvider;
-        private readonly ILogger _logger;
 
         public PersistentHttpClient(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger(nameof(PersistentHttpClient));
-            _client = new RestSharp.RestClient();
-            _client.AddDefaultHeader("accept", "application/json");
-
             _retryPolicyProvider = new RetryPolicy(3);
+            _client = CreateDefaultRestClient();
+        }
+
+        private IRestClient CreateDefaultRestClient()
+        {
+            var client = new RestSharp.RestClient();
+            client.AddDefaultHeader("accept", "application/json");
+
+            return client;
         }
 
         public async Task<object> InvokeAsync(string url, Method method)
@@ -44,16 +50,15 @@ namespace SmartHome.Core.RestClient
             try
             {
                 response = await _client.ExecuteWithPolicyAsync<T>(request, CancellationToken.None, _retryPolicyProvider.GetDefaultAsyncPolicy<T>());
+                if (response != null && response.IsSuccessful)
+                {
+                    return response.Data;
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "");
-                throw new SmartHomeException("Sensor malfunction");
-            }
-
-            if (response != null && response.IsSuccessful)
-            {
-                return response.Data;
+                throw new SmartHomeException("Cannot connect to node");
             }
 
             return default(T);
