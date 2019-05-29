@@ -10,10 +10,5 @@ namespace SmartHome.Core.Infrastructure
 
         [JsonProperty("other")]
         public object Other { get; set; }
-
-        public ResultMetadata()
-        {
-            ProblemDetails = new ProblemDetails();
-        }
     }
 }

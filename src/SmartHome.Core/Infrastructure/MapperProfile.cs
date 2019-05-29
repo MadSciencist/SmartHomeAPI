@@ -21,6 +21,15 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
                 .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<ControlStrategyDto, ControlStrategy>()
+                .ForMember(x => x.ControlContext, opt => opt.MapFrom(x => x.ControlContext))
+                .ForMember(x => x.ReceiveContext, opt => opt.MapFrom(x => x.ReceiveContext))
+                .ForMember(x => x.ControlProviderName, opt => opt.MapFrom(x => x.ControlProvider))
+                .ForMember(x => x.ReceiveProviderName, opt => opt.MapFrom(x => x.ReceiveProvider))
+                .ForMember(x => x.IsActive, opt => opt.MapFrom(x => x.IsActive))
+                .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
+                .ForAllOtherMembers(x => x.Ignore());
         }
     }
 }

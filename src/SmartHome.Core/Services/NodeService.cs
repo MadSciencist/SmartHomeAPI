@@ -9,7 +9,6 @@ using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
-using SmartHome.Core.Utils;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,16 +18,12 @@ namespace SmartHome.Core.Services
     public class NodeService : ServiceBase, INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly IMapper _mapper;
         private readonly IValidator<NodeDto> _validator;
-        private readonly ILifetimeScope _container;
         private readonly AppDbContext _context;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, IValidator<NodeDto> validator, AppDbContext context)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, IValidator<NodeDto> validator, AppDbContext context) : base(container, mapper)
         {
-            _container = container;
             _nodeRepository = nodeRepository;
-            _mapper = mapper;
             _validator = validator;
             _context = context;
         }
@@ -45,7 +40,7 @@ namespace SmartHome.Core.Services
             }
 
             var userId = GetCurrentUserId(Principal);
-            var nodeToCreate = _mapper.Map<Node>(nodeData);
+            var nodeToCreate = Mapper.Map<Node>(nodeData);
 
             nodeToCreate.CreatedById = userId;
             nodeToCreate.Created = DateTime.UtcNow;
@@ -70,7 +65,7 @@ namespace SmartHome.Core.Services
 
                     _context.SaveChanges();
                     transaction.Commit();
-                    response.Data = _mapper.Map<NodeDto>(createdNode);
+                    response.Data = Mapper.Map<NodeDto>(createdNode);
                     response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
                     return response;
                 }
@@ -110,7 +105,7 @@ namespace SmartHome.Core.Services
             var executorFullyQualifiedName =
                 $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{commandEntity.Command.ExecutorClassName}";
 
-            if (!(_container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
+            if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
             {
                 response.Alerts.Add(new Alert("Not existing control strategy", MessageType.Error));
                 return response;

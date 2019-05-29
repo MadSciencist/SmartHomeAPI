@@ -31,15 +31,15 @@ namespace SmartHome.API.Extensions
             }
             catch (SmartHomeException ex)
             {
-                await HandleExceptionAsync(ex, false, httpContext);
+                await HandleExceptionAsync(ex, true, httpContext);
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(ex, true, httpContext);
+                await HandleExceptionAsync(ex, true, httpContext); // ToDo isTrusted 
             }
         }
 
-        private static Task HandleExceptionAsync(Exception ex, bool isSecure, HttpContext context)
+        private static Task HandleExceptionAsync(Exception ex, bool isTrusted, HttpContext context)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
@@ -51,7 +51,7 @@ namespace SmartHome.API.Extensions
             {
                 Title = "Unhandled exception",
                 Type = "Exception",
-                Detail = isSecure ? "API Internal Server Error.Please contact administrator." : ex.Message,
+                Detail = isTrusted ? ex.Message : "API Internal Server Error.Please contact administrator.",
                 Status = context.Response.StatusCode,
                 Instance = correlationId.ToString()
             };

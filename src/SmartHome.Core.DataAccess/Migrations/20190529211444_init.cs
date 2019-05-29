@@ -23,24 +23,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tbl_control_strategy",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ControlProviderName = table.Column<string>(maxLength: 50, nullable: false),
-                    ControlContext = table.Column<string>(maxLength: 50, nullable: false),
-                    ReceiveProviderName = table.Column<string>(maxLength: 50, nullable: false),
-                    ReceiveContext = table.Column<string>(maxLength: 50, nullable: false),
-                    Description = table.Column<string>(maxLength: 250, nullable: true),
-                    IsActive = table.Column<bool>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_control_strategy", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "tbl_data_request_reason",
                 columns: table => new
                 {
@@ -115,53 +97,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                         principalTable: "tbl_user",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_registered_sensors",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    ControlStrategyId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_registered_sensors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_registered_sensors_tbl_control_strategy_ControlStrategyId",
-                        column: x => x.ControlStrategyId,
-                        principalTable: "tbl_control_strategy",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_strategy_command_link",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CommandId = table.Column<int>(nullable: false),
-                    ControlStrategyId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_strategy_command_link", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_strategy_command_link_tbl_command_CommandId",
-                        column: x => x.CommandId,
-                        principalTable: "tbl_command",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tbl_strategy_command_link_tbl_control_strategy_ControlStrate~",
-                        column: x => x.ControlStrategyId,
-                        principalTable: "tbl_control_strategy",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -292,6 +227,32 @@ namespace SmartHome.Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_control_strategy",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ControlProviderName = table.Column<string>(maxLength: 50, nullable: false),
+                    ControlContext = table.Column<string>(maxLength: 50, nullable: false),
+                    ReceiveProviderName = table.Column<string>(maxLength: 50, nullable: false),
+                    ReceiveContext = table.Column<string>(maxLength: 50, nullable: false),
+                    Description = table.Column<string>(maxLength: 250, nullable: true),
+                    IsActive = table.Column<bool>(nullable: false),
+                    CreatedById = table.Column<int>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_control_strategy", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_control_strategy_tbl_user_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_node",
                 columns: table => new
                 {
@@ -325,6 +286,53 @@ namespace SmartHome.Core.DataAccess.Migrations
                         name: "FK_tbl_node_tbl_user_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_registered_sensors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    ControlStrategyId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_registered_sensors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_registered_sensors_tbl_control_strategy_ControlStrategyId",
+                        column: x => x.ControlStrategyId,
+                        principalTable: "tbl_control_strategy",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_strategy_command_link",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CommandId = table.Column<int>(nullable: false),
+                    ControlStrategyId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_strategy_command_link", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_strategy_command_link_tbl_command_CommandId",
+                        column: x => x.CommandId,
+                        principalTable: "tbl_command",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_strategy_command_link_tbl_control_strategy_ControlStrate~",
+                        column: x => x.ControlStrategyId,
+                        principalTable: "tbl_control_strategy",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -423,6 +431,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_control_strategy_CreatedById",
+                table: "tbl_control_strategy",
+                column: "CreatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_dictionary_value_DictionaryId",

@@ -4,6 +4,7 @@ namespace SmartHome.Core.Dto
 {
     public class NodeDto
     {
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public string IpAddress { get; set; }
@@ -14,7 +15,6 @@ namespace SmartHome.Core.Dto
         public string ApiKey { get; set; }
         public string BaseTopic { get; set; }
         public string ClientId { get; set; }
-        [Required]
         public string ConfigMetadata { get; set; }
     }
 }
