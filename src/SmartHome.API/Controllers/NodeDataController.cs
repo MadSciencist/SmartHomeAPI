@@ -17,7 +17,7 @@ namespace SmartHome.API.Controllers
         public NodeDataController(INodeDataService nodeDataService, IHttpContextAccessor contextAccessor)
         {
             _nodeDataService = nodeDataService;
-            _nodeDataService.ClaimsOwner = contextAccessor.HttpContext.User;
+            _nodeDataService.Principal = contextAccessor.HttpContext.User;
         }
 
         [AllowAnonymous]

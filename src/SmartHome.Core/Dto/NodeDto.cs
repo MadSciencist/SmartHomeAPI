@@ -1,4 +1,6 @@
-﻿namespace SmartHome.Core.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SmartHome.Core.Dto
 {
     public class NodeDto
     {
@@ -12,6 +14,7 @@
         public string ApiKey { get; set; }
         public string BaseTopic { get; set; }
         public string ClientId { get; set; }
+        [Required]
         public string ConfigMetadata { get; set; }
     }
 }

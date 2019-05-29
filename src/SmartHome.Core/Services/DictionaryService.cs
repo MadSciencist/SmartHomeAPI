@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.DictionaryEntity;
-using SmartHome.Core.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class DictionaryService : ServiceBase, IUserAuditable, IDictionaryService
+    public class DictionaryService : ServiceBase, IDictionaryService
     {
         private readonly IGenericRepository<Dictionary> _dictRepository;
 

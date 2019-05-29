@@ -11,9 +11,13 @@ namespace SmartHome.Core.Infrastructure
         [JsonProperty("alerts")]
         public ICollection<Alert> Alerts { get; set; }
 
+        [JsonProperty("metadata")]
+        public ResultMetadata Metadata { get; set; }
+
         public ServiceResult()
         {
             Alerts = new List<Alert>();
+            Metadata = new ResultMetadata();
         }
 
         public ServiceResult<T> HideExceptionMessages()

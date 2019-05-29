@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -21,7 +22,7 @@ namespace SmartHome.API.Controllers
         public NodeController(IHttpContextAccessor contextAccessor, INodeService nodeService)
         {
             _nodeService = nodeService;
-            _nodeService.ClaimsOwner = contextAccessor.HttpContext.User;
+            _nodeService.Principal = contextAccessor.HttpContext.User;
         }
 
         [HttpPost("create")]
@@ -38,7 +39,7 @@ namespace SmartHome.API.Controllers
             if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
                 return StatusCode(StatusCodes.Status500InternalServerError, serviceResult);
 
-            return Ok(serviceResult);
+            return Ok(serviceResult);  
         }
 
         [HttpPost("{nodeId}/command/{command}")]

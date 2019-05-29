@@ -44,7 +44,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            var userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
+            var userId = GetCurrentUserId(Principal);
             var nodeToCreate = _mapper.Map<Node>(nodeData);
 
             nodeToCreate.CreatedById = userId;
@@ -88,8 +88,8 @@ namespace SmartHome.Core.Services
             var response = new ServiceResult<object>();
 
             // get the node
-            Node node = await _nodeRepository.GetByIdAsync(nodeId);
-            int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
+            var node = await _nodeRepository.GetByIdAsync(nodeId);
+            var userId = GetCurrentUserId(Principal);
 
             // check permissions
             if (node.AllowedUsers.Any(x => x.UserId != userId))

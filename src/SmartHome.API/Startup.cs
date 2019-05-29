@@ -16,7 +16,9 @@ using SmartHome.Core.IoC;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.Services;
 using System;
+using System.Linq;
 using System.Reflection;
+using SmartHome.Core.Infrastructure;
 
 namespace SmartHome.API
 {
@@ -37,10 +39,19 @@ namespace SmartHome.API
                 .AddJsonOptions(json => json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
                 .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>());
 
-            // remove default ASP.NET Core validator - We are going to use FluentValidation
+            // Create custom BadRequest response for built-in validator
             services.Configure<ApiBehaviorOptions>(options =>
             {
-                options.SuppressModelStateInvalidFilter = true;
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var result = new ServiceResult<object>
+                    {
+                        Alerts = context.ModelState.Select(x =>
+                            new Alert(x.Value.Errors.FirstOrDefault()?.ErrorMessage, MessageType.Error)).ToList()
+                    };
+
+                    return new BadRequestObjectResult(result);
+                };
             });
 
             // Security
@@ -78,7 +89,7 @@ namespace SmartHome.API
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseStatusCodePages();
-                app.UseCors("CorsPolicy");               
+                app.UseCors("CorsPolicy");
             }
 
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
@@ -99,7 +110,7 @@ namespace SmartHome.API
             // docs gen and UI
             app.UseSwagger();
             app.UseSwaggerUI(s => s.SwaggerEndpoint("/swagger/dev/swagger.json", "Home Sensor Server API"));
-            
+
             InitializeDatabase(app);
 
             var mqttOptions = new MqttServerOptionsBuilder()
