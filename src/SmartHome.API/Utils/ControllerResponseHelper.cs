@@ -9,16 +9,16 @@ namespace SmartHome.API.Utils
 {
     public static class ControllerResponseHelper
     {
-        static ITrustProvider trustProvider;
+        public static ITrustProvider TrustProvider { get; set; }
 
         static ControllerResponseHelper()
         {
-            trustProvider = new AdminTrustProvider();
+            TrustProvider = new AdminTrustProvider();
         }
 
         public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult) where T : class, new()
         {
-            if(!trustProvider.IsTrusted(serviceResult.Principal))
+            if(!TrustProvider.IsTrusted(serviceResult.Principal))
             {
                 serviceResult.HideExceptionMessages();
             }

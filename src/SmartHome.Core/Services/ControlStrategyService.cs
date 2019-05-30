@@ -28,7 +28,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            var userId = GetCurrentUserId(Principal);
+            var userId = GetCurrentUserId();
             var strategyToCreate = Mapper.Map<ControlStrategy>(input);
 
             strategyToCreate.CreatedById = userId;

@@ -22,7 +22,7 @@ namespace SmartHome.Core.Services
             if (reason == EDataRequestReason.User)
             {
                 // TODO validation
-                var userId = GetCurrentUserId(Principal);
+                var userId = GetCurrentUserId();
                 if (userId == 0) throw new ArgumentException("user not auth");
             }
 
