@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
 

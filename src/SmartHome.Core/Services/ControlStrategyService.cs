@@ -6,23 +6,27 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace SmartHome.Core.Services
 {
-    public class ControlStrategyService : ServiceBase<ControlStrategyDto, ControlStrategy>, IControlStrategyService
+    public class ControlStrategyService : ServiceBase<ControlStrategyDto, object>, IControlStrategyService
     {
+        private readonly IStrategyRepository _strategyRepository;
         private readonly IGenericRepository<Command> _commandRepository;
         private readonly IGenericRepository<ControlStrategyCommandLink> _strategyCommandLinkRepository;
 
         public ControlStrategyService(
-            IGenericRepository<ControlStrategy> genericRepository, 
+            IStrategyRepository strategyRepository,
             IGenericRepository<Command> commandRepository,
             IGenericRepository<ControlStrategyCommandLink> strategyCommandLinkRepository,
             IMapper mapper,
-            IValidator<ControlStrategyDto> validator) : base(genericRepository, mapper, validator)
+            IValidator<ControlStrategyDto> validator) : base(mapper, validator)
         {
+            _strategyRepository = strategyRepository;
             _commandRepository = commandRepository;
             _strategyCommandLinkRepository = strategyCommandLinkRepository;
         }
@@ -71,6 +75,8 @@ namespace SmartHome.Core.Services
                 ExecutorClassName = executorClass
             };
 
+            //Todo command validator here
+
             try
             {
                 var created = await _commandRepository.CreateAsync(command);
@@ -86,12 +92,11 @@ namespace SmartHome.Core.Services
             }           
         }
 
-        // todo add commands list to ControlStrategyDto
         public async Task<ServiceResult<ControlStrategyDto>> AttachAvailableCommand(int strategyId, int commandId)
         {
             var response = new ServiceResult<ControlStrategyDto>(Principal);
 
-            var strategy = await GenericRepository.GetByIdAsync(strategyId);
+            var strategy = await _strategyRepository.GetByIdAsync(strategyId);
             if(strategy == null) throw new SmartHomeEntityNotFoundException($"Cannot find strategy with given Id: {strategyId}");
 
             var command = await _commandRepository.GetByIdAsync(commandId);
@@ -111,6 +116,7 @@ namespace SmartHome.Core.Services
                 });
 
                 response.Data = Mapper.Map<ControlStrategyDto>(strategy);
+                response.Data.AllowedCommands = Mapper.Map<ICollection<CommandEntityDto>>(strategy.AllowedCommands.Select(x => x.Command)); // TODO move to AutoMapper
                 response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
 
                 return response;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SmartHome.Core.Dto
@@ -18,6 +19,7 @@ namespace SmartHome.Core.Dto
         [MaxLength(250)]
         public string Description { get; set; }
         public bool IsActive { get; set; }
+        public ICollection<CommandEntityDto> AllowedCommands { get; set; }
 
         [BindNever]
         public int CreatedById { get; set; }

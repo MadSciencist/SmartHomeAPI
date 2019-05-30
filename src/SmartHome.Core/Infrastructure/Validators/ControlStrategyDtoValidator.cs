@@ -3,9 +3,9 @@ using SmartHome.Core.Dto;
 
 namespace SmartHome.Core.Infrastructure.Validators
 {
-    public class ControlStrategyValidator : AbstractValidator<ControlStrategyDto>
+    public class ControlStrategyDtoValidator : AbstractValidator<ControlStrategyDto>
     {
-        public ControlStrategyValidator()
+        public ControlStrategyDtoValidator()
         {
             RuleFor(x => x.ControlContext).NotNull();
             RuleFor(x => x.ControlProvider).NotNull();
