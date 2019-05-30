@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SmartHome.Core.Domain.User;
 
 namespace SmartHome.Core.Domain.Entity
 {
@@ -23,6 +25,9 @@ namespace SmartHome.Core.Domain.Entity
         public string Description { get; set; }
 
         public bool IsActive { get; set; }
+        public int CreatedById { get; set; }
+        public AppUser CreatedBy { get; set; }
+        public DateTime Created { get; set; }
 
         public ICollection<Node> Nodes { get; set; }
 

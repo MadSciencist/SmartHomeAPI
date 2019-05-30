@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public interface IDictionaryService : IUserAuditable
+    public interface IDictionaryService : IServiceBase
     {
         Task<IEnumerable<string>> GetDictionaryNames();
         Task<Dictionary> GetDictionaryByName(string name);

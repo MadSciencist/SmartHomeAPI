@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -7,6 +8,7 @@ using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.API.Utils;
 
 namespace SmartHome.API.Controllers
 {
@@ -21,7 +23,7 @@ namespace SmartHome.API.Controllers
         public NodeController(IHttpContextAccessor contextAccessor, INodeService nodeService)
         {
             _nodeService = nodeService;
-            _nodeService.ClaimsOwner = contextAccessor.HttpContext.User;
+            _nodeService.Principal = contextAccessor.HttpContext.User;
         }
 
         [HttpPost("create")]
@@ -30,30 +32,16 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> Create(NodeDto node)
         {
             var serviceResult = await _nodeService.CreateNode(node);
-            serviceResult.HideExceptionMessages();
 
-            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Error))
-                return BadRequest(serviceResult);
-
-            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
-                return StatusCode(StatusCodes.Status500InternalServerError, serviceResult);
-
-            return Ok(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
         [HttpPost("{nodeId}/command/{command}")]
         public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams)
         {
             var serviceResult = await _nodeService.Control(nodeId, command, commandParams);
-            serviceResult.HideExceptionMessages();
 
-            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Error))
-                return BadRequest(serviceResult);
-
-            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
-                return StatusCode(StatusCodes.Status500InternalServerError, serviceResult);
-
-            return Ok(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
     }
 }

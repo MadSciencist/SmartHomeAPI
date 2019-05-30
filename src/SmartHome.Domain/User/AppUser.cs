@@ -11,8 +11,9 @@ namespace SmartHome.Core.Domain.User
         public DateTime ActivationDate { get; set; }
         public bool IsActive { get; set; }
 
-        // Navigation property
+        // Navigation properties
         public ICollection<Node> CreatedNodes { get; set; }
+        public ICollection<ControlStrategy> CreatedControlStrategies { get; set; }
         public ICollection<AppUserNodeLink> EligibleNodes { get; set; }
     }
 }

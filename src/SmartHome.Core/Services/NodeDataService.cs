@@ -2,14 +2,13 @@
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
-using SmartHome.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeDataService : ServiceBase, INodeDataService
+    public class NodeDataService : ServiceBase<object, object>, INodeDataService
     {
         private readonly INodeDataRepository _nodeDataRepository;
 
@@ -23,7 +22,7 @@ namespace SmartHome.Core.Services
             if (reason == EDataRequestReason.User)
             {
                 // TODO validation
-                int userId = Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(ClaimsOwner));
+                var userId = GetCurrentUserId();
                 if (userId == 0) throw new ArgumentException("user not auth");
             }
 

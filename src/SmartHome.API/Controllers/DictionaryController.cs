@@ -19,7 +19,7 @@ namespace SmartHome.API.Controllers
         public DictionaryController(IHttpContextAccessor contextAccessor, IDictionaryService dictionaryService)
         {
             _dictionaryService = dictionaryService;
-            _dictionaryService.ClaimsOwner = contextAccessor.HttpContext.User;
+            _dictionaryService.Principal = contextAccessor.HttpContext.User;
         }
 
         [HttpGet("getNames")]

@@ -179,6 +179,10 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<DateTime>("Created");
+
+                    b.Property<int>("CreatedById");
+
                     b.Property<string>("Description")
                         .HasMaxLength(250);
 
@@ -193,6 +197,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .HasMaxLength(50);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
 
                     b.ToTable("tbl_control_strategy");
                 });
@@ -492,6 +498,14 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasOne("SmartHome.Core.Domain.User.AppUser", "User")
                         .WithMany("EligibleNodes")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategy", b =>
+                {
+                    b.HasOne("SmartHome.Core.Domain.User.AppUser", "CreatedBy")
+                        .WithMany("CreatedControlStrategies")
+                        .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

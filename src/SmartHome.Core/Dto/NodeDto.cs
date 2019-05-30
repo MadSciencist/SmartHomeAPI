@@ -1,7 +1,10 @@
-﻿namespace SmartHome.Core.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SmartHome.Core.Dto
 {
     public class NodeDto
     {
+        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public string IpAddress { get; set; }
