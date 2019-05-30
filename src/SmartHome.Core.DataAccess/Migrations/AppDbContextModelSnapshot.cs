@@ -163,6 +163,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Alias")
+                        .IsUnique();
+
                     b.ToTable("tbl_command");
                 });
 

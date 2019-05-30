@@ -72,7 +72,7 @@ namespace SmartHome.Core.Services
                 {
                     transaction.Rollback();
                     response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
-                    return response;
+                    throw;
                 }
             }
         }

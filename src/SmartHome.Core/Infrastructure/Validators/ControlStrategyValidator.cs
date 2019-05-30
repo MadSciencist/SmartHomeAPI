@@ -7,6 +7,10 @@ namespace SmartHome.Core.Infrastructure.Validators
     {
         public ControlStrategyValidator()
         {
+            RuleFor(x => x.ControlContext).NotNull();
+            RuleFor(x => x.ControlProvider).NotNull();
+            RuleFor(x => x.ReceiveContext).NotNull();
+            RuleFor(x => x.ReceiveProvider).NotNull();
         }
     }
 }

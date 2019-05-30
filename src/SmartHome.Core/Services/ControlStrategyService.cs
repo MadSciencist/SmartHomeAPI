@@ -7,14 +7,24 @@ using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SmartHome.Core.Services
 {
     public class ControlStrategyService : ServiceBase<ControlStrategyDto, ControlStrategy>, IControlStrategyService
     {
-        public ControlStrategyService(IGenericRepository<ControlStrategy> strategyRepository, IMapper mapper,
-            IValidator<ControlStrategyDto> validator) : base(strategyRepository, mapper, validator)
+        private readonly IGenericRepository<Command> _commandRepository;
+        private readonly IGenericRepository<ControlStrategyCommandLink> _strategyCommandLinkRepository;
+
+        public ControlStrategyService(
+            IGenericRepository<ControlStrategy> genericRepository, 
+            IGenericRepository<Command> commandRepository,
+            IGenericRepository<ControlStrategyCommandLink> strategyCommandLinkRepository,
+            IMapper mapper,
+            IValidator<ControlStrategyDto> validator) : base(genericRepository, mapper, validator)
         {
+            _commandRepository = commandRepository;
+            _strategyCommandLinkRepository = strategyCommandLinkRepository;
         }
 
         public async Task<ServiceResult<ControlStrategyDto>> CreateStrategy(ControlStrategyDto input)
@@ -46,7 +56,69 @@ namespace SmartHome.Core.Services
             catch (Exception ex)
             {
                 response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
+            }
+        }
+
+        // TODO move to command service, create command controller
+        public async Task<ServiceResult<CommandEntityDto>> CreateCommand(string alias, string executorClass)
+        {
+            var response = new ServiceResult<CommandEntityDto>(Principal);
+
+            var command = new Command
+            {
+                Alias = alias,
+                ExecutorClassName = executorClass
+            };
+
+            try
+            {
+                var created = await _commandRepository.CreateAsync(command);
+                response.Data = response.Data = Mapper.Map<CommandEntityDto>(created);
+                response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+
                 return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
+            }           
+        }
+
+        // todo add commands list to ControlStrategyDto
+        public async Task<ServiceResult<ControlStrategyDto>> AttachAvailableCommand(int strategyId, int commandId)
+        {
+            var response = new ServiceResult<ControlStrategyDto>(Principal);
+
+            var strategy = await GenericRepository.GetByIdAsync(strategyId);
+            if(strategy == null) throw new SmartHomeEntityNotFoundException($"Cannot find strategy with given Id: {strategyId}");
+
+            var command = await _commandRepository.GetByIdAsync(commandId);
+            if (command == null) throw new SmartHomeEntityNotFoundException($"Cannot find command with given Id: {commandId}");
+
+            var linkEntity = await _strategyCommandLinkRepository
+                .AsQueryableNoTrack()
+                .FirstOrDefaultAsync(x => x.ControlStrategyId == strategyId && x.CommandId == commandId);
+            if(linkEntity != null) throw new SmartHomeException($"Command {command.Alias} is already attached to strategy {strategy.Id}");
+
+            try
+            {
+                await _strategyCommandLinkRepository.CreateAsync(new ControlStrategyCommandLink
+                {
+                    CommandId = commandId,
+                    ControlStrategyId = strategyId
+                });
+
+                response.Data = Mapper.Map<ControlStrategyDto>(strategy);
+                response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
             }
         }
     }

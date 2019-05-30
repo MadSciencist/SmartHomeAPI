@@ -1,15 +1,12 @@
-﻿using System;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using SmartHome.API.Utils;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using SmartHome.API.Utils;
 
 namespace SmartHome.API.Controllers
 {

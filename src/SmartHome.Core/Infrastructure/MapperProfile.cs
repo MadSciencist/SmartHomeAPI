@@ -8,6 +8,13 @@ namespace SmartHome.Core.Infrastructure
     {
         public MapperProfile()
         {
+            CreateNodeMapping();
+            CreateCommandMapping();
+            CreateControlStrategyMapping();
+        }
+
+        private void CreateNodeMapping()
+        {
             CreateMap<NodeDto, Node>()
                 .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
@@ -21,7 +28,21 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
                 .ForAllOtherMembers(x => x.Ignore());
+        }
 
+        private void CreateCommandMapping()
+        {
+            CreateMap<CommandEntityDto, Command>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Alias, opt => opt.MapFrom(x => x.Alias))
+                .ForMember(x => x.ExecutorClassName, opt => opt.MapFrom(x => x.ExecutorClassName))
+                .ForMember(x => x.Nodes, opt => opt.Ignore())
+                .ReverseMap()
+                .ForAllOtherMembers(x => x.Ignore());
+        }
+
+        private void CreateControlStrategyMapping()
+        {
             CreateMap<ControlStrategyDto, ControlStrategy>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.ControlContext, opt => opt.MapFrom(x => x.ControlContext))

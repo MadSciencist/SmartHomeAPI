@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SmartHome.API.Security;
 using SmartHome.Core.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using SmartHome.API.DTO;
-using SmartHome.API.Security;
 
 namespace SmartHome.API.Extensions
 {
@@ -30,22 +28,50 @@ namespace SmartHome.API.Extensions
             {
                 await _next(httpContext);
             }
+            catch (SmartHomeException ex)
+            {
+                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.BadRequest);
+            }
+            catch (SmartHomeEntityNotFoundException ex)
+            {
+                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.NotFound);
+            }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(ex, httpContext);
+                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.InternalServerError);
             }
         }
 
-        private static Task HandleExceptionAsync(Exception ex, HttpContext context)
+        private static Task HandleExceptionAsync(Exception ex, HttpContext context, HttpStatusCode code)
         {
             var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = (int)code;
 
             var correlationId = Guid.NewGuid();
             _logger.LogError(ex, "Global exception logger, correlationId: " + correlationId);
 
+
+            string userMessage;
+            if (ex is SmartHomeException || ex is SmartHomeEntityNotFoundException)
+            {
+                userMessage = ex.Message;
+            }
+            else
+            {
+                userMessage = "System error occured";
+            }
+
+            var response = new ServiceResult<object> {Metadata = {ProblemDetails = CreateProblemDetails(ex, context, isTrusted, correlationId) } };
+            response.Alerts.Add(new Alert(userMessage, MessageType.Exception));
+
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+        }
+
+        private static ProblemDetails CreateProblemDetails(Exception ex, HttpContext context, bool isTrusted,
+            Guid correlationId)
+        {
             var details = new ProblemDetails
             {
                 Title = "Unhandled exception",
@@ -57,11 +83,7 @@ namespace SmartHome.API.Extensions
 
             details.Extensions.Add("timestamp", DateTime.UtcNow.ToString(CultureInfo.InvariantCulture));
             details.Extensions.Add("location", context.Request.Path);
-
-            var response = new ServiceResult<object> {Metadata = {ProblemDetails = details}};
-            response.Alerts.Add(new Alert("System error occured", MessageType.Exception));
-
-            return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+            return details;
         }
     }
 }
