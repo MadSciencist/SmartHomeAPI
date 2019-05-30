@@ -23,12 +23,20 @@ namespace SmartHome.Core.Infrastructure
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<ControlStrategyDto, ControlStrategy>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.ControlContext, opt => opt.MapFrom(x => x.ControlContext))
                 .ForMember(x => x.ReceiveContext, opt => opt.MapFrom(x => x.ReceiveContext))
                 .ForMember(x => x.ControlProviderName, opt => opt.MapFrom(x => x.ControlProvider))
                 .ForMember(x => x.ReceiveProviderName, opt => opt.MapFrom(x => x.ReceiveProvider))
                 .ForMember(x => x.IsActive, opt => opt.MapFrom(x => x.IsActive))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
+                .ForMember(x => x.Created, opt => opt.MapFrom(x => x.Created))
+                .ForMember(x => x.CreatedById, opt => opt.MapFrom(x => x.CreatedById))
+                .ForMember(x => x.CreatedBy, opt => opt.Ignore())
+                .ForMember(x => x.RegisteredSensors, opt => opt.Ignore())
+                .ForMember(x => x.Nodes, opt => opt.Ignore())
+                .ForMember(x => x.AllowedCommands, opt => opt.Ignore())
+                .ReverseMap()
                 .ForAllOtherMembers(x => x.Ignore());
         }
     }

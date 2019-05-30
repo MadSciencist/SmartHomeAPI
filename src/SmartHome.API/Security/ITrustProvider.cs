@@ -4,6 +4,6 @@ namespace SmartHome.API.Security
 {
     public interface ITrustProvider
     {
-        bool IsTrusted(ClaimsPrincipal principal);
+        bool IsTrustedRequest(ClaimsPrincipal principal);
     }
 }

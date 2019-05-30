@@ -7,6 +7,7 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SmartHome.API.Utils;
 

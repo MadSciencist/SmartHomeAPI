@@ -9,6 +9,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.DTO;
+using SmartHome.API.Security;
 
 namespace SmartHome.API.Extensions
 {
@@ -29,18 +30,16 @@ namespace SmartHome.API.Extensions
             {
                 await _next(httpContext);
             }
-            catch (SmartHomeException ex)
-            {
-                await HandleExceptionAsync(ex, true, httpContext);
-            }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(ex, true, httpContext); // ToDo isTrusted 
+                await HandleExceptionAsync(ex, httpContext);
             }
         }
 
-        private static Task HandleExceptionAsync(Exception ex, bool isTrusted, HttpContext context)
+        private static Task HandleExceptionAsync(Exception ex, HttpContext context)
         {
+            var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
+
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

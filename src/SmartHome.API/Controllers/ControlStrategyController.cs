@@ -5,7 +5,9 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using SmartHome.API.Utils;
 
 namespace SmartHome.API.Controllers
 {
@@ -29,15 +31,8 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> Create(ControlStrategyDto controlStrategy)
         {
             var serviceResult = await _controlStrategyService.CreateStrategy(controlStrategy);
-            serviceResult.HideExceptionMessages();
 
-            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Error))
-                return BadRequest(serviceResult);
-
-            if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
-                return StatusCode(StatusCodes.Status500InternalServerError, serviceResult);
-
-            return Ok(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
     }
 }

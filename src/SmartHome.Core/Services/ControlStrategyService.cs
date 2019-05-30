@@ -19,7 +19,7 @@ namespace SmartHome.Core.Services
 
         public async Task<ServiceResult<ControlStrategyDto>> CreateStrategy(ControlStrategyDto input)
         {
-            var response = new ServiceResult<ControlStrategyDto>();
+            var response = new ServiceResult<ControlStrategyDto>(Principal);
             var validationResult = Validator.Validate(input);
 
             if (!validationResult.IsValid)
@@ -33,6 +33,7 @@ namespace SmartHome.Core.Services
 
             strategyToCreate.CreatedById = userId;
             strategyToCreate.Created = DateTime.UtcNow;
+            strategyToCreate.IsActive = true;
 
             try
             {
