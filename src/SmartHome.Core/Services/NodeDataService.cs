@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeDataService : ServiceBase, INodeDataService
+    public class NodeDataService : ServiceBase<object, object>, INodeDataService
     {
         private readonly INodeDataRepository _nodeDataRepository;
 

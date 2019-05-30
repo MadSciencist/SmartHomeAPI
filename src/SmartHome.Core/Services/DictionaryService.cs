@@ -7,18 +7,16 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class DictionaryService : ServiceBase, IDictionaryService
+    public class DictionaryService : ServiceBase<object, Dictionary>, IDictionaryService
     {
-        private readonly IGenericRepository<Dictionary> _dictRepository;
 
-        public DictionaryService(IGenericRepository<Dictionary> dictRepository)
+        public DictionaryService(IGenericRepository<Dictionary> dictRepository) : base(dictRepository)
         {
-            _dictRepository = dictRepository;
         }
 
         public async Task<IEnumerable<string>> GetDictionaryNames()
         {
-            return await _dictRepository.AsQueryableNoTrack()
+            return await GenericRepository.AsQueryableNoTrack()
                 .Distinct()
                 .Select(x => x.Name)
                 .ToListAsync();
@@ -26,7 +24,7 @@ namespace SmartHome.Core.Services
 
         public async Task<Dictionary> GetDictionaryByName(string name)
         {
-            return await _dictRepository.AsQueryableNoTrack()
+            return await GenericRepository.AsQueryableNoTrack()
                 .Include(x => x.Values)
                 .FirstOrDefaultAsync(x => x.Name == name);
         }

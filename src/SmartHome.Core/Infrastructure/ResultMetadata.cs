@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace SmartHome.Core.Infrastructure
 {
     public class ResultMetadata
     {
         [JsonProperty("errorDetails")]
-        public ProblemDetails ProblemDetails { get; set; }
+        public object ProblemDetails { get; set; }
 
         [JsonProperty("other")]
         public object Other { get; set; }

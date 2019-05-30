@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace SmartHome.Core.Infrastructure
 {
@@ -14,11 +15,25 @@ namespace SmartHome.Core.Infrastructure
         [JsonProperty("metadata")]
         public ResultMetadata Metadata { get; set; }
 
+        [JsonIgnore]
+        public ClaimsPrincipal Principal { get; set; }
+
+
+        #region constructors
+        public ServiceResult(ClaimsPrincipal principal)
+        {
+            Alerts = new List<Alert>();
+            Metadata = new ResultMetadata();
+            Principal = principal;
+        }
+
         public ServiceResult()
         {
             Alerts = new List<Alert>();
             Metadata = new ResultMetadata();
         }
+
+        #endregion
 
         public ServiceResult<T> HideExceptionMessages()
         {

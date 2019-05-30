@@ -3,33 +3,67 @@ using System;
 using System.Security.Claims;
 using Autofac;
 using AutoMapper;
+using FluentValidation;
+using SmartHome.Core.DataAccess.Repository;
 
 namespace SmartHome.Core.Services
 {
-    public abstract class ServiceBase : IServiceBase
+    public abstract class ServiceBase<TValidator, TRepository> : IServiceBase where TValidator: class, new() where TRepository: class, new()
     {
+        public virtual ClaimsPrincipal Principal { get; set; }
         protected IMapper Mapper { get; set; }
         protected ILifetimeScope Container { get; set; }
-        public virtual ClaimsPrincipal Principal { get; set; }
+        protected IValidator<TValidator> Validator { get; set; }
+        protected IGenericRepository<TRepository> GenericRepository { get; set; }
 
-        public ServiceBase(ILifetimeScope container, IMapper mapper)
+        #region constructors
+        protected ServiceBase(ILifetimeScope container, IMapper mapper, IValidator<TValidator> validator, IGenericRepository<TRepository> repository)
         {
             Container = container;
             Mapper = mapper;
+            Validator = validator;
+            GenericRepository = repository;
         }
 
-        public ServiceBase(IMapper mapper)
+        protected ServiceBase(ILifetimeScope container, IMapper mapper, IValidator<TValidator> validator)
+        {
+            Container = container;
+            Mapper = mapper;
+            Validator = validator;
+        }
+
+        protected ServiceBase(IGenericRepository<TRepository> repository, IMapper mapper, IValidator<TValidator> validator)
+        {
+            GenericRepository = repository;
+            Mapper = mapper;
+            Validator = validator;
+        }
+
+        protected ServiceBase(IMapper mapper, IValidator<TValidator> validator)
+        {
+            Mapper = mapper;
+            Validator = validator;
+        }
+
+        protected ServiceBase(IMapper mapper)
         {
             Mapper = mapper;
         }
 
-        public ServiceBase()
+        protected ServiceBase(IGenericRepository<TRepository> repository)
+        {
+            GenericRepository = repository;
+        }
+
+        protected ServiceBase()
         {
         }
 
-        public virtual int GetCurrentUserId(ClaimsPrincipal principal)
+        #endregion
+
+        public virtual int GetCurrentUserId()
         {
-            return Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(principal));
+            return Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(Principal));
         }
     }
 }

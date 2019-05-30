@@ -37,7 +37,7 @@ namespace SmartHome.API
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(json => json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
-                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>());
+                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>()); // ToDo move to IoC project
 
             // Create custom BadRequest response for built-in validator
             services.Configure<ApiBehaviorOptions>(options =>
@@ -63,7 +63,7 @@ namespace SmartHome.API
             services.AddTokenBuilder();
 
             // Add AutoMapper configs
-            services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService)));
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService))); // ToDo move to IoC project
 
             // CORS for dev env
             services.AddDefaultCorsPolicy();

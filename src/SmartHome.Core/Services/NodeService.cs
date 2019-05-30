@@ -15,23 +15,22 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeService : ServiceBase, INodeService
+    public class NodeService : ServiceBase<NodeDto, object>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly IValidator<NodeDto> _validator;
         private readonly AppDbContext _context;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, IValidator<NodeDto> validator, AppDbContext context) : base(container, mapper)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper,
+            IValidator<NodeDto> validator, AppDbContext context) : base(container, mapper, validator)
         {
             _nodeRepository = nodeRepository;
-            _validator = validator;
             _context = context;
         }
 
         public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
         {
-            var response = new ServiceResult<NodeDto>();
-            var validationResult = _validator.Validate(nodeData);
+            var response = new ServiceResult<NodeDto>(Principal);
+            var validationResult = Validator.Validate(nodeData);
 
             if (!validationResult.IsValid)
             {
@@ -39,7 +38,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            var userId = GetCurrentUserId(Principal);
+            var userId = GetCurrentUserId();
             var nodeToCreate = Mapper.Map<Node>(nodeData);
 
             nodeToCreate.CreatedById = userId;
@@ -80,11 +79,11 @@ namespace SmartHome.Core.Services
 
         public async Task<ServiceResult<object>> Control(int nodeId, string command, JObject commandParams)
         {
-            var response = new ServiceResult<object>();
+            var response = new ServiceResult<object>(Principal);
 
             // get the node
             var node = await _nodeRepository.GetByIdAsync(nodeId);
-            var userId = GetCurrentUserId(Principal);
+            var userId = GetCurrentUserId();
 
             // check permissions
             if (node.AllowedUsers.Any(x => x.UserId != userId))

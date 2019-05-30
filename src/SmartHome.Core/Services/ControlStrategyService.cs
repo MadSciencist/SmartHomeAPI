@@ -10,21 +10,17 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class ControlStrategyService : ServiceBase, IControlStrategyService
+    public class ControlStrategyService : ServiceBase<ControlStrategyDto, ControlStrategy>, IControlStrategyService
     {
-        private readonly IGenericRepository<ControlStrategy> _strategyRepository;
-        private readonly IValidator<ControlStrategyDto> _validator;
-
-        public ControlStrategyService(IGenericRepository<ControlStrategy> strategyRepository, IMapper mapper, IValidator<ControlStrategyDto> validator) : base(mapper)
+        public ControlStrategyService(IGenericRepository<ControlStrategy> strategyRepository, IMapper mapper,
+            IValidator<ControlStrategyDto> validator) : base(strategyRepository, mapper, validator)
         {
-            _strategyRepository = strategyRepository;
-            _validator = validator;
         }
 
         public async Task<ServiceResult<ControlStrategyDto>> CreateStrategy(ControlStrategyDto input)
         {
             var response = new ServiceResult<ControlStrategyDto>();
-            var validationResult = _validator.Validate(input);
+            var validationResult = Validator.Validate(input);
 
             if (!validationResult.IsValid)
             {
@@ -40,7 +36,7 @@ namespace SmartHome.Core.Services
 
             try
             {
-                var created = await _strategyRepository.CreateAsync(strategyToCreate);
+                var created = await GenericRepository.CreateAsync(strategyToCreate);
                 response.Data = Mapper.Map<ControlStrategyDto>(created);
                 response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
 
