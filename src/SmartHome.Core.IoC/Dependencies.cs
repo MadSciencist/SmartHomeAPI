@@ -31,6 +31,7 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
+            Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
 
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();

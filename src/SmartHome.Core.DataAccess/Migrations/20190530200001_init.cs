@@ -433,6 +433,12 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_command_Alias",
+                table: "tbl_command",
+                column: "Alias",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_control_strategy_CreatedById",
                 table: "tbl_control_strategy",
                 column: "CreatedById");

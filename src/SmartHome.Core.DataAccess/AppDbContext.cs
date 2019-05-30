@@ -82,6 +82,10 @@ namespace SmartHome.Core.DataAccess
                 .WithMany(x => x.Nodes)
                 .HasForeignKey(x => x.CommandId);
 
+            builder.Entity<Command>()
+                .HasIndex(x => x.Alias)
+                .IsUnique();
+
             // Configure dictionaries one-to-many relationship
             builder.Entity<Dictionary>()
                 .HasKey(x => x.Id);

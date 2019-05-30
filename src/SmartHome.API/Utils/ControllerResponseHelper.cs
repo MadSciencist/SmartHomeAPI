@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartHome.API.Security;
@@ -13,12 +14,19 @@ namespace SmartHome.API.Utils
 
         static ControllerResponseHelper()
         {
-            TrustProvider = new AdminTrustProvider();
+            TrustProvider = TrustFactory.GetDefaultTrustProvider();
         }
 
         public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult) where T : class, new()
         {
-            if(!TrustProvider.IsTrusted(serviceResult.Principal))
+            if (serviceResult.Principal == null)
+            {
+                throw new ArgumentNullException(nameof(serviceResult.Principal));
+            }
+
+            var isTrusted = TrustProvider.IsTrustedRequest(serviceResult.Principal);
+
+            if (!isTrusted)
             {
                 serviceResult.HideExceptionMessages();
             }
