@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentValidation;
 using Newtonsoft.Json.Linq;
+using SmartHome.Core.Authorization;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
@@ -19,13 +20,16 @@ namespace SmartHome.Core.Services
     {
         private readonly INodeRepository _nodeRepository;
         private readonly IGenericRepository<ControlStrategy> _strategyRepository;
+        private readonly NodeAuthorizationProvider _authProvider;
         private readonly AppDbContext _context;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, IGenericRepository<ControlStrategy> strategyRepository,
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper,
+            IGenericRepository<ControlStrategy> strategyRepository, NodeAuthorizationProvider authorizationProvider,
             IValidator<NodeDto> validator, AppDbContext context) : base(container, mapper, validator)
         {
             _nodeRepository = nodeRepository;
             _strategyRepository = strategyRepository;
+            _authProvider = authorizationProvider;
             _context = context;
         }
 
@@ -82,11 +86,12 @@ namespace SmartHome.Core.Services
         public async Task<ServiceResult<NodeDto>> AttachControlStrategy(int nodeId, int strategyId)
         {
             var response = new ServiceResult<NodeDto>(Principal);
+            var userId = GetCurrentUserId();
 
             var node = await _nodeRepository.GetByIdAsync(nodeId);
             if (node == null) throw new SmartHomeEntityNotFoundException($"Cannot find node with given Id: {nodeId}");
 
-            // TODO auth
+            if(!_authProvider.Authorize(node, userId)) throw new SmartHomeUnauthorizedException($"User {userId} does not have rights to modify node {node.Name}");
 
             var strategy = await _strategyRepository.GetByIdAsync(strategyId);
             if (strategy == null) throw new SmartHomeEntityNotFoundException($"Cannot find strategy with given Id: {strategyId}");

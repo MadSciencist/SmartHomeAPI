@@ -28,13 +28,17 @@ namespace SmartHome.API.Extensions
             {
                 await _next(httpContext);
             }
-            catch (SmartHomeException ex)
+            catch(SmartHomeUnauthorizedException ex)
             {
-                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.BadRequest);
+                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.Unauthorized);
             }
             catch (SmartHomeEntityNotFoundException ex)
             {
                 await HandleExceptionAsync(ex, httpContext, HttpStatusCode.NotFound);
+            }
+            catch (SmartHomeException ex)
+            {
+                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.BadRequest);
             }
             catch (Exception ex)
             {
@@ -54,7 +58,7 @@ namespace SmartHome.API.Extensions
 
 
             string userMessage;
-            if (ex is SmartHomeException || ex is SmartHomeEntityNotFoundException)
+            if (ex is SmartHomeException || ex is SmartHomeEntityNotFoundException || ex is SmartHomeUnauthorizedException)
             {
                 userMessage = ex.Message;
             }
