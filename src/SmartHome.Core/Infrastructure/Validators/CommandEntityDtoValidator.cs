@@ -7,8 +7,13 @@ namespace SmartHome.Core.Infrastructure.Validators
     {
         public CommandEntityDtoValidator()
         {
-            RuleFor(x => x.Alias).NotNull().WithMessage("Alias cannot be empty");
-            RuleFor(x => x.ExecutorClassName).NotNull().WithMessage("Class name cannot be empty");
+            RuleFor(x => x.Alias)
+                .NotNull()
+                .MaximumLength(50);
+
+            RuleFor(x => x.ExecutorClassName)
+                .NotNull()
+                .MaximumLength(100);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace SmartHome.Core.Services
 {
     public interface IControlStrategyService : IServiceBase
     {
-        Task<ServiceResult<ControlStrategyDto>> AttachAvailableCommand(int strategyId, int commandId);
+        Task<ServiceResult<ControlStrategyDto>> AttachCommand(int strategyId, int commandId);
         Task<ServiceResult<ControlStrategyDto>> CreateStrategy(ControlStrategyDto input);
     }
 }

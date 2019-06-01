@@ -34,6 +34,16 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
+        [HttpPost("{nodeId}/attachStrategy/{strategyId}")]
+        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> AttachStrategy(int nodeId, int strategyId)
+        {
+            var serviceResult = await _nodeService.AttachControlStrategy(nodeId, strategyId);
+
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        }
+
         [HttpPost("{nodeId}/command/{command}")]
         public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams)
         {

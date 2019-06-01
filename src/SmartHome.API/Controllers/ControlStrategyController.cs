@@ -38,7 +38,7 @@ namespace SmartHome.API.Controllers
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AttachCommand(int strategyId, int commandId)
         {
-            var serviceResult = await _controlStrategyService.AttachAvailableCommand(strategyId, commandId);
+            var serviceResult = await _controlStrategyService.AttachCommand(strategyId, commandId);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }

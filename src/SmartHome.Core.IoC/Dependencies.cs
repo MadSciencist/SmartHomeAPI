@@ -8,6 +8,7 @@ using SmartHome.Core.Services;
 using System.Linq;
 using System.Reflection;
 using SmartHome.Core.RestClient;
+using SmartHome.Core.Authorization;
 
 namespace SmartHome.Core.IoC
 {
@@ -28,6 +29,7 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<MqttMessageProcessor>().InstancePerDependency();
             Builder.RegisterType<MessageInterceptor>().InstancePerDependency();
+            Builder.RegisterType<NodeAuthorizationProvider>().InstancePerDependency();
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();

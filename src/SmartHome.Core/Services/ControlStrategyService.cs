@@ -51,7 +51,7 @@ namespace SmartHome.Core.Services
 
             try
             {
-                var created = await GenericRepository.CreateAsync(strategyToCreate);
+                var created = await _strategyRepository.CreateAsync(strategyToCreate);
                 response.Data = Mapper.Map<ControlStrategyDto>(created);
                 response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
 
@@ -64,7 +64,7 @@ namespace SmartHome.Core.Services
             }
         }
 
-        public async Task<ServiceResult<ControlStrategyDto>> AttachAvailableCommand(int strategyId, int commandId)
+        public async Task<ServiceResult<ControlStrategyDto>> AttachCommand(int strategyId, int commandId)
         {
             var response = new ServiceResult<ControlStrategyDto>(Principal);
 
@@ -89,7 +89,7 @@ namespace SmartHome.Core.Services
 
                 response.Data = Mapper.Map<ControlStrategyDto>(strategy);
                 response.Data.AllowedCommands = Mapper.Map<ICollection<CommandEntityDto>>(strategy.AllowedCommands.Select(x => x.Command)); // TODO move to AutoMapper
-                response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+                response.Alerts.Add(new Alert("Successfully updated", MessageType.Success));
 
                 return response;
             }

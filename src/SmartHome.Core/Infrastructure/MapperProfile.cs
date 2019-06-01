@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
 
@@ -28,6 +27,7 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.BaseTopic, opt => opt.MapFrom(x => x.BaseTopic))
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
+                .ForMember(x => x.ControlStrategyId, opt => opt.MapFrom(x => x.ControlStrategyId))
                 .ForAllOtherMembers(x => x.Ignore());
         }
 
