@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,9 +20,9 @@ namespace SmartHome.Core.Dto
         public bool IsActive { get; set; }
         public ICollection<CommandEntityDto> AllowedCommands { get; set; }
 
-        [BindNever]
+        //[BindNever]
         public int CreatedById { get; set; }
-        [BindNever]
+        //[BindNever]
         public DateTime Created { get; set; }
     }
 }

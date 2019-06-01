@@ -18,12 +18,14 @@ namespace SmartHome.Core.Services
     public class NodeService : ServiceBase<NodeDto, object>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
+        private readonly IGenericRepository<ControlStrategy> _strategyRepository;
         private readonly AppDbContext _context;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper,
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper, IGenericRepository<ControlStrategy> strategyRepository,
             IValidator<NodeDto> validator, AppDbContext context) : base(container, mapper, validator)
         {
             _nodeRepository = nodeRepository;
+            _strategyRepository = strategyRepository;
             _context = context;
         }
 
@@ -74,6 +76,34 @@ namespace SmartHome.Core.Services
                     response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
                     throw;
                 }
+            }
+        }
+
+        public async Task<ServiceResult<NodeDto>> AttachControlStrategy(int nodeId, int strategyId)
+        {
+            var response = new ServiceResult<NodeDto>(Principal);
+
+            var node = await _nodeRepository.GetByIdAsync(nodeId);
+            if (node == null) throw new SmartHomeEntityNotFoundException($"Cannot find node with given Id: {nodeId}");
+
+            // TODO auth
+
+            var strategy = await _strategyRepository.GetByIdAsync(strategyId);
+            if (strategy == null) throw new SmartHomeEntityNotFoundException($"Cannot find strategy with given Id: {strategyId}");
+
+            try
+            {
+                node.ControlStrategyId = strategyId;
+                var updated = await _nodeRepository.UpdateAsync(node);
+                response.Data = Mapper.Map<NodeDto>(updated);
+                response.Alerts.Add(new Alert("Successfully attached strategy", MessageType.Success));
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
             }
         }
 
