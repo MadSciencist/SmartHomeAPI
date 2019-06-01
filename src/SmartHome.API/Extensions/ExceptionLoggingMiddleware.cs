@@ -58,7 +58,7 @@ namespace SmartHome.API.Extensions
 
 
             string userMessage;
-            if (ex is SmartHomeException || ex is SmartHomeEntityNotFoundException || ex is SmartHomeUnauthorizedException)
+            if (ex is SmartHomeException)
             {
                 userMessage = ex.Message;
             }

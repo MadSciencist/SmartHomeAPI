@@ -7,7 +7,8 @@ namespace SmartHome.Core.Infrastructure.Validators
     {
         public NodeDtoValidator()
         {
-            RuleFor(x => x.Name).NotNull().WithMessage("Name cannot be empty");
+            RuleFor(x => x.Name)
+                .NotNull();
         }
     }
 }

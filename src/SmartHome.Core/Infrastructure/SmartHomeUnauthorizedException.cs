@@ -2,12 +2,8 @@
 
 namespace SmartHome.Core.Infrastructure
 {
-    public class SmartHomeUnauthorizedException : UnauthorizedAccessException
+    public class SmartHomeUnauthorizedException : SmartHomeException
     {
-        public SmartHomeUnauthorizedException()
-        {
-        }
-
         public SmartHomeUnauthorizedException(string message) : base(message)
         {
         }
