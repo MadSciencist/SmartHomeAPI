@@ -19,6 +19,11 @@ namespace SmartHome.API.Utils
 
         public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult) where T : class, new()
         {
+            if(serviceResult == null || serviceResult.Data == null)
+            {
+                throw new ArgumentNullException("Service output is null");
+            }
+
             if (serviceResult.Principal == null)
             {
                 throw new ArgumentNullException(nameof(serviceResult.Principal));

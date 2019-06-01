@@ -33,16 +33,6 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
-        [HttpPost("command/create/{alias}/{className}")]
-        [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(string alias, string className)
-        {
-            var serviceResult = await _controlStrategyService.CreateCommand(alias, className);
-
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
-        }
-
         [HttpPost("{strategyId}/attachCommand/{commandId}")]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status400BadRequest)]

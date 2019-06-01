@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
@@ -9,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace SmartHome.Core.Services
 {
@@ -62,34 +62,6 @@ namespace SmartHome.Core.Services
                 response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
                 throw;
             }
-        }
-
-        // TODO move to command service, create command controller
-        public async Task<ServiceResult<CommandEntityDto>> CreateCommand(string alias, string executorClass)
-        {
-            var response = new ServiceResult<CommandEntityDto>(Principal);
-
-            var command = new Command
-            {
-                Alias = alias,
-                ExecutorClassName = executorClass
-            };
-
-            //Todo command validator here
-
-            try
-            {
-                var created = await _commandRepository.CreateAsync(command);
-                response.Data = response.Data = Mapper.Map<CommandEntityDto>(created);
-                response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
-                throw;
-            }           
         }
 
         public async Task<ServiceResult<ControlStrategyDto>> AttachAvailableCommand(int strategyId, int commandId)
