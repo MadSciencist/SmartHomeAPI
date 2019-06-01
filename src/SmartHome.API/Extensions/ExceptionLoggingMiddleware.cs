@@ -48,8 +48,6 @@ namespace SmartHome.API.Extensions
 
         private static Task HandleExceptionAsync(Exception ex, HttpContext context, HttpStatusCode code)
         {
-            var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
-
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
 
@@ -57,25 +55,18 @@ namespace SmartHome.API.Extensions
             _logger.LogError(ex, "Global exception logger, correlationId: " + correlationId);
 
 
-            string userMessage;
-            if (ex is SmartHomeException)
-            {
-                userMessage = ex.Message;
-            }
-            else
-            {
-                userMessage = "System error occured";
-            }
+            string uiMessage = ex is SmartHomeException ? ex.Message : "System error occured";
 
-            var response = new ServiceResult<object> {Metadata = {ProblemDetails = CreateProblemDetails(ex, context, isTrusted, correlationId) } };
-            response.Alerts.Add(new Alert(userMessage, MessageType.Exception));
+            var response = new ServiceResult<object> {Metadata = {ProblemDetails = CreateProblemDetails(ex, context, correlationId) } };
+            response.Alerts.Add(new Alert(uiMessage, MessageType.Exception));
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
 
-        private static ProblemDetails CreateProblemDetails(Exception ex, HttpContext context, bool isTrusted,
-            Guid correlationId)
+        private static ProblemDetails CreateProblemDetails(Exception ex, HttpContext context, Guid correlationId)
         {
+            var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
+
             var details = new ProblemDetails
             {
                 Title = "Unhandled exception",
