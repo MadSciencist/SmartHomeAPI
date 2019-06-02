@@ -17,7 +17,7 @@ namespace SmartHome.API.Utils
             TrustProvider = TrustFactory.GetDefaultTrustProvider();
         }
 
-        public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult) where T : class, new()
+        public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult) where T : class
         {
             if(serviceResult == null || serviceResult.Data == null)
             {

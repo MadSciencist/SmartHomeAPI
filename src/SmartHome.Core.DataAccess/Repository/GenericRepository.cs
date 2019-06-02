@@ -9,22 +9,22 @@ namespace SmartHome.Core.DataAccess.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
     {
-        protected readonly AppDbContext _context;
+        protected readonly AppDbContext Context;
         private readonly ILogger _logger;
 
         public GenericRepository(AppDbContext context, ILoggerFactory loggerFactory)
         {
-            _context = context;
+            Context = context;
             _logger = loggerFactory.CreateLogger("Repository logger");
         }
 
         public virtual async Task<T> CreateAsync(T entity)
         {
-            await _context.AddAsync(entity);
+            await Context.AddAsync(entity);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException e)
             {
@@ -40,13 +40,13 @@ namespace SmartHome.Core.DataAccess.Repository
             return entity;
         }
 
-        public async Task DeleteAsync(T entity)
+        public virtual async Task DeleteAsync(T entity)
         {
-            _context.Remove(entity);
+            Context.Remove(entity);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException e)
             {
@@ -59,23 +59,23 @@ namespace SmartHome.Core.DataAccess.Repository
             }
         }
 
-        public IEnumerable<T> Find(Func<T, bool> predicate) => _context.Set<T>().Where(predicate);
+        public virtual IEnumerable<T> Find(Func<T, bool> predicate) => Context.Set<T>().Where(predicate);
 
-        public IEnumerable<T> GetAll() => _context.Set<T>();
+        public virtual IEnumerable<T> GetAll() => Context.Set<T>();
 
-        public IQueryable<T> AsQueryable() => _context.Set<T>().AsQueryable();
+        public virtual IQueryable<T> AsQueryable() => Context.Set<T>().AsQueryable();
 
-        public IQueryable<T> AsQueryableNoTrack() => _context.Set<T>().AsNoTracking().AsQueryable();
+        public virtual IQueryable<T> AsQueryableNoTrack() => Context.Set<T>().AsNoTracking().AsQueryable();
 
-        public virtual async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
+        public virtual async Task<T> GetByIdAsync(int id) => await Context.Set<T>().FindAsync(id);
 
         public virtual async Task<T> UpdateAsync(T entity)
         {
-            _context.Set<T>().Update(entity);
+            Context.Set<T>().Update(entity);
 
             try
             {
-                await _context.SaveChangesAsync();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException e)
             {

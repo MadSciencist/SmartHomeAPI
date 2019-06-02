@@ -30,7 +30,7 @@ namespace SmartHome.API.Extensions
             }
             catch(SmartHomeUnauthorizedException ex)
             {
-                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.Unauthorized);
+                await HandleExceptionAsync(ex, httpContext, HttpStatusCode.Forbidden);
             }
             catch (SmartHomeEntityNotFoundException ex)
             {

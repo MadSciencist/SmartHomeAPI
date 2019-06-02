@@ -1,6 +1,6 @@
 ﻿namespace SmartHome.Core.Dto
 {
-    public class NodeDataDto
+    public class NodeDataMagnitudeDto
     {
         public string Magnitude { get; set; }
         public string Value { get; set; }

@@ -1,10 +1,11 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
-using System;
-using System.Collections.Generic;
+using SmartHome.Core.Infrastructure;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
@@ -18,27 +19,28 @@ namespace SmartHome.Core.Services
             _nodeDataRepository = nodeDataRepository;
         }
 
-        public async Task<NodeData> AddSingleAsync(EDataRequestReason reason, NodeDataDto data)
+        public async Task<ServiceResult<PaginatedList<NodeData>>> GetNodeData(int nodeId, int pageNumber, int pageSize)
         {
-            if (reason == EDataRequestReason.User)
-            {
-                // TODO validation
-                var userId = GetCurrentUserId();
-                if (userId == 0) throw new ArgumentException("user not auth");
-            }
+            var response = new ServiceResult<PaginatedList<NodeData>>(Principal);
 
-            return await _nodeDataRepository.AddSingleAsync(reason, new NodeDataMagnitude
+            var queryable = _nodeDataRepository.AsQueryableNoTrack()
+                .Where(x => x.NodeId == nodeId);
+
+            var paginated = await PaginatedList<NodeData>.CreateAsync(queryable, pageNumber, pageSize);
+            response.Data = paginated;
+            Console.WriteLine(paginated.TotalCount);
+
+            return response;
+        }
+
+        public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitudeDto data)
+        {
+            return await _nodeDataRepository.AddSingleAsync(nodeId, reason, new NodeDataMagnitude
             {
                 Magnitude = data.Magnitude,
                 Unit = data.Unit,
                 Value = data.Value
             });
-        }
-
-        // todo change argument to DTO
-        public async Task<NodeData> AddManyAsync(EDataRequestReason reason, ICollection<NodeDataMagnitude> data)
-        {
-            return await _nodeDataRepository.AddManyAsync(reason, data);
         }
     }
 }

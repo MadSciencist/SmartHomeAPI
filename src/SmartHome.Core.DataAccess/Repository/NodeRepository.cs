@@ -16,7 +16,7 @@ namespace SmartHome.Core.DataAccess.Repository
 
         public override async Task<Node> GetByIdAsync(int id)
         {
-            return await _context.Nodes
+            return await Context.Nodes
                 .Include(x => x.ControlStrategy)
                     .ThenInclude(x => x.AllowedCommands)
                         .ThenInclude(x => x.Command)
@@ -32,7 +32,7 @@ namespace SmartHome.Core.DataAccess.Repository
                 return null;
             }
 
-            return await _context.Nodes
+            return await Context.Nodes
                 .Include(x => x.ControlStrategy)
                     .ThenInclude(x => x.AllowedCommands)
                         .ThenInclude(x => x.Command)

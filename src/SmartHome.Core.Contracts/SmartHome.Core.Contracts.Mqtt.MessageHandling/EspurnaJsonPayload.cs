@@ -37,7 +37,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                         // if the user wants to save such sensor data
                         if (node.ControlStrategy.RegisteredSensors.Any(x => string.Compare(x.Name, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
                         {
-                            await ExtractSaveData(sensorName, sensorValue);
+                            await ExtractSaveData(node.Id, sensorName, sensorValue);
                         }
                     }
                 }
@@ -45,11 +45,11 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
             }
         }
 
-        private async Task ExtractSaveData(string sensorName, string value)
+        private async Task ExtractSaveData(int nodeId, string sensorName, string value)
         {
             var unit = Espurna.ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
 
-            await _nodeDataService.AddSingleAsync(EDataRequestReason.Node, new NodeDataDto
+            await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
             {
                 Value = value,
                 Magnitude = sensorName,

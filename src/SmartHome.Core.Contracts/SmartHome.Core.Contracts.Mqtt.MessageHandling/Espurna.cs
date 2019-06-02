@@ -31,22 +31,23 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                     // if the user wants to save such sensor data
                     if (node.ControlStrategy.RegisteredSensors.Any(x => string.Compare(x.Name, validSensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
                     {
-                        await ExtractSaveData(message);
+                        await ExtractSaveData(node.Id, message);
                     }
                 }
             }
         }
 
-        private async Task ExtractSaveData(MqttMessageDto message)
+        private async Task ExtractSaveData(int nodeId, MqttMessageDto message)
         {
             var magnitude = message.Topic.Split("/").Last();
             var unit = ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
 
-            await _nodeDataService.AddSingleAsync(EDataRequestReason.Node, new NodeDataDto
+            await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
             {
                 Value = message.Payload,
                 Magnitude = magnitude,
-                Unit = unit
+                Unit = unit,
+
             });
         }
 

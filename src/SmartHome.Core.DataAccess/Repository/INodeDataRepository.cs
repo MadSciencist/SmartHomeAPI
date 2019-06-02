@@ -7,7 +7,7 @@ namespace SmartHome.Core.DataAccess.Repository
 {
     public interface INodeDataRepository : IGenericRepository<NodeData>
     {
-        Task<NodeData> AddManyAsync(EDataRequestReason reason, ICollection<NodeDataMagnitude> data);
-        Task<NodeData> AddSingleAsync(EDataRequestReason reason, NodeDataMagnitude data);
+        //Task<NodeData> AddManyAsync(EDataRequestReason reason, ICollection<NodeDataMagnitude> data);
+        Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitude data);
     }
 }
