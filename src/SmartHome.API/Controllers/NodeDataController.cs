@@ -21,6 +21,7 @@ namespace SmartHome.API.Controllers
         }
 
         [AllowAnonymous]
+        //Todo maybe extra entpoint with basic auth?
         [HttpPost("add")]
         public async Task<IActionResult> PostData()
         {

@@ -1,4 +1,5 @@
-﻿using SmartHome.Core.DataAccess.Repository;
+﻿using Autofac;
+using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
@@ -12,7 +13,7 @@ namespace SmartHome.Core.Services
     {
         private readonly INodeDataRepository _nodeDataRepository;
 
-        public NodeDataService(INodeDataRepository nodeDataRepository)
+        public NodeDataService(ILifetimeScope container, INodeDataRepository nodeDataRepository) : base(container)
         {
             _nodeDataRepository = nodeDataRepository;
         }
