@@ -20,10 +20,8 @@ namespace SmartHome.Core.Infrastructure
 
 
         #region constructors
-        public ServiceResult(ClaimsPrincipal principal)
+        public ServiceResult(ClaimsPrincipal principal) : this()
         {
-            Alerts = new List<Alert>();
-            Metadata = new ResultMetadata();
             Principal = principal;
         }
 

@@ -51,7 +51,7 @@ namespace SmartHome.Core.IoC
         private static void AddContractsRestControlAssembly()
         {
             var commandExecutorAsm = Assembly.GetAssembly(typeof(IRestControlStrategy)).GetTypes();
-            var contracts = commandExecutorAsm.ToDictionary(ex => ex.FullName);
+            var contracts = commandExecutorAsm.Where(x=> x.IsClass).ToDictionary(ex => ex.FullName);
 
             foreach (var contract in contracts)
             {
@@ -64,7 +64,7 @@ namespace SmartHome.Core.IoC
         {
             var commandExecutorAsm = Assembly.GetAssembly(typeof(IMqttControlStrategy)).GetTypes();
 
-            var contracts = commandExecutorAsm.ToDictionary(ex => ex.FullName);
+            var contracts = commandExecutorAsm.Where(x => x.IsClass).ToDictionary(ex => ex.FullName);
 
             foreach (var contract in contracts)
             {
@@ -77,7 +77,7 @@ namespace SmartHome.Core.IoC
         {
             var resolversAsm = Assembly.Load("SmartHome.Core.Contracts.Mqtt.MessageHandling").GetTypes();
 
-            var resolvers = resolversAsm.ToDictionary(ex => ex.FullName);
+            var resolvers = resolversAsm.Where(x => x.IsClass).ToDictionary(ex => ex.FullName);
 
             foreach (var resolver in resolvers)
             {
