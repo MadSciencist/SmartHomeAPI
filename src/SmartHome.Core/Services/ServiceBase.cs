@@ -1,65 +1,49 @@
-﻿using SmartHome.Core.Utils;
-using System;
-using System.Security.Claims;
-using Autofac;
+﻿using Autofac;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Domain.User;
+using SmartHome.Core.Utils;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
     public abstract class ServiceBase<TValidator, TRepository> : IServiceBase where TValidator: class, new() where TRepository: class, new()
     {
-        public virtual ClaimsPrincipal Principal { get; set; }
-        protected IMapper Mapper { get; set; }
+        public ClaimsPrincipal Principal { get; set; }
         protected ILifetimeScope Container { get; set; }
-        protected IValidator<TValidator> Validator { get; set; }
-        protected IGenericRepository<TRepository> GenericRepository { get; set; }
 
-        #region constructors
-        protected ServiceBase(ILifetimeScope container, IMapper mapper, IValidator<TValidator> validator, IGenericRepository<TRepository> repository)
+        private AppDbContext _context;
+        protected AppDbContext DbContext => _context ?? (_context = Container.Resolve<AppDbContext>());
+
+        private IMapper _mapper;
+        protected IMapper Mapper => _mapper ?? (_mapper = Container.Resolve<IMapper>());
+
+        private IValidator<TValidator> _validator;
+        protected IValidator<TValidator> Validator => _validator ?? (_validator = Container.Resolve<IValidator<TValidator>>());
+
+        private IGenericRepository<TRepository> _repository;
+        protected IGenericRepository<TRepository> GenericRepository => _repository ?? (_repository = Container.Resolve<IGenericRepository<TRepository>>());
+
+        private UserManager<AppUser> _userManager;
+        protected UserManager<AppUser> UserManager => _userManager ?? (_userManager = Container.Resolve<UserManager<AppUser>>());
+
+        #region constructor
+        protected ServiceBase(ILifetimeScope container)
         {
             Container = container;
-            Mapper = mapper;
-            Validator = validator;
-            GenericRepository = repository;
-        }
-
-        protected ServiceBase(ILifetimeScope container, IMapper mapper, IValidator<TValidator> validator)
-        {
-            Container = container;
-            Mapper = mapper;
-            Validator = validator;
-        }
-
-        protected ServiceBase(IGenericRepository<TRepository> repository, IMapper mapper, IValidator<TValidator> validator)
-        {
-            GenericRepository = repository;
-            Mapper = mapper;
-            Validator = validator;
-        }
-
-        protected ServiceBase(IMapper mapper, IValidator<TValidator> validator)
-        {
-            Mapper = mapper;
-            Validator = validator;
-        }
-
-        protected ServiceBase(IMapper mapper)
-        {
-            Mapper = mapper;
-        }
-
-        protected ServiceBase(IGenericRepository<TRepository> repository)
-        {
-            GenericRepository = repository;
-        }
-
-        protected ServiceBase()
-        {
         }
 
         #endregion
+
+        public async Task<AppUser> GetCurrentUser()
+        {
+            return await UserManager.FindByIdAsync(ClaimsPrincipalHelper.GetClaimedIdentifier(Principal));
+        }
 
         public virtual int GetCurrentUserId()
         {

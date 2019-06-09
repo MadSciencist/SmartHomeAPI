@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.DataAccess.Repository;
+﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Domain.DictionaryEntity;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace SmartHome.Core.Services
     public class DictionaryService : ServiceBase<object, Dictionary>, IDictionaryService
     {
 
-        public DictionaryService(IGenericRepository<Dictionary> dictRepository) : base(dictRepository)
+        public DictionaryService(ILifetimeScope container) : base(container)
         {
         }
 

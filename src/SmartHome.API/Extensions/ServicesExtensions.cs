@@ -20,7 +20,7 @@ namespace SmartHome.API.Extensions
     {
         public static void AddTokenBuilder(this IServiceCollection services)
         {
-            services.AddTransient<ITokenBuilder, TokenBuilder>();
+            services.AddTransient<ITokenBuilder, JwtTokenBuilder>();
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)

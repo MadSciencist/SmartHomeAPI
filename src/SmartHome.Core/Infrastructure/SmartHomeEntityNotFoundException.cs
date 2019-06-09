@@ -2,7 +2,7 @@
 
 namespace SmartHome.Core.Infrastructure
 {
-    public class SmartHomeEntityNotFoundException : Exception
+    public class SmartHomeEntityNotFoundException : SmartHomeException
     {
         public SmartHomeEntityNotFoundException(string message) : base(message)
         {

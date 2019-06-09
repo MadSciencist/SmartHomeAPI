@@ -62,7 +62,7 @@ namespace SmartHome.API.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             var (token, expiring) = _tokenBuilder.Build(user, roles);
 
-            return Ok(new { access = new { token, expires = expiring }, redirect });
+            return Ok(new { access = new { type = "Bearer", token, expires = expiring }, redirect });
         }
 
         [AllowAnonymous]

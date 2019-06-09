@@ -10,11 +10,11 @@ using System.Text;
 
 namespace SmartHome.API.Security.Token
 {
-    public class TokenBuilder : ITokenBuilder
+    public class JwtTokenBuilder : ITokenBuilder
     {
         private readonly IConfiguration _config;
 
-        public TokenBuilder(IConfiguration config)
+        public JwtTokenBuilder(IConfiguration config)
         {
             _config = config;
         }

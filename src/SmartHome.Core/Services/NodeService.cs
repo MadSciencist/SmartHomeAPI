@@ -1,10 +1,7 @@
 ﻿using Autofac;
-using AutoMapper;
-using FluentValidation;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Authorization;
 using SmartHome.Core.Control;
-using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
@@ -21,16 +18,13 @@ namespace SmartHome.Core.Services
         private readonly INodeRepository _nodeRepository;
         private readonly IGenericRepository<ControlStrategy> _strategyRepository;
         private readonly NodeAuthorizationProvider _authProvider;
-        private readonly AppDbContext _context;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IMapper mapper,
-            IGenericRepository<ControlStrategy> strategyRepository, NodeAuthorizationProvider authorizationProvider,
-            IValidator<NodeDto> validator, AppDbContext context) : base(container, mapper, validator)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository,
+            IGenericRepository<ControlStrategy> strategyRepository, NodeAuthorizationProvider authorizationProvider) : base(container)
         {
             _nodeRepository = nodeRepository;
             _strategyRepository = strategyRepository;
             _authProvider = authorizationProvider;
-            _context = context;
         }
 
         public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
@@ -55,20 +49,20 @@ namespace SmartHome.Core.Services
 
         private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            using (var transaction = DbContext.Database.BeginTransaction())
             {
                 try
                 {
                     var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
 
                     // create entry in link table
-                    _context.Add(new AppUserNodeLink
+                    DbContext.Add(new AppUserNodeLink
                     {
                         NodeId = createdNode.Id,
                         UserId = userId
                     });
 
-                    _context.SaveChanges();
+                    DbContext.SaveChanges();
                     transaction.Commit();
                     response.Data = Mapper.Map<NodeDto>(createdNode);
                     response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
@@ -86,12 +80,11 @@ namespace SmartHome.Core.Services
         public async Task<ServiceResult<NodeDto>> AttachControlStrategy(int nodeId, int strategyId)
         {
             var response = new ServiceResult<NodeDto>(Principal);
-            var userId = GetCurrentUserId();
 
             var node = await _nodeRepository.GetByIdAsync(nodeId);
             if (node == null) throw new SmartHomeEntityNotFoundException($"Cannot find node with given Id: {nodeId}");
 
-            if(!_authProvider.Authorize(node, userId)) throw new SmartHomeUnauthorizedException($"User {userId} does not have rights to modify node {node.Name}");
+            if(!_authProvider.Authorize(node, Principal)) throw new SmartHomeUnauthorizedException($"User {Principal.Identity.Name} does not have rights to modify node {node.Name}");
 
             var strategy = await _strategyRepository.GetByIdAsync(strategyId);
             if (strategy == null) throw new SmartHomeEntityNotFoundException($"Cannot find strategy with given Id: {strategyId}");

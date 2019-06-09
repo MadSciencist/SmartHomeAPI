@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
@@ -20,11 +19,10 @@ namespace SmartHome.Core.Services
         private readonly IGenericRepository<ControlStrategyCommandLink> _strategyCommandLinkRepository;
 
         public ControlStrategyService(
+            ILifetimeScope container,
             IStrategyRepository strategyRepository,
             IGenericRepository<Command> commandRepository,
-            IGenericRepository<ControlStrategyCommandLink> strategyCommandLinkRepository,
-            IMapper mapper,
-            IValidator<ControlStrategyDto> validator) : base(mapper, validator)
+            IGenericRepository<ControlStrategyCommandLink> strategyCommandLinkRepository) : base(container)
         {
             _strategyRepository = strategyRepository;
             _commandRepository = commandRepository;

@@ -1,4 +1,5 @@
-﻿using SmartHome.Core.DataAccess.Repository;
+﻿using Autofac;
+using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
@@ -9,7 +10,7 @@ namespace SmartHome.Core.Services
 {
     public class CommandsService : ServiceBase<object, Command>, ICommandService
     {
-        public CommandsService(IGenericRepository<Command> commandRepository) : base(commandRepository)
+        public CommandsService(ILifetimeScope container, IGenericRepository<Command> commandRepository) : base(container)
         {
         }
 

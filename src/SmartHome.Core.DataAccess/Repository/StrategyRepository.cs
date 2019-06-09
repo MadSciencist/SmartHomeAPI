@@ -16,7 +16,7 @@ namespace SmartHome.Core.DataAccess.Repository
 
         public override async Task<ControlStrategy> GetByIdAsync(int id)
         {
-            return await _context.ControlStrategies
+            return await Context.ControlStrategies
                 .Include(x => x.AllowedCommands)
                     .ThenInclude(x => x.Command)
                 .FirstOrDefaultAsync(x => x.Id == id);

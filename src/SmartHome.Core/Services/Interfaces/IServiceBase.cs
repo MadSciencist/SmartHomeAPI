@@ -1,4 +1,7 @@
-﻿using System.Security.Claims;
+﻿using SmartHome.Core.DataAccess;
+using SmartHome.Core.Domain.User;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
@@ -6,5 +9,6 @@ namespace SmartHome.Core.Services
     {
         ClaimsPrincipal Principal { get; set; }
         int GetCurrentUserId();
+        Task<AppUser> GetCurrentUser();
     }
 }

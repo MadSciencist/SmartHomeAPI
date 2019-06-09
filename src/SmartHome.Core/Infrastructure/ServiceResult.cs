@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace SmartHome.Core.Infrastructure
 {
-    public class ServiceResult<T> where T : class, new()
+    public class ServiceResult<T> where T : class
     {
         [JsonProperty("data")]
         public T Data { get; set; }
@@ -20,10 +20,8 @@ namespace SmartHome.Core.Infrastructure
 
 
         #region constructors
-        public ServiceResult(ClaimsPrincipal principal)
+        public ServiceResult(ClaimsPrincipal principal) : this()
         {
-            Alerts = new List<Alert>();
-            Metadata = new ResultMetadata();
             Principal = principal;
         }
 
