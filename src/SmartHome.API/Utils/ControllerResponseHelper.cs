@@ -28,25 +28,21 @@ namespace SmartHome.API.Utils
 
         private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult) where T : class
         {
-            IActionResult result;
-
             if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Error))
             {
-                result = new BadRequestObjectResult(serviceResult);
+                return new BadRequestObjectResult(serviceResult);
             }
 
             if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
             {
-                result = new ContentResult
+                return new ContentResult
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Content = JsonConvert.SerializeObject(serviceResult)
                 };
             }
 
-            result = new OkObjectResult(serviceResult);
-
-            return result;
+            return new OkObjectResult(serviceResult);
         }
 
         private static void ProcessExceptionsMessageVisibility<T>(ServiceResult<T> serviceResult) where T : class
@@ -61,7 +57,7 @@ namespace SmartHome.API.Utils
 
         private static void ValidateAndThrowIfNeeded<T>(ServiceResult<T> serviceResult) where T : class
         {
-            if (serviceResult == null || serviceResult.Data == null)
+            if (serviceResult?.Data == null)
             {
                 throw new ArgumentNullException("Service output is null");
             }
