@@ -40,7 +40,7 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
             Builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerDependency();
             Builder.RegisterType<ControlStrategyService>().As<IControlStrategyService>().InstancePerDependency();
-            Builder.RegisterType<CommandsService>().As<ICommandService>().InstancePerDependency();
+            Builder.RegisterType<CommandService>().As<ICommandService>().InstancePerDependency();
 
             Builder.RegisterType<MqttService>().As<IMqttService>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();
@@ -50,8 +50,9 @@ namespace SmartHome.Core.IoC
 
         private static void AddContractsRestControlAssembly()
         {
-            var commandExecutorAsm = Assembly.GetAssembly(typeof(IRestControlStrategy)).GetTypes();
-            var contracts = commandExecutorAsm.Where(x=> x.IsClass).ToDictionary(ex => ex.FullName);
+            var contractsAsm = Assembly.GetAssembly(typeof(IRestControlStrategy)).GetTypes();
+            var contracts = contractsAsm.Where(x=> x.IsClass && !x.IsInterface && !x.IsAbstract && typeof(IRestControlStrategy).IsAssignableFrom(x))
+                .ToDictionary(ex => ex.FullName);
 
             foreach (var contract in contracts)
             {
@@ -62,9 +63,9 @@ namespace SmartHome.Core.IoC
 
         private static void AddContractsMqttControlAssembly()
         {
-            var commandExecutorAsm = Assembly.GetAssembly(typeof(IMqttControlStrategy)).GetTypes();
-
-            var contracts = commandExecutorAsm.Where(x => x.IsClass).ToDictionary(ex => ex.FullName);
+            var contractsAsm = Assembly.GetAssembly(typeof(IMqttControlStrategy)).GetTypes();
+            var contracts = contractsAsm.Where(x => x.IsClass && !x.IsInterface && !x.IsAbstract && typeof(IMqttControlStrategy).IsAssignableFrom(x))
+                .ToDictionary(ex => ex.FullName);
 
             foreach (var contract in contracts)
             {
@@ -75,9 +76,9 @@ namespace SmartHome.Core.IoC
 
         private static void AddContractsMqttMessageHandlersAssembly()
         {
-            var resolversAsm = Assembly.Load("SmartHome.Core.Contracts.Mqtt.MessageHandling").GetTypes();
-
-            var resolvers = resolversAsm.Where(x => x.IsClass).ToDictionary(ex => ex.FullName);
+            var handlersAsm = Assembly.Load("SmartHome.Core.Contracts.Mqtt.MessageHandling").GetTypes();
+            var resolvers = handlersAsm.Where(x => x.IsClass && !x.IsAbstract && !x.IsInterface)
+                .ToDictionary(ex => ex.FullName);
 
             foreach (var resolver in resolvers)
             {

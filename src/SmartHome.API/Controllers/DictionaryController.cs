@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     [Produces("application/json")]

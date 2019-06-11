@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Domain.Entity;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {
@@ -14,6 +16,40 @@ namespace SmartHome.Core.DataAccess.InitialLoad
             using (var scope = provider.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                if (!context.Commands.Any())
+                {
+                    var commands = new Collection<Command>
+                    {
+                        new Command
+                        {
+                            Id = 100,
+                            Alias = "Toggle Relay",
+                            ExecutorClassName = "ToggleRelay" 
+                        },
+                        new Command
+                        {
+                            Id = 101,
+                            Alias = "Set Relay",
+                            ExecutorClassName = "SetRelay"
+                        },
+                        new Command
+                        {
+                            Id = 102,
+                            Alias = "Turn On Relay",
+                            ExecutorClassName = string.Empty
+                        },
+                        new Command
+                        {
+                            Id = 103,
+                            Alias = "Turn Off Relay",
+                            ExecutorClassName = string.Empty
+                        }
+                    };
+
+                    await context.Commands.AddRangeAsync(commands);
+                    await context.SaveChangesAsync();
+                }
 
                 if (!context.Dictionaries.Any(x => x.Name == "gender"))
                 {

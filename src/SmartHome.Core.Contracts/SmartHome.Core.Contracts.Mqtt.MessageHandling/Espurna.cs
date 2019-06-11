@@ -46,8 +46,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
             {
                 Value = message.Payload,
                 Magnitude = magnitude,
-                Unit = unit,
-
+                Unit = unit
             });
         }
 

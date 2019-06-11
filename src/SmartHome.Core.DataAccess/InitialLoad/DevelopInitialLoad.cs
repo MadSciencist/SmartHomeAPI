@@ -16,7 +16,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-
                 if (!context.ControlStrategies.Any())
                 {
                     var controlStrategies = new List<ControlStrategy>
@@ -54,63 +53,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     };
 
                     await context.AddRangeAsync(controlStrategies);
-                    await context.SaveChangesAsync();
-                }
-
-
-                if (!context.Nodes.Any(x => x.Name == "Dev"))
-                {
-                    var node = new Node
-                    {
-                        Name = "Dev",
-                        ControlStrategyId = 2,
-                        Created = DateTime.UtcNow,
-                        CreatedById = 1,
-                        IpAddress = "http://192.168.0.101",
-                        Port = 80,
-                        GatewayIpAddress = "http://192.168.0.1",
-                        Description = "Dev test node",
-                        ApiKey = "03102E55CD7BBE35",
-                        ClientId = "clientId"
-                    };
-
-                    var createdNode = await context.Nodes.AddAsync(node);
-                    await context.SaveChangesAsync();
-
-                    context.Add(new AppUserNodeLink()
-                    {
-                        NodeId = createdNode.Entity.Id,
-                        UserId = 1
-                    });
-
-                    await context.SaveChangesAsync();
-                }
-
-                if (!context.Commands.Any())
-                {
-                    var commands = new Collection<Command>
-                    {
-                        new Command
-                        {
-                            Id = 1,
-                            Alias = "getAvailableSensors",
-                            ExecutorClassName = ""
-                        },
-                        new Command
-                        {
-                            Id = 100,
-                            Alias = "toggleRelay",
-                            ExecutorClassName = "ToggleRelay" // class name, move namespace to controlStrategy
-                        },
-                         new Command
-                        {
-                            Id = 101,
-                            Alias = "setRelay",
-                            ExecutorClassName = "SetRelay" // class name, move namespace to controlStrategy
-                        },
-                    };
-
-                    await context.Commands.AddRangeAsync(commands);
                     await context.SaveChangesAsync();
 
                     var links = new Collection<ControlStrategyCommandLink>
@@ -151,6 +93,35 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     {
                         context.Add(link);
                     }
+
+                    await context.SaveChangesAsync();
+                }
+
+
+                if (!context.Nodes.Any(x => x.Name == "Dev"))
+                {
+                    var node = new Node
+                    {
+                        Name = "Dev",
+                        ControlStrategyId = 2,
+                        Created = DateTime.UtcNow,
+                        CreatedById = 1,
+                        IpAddress = "http://192.168.0.101",
+                        Port = 80,
+                        GatewayIpAddress = "http://192.168.0.1",
+                        Description = "Dev test node",
+                        ApiKey = "03102E55CD7BBE35",
+                        ClientId = "clientId"
+                    };
+
+                    var createdNode = await context.Nodes.AddAsync(node);
+                    await context.SaveChangesAsync();
+
+                    context.Add(new AppUserNodeLink()
+                    {
+                        NodeId = createdNode.Entity.Id,
+                        UserId = 1
+                    });
 
                     await context.SaveChangesAsync();
                 }
