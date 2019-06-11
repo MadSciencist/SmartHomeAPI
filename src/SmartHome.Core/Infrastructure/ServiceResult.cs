@@ -30,7 +30,6 @@ namespace SmartHome.Core.Infrastructure
             Alerts = new List<Alert>();
             Metadata = new ResultMetadata();
         }
-
         #endregion
 
         public ServiceResult<T> HideExceptionMessages()
