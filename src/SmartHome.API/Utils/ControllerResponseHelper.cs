@@ -35,11 +35,8 @@ namespace SmartHome.API.Utils
 
             if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
             {
-                return new ContentResult
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Content = JsonConvert.SerializeObject(serviceResult)
-                };
+                var response = new ObjectResult(serviceResult) {StatusCode = StatusCodes.Status500InternalServerError};
+                return response;
             }
 
             return new OkObjectResult(serviceResult);

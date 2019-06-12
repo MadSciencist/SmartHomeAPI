@@ -60,22 +60,12 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         new ControlStrategyCommandLink
                         {
                             ControlStrategyId = 1,
-                            CommandId = 1
-                        },
-                        new ControlStrategyCommandLink
-                        {
-                            ControlStrategyId = 1,
                             CommandId = 100
                         },
                         new ControlStrategyCommandLink
                         {
                             ControlStrategyId = 1,
                             CommandId = 101
-                        },
-                        new ControlStrategyCommandLink
-                        {
-                            ControlStrategyId = 2,
-                            CommandId = 1
                         },
                         new ControlStrategyCommandLink
                         {
