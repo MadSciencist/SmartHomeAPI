@@ -9,7 +9,7 @@ namespace SmartHome.Core.DataAccess.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
     {
-        protected readonly AppDbContext Context;
+        public AppDbContext Context { get; }
         private readonly ILogger _logger;
 
         public GenericRepository(AppDbContext context, ILoggerFactory loggerFactory)

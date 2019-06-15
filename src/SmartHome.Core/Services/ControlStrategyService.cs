@@ -29,6 +29,24 @@ namespace SmartHome.Core.Services
             _strategyCommandLinkRepository = strategyCommandLinkRepository;
         }
 
+        public async Task<ServiceResult<IEnumerable<ControlStrategyDto>>> GetAll()
+        {
+            var response = new ServiceResult<IEnumerable<ControlStrategyDto>>(Principal);
+
+            try
+            {
+                var commands = await _strategyRepository.GetAll();
+                response.Data = response.Data = Mapper.Map<IEnumerable<ControlStrategyDto>>(commands);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
+            }
+        }
+
         public async Task<ServiceResult<ControlStrategyDto>> CreateStrategy(ControlStrategyDto input)
         {
             var response = new ServiceResult<ControlStrategyDto>(Principal);

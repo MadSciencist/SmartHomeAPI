@@ -29,7 +29,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             ControlContext = "Espurna",
                             ReceiveProviderName = "Mqtt",
                             ReceiveContext = "Espurna",
-                            CreatedById = 1
+                            CreatedById = 1,
+                            Created = DateTime.UtcNow
                         },
                         new ControlStrategy
                         {
@@ -48,7 +49,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                     Description = "Generic built-in analog sensor"
                                 }
                             },
-                            CreatedById = 1
+                            CreatedById = 1,
+                            Created = DateTime.UtcNow
                         }
                     };
 

@@ -64,13 +64,13 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 new DictionaryValue
                                 {
                                     Id = 1,
-                                    Value = "Male",
+                                    DisplayValue = "Male",
                                     IsActive = true,
                                 },
                                 new DictionaryValue
                                 {
                                     Id = 2,
-                                    Value = "Female",
+                                    DisplayValue = "Female",
                                     IsActive = true
                                 }
                             }
@@ -94,13 +94,15 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 new DictionaryValue
                                 {
                                     Id = 100,
-                                    Value = "Rest",
+                                    DisplayValue = "Rest",
+                                    InternalValue = "Rest",
                                     IsActive = true,
                                 },
                                 new DictionaryValue
                                 {
                                     Id = 101,
-                                    Value = "Mqtt",
+                                    DisplayValue = "Mqtt",
+                                    InternalValue = "Mqtt",
                                     IsActive = true
                                 }
                             }
@@ -124,14 +126,87 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 new DictionaryValue
                                 {
                                     Id = 200,
-                                    Value = "Espurna",
+                                    DisplayValue = "Espurna",
+                                    InternalValue = "Espurna",
                                     IsActive = true,
                                 },
                                 new DictionaryValue
                                 {
                                     Id = 201,
-                                    Value = "Custom",
+                                    DisplayValue = "Generic",
+                                    InternalValue = "Generic",
                                     IsActive = true
+                                }
+                            }
+                        }
+                    };
+
+                    await context.Dictionaries.AddRangeAsync(dictionaries);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Dictionaries.Any(x => x.Name == "ReceiveProvider"))
+                {
+                    var dictionaries = new List<Dictionary>
+                    {
+                        new Dictionary
+                        {
+                            Id = 300,
+                            Name = "ReceiveProvider",
+                            Values = new List<DictionaryValue>
+                            {
+                                new DictionaryValue
+                                {
+                                    Id = 300,
+                                    DisplayValue = "Rest",
+                                    InternalValue = "Rest",
+                                    IsActive = true,
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 301,
+                                    DisplayValue = "Mqtt",
+                                    InternalValue = "Mqtt",
+                                    IsActive = true
+                                }
+                            }
+                        }
+                    };
+
+                    await context.Dictionaries.AddRangeAsync(dictionaries);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Dictionaries.Any(x => x.Name == "ReceiveContext"))
+                {
+                    var dictionaries = new List<Dictionary>
+                    {
+                        new Dictionary
+                        {
+                            Id = 400,
+                            Name = "ReceiveContext",
+                            Values = new List<DictionaryValue>
+                            {
+                                new DictionaryValue
+                                {
+                                    Id = 400,
+                                    DisplayValue = "Generic",
+                                    InternalValue = "Generic",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 401,
+                                    DisplayValue = "Espurna",
+                                    InternalValue = "Espurna",
+                                    IsActive = true,
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 402,
+                                    DisplayValue = "Espurna with JSON payload",
+                                    InternalValue = "EspurnaJsonPayload",
+                                    IsActive = true,
                                 }
                             }
                         }

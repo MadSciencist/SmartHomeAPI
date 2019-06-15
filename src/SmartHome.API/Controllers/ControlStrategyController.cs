@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Utils;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {
     [Authorize]
     [ApiController]
+    [ApiVersion("1")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class ControlStrategyController : Controller
@@ -23,7 +26,17 @@ namespace SmartHome.API.Controllers
             _controlStrategyService.Principal = contextAccessor.HttpContext.User;
         }
 
-        [HttpPost("create")]
+        [HttpGet]
+        [ProducesResponseType(typeof(ServiceResult<IEnumerable<ControlStrategyDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<IEnumerable<ControlStrategyDto>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAll()
+        {
+            var serviceResult = await _controlStrategyService.GetAll();
+
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        }
+
+        [HttpPost]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(ControlStrategyDto controlStrategy)
@@ -33,12 +46,37 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Update(ControlStrategyDto controlStrategy, int id)
+        { 
+            throw new NotImplementedException("UPDATE");
+        }
+
         [HttpPost("{strategyId}/attachCommand/{commandId}")]
-        [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AttachCommand(int strategyId, int commandId)
         {
             var serviceResult = await _controlStrategyService.AttachCommand(strategyId, commandId);
+
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        }
+
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteById(int id)
+        {
+            // TODO
+            // mock:
+            var serviceResult = new ServiceResult<object>(_controlStrategyService.Principal)
+            {
+                Data = new Object(),
+                Alerts = new List<Alert> { new Alert("Successfully deleted", MessageType.Success) }
+            };
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }

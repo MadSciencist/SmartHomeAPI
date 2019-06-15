@@ -6,7 +6,8 @@ namespace SmartHome.Core.Domain.DictionaryEntity
     [Table("tbl_dictionary_value")]
     public class DictionaryValue : EntityBase
     {
-        public string Value { get; set; }
+        public string DisplayValue { get; set; }
+        public string InternalValue { get; set; }
         public bool IsActive { get; set; }
 
         public int DictionaryId { get; set; }

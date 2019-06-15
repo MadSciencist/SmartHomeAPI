@@ -4,10 +4,10 @@ namespace SmartHome.Core.Infrastructure
 {
     public class ResultMetadata
     {
-        [JsonProperty("errorDetails")]
+        [JsonProperty("errorDetails", NullValueHandling=NullValueHandling.Ignore)]
         public object ProblemDetails { get; set; }
 
-        [JsonProperty("other")]
+        [JsonProperty("other", NullValueHandling = NullValueHandling.Ignore)]
         public object Other { get; set; }
     }
 }

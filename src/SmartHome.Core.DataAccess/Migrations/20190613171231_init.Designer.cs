@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190611180717_init")]
+    [Migration("20190613171231_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,11 +119,13 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.Property<int>("DictionaryId");
 
+                    b.Property<string>("DisplayValue");
+
+                    b.Property<string>("InternalValue");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
-
-                    b.Property<string>("Value");
 
                     b.HasKey("Id");
 

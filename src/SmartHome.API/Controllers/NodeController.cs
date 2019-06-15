@@ -12,6 +12,7 @@ namespace SmartHome.API.Controllers
 {
     [Authorize]
     [ApiController]
+    [ApiVersion("1")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class NodeController : ControllerBase

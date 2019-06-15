@@ -105,7 +105,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Value = table.Column<string>(nullable: true),
+                    DisplayValue = table.Column<string>(nullable: true),
+                    InternalValue = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
                     DictionaryId = table.Column<int>(nullable: false)
                 },

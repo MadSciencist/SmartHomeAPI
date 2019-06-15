@@ -13,6 +13,7 @@ namespace SmartHome.API.Controllers
 {
     [Authorize]
     [ApiController]
+    [ApiVersion("1")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class CommandController
@@ -25,7 +26,7 @@ namespace SmartHome.API.Controllers
             _commandService.Principal = contextAccessor.HttpContext.User;
         }
 
-        [HttpGet("getAll")]
+        [HttpGet]
         [ProducesResponseType(typeof(ServiceResult<IEnumerable<CommandEntityDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<IEnumerable<CommandEntityDto>>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAll()
@@ -35,7 +36,7 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
-        [HttpPost("create")]
+        [HttpPost]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(CommandEntityDto dto)
@@ -45,7 +46,7 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
-        [HttpPut("update/{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateById(CommandEntityDto dto, int id)
@@ -54,7 +55,7 @@ namespace SmartHome.API.Controllers
             throw new NotImplementedException(nameof(UpdateById));
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<CommandEntityDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteById(int id)

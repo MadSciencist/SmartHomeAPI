@@ -42,13 +42,11 @@ namespace SmartHome.Core.RestClient
             return result;
         }
 
-        public async Task<T> ExecuteRequestAsync<T>(IRestRequest request) where T: class
+        private async Task<T> ExecuteRequestAsync<T>(IRestRequest request) where T: class
         {
-            IRestResponse<T> response; 
-
             try
             {
-                response = await _client.ExecuteWithPolicyAsync<T>(request, CancellationToken.None, _retryPolicyProvider.GetDefaultAsyncPolicy<T>());
+                var response = await _client.ExecuteWithPolicyAsync<T>(request, CancellationToken.None, _retryPolicyProvider.GetDefaultAsyncPolicy<T>());
                 if (response != null && response.IsSuccessful)
                 {
                     return response.Data;
