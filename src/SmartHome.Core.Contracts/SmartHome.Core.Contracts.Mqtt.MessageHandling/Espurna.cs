@@ -2,12 +2,12 @@
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
+using SmartHome.Core.MessageHandlers;
+using SmartHome.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Core.MessageHandlers;
-using SmartHome.Core.Services;
 
 namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 {
@@ -28,8 +28,10 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                 // if the topic contains valid sensor for espurna
                 if (message.Topic.Contains(validSensorName))
                 {
-                    // if the user wants to save such sensor data
-                    if (node.ControlStrategy.RegisteredSensors.Any(x => string.Compare(x.Name, validSensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
+                    // if the user wants to collect such sensor data
+                    if (node.ControlStrategy.ControlStrategyLinkages
+                        .Where(x => x.ControlStrategyLinkageTypeId == (int)ELinkageType.Sensor)
+                        .Any(x => string.Compare(x.InternalValue, validSensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
                     {
                         await ExtractSaveData(node.Id, message);
                     }
@@ -77,6 +79,10 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
             new PhysicalValue("ldr_cpm", "events"),
             new PhysicalValue("ldr_uSvh", "mSv"),
             new PhysicalValue("count", "events"),
+            new PhysicalValue("relay/0", "bit"),
+            new PhysicalValue("relay/1", "bit"),
+            new PhysicalValue("relay/2", "bit"),
+            new PhysicalValue("relay/3", "bit"),
         };
     }
 }

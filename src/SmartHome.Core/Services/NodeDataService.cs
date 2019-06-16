@@ -28,7 +28,6 @@ namespace SmartHome.Core.Services
 
             var paginated = await PaginatedList<NodeData>.CreateAsync(queryable, pageNumber, pageSize);
             response.Data = paginated;
-            Console.WriteLine(paginated.TotalCount);
 
             return response;
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,8 +29,32 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             ControlProviderName = "Rest",
                             ControlContext = "Espurna",
                             ReceiveProviderName = "Mqtt",
-                            ReceiveContext = "Espurna",
+                            ReceiveContext = "EspurnaJsonPayload",
                             CreatedById = 1,
+                            ControlStrategyLinkages = new List<ControlStrategyLinkage>
+                            {
+                                new ControlStrategyLinkage
+                                {
+                                    ControlStrategyId = 2,
+                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    InternalValue = "analog",
+                                    DisplayValue = "Generic Analog"
+                                },
+                                new ControlStrategyLinkage
+                                {
+                                    ControlStrategyId = 2,
+                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Command,
+                                    InternalValue = "ToggleRelay",
+                                    DisplayValue = "Toggle Relay"
+                                },
+                                new ControlStrategyLinkage
+                                {
+                                    ControlStrategyId = 2,
+                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    InternalValue = "relay/0", // relay still might be sensor (subscribe to changes)
+                                    DisplayValue = "Relay 0"
+                                }
+                            },
                             Created = DateTime.UtcNow
                         },
                         new ControlStrategy
@@ -41,12 +66,28 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             ControlContext = "Espurna",
                             ReceiveProviderName = "Mqtt",
                             ReceiveContext = "Espurna",
-                            RegisteredSensors = new List<RegisteredSensors>()
+                            ControlStrategyLinkages = new List<ControlStrategyLinkage>
                             {
-                                new RegisteredSensors
+                                new ControlStrategyLinkage
                                 {
-                                    Name = "analog",
-                                    Description = "Generic built-in analog sensor"
+                                    ControlStrategyId = 2,
+                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    InternalValue = "analog",
+                                    DisplayValue = "Generic Analog"
+                                },
+                                new ControlStrategyLinkage
+                                {
+                                    ControlStrategyId = 2,
+                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Command,
+                                    InternalValue = "ToggleRelay",
+                                    DisplayValue = "Toggle Relay"
+                                },
+                                new ControlStrategyLinkage
+                                {
+                                    ControlStrategyId = 2,
+                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    InternalValue = "relay/0", // relay still might be sensor (subscribe to changes)
+                                    DisplayValue = "Relay 0"
                                 }
                             },
                             CreatedById = 1,
@@ -56,37 +97,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
 
                     await context.AddRangeAsync(controlStrategies);
                     await context.SaveChangesAsync();
-
-                    var links = new Collection<ControlStrategyCommandLink>
-                    {
-                        new ControlStrategyCommandLink
-                        {
-                            ControlStrategyId = 1,
-                            CommandId = 100
-                        },
-                        new ControlStrategyCommandLink
-                        {
-                            ControlStrategyId = 1,
-                            CommandId = 101
-                        },
-                        new ControlStrategyCommandLink
-                        {
-                            ControlStrategyId = 2,
-                            CommandId = 100
-                        },
-                        new ControlStrategyCommandLink
-                        {
-                            ControlStrategyId = 2,
-                            CommandId = 101
-                        }
-                    };
-
-                    foreach (var link in links)
-                    {
-                        context.Add(link);
-                    }
-
-                    await context.SaveChangesAsync();
                 }
 
 
@@ -95,7 +105,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     var node = new Node
                     {
                         Name = "Dev",
-                        ControlStrategyId = 2,
+                        ControlStrategyId = 1,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
                         IpAddress = "http://192.168.0.101",
@@ -109,9 +119,33 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     var createdNode = await context.Nodes.AddAsync(node);
                     await context.SaveChangesAsync();
 
-                    context.Add(new AppUserNodeLink()
+                    context.Add(new AppUserNodeLink
                     {
                         NodeId = createdNode.Entity.Id,
+                        UserId = 1
+                    });
+
+                    var node2 = new Node
+                    {
+                        Name = "Dev2",
+                        ControlStrategyId = 2,
+                        Created = DateTime.UtcNow,
+                        CreatedById = 1,
+                        IpAddress = "http://192.168.0.100",
+                        Port = 80,
+                        GatewayIpAddress = "http://192.168.0.1",
+                        Description = "Dev test node",
+                        ApiKey = "03102E55CD7BBE35",
+                        ClientId = "clientId100"
+                    };
+
+                    var createdNode2 = await context.Nodes.AddAsync(node2);
+                    await context.SaveChangesAsync();
+
+
+                    context.Add(new AppUserNodeLink
+                    {
+                        NodeId = createdNode2.Entity.Id,
                         UserId = 1
                     });
 

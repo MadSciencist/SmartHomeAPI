@@ -18,8 +18,7 @@ namespace SmartHome.Core.DataAccess.Repository
         {
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
-                    .ThenInclude(x => x.AllowedCommands)
-                        .ThenInclude(x => x.Command)
+                    .ThenInclude(x => x.ControlStrategyLinkages)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -34,10 +33,7 @@ namespace SmartHome.Core.DataAccess.Repository
 
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
-                    .ThenInclude(x => x.AllowedCommands)
-                        .ThenInclude(x => x.Command)
-                .Include(x => x.ControlStrategy)
-                    .ThenInclude(x => x.RegisteredSensors)
+                    .ThenInclude(x => x.ControlStrategyLinkages)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .FirstOrDefaultAsync(x => x.ClientId == clientId);

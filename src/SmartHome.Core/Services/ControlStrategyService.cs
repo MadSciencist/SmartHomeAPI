@@ -54,10 +54,10 @@ namespace SmartHome.Core.Services
             }
         }
 
-        public async Task<ServiceResult<ControlStrategyDto>> CreateStrategy(ControlStrategyDto input)
+        public async Task<ServiceResult<ControlStrategyDto>> CreateStrategy(ControlStrategyDto dto)
         {
             var response = new ServiceResult<ControlStrategyDto>(Principal);
-            var validationResult = Validator.Validate(input);
+            var validationResult = Validator.Validate(dto);
 
             if (!validationResult.IsValid)
             {
@@ -66,7 +66,7 @@ namespace SmartHome.Core.Services
             }
 
             var userId = GetCurrentUserId();
-            var strategyToCreate = Mapper.Map<ControlStrategy>(input);
+            var strategyToCreate = Mapper.Map<ControlStrategy>(dto);
 
             strategyToCreate.CreatedById = userId;
             strategyToCreate.Created = DateTime.UtcNow;
@@ -78,28 +78,7 @@ namespace SmartHome.Core.Services
                 {
                     var created = await _strategyRepository.CreateAsync(strategyToCreate);
 
-                    var commandLinkages = new List<ControlStrategyLinkage>();
-                    foreach (var command in input.Commands)
-                    {
-                        commandLinkages.Add(new ControlStrategyLinkage
-                        {
-                            ControlStrategyLinkageTypeId = (int)ELinkageType.Command,
-                            ControlStrategyId = created.Id,
-                            InternalValue = command.InternalValue,
-                            DisplayValue = command.DisplayValue
-                        });
-                    }
-
-                    foreach (var sensor in input.Sensors)
-                    {
-                        commandLinkages.Add(new ControlStrategyLinkage
-                        {
-                            ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
-                            ControlStrategyId = created.Id,
-                            InternalValue = sensor.InternalValue,
-                            DisplayValue = sensor.DisplayValue
-                        });
-                    }
+                    var commandLinkages = GetControlStrategyLinkages(dto, created.Id);
 
                     _strategyRepository.Context.ControlStrategyLinkages.AddRange(commandLinkages);
                     await _strategyRepository.Context.SaveChangesAsync();
@@ -117,6 +96,34 @@ namespace SmartHome.Core.Services
                     throw;
                 }
             }
+        }
+
+        private IEnumerable<ControlStrategyLinkage> GetControlStrategyLinkages(ControlStrategyDto dto, int strategyId)
+        {
+            var commandLinkages = new List<ControlStrategyLinkage>();
+            foreach (var command in dto.Commands)
+            {
+                commandLinkages.Add(new ControlStrategyLinkage
+                {
+                    ControlStrategyLinkageTypeId = (int) ELinkageType.Command,
+                    ControlStrategyId = strategyId,
+                    InternalValue = command.InternalValue,
+                    DisplayValue = command.DisplayValue
+                });
+            }
+
+            foreach (var sensor in dto.Sensors)
+            {
+                commandLinkages.Add(new ControlStrategyLinkage
+                {
+                    ControlStrategyLinkageTypeId = (int) ELinkageType.Sensor,
+                    ControlStrategyId = strategyId,
+                    InternalValue = sensor.InternalValue,
+                    DisplayValue = sensor.DisplayValue
+                });
+            }
+
+            return commandLinkages;
         }
     }
 }

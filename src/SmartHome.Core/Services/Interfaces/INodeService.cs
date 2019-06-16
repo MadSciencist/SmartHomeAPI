@@ -9,6 +9,5 @@ namespace SmartHome.Core.Services
     {
         Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData);
         Task<ServiceResult<object>> Control(int nodeId, string operations, JObject commandParams);
-        Task<ServiceResult<NodeDto>> AttachControlStrategy(int nodeId, int strategyId);
     }
 }
