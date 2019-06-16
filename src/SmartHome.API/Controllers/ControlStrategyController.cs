@@ -46,8 +46,6 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
-
-
         // TODO
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status200OK)]

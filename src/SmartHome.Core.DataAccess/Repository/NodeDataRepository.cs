@@ -11,11 +11,8 @@ namespace SmartHome.Core.DataAccess.Repository
 {
     public class NodeDataRepository : GenericRepository<NodeData>, INodeDataRepository
     {
-        private readonly ILogger _logger;
-
         public NodeDataRepository(AppDbContext context, ILoggerFactory loggerFactory) : base(context, loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger(typeof(NodeDataRepository));
         }
 
         public override IQueryable<NodeData> AsQueryableNoTrack()

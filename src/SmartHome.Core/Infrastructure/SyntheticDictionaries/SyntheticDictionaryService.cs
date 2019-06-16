@@ -36,7 +36,8 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
                 {
                     DisplayValue = x.Description,
                     InternalValue = x.Id.ToString(),
-                    Id = x.Id
+                    Id = x.Id,
+                    IsActive = true
                 }).ToList()
             });
         }

@@ -8,6 +8,7 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,6 +28,24 @@ namespace SmartHome.Core.Services
             _authProvider = authorizationProvider;
         }
 
+        public async Task<ServiceResult<IEnumerable<NodeDto>>> GetAll()
+        {
+            var response = new ServiceResult<IEnumerable<NodeDto>>(Principal);
+
+            try
+            {
+                var nodes = await _nodeRepository.GetAll();
+                response.Data = Mapper.Map<IEnumerable<NodeDto>>(nodes);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
+            }
+        }
+        
         public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
         {
             var response = new ServiceResult<NodeDto>(Principal);
