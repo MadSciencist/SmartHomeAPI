@@ -43,6 +43,28 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     await context.AddRangeAsync(requestReasons);
                     await context.SaveChangesAsync();
                 }
+
+                if (!context.LinkageType.Any())
+                {
+                    var requestReasons = new List<ControlStrategyLinkageType>
+                    {
+                        new ControlStrategyLinkageType
+                        {
+                            Id = (int) ELinkageType.Sensor,
+                            Name = ELinkageType.Sensor.ToString(),
+                            Description = "Control strategy - sensor many-many relation ship"
+                        },
+                        new ControlStrategyLinkageType
+                        {
+                            Id = (int) ELinkageType.Command,
+                            Name = ELinkageType.Command.ToString(),
+                            Description = "Control strategy - command many-many relation ship"
+                        }
+                    };
+
+                    await context.AddRangeAsync(requestReasons);
+                    await context.SaveChangesAsync();
+                }
             }
         }
     }

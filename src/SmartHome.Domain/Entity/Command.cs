@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Domain.Entity
 {
+    [Obsolete]
     [Table("tbl_command")]
     public class Command : EntityBase
     {

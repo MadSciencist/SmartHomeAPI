@@ -54,17 +54,6 @@ namespace SmartHome.API.Controllers
             throw new NotImplementedException("UPDATE");
         }
 
-        [HttpPost("{strategyId}/attachCommand/{commandId}")]
-        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AttachCommand(int strategyId, int commandId)
-        {
-            var serviceResult = await _controlStrategyService.AttachCommand(strategyId, commandId);
-
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
-        }
-
-
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]

@@ -18,7 +18,8 @@ namespace SmartHome.Core.Dto
         [MaxLength(250)]
         public string Description { get; set; }
         public bool IsActive { get; set; }
-        public ICollection<CommandEntityDto> AllowedCommands { get; set; }
+        public ICollection<ControlStrategyLinkageDto> Commands { get; set; }
+        public ICollection<ControlStrategyLinkageDto> Sensors { get; set; }
 
         //[BindNever]
         public int CreatedById { get; set; }

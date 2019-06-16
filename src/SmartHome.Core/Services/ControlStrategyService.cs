@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
@@ -15,18 +15,10 @@ namespace SmartHome.Core.Services
     public class ControlStrategyService : ServiceBase<ControlStrategyDto, object>, IControlStrategyService
     {
         private readonly IStrategyRepository _strategyRepository;
-        private readonly IGenericRepository<Command> _commandRepository;
-        private readonly IGenericRepository<ControlStrategyCommandLink> _strategyCommandLinkRepository;
 
-        public ControlStrategyService(
-            ILifetimeScope container,
-            IStrategyRepository strategyRepository,
-            IGenericRepository<Command> commandRepository,
-            IGenericRepository<ControlStrategyCommandLink> strategyCommandLinkRepository) : base(container)
+        public ControlStrategyService(ILifetimeScope container, IStrategyRepository strategyRepository) : base(container)
         {
             _strategyRepository = strategyRepository;
-            _commandRepository = commandRepository;
-            _strategyCommandLinkRepository = strategyCommandLinkRepository;
         }
 
         public async Task<ServiceResult<IEnumerable<ControlStrategyDto>>> GetAll()
@@ -35,8 +27,23 @@ namespace SmartHome.Core.Services
 
             try
             {
-                var commands = await _strategyRepository.GetAll();
-                response.Data = response.Data = Mapper.Map<IEnumerable<ControlStrategyDto>>(commands);
+                var strategies = await _strategyRepository.GetAll();
+                var mapped = Mapper.Map<IEnumerable<ControlStrategyDto>>(strategies).ToList();
+
+                foreach (var map in mapped)
+                {
+                    map.Commands = strategies.First(x => x.Id == map.Id).ControlStrategyLinkages
+                        .Where(x => x.ControlStrategyLinkageTypeId == (int)ELinkageType.Command)
+                        .Select(x => new ControlStrategyLinkageDto(x.DisplayValue, x.InternalValue))
+                        .ToList();
+
+                    map.Sensors = strategies.First(x => x.Id == map.Id).ControlStrategyLinkages
+                        .Where(x => x.ControlStrategyLinkageTypeId == (int)ELinkageType.Sensor)
+                        .Select(x => new ControlStrategyLinkageDto(x.DisplayValue, x.InternalValue))
+                        .ToList();
+                }
+
+                response.Data = mapped;
 
                 return response;
             }
@@ -65,54 +72,50 @@ namespace SmartHome.Core.Services
             strategyToCreate.Created = DateTime.UtcNow;
             strategyToCreate.IsActive = true;
 
-            try
+            using (var transaction = _strategyRepository.Context.Database.BeginTransaction())
             {
-                var created = await _strategyRepository.CreateAsync(strategyToCreate);
-                response.Data = Mapper.Map<ControlStrategyDto>(created);
-                response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
-                throw;
-            }
-        }
-
-        public async Task<ServiceResult<ControlStrategyDto>> AttachCommand(int strategyId, int commandId)
-        {
-            var response = new ServiceResult<ControlStrategyDto>(Principal);
-
-            var strategy = await _strategyRepository.GetByIdAsync(strategyId);
-            if(strategy == null) throw new SmartHomeEntityNotFoundException($"Cannot find strategy with given Id: {strategyId}");
-
-            var command = await _commandRepository.GetByIdAsync(commandId);
-            if (command == null) throw new SmartHomeEntityNotFoundException($"Cannot find command with given Id: {commandId}");
-
-            var linkEntity = await _strategyCommandLinkRepository
-                .AsQueryableNoTrack()
-                .FirstOrDefaultAsync(x => x.ControlStrategyId == strategyId && x.CommandId == commandId);
-            if(linkEntity != null) throw new SmartHomeException($"Command {command.Alias} is already attached to strategy {strategy.Id}");
-
-            try
-            {
-                await _strategyCommandLinkRepository.CreateAsync(new ControlStrategyCommandLink
+                try
                 {
-                    CommandId = commandId,
-                    ControlStrategyId = strategyId
-                });
+                    var created = await _strategyRepository.CreateAsync(strategyToCreate);
 
-                response.Data = Mapper.Map<ControlStrategyDto>(strategy);
-                response.Data.AllowedCommands = Mapper.Map<ICollection<CommandEntityDto>>(strategy.AllowedCommands.Select(x => x.Command)); // TODO move to AutoMapper
-                response.Alerts.Add(new Alert("Successfully updated", MessageType.Success));
+                    var commandLinkages = new List<ControlStrategyLinkage>();
+                    foreach (var command in input.Commands)
+                    {
+                        commandLinkages.Add(new ControlStrategyLinkage
+                        {
+                            ControlStrategyLinkageTypeId = (int)ELinkageType.Command,
+                            ControlStrategyId = created.Id,
+                            InternalValue = command.InternalValue,
+                            DisplayValue = command.DisplayValue
+                        });
+                    }
 
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
-                throw;
+                    foreach (var sensor in input.Sensors)
+                    {
+                        commandLinkages.Add(new ControlStrategyLinkage
+                        {
+                            ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                            ControlStrategyId = created.Id,
+                            InternalValue = sensor.InternalValue,
+                            DisplayValue = sensor.DisplayValue
+                        });
+                    }
+
+                    _strategyRepository.Context.ControlStrategyLinkages.AddRange(commandLinkages);
+                    await _strategyRepository.Context.SaveChangesAsync();
+
+                    response.Data = Mapper.Map<ControlStrategyDto>(created);
+                    response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+
+                    transaction.Commit();
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                    throw;
+                }
             }
         }
     }

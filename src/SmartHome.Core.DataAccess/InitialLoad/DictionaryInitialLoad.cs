@@ -25,7 +25,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         {
                             Id = 100,
                             Alias = "Toggle Relay",
-                            ExecutorClassName = "ToggleRelay" 
+                            ExecutorClassName = "ToggleRelay"
                         },
                         new Command
                         {
@@ -65,12 +65,113 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 {
                                     Id = 1,
                                     DisplayValue = "Male",
+                                    InternalValue = "Male",
                                     IsActive = true,
                                 },
                                 new DictionaryValue
                                 {
                                     Id = 2,
                                     DisplayValue = "Female",
+                                    InternalValue = "Female",
+                                    IsActive = true
+                                }
+                            }
+                        }
+                    };
+
+                    await context.Dictionaries.AddRangeAsync(dictionaries);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Dictionaries.Any(x => x.Name == "sensors"))
+                {
+                    var dictionaries = new List<Dictionary>
+                    {
+                        new Dictionary
+                        {
+                            Id = 10,
+                            Name = "sensors",
+                            Values = new List<DictionaryValue>
+                            {
+                                new DictionaryValue
+                                {
+                                    Id = 10,
+                                    DisplayValue = "Generic analog",
+                                    InternalValue = "analog",
+                                    IsActive = true,
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 11,
+                                    DisplayValue = "Generic temperature",
+                                    InternalValue = "temperature",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 12,
+                                    DisplayValue = "Generic humidity",
+                                    InternalValue = "humidity",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 13,
+                                    DisplayValue = "Generic voltage",
+                                    InternalValue = "voltage",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 14,
+                                    DisplayValue = "Generic current",
+                                    InternalValue = "current",
+                                    IsActive = true
+                                }
+                            }
+                        }
+                    };
+
+                    await context.Dictionaries.AddRangeAsync(dictionaries);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.Dictionaries.Any(x => x.Name == "commands"))
+                {
+                    var dictionaries = new List<Dictionary>
+                    {
+                        new Dictionary
+                        {
+                            Id = 1000,
+                            Name = "commands",
+                            Values = new List<DictionaryValue>
+                            {
+                                new DictionaryValue
+                                {
+                                    Id = 1000,
+                                    DisplayValue = "Turn on relay",
+                                    InternalValue = "OnRelay",
+                                    IsActive = true,
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 1001,
+                                    DisplayValue = "Turn off relay",
+                                    InternalValue = "OffRelay",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 1002,
+                                    DisplayValue = "Set relay value",
+                                    InternalValue = "SetRelay",
+                                    IsActive = true
+                                },
+                                new DictionaryValue
+                                {
+                                    Id = 1003,
+                                    DisplayValue = "Toggle relay",
+                                    InternalValue = "ToggleRelay",
                                     IsActive = true
                                 }
                             }

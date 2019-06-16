@@ -226,6 +226,44 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.ToTable("tbl_strategy_command_link");
                 });
 
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ControlStrategyId");
+
+                    b.Property<int>("ControlStrategyLinkageTypeId");
+
+                    b.Property<string>("DisplayValue");
+
+                    b.Property<string>("InternalValue");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ControlStrategyId");
+
+                    b.HasIndex("ControlStrategyLinkageTypeId");
+
+                    b.ToTable("tbl_control_strategy_linkage");
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkageType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_control_strategy_linkage_type");
+                });
+
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.DataRequestReason", b =>
                 {
                     b.Property<int>("Id")
@@ -524,6 +562,19 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany("AllowedCommands")
                         .HasForeignKey("ControlStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkage", b =>
+                {
+                    b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
+                        .WithMany("ControlStrategyLinkages")
+                        .HasForeignKey("ControlStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategyLinkageType", "ControlStrategyLinkageType")
+                        .WithMany("Strategies")
+                        .HasForeignKey("ControlStrategyLinkageTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
