@@ -9,13 +9,13 @@ namespace SmartHome.Core.DataAccess.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
     {
-        protected readonly AppDbContext Context;
-        private readonly ILogger _logger;
+        public AppDbContext Context { get; }
+        protected ILogger Logger { get; private set; }
 
         public GenericRepository(AppDbContext context, ILoggerFactory loggerFactory)
         {
             Context = context;
-            _logger = loggerFactory.CreateLogger("Repository logger");
+            Logger = loggerFactory.CreateLogger(nameof(GenericRepository<T>));
         }
 
         public virtual async Task<T> CreateAsync(T entity)
@@ -28,12 +28,12 @@ namespace SmartHome.Core.DataAccess.Repository
             }
             catch (DbUpdateConcurrencyException e)
             {
-                _logger.LogError(e, "Error while creating entity - concurrency");
+                Logger.LogError(e, "Error while creating entity - concurrency");
                 throw;
             }
             catch (DbUpdateException e)
             {
-                _logger.LogError(e, "Error while creating entity");
+                Logger.LogError(e, "Error while creating entity");
                 throw;
             }
 
@@ -50,11 +50,11 @@ namespace SmartHome.Core.DataAccess.Repository
             }
             catch (DbUpdateConcurrencyException e)
             {
-                _logger.LogError(e, "Error while updating entity - concurrency");
+                Logger.LogError(e, "Error while updating entity - concurrency");
             }
             catch (DbUpdateException e)
             {
-                _logger.LogError(e, "Error while updating entity");
+                Logger.LogError(e, "Error while updating entity");
                 throw;
             }
         }
@@ -79,11 +79,11 @@ namespace SmartHome.Core.DataAccess.Repository
             }
             catch (DbUpdateConcurrencyException e)
             {
-                _logger.LogError(e, "Error while updating entity - concurrency");
+                Logger.LogError(e, "Error while updating entity - concurrency");
             }
             catch (DbUpdateException e)
             {
-                _logger.LogError(e, "Error while updating entity");
+                Logger.LogError(e, "Error while updating entity");
                 throw;
             }
 

@@ -22,6 +22,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 
         public async Task Handle(Node node, MqttMessageDto message)
         {
+            // Espurna using json payload posts all data to /data topic
             if (message.Topic.Contains("/data"))
             {
                 var payload = JObject.Parse(message.Payload);
@@ -34,8 +35,10 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                         var sensorName = token.Key;
                         var sensorValue = token.Value.Value<string>();
 
-                        // if the user wants to save such sensor data
-                        if (node.ControlStrategy.RegisteredSensors.Any(x => string.Compare(x.Name, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
+                        // if the user wants to collect such sensor data
+                        if (node.ControlStrategy.ControlStrategyLinkages
+                            .Where(x => x.ControlStrategyLinkageTypeId == (int)ELinkageType.Sensor)
+                            .Any(x => string.Compare(x.InternalValue, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
                         {
                             await ExtractSaveData(node.Id, sensorName, sensorValue);
                         }

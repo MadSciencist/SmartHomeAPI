@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190602141410_init")]
+    [Migration("20190616140107_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,11 +119,13 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.Property<int>("DictionaryId");
 
+                    b.Property<string>("DisplayValue");
+
+                    b.Property<string>("InternalValue");
+
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
-
-                    b.Property<string>("Value");
 
                     b.HasKey("Id");
 
@@ -224,6 +226,44 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasIndex("ControlStrategyId");
 
                     b.ToTable("tbl_strategy_command_link");
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ControlStrategyId");
+
+                    b.Property<int>("ControlStrategyLinkageTypeId");
+
+                    b.Property<string>("DisplayValue");
+
+                    b.Property<string>("InternalValue");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ControlStrategyId");
+
+                    b.HasIndex("ControlStrategyLinkageTypeId");
+
+                    b.ToTable("tbl_control_strategy_linkage");
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkageType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_control_strategy_linkage_type");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.DataRequestReason", b =>
@@ -524,6 +564,19 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany("AllowedCommands")
                         .HasForeignKey("ControlStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkage", b =>
+                {
+                    b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
+                        .WithMany("ControlStrategyLinkages")
+                        .HasForeignKey("ControlStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategyLinkageType", "ControlStrategyLinkageType")
+                        .WithMany("Strategies")
+                        .HasForeignKey("ControlStrategyLinkageTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

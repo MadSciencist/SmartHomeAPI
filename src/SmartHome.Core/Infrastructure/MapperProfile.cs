@@ -55,9 +55,10 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.Created, opt => opt.MapFrom(x => x.Created))
                 .ForMember(x => x.CreatedById, opt => opt.MapFrom(x => x.CreatedById))
                 .ForMember(x => x.CreatedBy, opt => opt.Ignore())
-                .ForMember(x => x.RegisteredSensors, opt => opt.Ignore())
+                .ForMember(x => x.ControlStrategyLinkages, opt => opt.Ignore())
                 .ForMember(x => x.Nodes, opt => opt.Ignore())
                 .ForMember(x => x.AllowedCommands, opt => opt.Ignore())
+                .ForMember(x => x.RegisteredSensors, opt => opt.Ignore())
                 .ReverseMap()
                 .ForAllOtherMembers(x => x.Ignore());
         }

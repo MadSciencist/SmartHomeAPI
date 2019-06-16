@@ -28,13 +28,13 @@ namespace SmartHome.Core.Services
 
             var paginated = await PaginatedList<NodeData>.CreateAsync(queryable, pageNumber, pageSize);
             response.Data = paginated;
-            Console.WriteLine(paginated.TotalCount);
 
             return response;
         }
 
         public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitudeDto data)
         {
+            // Do some retention - collect only 100k last samples or smth
             return await _nodeDataRepository.AddSingleAsync(nodeId, reason, new NodeDataMagnitude
             {
                 Magnitude = data.Magnitude,

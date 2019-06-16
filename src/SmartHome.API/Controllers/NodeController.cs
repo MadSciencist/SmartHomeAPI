@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -12,6 +14,7 @@ namespace SmartHome.API.Controllers
 {
     [Authorize]
     [ApiController]
+    [ApiVersion("1")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class NodeController : ControllerBase
@@ -24,7 +27,17 @@ namespace SmartHome.API.Controllers
             _nodeService.Principal = contextAccessor.HttpContext.User;
         }
 
-        [HttpPost("create")]
+        [HttpGet]
+        [ProducesResponseType(typeof(ServiceResult<IEnumerable<NodeDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<IEnumerable<NodeDto>>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAll()
+        {
+            var serviceResult = await _nodeService.GetAll();
+
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        }
+
+        [HttpPost]
         [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(NodeDto node)
@@ -34,14 +47,22 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
-        [HttpPost("{nodeId}/attachStrategy/{strategyId}")]
+        // TODO
+        [HttpPut("{id}")]
         [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AttachStrategy(int nodeId, int strategyId)
+        public async Task<IActionResult> Update(NodeDto dto, int id)
         {
-            var serviceResult = await _nodeService.AttachControlStrategy(nodeId, strategyId);
+            throw new NotImplementedException("UPDATE");
+        }
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        //TODO
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> DeleteById(int id)
+        {
+            throw new NotImplementedException("DeleteById");
         }
 
         [HttpPost("{nodeId}/command/{command}")]

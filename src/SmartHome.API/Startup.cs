@@ -11,6 +11,7 @@ using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.Core.DataAccess.InitialLoad;
+using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.IoC;
 using SmartHome.Core.MqttBroker;
@@ -18,7 +19,6 @@ using SmartHome.Core.Services;
 using System;
 using System.Linq;
 using System.Reflection;
-using SmartHome.Core.Infrastructure;
 
 namespace SmartHome.API
 {
@@ -37,8 +37,11 @@ namespace SmartHome.API
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(json => json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
-                .AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>()); // ToDo move to IoC project
-
+                .AddFluentValidation(x =>
+                {
+                    x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>();
+                }); // ToDo move to IoC project
+            
             // Create custom BadRequest response for built-in validator
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -109,7 +112,7 @@ namespace SmartHome.API
 
             // docs gen and UI
             app.UseSwagger();
-            app.UseSwaggerUI(s => s.SwaggerEndpoint("/swagger/dev/swagger.json", "Home Sensor Server API"));
+            app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
             InitializeDatabase(app);
 

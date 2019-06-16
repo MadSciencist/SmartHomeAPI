@@ -7,6 +7,7 @@ namespace SmartHome.Core.DataAccess.Repository
 {
     public interface IGenericRepository<T> where T : class, new()
     {
+        AppDbContext Context { get; }
         IEnumerable<T> GetAll();
         IQueryable<T> AsQueryable();
         IQueryable<T> AsQueryableNoTrack();

@@ -8,6 +8,7 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -27,6 +28,24 @@ namespace SmartHome.Core.Services
             _authProvider = authorizationProvider;
         }
 
+        public async Task<ServiceResult<IEnumerable<NodeDto>>> GetAll()
+        {
+            var response = new ServiceResult<IEnumerable<NodeDto>>(Principal);
+
+            try
+            {
+                var nodes = await _nodeRepository.GetAll();
+                response.Data = Mapper.Map<IEnumerable<NodeDto>>(nodes);
+
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
+            }
+        }
+        
         public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
         {
             var response = new ServiceResult<NodeDto>(Principal);
@@ -77,34 +96,6 @@ namespace SmartHome.Core.Services
             }
         }
 
-        public async Task<ServiceResult<NodeDto>> AttachControlStrategy(int nodeId, int strategyId)
-        {
-            var response = new ServiceResult<NodeDto>(Principal);
-
-            var node = await _nodeRepository.GetByIdAsync(nodeId);
-            if (node == null) throw new SmartHomeEntityNotFoundException($"Cannot find node with given Id: {nodeId}");
-
-            if(!_authProvider.Authorize(node, Principal)) throw new SmartHomeUnauthorizedException($"User {Principal.Identity.Name} does not have rights to modify node {node.Name}");
-
-            var strategy = await _strategyRepository.GetByIdAsync(strategyId);
-            if (strategy == null) throw new SmartHomeEntityNotFoundException($"Cannot find strategy with given Id: {strategyId}");
-
-            try
-            {
-                node.ControlStrategyId = strategyId;
-                var updated = await _nodeRepository.UpdateAsync(node);
-                response.Data = Mapper.Map<NodeDto>(updated);
-                response.Alerts.Add(new Alert("Successfully attached strategy", MessageType.Success));
-
-                return response;
-            }
-            catch (Exception ex)
-            {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
-                throw;
-            }
-        }
-
         public async Task<ServiceResult<object>> Control(int nodeId, string command, JObject commandParams)
         {
             var response = new ServiceResult<object>(Principal);
@@ -120,6 +111,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
+            // TODO
             var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Alias?.ToLower() == command.ToLower());
             if (commandEntity == null)
             {

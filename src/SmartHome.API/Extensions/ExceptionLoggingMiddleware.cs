@@ -55,18 +55,17 @@ namespace SmartHome.API.Extensions
             _logger.LogError(ex, "Global exception logger, correlationId: " + correlationId);
 
 
-            string uiMessage = ex is SmartHomeException ? ex.Message : "System error occured";
+            var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
+            var uiMessage = isTrusted ? $"{ex.Message} {ex.InnerException?.Message}" : "System error occured";
 
-            var response = new ServiceResult<object> {Metadata = {ProblemDetails = CreateProblemDetails(ex, context, correlationId) } };
+            var response = new ServiceResult<object> {Metadata = {ProblemDetails = CreateProblemDetails(ex, context, correlationId, isTrusted) } };
             response.Alerts.Add(new Alert(uiMessage, MessageType.Exception));
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
         }
 
-        private static ProblemDetails CreateProblemDetails(Exception ex, HttpContext context, Guid correlationId)
+        private static ProblemDetails CreateProblemDetails(Exception ex, HttpContext context, Guid correlationId, bool isTrusted)
         {
-            var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
-
             var details = new ProblemDetails
             {
                 Title = "Unhandled exception",

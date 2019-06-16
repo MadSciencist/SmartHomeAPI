@@ -30,9 +30,11 @@ namespace SmartHome.Core.Domain.Entity
         public DateTime Created { get; set; }
 
         public ICollection<Node> Nodes { get; set; }
+        public ICollection<ControlStrategyLinkage> ControlStrategyLinkages { get; set; }
 
+        [Obsolete]
         public ICollection<RegisteredSensors> RegisteredSensors { get; set; }
-
+        [Obsolete]
         // Many-to-many relationship
         public ICollection<ControlStrategyCommandLink> AllowedCommands { get; set; }
     }

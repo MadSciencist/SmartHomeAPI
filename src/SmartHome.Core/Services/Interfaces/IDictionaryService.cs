@@ -1,4 +1,5 @@
 ﻿using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -6,7 +7,10 @@ namespace SmartHome.Core.Services
 {
     public interface IDictionaryService : IServiceBase
     {
-        Task<IEnumerable<string>> GetDictionaryNames();
-        Task<Dictionary> GetDictionaryByName(string name);
+        Task<ServiceResult<List<string>>> GetDictionaryNames();
+        Task<ServiceResult<Dictionary>> GetDictionaryByName(string name);
+        Task<ServiceResult<Dictionary>> AddNewEntry(string name, DictionaryValue entry);
+        Task<ServiceResult<Dictionary>> DeleteEntry(string dictionaryName, int entryId);
+        Task<ServiceResult<Dictionary>> UpdateEntry(string dictionaryName, int entryId, DictionaryValue entry);
     }
 }

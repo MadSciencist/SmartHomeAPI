@@ -6,13 +6,13 @@ namespace SmartHome.Core.Infrastructure
 {
     public class ServiceResult<T> where T : class
     {
-        [JsonProperty("data")]
+        [JsonProperty("data", NullValueHandling = NullValueHandling.Include)]
         public T Data { get; set; }
 
-        [JsonProperty("alerts")]
+        [JsonProperty("alerts", NullValueHandling = NullValueHandling.Include)]
         public ICollection<Alert> Alerts { get; set; }
 
-        [JsonProperty("metadata")]
+        [JsonProperty("metadata", NullValueHandling = NullValueHandling.Include)]
         public ResultMetadata Metadata { get; set; }
 
         [JsonIgnore]
