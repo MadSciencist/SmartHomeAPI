@@ -22,6 +22,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 
         public async Task Handle(Node node, MqttMessageDto message)
         {
+            // Espurna using json payload posts all data to /data topic
             if (message.Topic.Contains("/data"))
             {
                 var payload = JObject.Parse(message.Payload);

@@ -6,19 +6,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 
 namespace SmartHome.Core.Services
 {
     public class DictionaryService : ServiceBase<object, Dictionary>, IDictionaryService
     {
+        private readonly SyntheticDictionaryService _syntheticDictionary;
 
-        public DictionaryService(ILifetimeScope container) : base(container)
+        public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary  ) : base(container)
         {
+            _syntheticDictionary = syntheticDictionary;
+            _syntheticDictionary.Initialize();
         }
 
-        public async Task<ServiceResult<IEnumerable<string>>> GetDictionaryNames()
+        public async Task<ServiceResult<List<string>>> GetDictionaryNames()
         {
-            var response = new ServiceResult<IEnumerable<string>>(Principal);
+            var response = new ServiceResult<List<string>>(Principal);
 
             try
             {
@@ -26,6 +30,7 @@ namespace SmartHome.Core.Services
                     .Distinct()
                     .Select(x => x.Name)
                     .ToListAsync();
+                response.Data.AddRange(_syntheticDictionary.GetNames());
 
                 return response;
             }
@@ -42,6 +47,15 @@ namespace SmartHome.Core.Services
 
             try
             {
+                // Synthetic dictionaries are collected from other entities
+                // They are read-only
+                if (_syntheticDictionary.HasDictionary(dictionaryName))
+                {
+                    var dict = _syntheticDictionary.GetDictionary(dictionaryName);
+                    response.Data = dict;
+                    return response;
+                }
+
                 response.Data = await GenericRepository.AsQueryableNoTrack()
                     .Include(x => x.Values)
                     .FirstOrDefaultAsync(x => x.Name == dictionaryName);

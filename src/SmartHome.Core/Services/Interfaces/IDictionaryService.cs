@@ -7,7 +7,7 @@ namespace SmartHome.Core.Services
 {
     public interface IDictionaryService : IServiceBase
     {
-        Task<ServiceResult<IEnumerable<string>>> GetDictionaryNames();
+        Task<ServiceResult<List<string>>> GetDictionaryNames();
         Task<ServiceResult<Dictionary>> GetDictionaryByName(string name);
         Task<ServiceResult<Dictionary>> AddNewEntry(string name, DictionaryValue entry);
         Task<ServiceResult<Dictionary>> DeleteEntry(string dictionaryName, int entryId);

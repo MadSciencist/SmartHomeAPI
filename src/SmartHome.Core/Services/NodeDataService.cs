@@ -34,6 +34,7 @@ namespace SmartHome.Core.Services
 
         public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitudeDto data)
         {
+            // Do some retention - collect only 100k last samples or smth
             return await _nodeDataRepository.AddSingleAsync(nodeId, reason, new NodeDataMagnitude
             {
                 Magnitude = data.Magnitude,

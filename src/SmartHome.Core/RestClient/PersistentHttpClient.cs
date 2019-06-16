@@ -46,7 +46,7 @@ namespace SmartHome.Core.RestClient
         {
             try
             {
-                var response = await _client.ExecuteWithPolicyAsync<T>(request, CancellationToken.None, _retryPolicyProvider.GetDefaultAsyncPolicy<T>());
+                var response = await _client.ExecuteWithPolicyAsync(request, CancellationToken.None, _retryPolicyProvider.GetDefaultAsyncPolicy<T>());
                 if (response != null && response.IsSuccessful)
                 {
                     return response.Data;

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using SmartHome.Core.RestClient;
 using SmartHome.Core.Authorization;
+using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 
 namespace SmartHome.Core.IoC
 {
@@ -27,6 +28,7 @@ namespace SmartHome.Core.IoC
             AddContractsRestControlAssembly();
             AddContractsMqttMessageHandlersAssembly();
 
+            Builder.RegisterType<SyntheticDictionaryService>().InstancePerDependency();
             Builder.RegisterType<MqttMessageProcessor>().InstancePerDependency();
             Builder.RegisterType<MessageInterceptor>().InstancePerDependency();
             Builder.RegisterType<NodeAuthorizationProvider>().InstancePerDependency();
