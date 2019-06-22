@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Utils;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Services;
+using System;
 using System.Threading.Tasks;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Infrastructure;
 
 namespace SmartHome.API.Controllers
 {
@@ -28,27 +26,17 @@ namespace SmartHome.API.Controllers
 
         [AllowAnonymous]
         [HttpGet("node/{nodeId}")]
-        public async Task<IActionResult> GetPaged(int nodeId, int? page, int? pageSize, [FromQuery] string[] properties, DateTime? from, DateTime? to)
+        public async Task<IActionResult> GetPaged(int nodeId, int? page, int? pageSize, [FromQuery] string[] properties, DateTime? from, DateTime? to, DataOrder? orderByDate)
         {
             int pageInt = page ?? 1;
             int pageSizeInt = pageSize ?? 1000;
             DateTime dateFrom = from ?? new DateTime(2000, 1, 1);
             DateTime dateTo = to ?? DateTime.Now;
+            DataOrder order = orderByDate ?? DataOrder.Asc;
 
-            var serviceResult = await _nodeDataService.GetNodeData(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo);
+            var serviceResult = await _nodeDataService.GetNodeData(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
-        }
-
-        [AllowAnonymous]
-        [HttpGet("node/test")]
-        public async Task<IActionResult> Test()
-        {
-            var dict = new Dictionary<string, ICollection<int>>();
-            dict.Add("First", new List<int>());
-            dict.Add("Sec", new List<int>());
-
-            return Ok(new {d = dict, meta = new {a = 1, b = 2}});
         }
 
         [AllowAnonymous]

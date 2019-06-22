@@ -22,25 +22,32 @@ namespace SmartHome.Core.Services
         }
 
         public async Task<ServiceResult<NodeCollectionAggregate>> GetNodeData(int nodeId, int pageNumber, int pageSize,
-            string[] properties, DateTime from, DateTime to)
+            string[] properties, DateTime from, DateTime to, DataOrder order)
         {
             var response = new ServiceResult<NodeCollectionAggregate>(Principal);
 
-            var queryable = _nodeDataRepository.AsQueryableNoTrack()
+            var query = _nodeDataRepository.AsQueryableNoTrack()
                 .Where(x => x.NodeId == nodeId)
-                .Where(x => x.TimeStamp >= from && x.TimeStamp <= to)
-                .OrderBy(x => x.TimeStamp);
+                .Where(x => x.TimeStamp >= from && x.TimeStamp <= to);
+            
+            var paginated = await PaginatedList<NodeData>.CreateAsync(query, FilterByDate, pageNumber, pageSize, order);
 
-            var paginated = await PaginatedList<NodeData>.CreateAsync(queryable, pageNumber, pageSize);
+            if (paginated.FirstOrDefault() == null) throw new SmartHomeEntityNotFoundException($"Node ID: {nodeId} data not found");
 
             response.Data = GetAggregate(paginated, properties);
 
             return response;
         }
 
+        private IQueryable<NodeData> FilterByDate(IQueryable<NodeData> query, DataOrder order)
+        {
+            if (order == DataOrder.Asc) return query.OrderBy(x => x.TimeStamp);
+            else return query.OrderByDescending(x => x.TimeStamp);
+        }
+
         private static NodeCollectionAggregate GetAggregate(PaginatedList<NodeData> paginated, string[] properties)
         {
-            var firstValueSet = paginated.First();
+            var firstValueSet = paginated.FirstOrDefault();
 
             var aggregate = new NodeCollectionAggregate
             {
