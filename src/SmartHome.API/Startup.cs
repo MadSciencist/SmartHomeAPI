@@ -44,7 +44,7 @@ namespace SmartHome.API
                 .AddFluentValidation(x =>
                 {
                     x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>();
-                }); // ToDo move to IoC project
+                });
             
             // Create custom BadRequest response for built-in validator
             services.Configure<ApiBehaviorOptions>(options =>

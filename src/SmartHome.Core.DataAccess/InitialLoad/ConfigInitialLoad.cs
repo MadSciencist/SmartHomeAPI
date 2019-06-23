@@ -18,23 +18,23 @@ namespace SmartHome.Core.DataAccess.InitialLoad
 
                 if (!context.RequestReasons.Any())
                 {
-                    var requestReasons = new List<DataRequestReason>
+                    var requestReasons = new List<Domain.Entity.DataRequestReason>
                     {
-                        new DataRequestReason
+                        new Domain.Entity.DataRequestReason
                         {
-                            Id = (int) EDataRequestReason.Node,
+                            Id = (int) Domain.Enums.DataRequestReason.Node,
                             Reason = "Node",
                             Description = "Node was initiator"
                         },
-                        new DataRequestReason
+                        new Domain.Entity.DataRequestReason
                         {
-                            Id = (int) EDataRequestReason.Scheduler,
+                            Id = (int) Domain.Enums.DataRequestReason.Scheduler,
                             Reason = "Scheduler",
                             Description = "Task scheduler was initiator"
                         },
-                        new DataRequestReason
+                        new Domain.Entity.DataRequestReason
                         {
-                            Id = (int) EDataRequestReason.User,
+                            Id = (int) Domain.Enums.DataRequestReason.User,
                             Reason = "User",
                             Description = "User was initiator"
                         }
@@ -50,14 +50,14 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     {
                         new ControlStrategyLinkageType
                         {
-                            Id = (int) ELinkageType.Sensor,
-                            Name = ELinkageType.Sensor.ToString(),
+                            Id = (int) LinkageType.Sensor,
+                            Name = LinkageType.Sensor.ToString(),
                             Description = "Control strategy - sensor many-many relation ship"
                         },
                         new ControlStrategyLinkageType
                         {
-                            Id = (int) ELinkageType.Command,
-                            Name = ELinkageType.Command.ToString(),
+                            Id = (int) LinkageType.Command,
+                            Name = LinkageType.Command.ToString(),
                             Description = "Control strategy - command many-many relation ship"
                         }
                     };

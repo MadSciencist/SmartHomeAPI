@@ -36,21 +36,21 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 new ControlStrategyLinkage
                                 {
                                     ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
                                     InternalValue = "analog",
                                     DisplayValue = "Generic Analog"
                                 },
                                 new ControlStrategyLinkage
                                 {
                                     ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Command,
+                                    ControlStrategyLinkageTypeId = (int)LinkageType.Command,
                                     InternalValue = "ToggleRelay",
                                     DisplayValue = "Toggle Relay"
                                 },
                                 new ControlStrategyLinkage
                                 {
                                     ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
                                     InternalValue = "relay/0", // relay still might be sensor (subscribe to changes)
                                     DisplayValue = "Relay 0"
                                 }
@@ -71,21 +71,21 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 new ControlStrategyLinkage
                                 {
                                     ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
                                     InternalValue = "analog",
                                     DisplayValue = "Generic Analog"
                                 },
                                 new ControlStrategyLinkage
                                 {
                                     ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Command,
+                                    ControlStrategyLinkageTypeId = (int)LinkageType.Command,
                                     InternalValue = "ToggleRelay",
                                     DisplayValue = "Toggle Relay"
                                 },
                                 new ControlStrategyLinkage
                                 {
                                     ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)ELinkageType.Sensor,
+                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
                                     InternalValue = "relay/0", // relay still might be sensor (subscribe to changes)
                                     DisplayValue = "Relay 0"
                                 }

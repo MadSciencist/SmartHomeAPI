@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Autofac;
+﻿using Autofac;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Infrastructure;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Core.Dto.NodeData;
 
 namespace SmartHome.Core.Services
 {
@@ -92,7 +91,8 @@ namespace SmartHome.Core.Services
             return aggregate.MagnitudeDictionary.Count == 0 ? new NodeCollectionAggregate() : aggregate;
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitudeDto data)
+        public async Task<NodeData> AddSingleAsync(int nodeId, Domain.Enums.DataRequestReason reason,
+                                                   NodeDataMagnitudeDto data)
         {
             // TODO Do some retention - collect only 100k last samples or smth
             return await _nodeDataRepository.AddSingleAsync(nodeId, reason, new NodeDataMagnitude

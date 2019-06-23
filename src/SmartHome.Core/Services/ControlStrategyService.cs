@@ -33,12 +33,12 @@ namespace SmartHome.Core.Services
                 foreach (var map in mapped)
                 {
                     map.Commands = strategies.First(x => x.Id == map.Id).ControlStrategyLinkages
-                        .Where(x => x.ControlStrategyLinkageTypeId == (int)ELinkageType.Command)
+                        .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Command)
                         .Select(x => new ControlStrategyLinkageDto(x.DisplayValue, x.InternalValue))
                         .ToList();
 
                     map.Sensors = strategies.First(x => x.Id == map.Id).ControlStrategyLinkages
-                        .Where(x => x.ControlStrategyLinkageTypeId == (int)ELinkageType.Sensor)
+                        .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
                         .Select(x => new ControlStrategyLinkageDto(x.DisplayValue, x.InternalValue))
                         .ToList();
                 }
@@ -105,7 +105,7 @@ namespace SmartHome.Core.Services
             {
                 commandLinkages.Add(new ControlStrategyLinkage
                 {
-                    ControlStrategyLinkageTypeId = (int) ELinkageType.Command,
+                    ControlStrategyLinkageTypeId = (int) LinkageType.Command,
                     ControlStrategyId = strategyId,
                     InternalValue = command.InternalValue,
                     DisplayValue = command.DisplayValue
@@ -116,7 +116,7 @@ namespace SmartHome.Core.Services
             {
                 commandLinkages.Add(new ControlStrategyLinkage
                 {
-                    ControlStrategyLinkageTypeId = (int) ELinkageType.Sensor,
+                    ControlStrategyLinkageTypeId = (int) LinkageType.Sensor,
                     ControlStrategyId = strategyId,
                     InternalValue = sensor.InternalValue,
                     DisplayValue = sensor.DisplayValue

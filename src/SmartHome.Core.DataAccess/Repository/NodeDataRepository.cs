@@ -20,7 +20,7 @@ namespace SmartHome.Core.DataAccess.Repository
             return base.AsQueryableNoTrack().Include(x => x.Magnitudes);
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitude data)
+        public async Task<NodeData> AddSingleAsync(int nodeId, Domain.Enums.DataRequestReason reason, NodeDataMagnitude data)
         {
             var nodeData = new NodeData
             {

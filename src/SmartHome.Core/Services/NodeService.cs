@@ -9,8 +9,10 @@ using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.Core.Services
 {
@@ -111,9 +113,11 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            // TODO
-            var commandEntity = node.ControlStrategy?.AllowedCommands.FirstOrDefault(x => x.Command?.Alias?.ToLower() == command.ToLower());
-            if (commandEntity == null)
+            var systemCommand = node.ControlStrategy.ControlStrategyLinkages
+                .Where(x => x.ControlStrategyLinkageTypeId == (int) LinkageType.Command)
+                .FirstOrDefault(x => x.InternalValue?.ToLower() == command.ToLower());
+
+            if (systemCommand == null)
             {
                 response.Alerts.Add(new Alert("Command not allowed", MessageType.Error));
                 return response;
@@ -122,7 +126,7 @@ namespace SmartHome.Core.Services
             // resolve control executor
             var strategy = node.ControlStrategy;
             var executorFullyQualifiedName =
-                $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{commandEntity.Command.ExecutorClassName}";
+                $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{systemCommand.InternalValue}";
 
             if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
             {
@@ -130,10 +134,18 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            var executionResult =  await strategyExecutor.Execute(node, commandEntity.Command, commandParams);
-            response.Data = executionResult;
-
-            return response;
+            try
+            {
+                var result = await strategyExecutor.Execute(node, null, commandParams);
+                if (result == null) throw new IOException($"Node {node.Name} does not respond.");
+                response.Data = result;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
+            }
         }
     }
 }
