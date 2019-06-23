@@ -33,7 +33,7 @@ namespace SmartHome.Core.RestClient
             return await InvokeAsync<object>(url, method);
         }
 
-        public async Task<T> InvokeAsync<T>(string url, Method method) where T: class
+        public async Task<T> InvokeAsync<T>(string url, Method method) where T: class, new()
         {
             _client.BaseUrl = new Uri(url); 
             var rr = new RestRequest("", method, DataFormat.Json);
@@ -42,7 +42,7 @@ namespace SmartHome.Core.RestClient
             return result;
         }
 
-        private async Task<T> ExecuteRequestAsync<T>(IRestRequest request) where T: class
+        private async Task<T> ExecuteRequestAsync<T>(IRestRequest request) where T: class, new()
         {
             try
             {
@@ -55,7 +55,7 @@ namespace SmartHome.Core.RestClient
             catch (Exception ex)
             {
                 _logger.LogError(ex, "");
-                throw new SmartHomeException("Cannot connect to node");
+                throw;
             }
 
             return default(T);

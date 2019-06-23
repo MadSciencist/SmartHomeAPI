@@ -37,7 +37,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 
                         // if the user wants to collect such sensor data
                         if (node.ControlStrategy.ControlStrategyLinkages
-                            .Where(x => x.ControlStrategyLinkageTypeId == (int)ELinkageType.Sensor)
+                            .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
                             .Any(x => string.Compare(x.InternalValue, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
                         {
                             await ExtractSaveData(node.Id, sensorName, sensorValue);
@@ -52,7 +52,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
         {
             var unit = Espurna.ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
 
-            await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
+            await _nodeDataService.AddSingleAsync(nodeId, Domain.Enums.DataRequestReason.Node, new NodeDataMagnitudeDto
             {
                 Value = value,
                 Magnitude = sensorName,

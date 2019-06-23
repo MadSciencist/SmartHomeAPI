@@ -1,6 +1,6 @@
 ﻿namespace SmartHome.Core.Domain.Enums
 {
-    public enum EDataRequestReason
+    public enum DataRequestReason
     {
         Node = 1,
         Scheduler = 2,

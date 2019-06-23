@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using SmartHome.API.Utils;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Services;
+using System;
 using System.Threading.Tasks;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Infrastructure;
 
 namespace SmartHome.API.Controllers
 {
@@ -17,23 +18,30 @@ namespace SmartHome.API.Controllers
     public class NodeDataController : Controller
     {
         private readonly INodeDataService _nodeDataService;
+        private readonly IConfiguration _config;
 
-        public NodeDataController(INodeDataService nodeDataService, IHttpContextAccessor contextAccessor)
+        public NodeDataController(INodeDataService nodeDataService, IHttpContextAccessor contextAccessor, IConfiguration config)
         {
             _nodeDataService = nodeDataService;
+            _config = config;
             _nodeDataService.Principal = contextAccessor.HttpContext.User;
         }
 
         [AllowAnonymous]
-        [HttpPost("node/{nodeId}/paged")]
-        public async Task<IActionResult> Create(int nodeId, int page, int pageSize)
+        [HttpGet("node/{nodeId}")]
+        public async Task<IActionResult> GetPaged(int nodeId, [FromQuery] string[] properties, int? page, int? pageSize,
+            DateTime? from, DateTime? to, DataOrder? orderByDate)
         {
-            ServiceResult<PaginatedList<NodeData>> serviceResult = await _nodeDataService.GetNodeData(nodeId, page, pageSize);
+            int pageInt = page ?? _config.GetValue<int>("Defaults:Paging:PageNumber");
+            int pageSizeInt = pageSize ?? _config.GetValue<int>("Defaults:Paging:PageSize");
+            DateTime dateFrom = from ?? _config.GetValue<DateTime>("Defaults:Paging:DateFrom");
+            DateTime dateTo = to ?? DateTime.Now;
+            DataOrder order = orderByDate ?? DataOrder.Asc;
+
+            var serviceResult = await _nodeDataService.GetNodeData(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
-
-
 
         [AllowAnonymous]
         //Todo maybe extra entpoint with basic auth?

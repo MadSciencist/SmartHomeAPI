@@ -1,6 +1,6 @@
 ﻿namespace SmartHome.Core.Domain.Enums
 {
-    public enum ELinkageType
+    public enum LinkageType
     {
         Sensor = 1,
         Command = 2

@@ -36,11 +36,15 @@ namespace SmartHome.API
         {
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(json => json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
+                .AddJsonOptions(json => {
+                    json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    json.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                    json.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                })
                 .AddFluentValidation(x =>
                 {
                     x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>();
-                }); // ToDo move to IoC project
+                });
             
             // Create custom BadRequest response for built-in validator
             services.Configure<ApiBehaviorOptions>(options =>

@@ -13,7 +13,6 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.AspNetCore.Mvc;
 
 namespace SmartHome.API.Extensions
 {
@@ -120,7 +119,7 @@ namespace SmartHome.API.Extensions
                 });
                 swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
                 {
-                    {"Bearer",new string[]{}}
+                    {"Bearer", new string[]{}}
                 });
             });
         }
