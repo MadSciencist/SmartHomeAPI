@@ -13,14 +13,17 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SmartHome.API.Hubs;
 
 namespace SmartHome.API.Extensions
 {
     public static class ServicesExtensions
     {
-        public static void AddTokenBuilder(this IServiceCollection services)
+        public static void AddApiServices(this IServiceCollection services)
         {
             services.AddTransient<ITokenBuilder, JwtTokenBuilder>();
+            services.AddSingleton<HubNotifier>();
+            services.AddScoped<HubTokenDecoder>();
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)

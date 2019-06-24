@@ -138,7 +138,9 @@ namespace SmartHome.Core.Services
                 var dictEntryToRemove = dict.Values.SingleOrDefault(x => x.Id == entryId);
                 if (dictEntryToRemove == null) throw new SmartHomeEntityNotFoundException(nameof(dictEntryToRemove));
 
-                dict.Values.Remove(dictEntryToRemove);
+                // 'soft' delete
+                dictEntryToRemove.IsActive = false;
+
                 response.Data = await GenericRepository.UpdateAsync(dict);
                 response.Alerts.Add(new Alert("Successfully deleted entry", MessageType.Success));
 

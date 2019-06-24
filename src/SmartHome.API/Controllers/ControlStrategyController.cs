@@ -43,7 +43,7 @@ namespace SmartHome.API.Controllers
         {
             var serviceResult = await _controlStrategyService.CreateStrategy(controlStrategy);
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status201Created);
         }
 
         // TODO

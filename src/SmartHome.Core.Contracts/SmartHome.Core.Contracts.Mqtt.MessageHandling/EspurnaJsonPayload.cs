@@ -14,10 +14,12 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
     public class EspurnaJsonPayload : IMqttMessageHandler
     {
         private readonly INodeDataService _nodeDataService;
+        private readonly NotificationService _notificationService;
 
-        public EspurnaJsonPayload(INodeDataService nodeDataService)
+        public EspurnaJsonPayload(INodeDataService nodeDataService, NotificationService notificationService)
         {
             _nodeDataService = nodeDataService;
+            _notificationService = notificationService;
         }
 
         public async Task Handle(Node node, MqttMessageDto message)
@@ -41,6 +43,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                             .Any(x => string.Compare(x.InternalValue, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
                         {
                             await ExtractSaveData(node.Id, sensorName, sensorValue);
+                            _notificationService.AddNotification(node.Id, sensorName, sensorValue);
                         }
                     }
                 }

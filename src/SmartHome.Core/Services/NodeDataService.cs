@@ -41,7 +41,7 @@ namespace SmartHome.Core.Services
         private IQueryable<NodeData> FilterByDate(IQueryable<NodeData> query, DataOrder order)
         {
             if (order == DataOrder.Asc) return query.OrderBy(x => x.TimeStamp);
-            else return query.OrderByDescending(x => x.TimeStamp);
+            return query.OrderByDescending(x => x.TimeStamp);
         }
 
         private static NodeCollectionAggregate GetAggregate(PaginatedList<NodeData> paginated, string[] properties)
@@ -62,7 +62,7 @@ namespace SmartHome.Core.Services
 
             aggregate.AddTimestamps(paginated.Select(x => x.TimeStamp).ToList());
 
-            foreach (var magnitude in firstValueSet.Magnitudes)
+            foreach (var magnitude in firstValueSet?.Magnitudes)
             {
                 // Try skip if current magnitude is not in user request
                 if (!properties.Any(x => x == magnitude.Magnitude))

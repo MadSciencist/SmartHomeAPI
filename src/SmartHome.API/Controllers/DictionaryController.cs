@@ -89,7 +89,7 @@ namespace SmartHome.API.Controllers
 
             var serviceResult = await _dictionaryService.AddNewEntry(dictName, serviceDictionaryEntry);
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status201Created);
         }
     }
 }

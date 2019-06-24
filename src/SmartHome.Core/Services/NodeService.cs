@@ -19,14 +19,11 @@ namespace SmartHome.Core.Services
     public class NodeService : ServiceBase<NodeDto, object>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly IGenericRepository<ControlStrategy> _strategyRepository;
         private readonly NodeAuthorizationProvider _authProvider;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository,
-            IGenericRepository<ControlStrategy> strategyRepository, NodeAuthorizationProvider authorizationProvider) : base(container)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, NodeAuthorizationProvider authorizationProvider) : base(container)
         {
             _nodeRepository = nodeRepository;
-            _strategyRepository = strategyRepository;
             _authProvider = authorizationProvider;
         }
 
@@ -57,6 +54,12 @@ namespace SmartHome.Core.Services
             {
                 response.Alerts = validationResult.GetValidationMessages();
                 return response;
+            }
+
+            if (!_authProvider.Authorize(null, Principal, OperationType.Add))
+            {
+                throw new SmartHomeUnauthorizedException(
+                    $"User ${Principal.Identity.Name} is not authorized to add new node");
             }
 
             var userId = GetCurrentUserId();
@@ -104,13 +107,11 @@ namespace SmartHome.Core.Services
 
             // get the node
             var node = await _nodeRepository.GetByIdAsync(nodeId);
-            var userId = GetCurrentUserId();
 
-            // check permissions
-            if (node.AllowedUsers.Any(x => x.UserId != userId))
+            if (!_authProvider.Authorize(null, Principal, OperationType.Execute))
             {
-                response.Alerts.Add(new Alert("Permissions error", MessageType.Error));
-                return response;
+                throw new SmartHomeUnauthorizedException(
+                    $"User ${Principal.Identity.Name} is not authorized to add new node.");
             }
 
             var systemCommand = node.ControlStrategy.ControlStrategyLinkages
@@ -119,7 +120,7 @@ namespace SmartHome.Core.Services
 
             if (systemCommand == null)
             {
-                response.Alerts.Add(new Alert("Command not allowed", MessageType.Error));
+                response.Alerts.Add(new Alert("Command not allowed.", MessageType.Error));
                 return response;
             }
 
@@ -130,15 +131,14 @@ namespace SmartHome.Core.Services
 
             if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
             {
-                response.Alerts.Add(new Alert("Not existing control strategy", MessageType.Error));
+                response.Alerts.Add(new Alert("Not existing control strategy.", MessageType.Error));
                 return response;
             }
 
             try
             {
-                var result = await strategyExecutor.Execute(node, null, commandParams);
-                if (result == null) throw new IOException($"Node {node.Name} does not respond.");
-                response.Data = result;
+                var result = await strategyExecutor.Execute(node, commandParams);
+                response.Data = result ?? throw new IOException($"Node {node.Name} is not responding.");
                 return response;
             }
             catch (Exception ex)

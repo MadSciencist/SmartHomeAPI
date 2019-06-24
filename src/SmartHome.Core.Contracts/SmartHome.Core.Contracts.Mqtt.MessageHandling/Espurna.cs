@@ -14,10 +14,12 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
     public class Espurna : IMqttMessageHandler
     {
         private readonly INodeDataService _nodeDataService;
+        private readonly NotificationService _notificationService;
 
-        public Espurna(INodeDataService nodeDataService)
+        public Espurna(INodeDataService nodeDataService, NotificationService notificationService)
         {
             _nodeDataService = nodeDataService;
+            _notificationService = notificationService; // TODO base class from notificatioBase
         }
 
         public async Task Handle(Node node, MqttMessageDto message)
@@ -41,6 +43,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 
         private async Task ExtractSaveData(int nodeId, MqttMessageDto message)
         {
+            // TODO relay/o causes bug when its in topic
             var magnitude = message.Topic.Split("/").Last();
             var unit = ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
 
@@ -50,6 +53,8 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                 Magnitude = magnitude,
                 Unit = unit
             });
+
+            _notificationService.AddNotification(nodeId, magnitude, message.Payload);
         }
 
         // https://github.com/xoseperez/espurna/wiki/MQTT

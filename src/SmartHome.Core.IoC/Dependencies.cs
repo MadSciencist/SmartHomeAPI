@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using SmartHome.Core.RestClient;
 using SmartHome.Core.Authorization;
+using SmartHome.Core.Domain.Notification;
 using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 
 namespace SmartHome.Core.IoC
@@ -45,6 +46,8 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<MqttService>().As<IMqttService>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();
+            Builder.RegisterType<NotificationQueue>().SingleInstance();
+            Builder.RegisterType<NotificationService>().SingleInstance();
 
             return Builder;
         }

@@ -27,7 +27,7 @@ namespace SmartHome.Core.Contracts.Rest.Control.Espurna
         /// <param name="command">Control command</param>
         /// <param name="commandParams">Params from request body</param>
         /// <returns>RAW espurna response</returns>
-        public async Task<object> Execute(Node node, Command command, JObject commandParams)
+        public async Task<object> Execute(Node node, JObject commandParams)
         {
             var relayNo = commandParams.Value<string>("relayNo");
 

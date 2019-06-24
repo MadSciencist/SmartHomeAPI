@@ -17,16 +17,17 @@ namespace SmartHome.API.Utils
             TrustProvider = TrustFactory.GetDefaultTrustProvider();
         }
 
-        public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult) where T : class
+        public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult,
+            int overrideOkStatus = StatusCodes.Status200OK) where T : class
         {
             ValidateAndThrowIfNeeded(serviceResult);
 
             ProcessExceptionsMessageVisibility(serviceResult);
 
-            return InferResponseType(serviceResult);
+            return InferResponseType(serviceResult, overrideOkStatus);
         }
 
-        private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult) where T : class
+        private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult, int okStatus) where T : class
         {
             if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Error))
             {
@@ -39,7 +40,7 @@ namespace SmartHome.API.Utils
                 return response;
             }
 
-            return new OkObjectResult(serviceResult);
+            return new ObjectResult(serviceResult) { StatusCode = okStatus };
         }
 
         private static void ProcessExceptionsMessageVisibility<T>(ServiceResult<T> serviceResult) where T : class
