@@ -47,14 +47,14 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
             var magnitude = message.Topic.Split("/").Last();
             var unit = ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
 
-            await _nodeDataService.AddSingleAsync(nodeId, Domain.Enums.DataRequestReason.Node, new NodeDataMagnitudeDto
+            await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
             {
                 Value = message.Payload,
                 Magnitude = magnitude,
                 Unit = unit
             });
 
-            _notificationService.AddNotification(nodeId, magnitude, message.Payload);
+            _notificationService.PushNotification(nodeId, NotificationType.NodeData, magnitude, message.Payload);
         }
 
         // https://github.com/xoseperez/espurna/wiki/MQTT

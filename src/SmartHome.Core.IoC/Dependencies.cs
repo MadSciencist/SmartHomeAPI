@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using SmartHome.Core.Contracts.Mqtt.Control;
 using SmartHome.Core.Contracts.Rest.Control;
 using SmartHome.Core.DataAccess.Repository;
@@ -11,6 +12,7 @@ using SmartHome.Core.RestClient;
 using SmartHome.Core.Authorization;
 using SmartHome.Core.Domain.Notification;
 using SmartHome.Core.Infrastructure.SyntheticDictionaries;
+using SmartHome.Core.MessageHandlers;
 
 namespace SmartHome.Core.IoC
 {
@@ -37,6 +39,7 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
+            Builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
 
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
@@ -52,6 +55,7 @@ namespace SmartHome.Core.IoC
             return Builder;
         }
 
+        // TODO dynamic assembly adding, by name convention
         private static void AddContractsRestControlAssembly()
         {
             var contractsAsm = Assembly.GetAssembly(typeof(IRestControlStrategy)).GetTypes();

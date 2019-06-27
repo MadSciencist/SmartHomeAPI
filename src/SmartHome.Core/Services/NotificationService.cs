@@ -1,4 +1,5 @@
 ﻿using System;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Domain.Notification;
 
 namespace SmartHome.Core.Services
@@ -14,7 +15,7 @@ namespace SmartHome.Core.Services
             _queue = queue;
         }
 
-        public void AddNotification(int nodeId, string name, string magnitude)
+        public void PushNotification(int nodeId, NotificationType type, string name, string magnitude)
         {
             _queue.Enqueue(new NotificationDto(nodeId, name, magnitude));
             NotificationAdded?.Invoke(this, EventArgs.Empty);

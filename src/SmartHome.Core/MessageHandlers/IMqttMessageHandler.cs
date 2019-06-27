@@ -1,11 +1,8 @@
-﻿using System.Threading.Tasks;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Dto;
+﻿using SmartHome.Core.Dto;
 
 namespace SmartHome.Core.MessageHandlers
 {
-    public interface IMqttMessageHandler
+    public interface IMqttMessageHandler : IMessageHandler<MqttMessageDto>
     {
-        Task Handle(Node node, MqttMessageDto messageDto);
     }
 }

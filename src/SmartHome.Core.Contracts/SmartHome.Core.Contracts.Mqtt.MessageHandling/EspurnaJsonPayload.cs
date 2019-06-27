@@ -43,7 +43,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                             .Any(x => string.Compare(x.InternalValue, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
                         {
                             await ExtractSaveData(node.Id, sensorName, sensorValue);
-                            _notificationService.AddNotification(node.Id, sensorName, sensorValue);
+                            _notificationService.PushNotification(node.Id, NotificationType.NodeData, sensorName, sensorValue);
                         }
                     }
                 }
@@ -55,7 +55,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
         {
             var unit = Espurna.ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
 
-            await _nodeDataService.AddSingleAsync(nodeId, Domain.Enums.DataRequestReason.Node, new NodeDataMagnitudeDto
+            await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
             {
                 Value = value,
                 Magnitude = sensorName,

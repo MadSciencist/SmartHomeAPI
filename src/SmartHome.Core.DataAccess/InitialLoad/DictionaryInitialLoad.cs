@@ -113,30 +113,9 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 new DictionaryValue
                                 {
                                     Id = 1000,
-                                    DisplayValue = "Turn on relay",
-                                    InternalValue = "OnRelay",
+                                    DisplayValue = "Set on relay",
+                                    InternalValue = "SingleRelay",
                                     IsActive = true,
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 1001,
-                                    DisplayValue = "Turn off relay",
-                                    InternalValue = "OffRelay",
-                                    IsActive = true
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 1002,
-                                    DisplayValue = "Set relay value",
-                                    InternalValue = "SetRelay",
-                                    IsActive = true
-                                },
-                                new DictionaryValue
-                                {
-                                    Id = 1003,
-                                    DisplayValue = "Toggle relay",
-                                    InternalValue = "ToggleRelay",
-                                    IsActive = true
                                 }
                             }
                         }

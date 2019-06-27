@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\SmartHome.Core\SmartHome.Core.csproj" />
+    <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>
 
 </Project>

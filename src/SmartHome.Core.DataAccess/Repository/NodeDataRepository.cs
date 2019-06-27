@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
@@ -20,8 +20,21 @@ namespace SmartHome.Core.DataAccess.Repository
             return base.AsQueryableNoTrack().Include(x => x.Magnitudes);
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, Domain.Enums.DataRequestReason reason, NodeDataMagnitude data)
+        public async Task<NodeData> AddSingleAsync(int nodeId, int samplesToKeep, EDataRequestReason reason, NodeDataMagnitude data)
         {
+            var currentCount = await Context.NodeData.CountAsync(x =>
+                x.NodeId == nodeId && x.Magnitudes.Any(m => m.Magnitude == data.Magnitude));
+
+            if (currentCount > samplesToKeep) //keep only last x samples
+            {
+                var numToRemove = currentCount - samplesToKeep - 1; // -1 because we will add new record in next lines
+                var toRemove = Context.NodeData.Where(s => s.NodeId == nodeId && s.Magnitudes.Any(x => x.Magnitude == data.Magnitude))
+                    .OrderBy(s => s.TimeStamp)
+                    .Take(numToRemove);
+
+                Context.NodeData.RemoveRange(toRemove);
+            }
+
             var nodeData = new NodeData
             {
                 RequestReasonId = (int) reason,
@@ -33,22 +46,7 @@ namespace SmartHome.Core.DataAccess.Repository
                 NodeId = nodeId
             };
 
-            await base.CreateAsync(nodeData);
-            return nodeData;
+            return await base.CreateAsync(nodeData);
         }
-
-        //public async Task<NodeData> AddManyAsync(EDataRequestReason reason, ICollection<NodeDataMagnitude> data)
-        //{
-        //    var nodeData = new NodeData
-        //    {
-        //        RequestReasonId = (int)reason,
-        //        TimeStamp = DateTime.UtcNow,
-        //        Magnitudes = data,
-        //        NodeId = 1
-        //    };
-
-        //    await base.CreateAsync(nodeData);
-        //    return nodeData;
-        //}
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Dto;
@@ -6,6 +7,7 @@ using SmartHome.API.Security.Token;
 using SmartHome.Core.Domain.User;
 using SmartHome.Core.Utils;
 using System.Threading.Tasks;
+using SmartHome.Core.DataAccess.Repository;
 
 namespace SmartHome.API.Controllers
 {
@@ -22,15 +24,19 @@ namespace SmartHome.API.Controllers
         private readonly IUserValidator<AppUser> _userValidator;
         private readonly ITokenBuilder _tokenBuilder;
         private readonly IPasswordValidator<AppUser> _passwordValidator;
+        private readonly IUserRepository _userRepository;
 
         public UsersController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenBuilder tokenBuilder, IUserValidator<AppUser> userValidator, IPasswordValidator<AppUser> passwordValidator)
+            ITokenBuilder tokenBuilder, IUserValidator<AppUser> userValidator,
+            IPasswordValidator<AppUser> passwordValidator,
+            IUserRepository userRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenBuilder = tokenBuilder;
             _userValidator = userValidator;
             _passwordValidator = passwordValidator;
+            _userRepository = userRepository;
         }
 
         [HttpGet("{id}")]
@@ -51,6 +57,8 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginDto login, string redirect)
         {
             var user = await _userManager.FindByNameAsync(login.Login);
+            var nodes = await _userRepository.GetAllUserNodes(user.Id);
+
             if (user == null) return NotFound();
 
             if (!user.IsActive) return BadRequest();

@@ -1,18 +1,18 @@
 ﻿using Autofac;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Authorization;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.Core.Services
 {
@@ -124,21 +124,21 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            // resolve control executor
-            var strategy = node.ControlStrategy;
-            var executorFullyQualifiedName =
-                $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{systemCommand.InternalValue}";
-
-            if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
-            {
-                response.Alerts.Add(new Alert("Not existing control strategy.", MessageType.Error));
-                return response;
-            }
-
             try
             {
-                var result = await strategyExecutor.Execute(node, commandParams);
-                response.Data = result ?? throw new IOException($"Node {node.Name} is not responding.");
+                // resolve control executor
+                var strategy = node.ControlStrategy;
+                var executorFullyQualifiedName =
+                    $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{systemCommand.InternalValue}";
+
+                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
+                {
+                    response.Alerts.Add(new Alert("Not existing control strategy.", MessageType.Error));
+                    return response;
+                }
+
+                await strategyExecutor.Execute(node, commandParams);
+                response.ResponseStatusCodeOverride = StatusCodes.Status202Accepted;
                 return response;
             }
             catch (Exception ex)

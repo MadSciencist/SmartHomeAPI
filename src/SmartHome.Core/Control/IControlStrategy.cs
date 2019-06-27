@@ -6,6 +6,6 @@ namespace SmartHome.Core.Control
 {
     public interface IControlStrategy
     {
-        Task<object> Execute(Node node, JObject commandParams);
+        Task Execute(Node node, JObject commandParams);
     }
 }

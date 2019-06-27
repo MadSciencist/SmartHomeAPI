@@ -8,6 +8,7 @@ using SmartHome.Core.Infrastructure;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SmartHome.Core.Services
 {
@@ -91,11 +92,12 @@ namespace SmartHome.Core.Services
             return aggregate.MagnitudeDictionary.Count == 0 ? new NodeCollectionAggregate() : aggregate;
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, Domain.Enums.DataRequestReason reason,
+        public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason,
                                                    NodeDataMagnitudeDto data)
         {
-            // TODO Do some retention - collect only 100k last samples or smth
-            return await _nodeDataRepository.AddSingleAsync(nodeId, reason, new NodeDataMagnitude
+            var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
+
+            return await _nodeDataRepository.AddSingleAsync(nodeId, samplesToKeep, reason, new NodeDataMagnitude
             {
                 Magnitude = data.Magnitude,
                 Unit = data.Unit,

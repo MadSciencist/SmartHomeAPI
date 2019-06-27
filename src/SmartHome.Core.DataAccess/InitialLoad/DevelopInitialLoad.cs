@@ -44,8 +44,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 {
                                     ControlStrategyId = 2,
                                     ControlStrategyLinkageTypeId = (int)LinkageType.Command,
-                                    InternalValue = "ToggleRelay",
-                                    DisplayValue = "Toggle Relay"
+                                    InternalValue = "SingleRelay",
+                                    DisplayValue = "Set relay"
                                 },
                                 new ControlStrategyLinkage
                                 {
@@ -79,8 +79,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 {
                                     ControlStrategyId = 2,
                                     ControlStrategyLinkageTypeId = (int)LinkageType.Command,
-                                    InternalValue = "ToggleRelay",
-                                    DisplayValue = "Toggle Relay"
+                                    InternalValue = "SingleRelay",
+                                    DisplayValue = "Single Relay"
                                 },
                                 new ControlStrategyLinkage
                                 {

@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190616140107_init")]
+    [Migration("20190627194514_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,27 +152,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.ToTable("tbl_user_node_link");
                 });
 
-            modelBuilder.Entity("SmartHome.Core.Domain.Entity.Command", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<string>("ExecutorClassName")
-                        .IsRequired()
-                        .HasMaxLength(100);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Alias")
-                        .IsUnique();
-
-                    b.ToTable("tbl_command");
-                });
-
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategy", b =>
                 {
                     b.Property<int>("Id")
@@ -208,24 +187,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasIndex("CreatedById");
 
                     b.ToTable("tbl_control_strategy");
-                });
-
-            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyCommandLink", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("CommandId");
-
-                    b.Property<int>("ControlStrategyId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommandId");
-
-                    b.HasIndex("ControlStrategyId");
-
-                    b.ToTable("tbl_strategy_command_link");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkage", b =>
@@ -386,15 +347,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("ControlStrategyId");
-
                     b.Property<string>("Description");
 
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ControlStrategyId");
 
                     b.ToTable("tbl_registered_sensors");
                 });
@@ -554,19 +511,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyCommandLink", b =>
-                {
-                    b.HasOne("SmartHome.Core.Domain.Entity.Command", "Command")
-                        .WithMany("Nodes")
-                        .HasForeignKey("CommandId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
-                        .WithMany("AllowedCommands")
-                        .HasForeignKey("ControlStrategyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategyLinkage", b =>
                 {
                     b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
@@ -612,13 +556,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .WithMany("Magnitudes")
                         .HasForeignKey("NodeDataId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartHome.Core.Domain.Entity.RegisteredSensors", b =>
-                {
-                    b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy")
-                        .WithMany("RegisteredSensors")
-                        .HasForeignKey("ControlStrategyId");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Domain.User.AppUser", b =>
