@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Autofac;
+using Newtonsoft.Json.Linq;
 using SmartHome.Core.Contracts.Mappings;
 using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Entity;
@@ -6,7 +7,6 @@ using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHandlers;
-using SmartHome.Core.Services;
 using SmartHome.Core.Utils;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +14,13 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 {
-    public class EspurnaJsonPayload : IMqttMessageHandler
+    public class EspurnaJsonPayload : MessageHandlerBase<MqttMessageDto>, IMqttMessageHandler
     {
-        private readonly INodeDataService _nodeDataService;
-        private readonly NotificationService _notificationService;
-
-        public EspurnaJsonPayload(INodeDataService nodeDataService, NotificationService notificationService)
+        public EspurnaJsonPayload(ILifetimeScope container) : base(container)
         {
-            _nodeDataService = nodeDataService;
-            _notificationService = notificationService;
         }
 
-        public async Task Handle(Node node, MqttMessageDto message)
+        public override async Task Handle(Node node, MqttMessageDto message)
         {
             // Espurna using json payload posts all data to /data topic
             if (message.Topic.Contains("/data"))
@@ -34,7 +29,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 
                 foreach (KeyValuePair<string, JToken> token in payload)
                 {
-                    // check if current token is valid espurna sensor
+                    // Check if current token is valid espurna sensor
                     if (EspurnaMapping.ValidProperties.Any(x => x.Magnitude == token.Key))
                     {
                         var sensorName = token.Key;
@@ -59,13 +54,13 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
             // Check if there is associated system value
             if (property != null)
             {
-                await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
+                await NodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
                 {
                     Value = value,
                     PhysicalProperty = property
                 });
 
-                _notificationService.PushNodeDataNotification(nodeId, property, value);
+                NotificationService.PushNodeDataNotification(nodeId, property, value);
             }
         }
     }

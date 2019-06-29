@@ -1,12 +1,11 @@
-﻿using SmartHome.Core.Domain.Enums;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Domain.Notification;
 using SmartHome.Core.Domain.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Domain.Models;
 
 namespace SmartHome.Core.Services
 {

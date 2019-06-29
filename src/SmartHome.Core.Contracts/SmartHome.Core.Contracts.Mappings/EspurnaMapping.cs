@@ -20,7 +20,8 @@ namespace SmartHome.Core.Contracts.Mappings
                 {"relay/0", "relay0"},
                 {"relay/1", "relay1"},
                 {"relay/2", "relay2"},
-                {"relay/3", "relay3"}
+                {"relay/3", "relay3"},
+                {"analog", "generic_analog" }
             };
 
             // https://github.com/xoseperez/espurna/wiki/MQTT
