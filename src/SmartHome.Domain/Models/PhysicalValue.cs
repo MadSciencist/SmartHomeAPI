@@ -1,15 +1,15 @@
-﻿namespace SmartHome.Core.Domain
+﻿namespace SmartHome.Core.Domain.Models
 {
-    public class PhysicalValue
+    public class PhysicalProperty
     {
         public string Magnitude { get; set; }
         public string Unit { get; set; }
 
-        public PhysicalValue()
+        public PhysicalProperty()
         {
         }
 
-        public PhysicalValue(string magnitude, string unit)
+        public PhysicalProperty(string magnitude, string unit)
         {
             Magnitude = magnitude;
             Unit = unit;

@@ -3,7 +3,6 @@ using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,7 +24,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         {
                             Id = 1,
                             IsActive = true,
-                            Description = "Control ESPURNA device over HTTP and REST",
+                            Description = "Control Espurna over REST and receive using MQTT and JSON payload",
                             ControlProviderName = "Rest",
                             ControlContext = "Espurna",
                             ReceiveProviderName = "Mqtt",
@@ -35,24 +34,17 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             {
                                 new ControlStrategyLinkage
                                 {
-                                    ControlStrategyId = 2,
+                                    ControlStrategyId = 1,
                                     ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
                                     InternalValue = "analog",
                                     DisplayValue = "Generic Analog"
                                 },
                                 new ControlStrategyLinkage
                                 {
-                                    ControlStrategyId = 2,
+                                    ControlStrategyId = 1,
                                     ControlStrategyLinkageTypeId = (int)LinkageType.Command,
                                     InternalValue = "SingleRelay",
-                                    DisplayValue = "Set relay"
-                                },
-                                new ControlStrategyLinkage
-                                {
-                                    ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
-                                    InternalValue = "relay/0", // relay still might be sensor (subscribe to changes)
-                                    DisplayValue = "Relay 0"
+                                    DisplayValue = "SingleRelay"
                                 }
                             },
                             Created = DateTime.UtcNow
@@ -61,7 +53,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         {
                             Id = 2,
                             IsActive = true,
-                            Description = "Control over MQTT",
+                            Description = "Control Espurna over REST and receive using MQTT",
                             ControlProviderName = "Rest",
                             ControlContext = "Espurna",
                             ReceiveProviderName = "Mqtt",
@@ -81,13 +73,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                     ControlStrategyLinkageTypeId = (int)LinkageType.Command,
                                     InternalValue = "SingleRelay",
                                     DisplayValue = "Single Relay"
-                                },
-                                new ControlStrategyLinkage
-                                {
-                                    ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
-                                    InternalValue = "relay/0", // relay still might be sensor (subscribe to changes)
-                                    DisplayValue = "Relay 0"
                                 }
                             },
                             CreatedById = 1,

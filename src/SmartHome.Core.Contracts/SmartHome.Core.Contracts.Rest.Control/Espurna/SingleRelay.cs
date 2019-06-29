@@ -1,14 +1,17 @@
 ﻿using Newtonsoft.Json.Linq;
 using RestSharp;
+using SmartHome.Core.Contracts.Mappings;
+using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.ContractParams;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Domain.Models;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.RestClient;
 using SmartHome.Core.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartHome.Core.Dto;
 
 namespace SmartHome.Core.Contracts.Rest.Control.Espurna
 {
@@ -17,6 +20,7 @@ namespace SmartHome.Core.Contracts.Rest.Control.Espurna
         private readonly PersistentHttpClient _httpClient;
         private readonly NotificationService _notificationService;
         private readonly INodeDataService _nodeDataService;
+        private const string RelayKey = "relay/0";
 
         public SingleRelay(PersistentHttpClient httpClient, NotificationService notificationService, INodeDataService nodeDataService)
         {
@@ -37,10 +41,19 @@ namespace SmartHome.Core.Contracts.Rest.Control.Espurna
 
             var response = await _httpClient.InvokeAsync<Dictionary<string, string>>(uri, Method.GET);
 
-             _notificationService.PushNotification(node.Id, NotificationType.NodeData, "relay/0", response["relay/0"]);
+            if (response != null)
+            {
+                // Espurna response for SingleRelay has key relay/0
+                PhysicalProperty property = SystemMagnitudes.GetPhysicalPropertyByContextDictionary(EspurnaMapping.Map, RelayKey);
 
-             await _nodeDataService.AddSingleAsync(node.Id, EDataRequestReason.Node,
-                 new NodeDataMagnitudeDto("relay/0", response["relay/0"], "bit"));
+                // Check if there is associated system value
+                if (property != null)
+                {
+                    var value = response[RelayKey];
+                    _notificationService.PushNodeDataNotification(node.Id, property, value);
+                    await _nodeDataService.AddSingleAsync(node.Id, EDataRequestReason.Node, new NodeDataMagnitudeDto(property, value));
+                }
+            }
         }
 
         private static string BuildUri(Node node, SingleRelayParam param)

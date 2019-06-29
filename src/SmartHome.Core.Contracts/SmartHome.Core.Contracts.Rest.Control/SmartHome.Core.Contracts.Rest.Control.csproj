@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
+    <ProjectReference Include="..\SmartHome.Core.Contracts.Mappings\SmartHome.Core.Contracts.Mappings.csproj" />
   </ItemGroup>
 
 </Project>

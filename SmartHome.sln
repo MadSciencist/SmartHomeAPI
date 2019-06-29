@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28922.388
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.645
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API", "src\SmartHome.API\SmartHome.API.csproj", "{42D6CC80-881F-4FCF-A576-5C04090BCEF5}"
 EndProject
@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.IoC", "src\S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{69AEE966-A8CC-40A2-A919-23663A037A54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.API.Tests", "test\SmartHome.API.Tests\SmartHome.API.Tests.csproj", "{FB582FBA-88CE-4843-8962-2F4185BF3F92}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API.Tests", "test\SmartHome.API.Tests\SmartHome.API.Tests.csproj", "{FB582FBA-88CE-4843-8962-2F4185BF3F92}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.Core.Contracts.Mappings", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mappings\SmartHome.Core.Contracts.Mappings.csproj", "{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +75,10 @@ Global
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{74B33063-5FEC-492E-ACE0-F126A37F1588} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{C17498C5-6A12-4DAF-A8CA-5C75B80F7221} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92} = {69AEE966-A8CC-40A2-A919-23663A037A54}
+		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68CAEBA0-5529-44C7-82DC-114D2B13A91E}

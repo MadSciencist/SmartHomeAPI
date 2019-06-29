@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace SmartHome.Core.Domain.Notification
 {
-    public class NotificationQueue : Queue<NotificationDto>
+    public class NotificationQueue : ConcurrentQueue<NotificationDto>
     {
     }
 }

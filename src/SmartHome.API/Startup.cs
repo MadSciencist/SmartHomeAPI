@@ -84,6 +84,8 @@ namespace SmartHome.API
 
             services.AddSignalR(settings => { settings.EnableDetailedErrors = true; });
 
+            services.AddHostedService<MqttService>();
+
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
             builder.Populate(services);
@@ -128,17 +130,6 @@ namespace SmartHome.API
             app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
             InitializeDatabase(app);
-
-            var mqttOptions = new MqttServerOptionsBuilder()
-                .WithDefaultEndpointPort(conf.GetValue<int>("MqttBroker:Port"))
-                .WithConnectionBacklog(conf.GetValue<int>("MqttBroker:MaxBacklog"))
-                .WithClientId(conf.GetValue<string>("MqttBroker:ClientId"))
-                .Build();
-
-            // Create singleton instance of mqtt broker
-            var mqttService = ApplicationContainer.Resolve<IMqttService>();
-            mqttService.ServerOptions = mqttOptions;
-            mqttService.StartBroker().Wait();
 
             // Create singleton instance of notifier
             var hubNotifier = ApplicationContainer.Resolve<HubNotifier>();

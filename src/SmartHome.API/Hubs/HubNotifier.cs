@@ -19,9 +19,8 @@ namespace SmartHome.API.Hubs
 
         private async void _notificationService_NotificationAdded(object sender, EventArgs e)
         {
-            if (_queue.Count > 0)
+            if (_queue.TryDequeue(out NotificationDto message))
             {
-                NotificationDto message = _queue.Dequeue();
                 await _hubContext.Clients.All.SendAsync("notification", message);
             }
         }

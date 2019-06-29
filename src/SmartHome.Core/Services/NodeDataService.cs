@@ -99,8 +99,8 @@ namespace SmartHome.Core.Services
 
             return await _nodeDataRepository.AddSingleAsync(nodeId, samplesToKeep, reason, new NodeDataMagnitude
             {
-                Magnitude = data.Magnitude,
-                Unit = data.Unit,
+                Magnitude = data.PhysicalProperty.Magnitude,
+                Unit = data.PhysicalProperty.Unit,
                 Value = data.Value
             });
         }

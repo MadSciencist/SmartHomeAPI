@@ -1,10 +1,13 @@
 ﻿using Newtonsoft.Json.Linq;
+using SmartHome.Core.Contracts.Mappings;
+using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHandlers;
 using SmartHome.Core.Services;
-using System;
+using SmartHome.Core.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +35,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                 foreach (KeyValuePair<string, JToken> token in payload)
                 {
                     // check if current token is valid espurna sensor
-                    if (Espurna.ValidEspurnaSensors.Any(x => x.Magnitude == token.Key))
+                    if (EspurnaMapping.ValidProperties.Any(x => x.Magnitude == token.Key))
                     {
                         var sensorName = token.Key;
                         var sensorValue = token.Value.Value<string>();
@@ -40,27 +43,30 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                         // if the user wants to collect such sensor data
                         if (node.ControlStrategy.ControlStrategyLinkages
                             .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
-                            .Any(x => string.Compare(x.InternalValue, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0))
+                            .Any(x => x.InternalValue.CompareInvariant(sensorName)))
                         {
                             await ExtractSaveData(node.Id, sensorName, sensorValue);
-                            _notificationService.PushNotification(node.Id, NotificationType.NodeData, sensorName, sensorValue);
                         }
                     }
                 }
-
             }
         }
 
         private async Task ExtractSaveData(int nodeId, string sensorName, string value)
         {
-            var unit = Espurna.ValidEspurnaSensors.First(x => string.Compare(x.Magnitude, sensorName, StringComparison.InvariantCultureIgnoreCase) == 0).Unit;
+            PhysicalProperty property = SystemMagnitudes.GetPhysicalPropertyByContextDictionary(EspurnaMapping.Map, sensorName);
 
-            await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
+            // Check if there is associated system value
+            if (property != null)
             {
-                Value = value,
-                Magnitude = sensorName,
-                Unit = unit
-            });
+                await _nodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
+                {
+                    Value = value,
+                    PhysicalProperty = property
+                });
+
+                _notificationService.PushNodeDataNotification(nodeId, property, value);
+            }
         }
     }
 }

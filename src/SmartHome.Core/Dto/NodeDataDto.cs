@@ -1,16 +1,16 @@
-﻿namespace SmartHome.Core.Dto
+﻿using SmartHome.Core.Domain.Models;
+
+namespace SmartHome.Core.Dto
 {
     public class NodeDataMagnitudeDto
     {
-        public string Magnitude { get; set; }
+        public PhysicalProperty PhysicalProperty { get; set; }
         public string Value { get; set; }
-        public string Unit { get; set; }
 
-        public NodeDataMagnitudeDto(string magnitude, string value, string unit)
+        public NodeDataMagnitudeDto(PhysicalProperty physicalProperty, string value)
         {
-            Magnitude = magnitude;
+            PhysicalProperty = physicalProperty;
             Value = value;
-            Unit = unit;
         }
 
         public NodeDataMagnitudeDto()
