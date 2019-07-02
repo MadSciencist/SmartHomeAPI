@@ -27,5 +27,9 @@ namespace SmartHome.Core.Dto
         public int CreatedById { get; set; }
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? Created { get; set; }
+
+        public ControlStrategyDto()
+        {
+        }
     }
 }

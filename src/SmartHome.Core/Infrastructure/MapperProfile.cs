@@ -9,7 +9,6 @@ namespace SmartHome.Core.Infrastructure
         public MapperProfile()
         {
             CreateNodeMapping();
-            CreateCommandMapping();
             CreateControlStrategyMapping();
         }
 
@@ -30,18 +29,7 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.ControlStrategyId, opt => opt.MapFrom(x => x.ControlStrategyId))
                 .ForAllOtherMembers(x => x.Ignore());
         }
-
-        private void CreateCommandMapping()
-        {
-            CreateMap<CommandEntityDto, Command>()
-                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
-                .ForMember(x => x.Alias, opt => opt.MapFrom(x => x.Alias))
-                .ForMember(x => x.ExecutorClassName, opt => opt.MapFrom(x => x.ExecutorClassName))
-                .ForMember(x => x.Nodes, opt => opt.Ignore())
-                .ReverseMap()
-                .ForAllOtherMembers(x => x.Ignore());
-        }
-
+        
         private void CreateControlStrategyMapping()
         {
             CreateMap<ControlStrategyDto, ControlStrategy>()
@@ -57,8 +45,6 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.CreatedBy, opt => opt.Ignore())
                 .ForMember(x => x.ControlStrategyLinkages, opt => opt.Ignore())
                 .ForMember(x => x.Nodes, opt => opt.Ignore())
-                .ForMember(x => x.AllowedCommands, opt => opt.Ignore())
-                .ForMember(x => x.RegisteredSensors, opt => opt.Ignore())
                 .ReverseMap()
                 .ForAllOtherMembers(x => x.Ignore());
         }

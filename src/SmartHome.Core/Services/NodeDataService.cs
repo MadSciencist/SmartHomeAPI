@@ -8,6 +8,7 @@ using SmartHome.Core.Infrastructure;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SmartHome.Core.Services
 {
@@ -41,7 +42,7 @@ namespace SmartHome.Core.Services
         private IQueryable<NodeData> FilterByDate(IQueryable<NodeData> query, DataOrder order)
         {
             if (order == DataOrder.Asc) return query.OrderBy(x => x.TimeStamp);
-            else return query.OrderByDescending(x => x.TimeStamp);
+            return query.OrderByDescending(x => x.TimeStamp);
         }
 
         private static NodeCollectionAggregate GetAggregate(PaginatedList<NodeData> paginated, string[] properties)
@@ -62,7 +63,7 @@ namespace SmartHome.Core.Services
 
             aggregate.AddTimestamps(paginated.Select(x => x.TimeStamp).ToList());
 
-            foreach (var magnitude in firstValueSet.Magnitudes)
+            foreach (var magnitude in firstValueSet?.Magnitudes)
             {
                 // Try skip if current magnitude is not in user request
                 if (!properties.Any(x => x == magnitude.Magnitude))
@@ -91,14 +92,15 @@ namespace SmartHome.Core.Services
             return aggregate.MagnitudeDictionary.Count == 0 ? new NodeCollectionAggregate() : aggregate;
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, Domain.Enums.DataRequestReason reason,
+        public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason,
                                                    NodeDataMagnitudeDto data)
         {
-            // TODO Do some retention - collect only 100k last samples or smth
-            return await _nodeDataRepository.AddSingleAsync(nodeId, reason, new NodeDataMagnitude
+            var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
+
+            return await _nodeDataRepository.AddSingleAsync(nodeId, samplesToKeep, reason, new NodeDataMagnitude
             {
-                Magnitude = data.Magnitude,
-                Unit = data.Unit,
+                Magnitude = data.PhysicalProperty.Magnitude,
+                Unit = data.PhysicalProperty.Unit,
                 Value = data.Value
             });
         }

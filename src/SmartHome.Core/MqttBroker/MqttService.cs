@@ -1,60 +1,72 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client.Publishing;
 using MQTTnet.Server;
-using SmartHome.Core.MqttBroker.MessageHandling;
-using System.Text;
-using System.Threading.Tasks;
 using MQTTnet.Server.Status;
+using SmartHome.Core.MqttBroker.MessageHandling;
 using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.MqttBroker
 {
-    public class MqttService : IMqttService
+    public class MqttService : IMqttService, IHostedService
     {
-        public IMqttServerOptions ServerOptions { get; set; }
+        public IMqttServer Server { get; private set; }
+        public IMqttServerOptions Options { get; private set; }
 
         private readonly ILogger _logger;
-        private readonly IMqttServer _mqttServer;
+        private readonly IConfiguration _config;
         private readonly MessageInterceptor _messageInterceptor;
 
-        public MqttService(ILoggerFactory loggerFactory, MessageInterceptor interceptor)
+        public MqttService(ILoggerFactory loggerFactory, MessageInterceptor interceptor, IConfiguration config)
         {
-            _logger = loggerFactory.CreateLogger(typeof(MqttService));
-            _mqttServer = new MqttFactory().CreateMqttServer();
-            _logger.LogInformation("Mqtt broker created");
+            _config = config;
             _messageInterceptor = interceptor;
+            _logger = loggerFactory.CreateLogger(typeof(MqttService));
+
+            Options = new MqttServerOptionsBuilder()
+                .WithDefaultEndpointPort(_config.GetValue<int>("MqttBroker:Port"))
+                .WithConnectionBacklog(_config.GetValue<int>("MqttBroker:MaxBacklog"))
+                .WithClientId(_config.GetValue<string>("MqttBroker:ClientId"))
+                .Build();
+
+            Server = new MqttFactory().CreateMqttServer();
+            _logger.LogInformation("Mqtt broker created");
         }
 
-        public async Task StartBroker()
+        async Task IHostedService.StartAsync(CancellationToken cancellationToken)
         {
-            await _mqttServer.StartAsync(ServerOptions);
+            await Server.StartAsync(Options);
             StartIntecepting();
-            _logger.LogInformation($"Mqtt broker started on port: {ServerOptions.DefaultEndpointOptions.Port}");
+            _logger.LogInformation($"Mqtt broker started on port: {Options.DefaultEndpointOptions.Port}");
         }
 
-        public async Task StopBroker()
+        async Task IHostedService.StopAsync(CancellationToken cancellationToken)
         {
-            await _mqttServer.StartAsync(ServerOptions);
+            await Server.StopAsync();
             _logger.LogInformation("Mqtt broker stopped");
         }
 
         public async Task<MqttClientPublishResult> PublishSystemMessageAsync(MqttApplicationMessage message)
         {
-            return await _mqttServer.PublishAsync(message);
+            return await Server.PublishAsync(message);
         }
 
         public async Task<ICollection<IMqttClientStatus>> GetClientStatusAsync()
         {
-            return await _mqttServer.GetClientStatusAsync();
+            return await Server.GetClientStatusAsync();
         }
 
         public void StartIntecepting()
         {
             try
             {
-                _mqttServer.UseApplicationMessageReceivedHandler(async e =>
+                Server.UseApplicationMessageReceivedHandler(async e =>
                 {
                     await _messageInterceptor.Intercept(new ReceivedMessage
                     {

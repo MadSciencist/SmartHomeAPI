@@ -1,32 +1,29 @@
 ﻿using Autofac;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Authorization;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.Core.Services
 {
     public class NodeService : ServiceBase<NodeDto, object>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly IGenericRepository<ControlStrategy> _strategyRepository;
         private readonly NodeAuthorizationProvider _authProvider;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository,
-            IGenericRepository<ControlStrategy> strategyRepository, NodeAuthorizationProvider authorizationProvider) : base(container)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, NodeAuthorizationProvider authorizationProvider) : base(container)
         {
             _nodeRepository = nodeRepository;
-            _strategyRepository = strategyRepository;
             _authProvider = authorizationProvider;
         }
 
@@ -57,6 +54,12 @@ namespace SmartHome.Core.Services
             {
                 response.Alerts = validationResult.GetValidationMessages();
                 return response;
+            }
+
+            if (!_authProvider.Authorize(null, Principal, OperationType.Add))
+            {
+                throw new SmartHomeUnauthorizedException(
+                    $"User ${Principal.Identity.Name} is not authorized to add new node");
             }
 
             var userId = GetCurrentUserId();
@@ -104,13 +107,11 @@ namespace SmartHome.Core.Services
 
             // get the node
             var node = await _nodeRepository.GetByIdAsync(nodeId);
-            var userId = GetCurrentUserId();
 
-            // check permissions
-            if (node.AllowedUsers.Any(x => x.UserId != userId))
+            if (!_authProvider.Authorize(null, Principal, OperationType.Execute))
             {
-                response.Alerts.Add(new Alert("Permissions error", MessageType.Error));
-                return response;
+                throw new SmartHomeUnauthorizedException(
+                    $"User ${Principal.Identity.Name} is not authorized to add new node.");
             }
 
             var systemCommand = node.ControlStrategy.ControlStrategyLinkages
@@ -119,26 +120,25 @@ namespace SmartHome.Core.Services
 
             if (systemCommand == null)
             {
-                response.Alerts.Add(new Alert("Command not allowed", MessageType.Error));
-                return response;
-            }
-
-            // resolve control executor
-            var strategy = node.ControlStrategy;
-            var executorFullyQualifiedName =
-                $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{systemCommand.InternalValue}";
-
-            if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
-            {
-                response.Alerts.Add(new Alert("Not existing control strategy", MessageType.Error));
+                response.Alerts.Add(new Alert("Command not allowed.", MessageType.Error));
                 return response;
             }
 
             try
             {
-                var result = await strategyExecutor.Execute(node, null, commandParams);
-                if (result == null) throw new IOException($"Node {node.Name} does not respond.");
-                response.Data = result;
+                // resolve control executor
+                var strategy = node.ControlStrategy;
+                var executorFullyQualifiedName =
+                    $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{systemCommand.InternalValue}";
+
+                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
+                {
+                    response.Alerts.Add(new Alert("Not existing control strategy.", MessageType.Error));
+                    return response;
+                }
+
+                await strategyExecutor.Execute(node, commandParams);
+                response.ResponseStatusCodeOverride = StatusCodes.Status202Accepted;
                 return response;
             }
             catch (Exception ex)

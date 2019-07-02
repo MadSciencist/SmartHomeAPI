@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
+using SmartHome.API.Hubs;
 using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Validators;
@@ -67,7 +68,7 @@ namespace SmartHome.API
             services.AddAuthorizationPolicies();
 
             // JWT Token handling
-            services.AddTokenBuilder();
+            services.AddApiServices();
 
             // Add AutoMapper configs
             services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService))); // ToDo move to IoC project
@@ -77,9 +78,13 @@ namespace SmartHome.API
 
             // Api docs gen
             services.AddConfiguredSwagger();
-
+            
             // This allows access http context and user in constructor
             services.AddHttpContextAccessor();
+
+            services.AddSignalR(settings => { settings.EnableDetailedErrors = true; });
+
+            services.AddHostedService<MqttService>();
 
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
@@ -114,21 +119,20 @@ namespace SmartHome.API
             // standard MVC middleware
             app.UseMvc();
 
+            app.UseSignalR(routes =>
+            {
+                var endpoint = conf.GetValue<string>("NotificationEndpoint");
+                routes.MapHub<NotificationHub>(endpoint);
+            });
+
             // docs gen and UI
             app.UseSwagger();
             app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
             InitializeDatabase(app);
 
-            var mqttOptions = new MqttServerOptionsBuilder()
-                .WithDefaultEndpointPort(conf.GetValue<int>("MqttBroker:Port"))
-                .WithConnectionBacklog(conf.GetValue<int>("MqttBroker:MaxBacklog"))
-                .WithClientId(conf.GetValue<string>("MqttBroker:ClientId"))
-                .Build();
-
-            var mqttService = ApplicationContainer.Resolve<IMqttService>();
-            mqttService.ServerOptions = mqttOptions;
-            mqttService.StartBroker().Wait();
+            // Create singleton instance of notifier
+            var hubNotifier = ApplicationContainer.Resolve<HubNotifier>();
         }
 
         private static void InitializeDatabase(IApplicationBuilder app)

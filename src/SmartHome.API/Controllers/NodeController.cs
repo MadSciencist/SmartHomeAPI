@@ -44,7 +44,7 @@ namespace SmartHome.API.Controllers
         {
             var serviceResult = await _nodeService.CreateNode(node);
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status201Created);
         }
 
         // TODO
@@ -70,7 +70,7 @@ namespace SmartHome.API.Controllers
         {
             var serviceResult = await _nodeService.Control(nodeId, command, commandParams);
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status202Accepted);
         }
     }
 }

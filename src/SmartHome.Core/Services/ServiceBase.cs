@@ -9,6 +9,7 @@ using SmartHome.Core.Utils;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SmartHome.Core.Services
 {
@@ -32,7 +33,11 @@ namespace SmartHome.Core.Services
         private UserManager<AppUser> _userManager;
         protected UserManager<AppUser> UserManager => _userManager ?? (_userManager = Container.Resolve<UserManager<AppUser>>());
 
+        private IConfiguration _config;
+        protected IConfiguration Config => _config ?? (_config = Container.Resolve<IConfiguration>());
+
         #region constructor
+
         protected ServiceBase(ILifetimeScope container)
         {
             Container = container;

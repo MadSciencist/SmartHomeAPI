@@ -22,19 +22,19 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     {
                         new Domain.Entity.DataRequestReason
                         {
-                            Id = (int) Domain.Enums.DataRequestReason.Node,
+                            Id = (int) EDataRequestReason.Node,
                             Reason = "Node",
                             Description = "Node was initiator"
                         },
                         new Domain.Entity.DataRequestReason
                         {
-                            Id = (int) Domain.Enums.DataRequestReason.Scheduler,
+                            Id = (int) EDataRequestReason.Scheduler,
                             Reason = "Scheduler",
                             Description = "Task scheduler was initiator"
                         },
                         new Domain.Entity.DataRequestReason
                         {
-                            Id = (int) Domain.Enums.DataRequestReason.User,
+                            Id = (int) EDataRequestReason.User,
                             Reason = "User",
                             Description = "User was initiator"
                         }

@@ -14,6 +14,7 @@
     <ProjectReference Include="..\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj" />
     <ProjectReference Include="..\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
+    <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>
 
 </Project>

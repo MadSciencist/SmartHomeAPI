@@ -15,7 +15,6 @@ namespace SmartHome.Core.DataAccess
 
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
-        public DbSet<Command> Commands { get; set; }
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<RegisteredSensors> RegisteredSensors { get; set; }
@@ -73,29 +72,6 @@ namespace SmartHome.Core.DataAccess
             // TODO: Each row unique constraints
             builder.Entity<ControlStrategyLinkage>()
                 .HasKey(x => x.Id);
-            
-            //builder.Entity<ControlStrategyLinkage>()
-            //    .HasAlternateKey(x => x.ControlStrategyLinkageTypeId);
-            //builder.Entity<ControlStrategyLinkage>()
-            //    .HasAlternateKey(x => x.InternalValue);
-
-            // Configure many-to-many node-nodeCommand relationship
-            builder.Entity<ControlStrategyCommandLink>()
-                .HasKey(x => x.Id);
-
-            builder.Entity<ControlStrategyCommandLink>()
-                .HasOne(x => x.ControlStrategy)
-                .WithMany(x => x.AllowedCommands)
-                .HasForeignKey(x => x.ControlStrategyId);
-
-            builder.Entity<ControlStrategyCommandLink>()
-                .HasOne(x => x.Command)
-                .WithMany(x => x.Nodes)
-                .HasForeignKey(x => x.CommandId);
-
-            builder.Entity<Command>()
-                .HasIndex(x => x.Alias)
-                .IsUnique();
 
             // Configure dictionaries one-to-many relationship
             builder.Entity<Dictionary>()

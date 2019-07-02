@@ -18,6 +18,9 @@ namespace SmartHome.Core.Infrastructure
         [JsonIgnore]
         public ClaimsPrincipal Principal { get; set; }
 
+        [JsonIgnore]
+        public int? ResponseStatusCodeOverride { get; set; }
+
 
         #region constructors
         public ServiceResult(ClaimsPrincipal principal) : this()

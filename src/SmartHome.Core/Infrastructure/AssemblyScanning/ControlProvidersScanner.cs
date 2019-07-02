@@ -6,5 +6,6 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
 {
     public class ControlProvidersScanner : AssemblyScanner
     {
+        // TODO use this to validate if control provider/context is implemented
     }
 }

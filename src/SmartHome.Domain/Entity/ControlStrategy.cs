@@ -25,17 +25,13 @@ namespace SmartHome.Core.Domain.Entity
         public string Description { get; set; }
 
         public bool IsActive { get; set; }
-        public int CreatedById { get; set; }
-        public AppUser CreatedBy { get; set; }
         public DateTime Created { get; set; }
 
-        public ICollection<Node> Nodes { get; set; }
-        public ICollection<ControlStrategyLinkage> ControlStrategyLinkages { get; set; }
+        public int CreatedById { get; set; }
+        public AppUser CreatedBy { get; set; }
 
-        [Obsolete]
-        public ICollection<RegisteredSensors> RegisteredSensors { get; set; }
-        [Obsolete]
-        // Many-to-many relationship
-        public ICollection<ControlStrategyCommandLink> AllowedCommands { get; set; }
+        public ICollection<Node> Nodes { get; set; }
+
+        public ICollection<ControlStrategyLinkage> ControlStrategyLinkages { get; set; }
     }
 }

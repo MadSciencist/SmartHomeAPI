@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SmartHome.Core.Contracts.Rest.Control
+namespace SmartHome.Core.RestClient
 {
     public class QueryStringBuilder
     {
@@ -12,9 +12,9 @@ namespace SmartHome.Core.Contracts.Rest.Control
             _builder = new UriBuilder(baseUri);
         }
 
-        public void Add(KeyValuePair<string, string> entity)
+        public void Add(KeyValuePair<string, string> pair)
         {
-            var query = $"{entity.Key}={entity.Value}";
+            var query = $"{pair.Key}={pair.Value}";
 
             if (_builder.Query?.Length > 1)
             {

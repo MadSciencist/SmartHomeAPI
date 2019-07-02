@@ -1,9 +1,9 @@
-﻿using System;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SmartHome.API.Security;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Infrastructure;
+using System;
 using System.Linq;
 
 namespace SmartHome.API.Utils
@@ -17,17 +17,24 @@ namespace SmartHome.API.Utils
             TrustProvider = TrustFactory.GetDefaultTrustProvider();
         }
 
-        public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult) where T : class
+        public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult,
+            int overrideOkStatus = StatusCodes.Status200OK) where T : class
         {
             ValidateAndThrowIfNeeded(serviceResult);
 
             ProcessExceptionsMessageVisibility(serviceResult);
 
-            return InferResponseType(serviceResult);
+            return InferResponseType(serviceResult, overrideOkStatus);
         }
 
-        private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult) where T : class
+        private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult, int okStatus) where T : class
         {
+            if (serviceResult.ResponseStatusCodeOverride.HasValue)
+            {
+                var response = new ObjectResult(serviceResult) { StatusCode = serviceResult.ResponseStatusCodeOverride.Value };
+                return response;
+            }
+
             if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Error))
             {
                 return new BadRequestObjectResult(serviceResult);
@@ -39,7 +46,7 @@ namespace SmartHome.API.Utils
                 return response;
             }
 
-            return new OkObjectResult(serviceResult);
+            return new ObjectResult(serviceResult) { StatusCode = okStatus };
         }
 
         private static void ProcessExceptionsMessageVisibility<T>(ServiceResult<T> serviceResult) where T : class
@@ -54,9 +61,9 @@ namespace SmartHome.API.Utils
 
         private static void ValidateAndThrowIfNeeded<T>(ServiceResult<T> serviceResult) where T : class
         {
-            if (serviceResult?.Data == null)
+            if (serviceResult == null)
             {
-                throw new ArgumentNullException("Service output is null");
+                throw new ArgumentNullException(nameof(ServiceResult<T>));
             }
 
             if (serviceResult.Principal == null)
