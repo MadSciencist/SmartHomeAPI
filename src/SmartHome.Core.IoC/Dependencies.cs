@@ -1,18 +1,15 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
+using SmartHome.Core.Authorization;
 using SmartHome.Core.Contracts.Mqtt.Control;
-using SmartHome.Core.Contracts.Rest.Control;
 using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Domain.Notification;
+using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
+using SmartHome.Core.RestClient;
 using SmartHome.Core.Services;
 using System.Linq;
 using System.Reflection;
-using SmartHome.Core.RestClient;
-using SmartHome.Core.Authorization;
-using SmartHome.Core.Domain.Notification;
-using SmartHome.Core.Infrastructure.SyntheticDictionaries;
-using SmartHome.Core.MessageHandlers;
 
 namespace SmartHome.Core.IoC
 {
