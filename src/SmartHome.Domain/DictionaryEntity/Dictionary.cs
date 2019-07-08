@@ -8,7 +8,9 @@ namespace SmartHome.Core.Domain.DictionaryEntity
     public class Dictionary : EntityBase
     { 
         public string Name { get; set; }
-
+        public string Description { get; set; }
+        public string Metadata { get; set; }
+        public bool ReadOnly { get; set; }
         public ICollection<DictionaryValue> Values { get; set; }
     }
 }

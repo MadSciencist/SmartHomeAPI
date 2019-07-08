@@ -6,7 +6,6 @@ using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHandlers;
-using SmartHome.Core.Services;
 using SmartHome.Core.Utils;
 using System.Collections.Generic;
 using System.Linq;

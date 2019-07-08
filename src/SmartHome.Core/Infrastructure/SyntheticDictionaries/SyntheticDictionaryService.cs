@@ -2,8 +2,11 @@
 using SmartHome.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 
 namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
 {
@@ -26,6 +29,32 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
 
         private async Task FillDictionaries()
         {
+            Dictionaries = Dictionaries ?? new List<Dictionary>();
+            var executorTypes = AssemblyScanner.GetCommandExecutors();
+
+            foreach (var executorType in executorTypes)
+            {
+                var asmLocation = executorType.First().Value?.Assembly?.Location;
+                if (asmLocation is null) continue;
+
+                var info = FileVersionInfo.GetVersionInfo(asmLocation);
+                Dictionaries.Add(new Dictionary
+                {
+                    Name = info.ProductName,
+                    Description = info.Comments,
+                    Metadata = "synthetic,command",
+                    ReadOnly = true,
+                    Values = executorType.Values.Select(x => new DictionaryValue
+                    {
+                        InternalValue = x.Name,
+                        DisplayValue = x.GetAttributes<DisplayNameAttribute>()?.FirstOrDefault()?.DisplayName,
+                        Id = 0,
+                        IsActive = true
+                    }).ToList()
+                });
+            }
+
+
             var controlStrategies = await _strategyService.GetAll();
 
             Dictionaries = Dictionaries ?? new List<Dictionary>();
