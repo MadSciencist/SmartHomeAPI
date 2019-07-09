@@ -15,6 +15,7 @@ Metrics:
 ### Dev setup
 prerequisites:
   * MySQL (easiest way is to use XAMMP or docker)
+  * .NET Core 2.2 SDK
   
 1) Configure MySQL to work with following settings:
       port=3306
