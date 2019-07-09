@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SensorMockApp
+namespace SmartHomeMock.SensorMock.App
 {
     class Program
     {
