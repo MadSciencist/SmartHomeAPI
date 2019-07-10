@@ -35,12 +35,14 @@ namespace SmartHome.Contracts.EspurnaMqtt.Handlers
                         var sensorValue = token.Value.Value<string>();
 
                         // if the user wants to collect such sensor data
-                        if (node.ControlStrategy.ControlStrategyLinkages
-                            .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
-                            .Any(x => x.InternalValue.CompareInvariant(sensorName)))
-                        {
-                            await ExtractSaveData(node.Id, sensorName, sensorValue);
-                        }
+                        //if (node.ControlStrategy.ControlStrategyLinkages
+                        //    .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
+                        //    .Any(x => x.InternalValue.CompareInvariant(sensorName)))
+                        //{
+                        //    await ExtractSaveData(node.Id, sensorName, sensorValue);
+                        //}
+
+                        await ExtractSaveData(node.Id, sensorName, sensorValue);
                     }
                 }
             }

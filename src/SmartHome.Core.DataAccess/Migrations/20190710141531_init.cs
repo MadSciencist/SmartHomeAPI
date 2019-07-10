@@ -9,20 +9,6 @@ namespace SmartHome.Core.DataAccess.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "tbl_control_strategy_linkage_type",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 50, nullable: true),
-                    Description = table.Column<string>(maxLength: 50, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_control_strategy_linkage_type", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "tbl_data_request_reason",
                 columns: table => new
                 {
@@ -42,25 +28,14 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    Metadata = table.Column<string>(nullable: true),
+                    ReadOnly = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_dictionary", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_registered_sensors",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_registered_sensors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -247,10 +222,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ControlProviderName = table.Column<string>(maxLength: 50, nullable: false),
-                    ControlContext = table.Column<string>(maxLength: 50, nullable: false),
-                    ReceiveProviderName = table.Column<string>(maxLength: 50, nullable: false),
-                    ReceiveContext = table.Column<string>(maxLength: 50, nullable: false),
+                    ContractAssembly = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
@@ -263,34 +235,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                         name: "FK_tbl_control_strategy_tbl_user_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "tbl_user",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_control_strategy_linkage",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    DisplayValue = table.Column<string>(nullable: true),
-                    InternalValue = table.Column<string>(nullable: true),
-                    ControlStrategyId = table.Column<int>(nullable: false),
-                    ControlStrategyLinkageTypeId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_control_strategy_linkage", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_control_strategy_linkage_tbl_control_strategy_ControlStr~",
-                        column: x => x.ControlStrategyId,
-                        principalTable: "tbl_control_strategy",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tbl_control_strategy_linkage_tbl_control_strategy_linkage_ty~",
-                        column: x => x.ControlStrategyLinkageTypeId,
-                        principalTable: "tbl_control_strategy_linkage_type",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -434,16 +378,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_control_strategy_linkage_ControlStrategyId",
-                table: "tbl_control_strategy_linkage",
-                column: "ControlStrategyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_control_strategy_linkage_ControlStrategyLinkageTypeId",
-                table: "tbl_control_strategy_linkage",
-                column: "ControlStrategyLinkageTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_dictionary_value_DictionaryId",
                 table: "tbl_dictionary_value",
                 column: "DictionaryId");
@@ -536,25 +470,16 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "tbl_control_strategy_linkage");
-
-            migrationBuilder.DropTable(
                 name: "tbl_dictionary_value");
 
             migrationBuilder.DropTable(
                 name: "tbl_node_data_magnitude");
 
             migrationBuilder.DropTable(
-                name: "tbl_registered_sensors");
-
-            migrationBuilder.DropTable(
                 name: "tbl_user_node_link");
 
             migrationBuilder.DropTable(
                 name: "tbl_role");
-
-            migrationBuilder.DropTable(
-                name: "tbl_control_strategy_linkage_type");
 
             migrationBuilder.DropTable(
                 name: "tbl_dictionary");

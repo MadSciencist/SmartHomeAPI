@@ -44,7 +44,6 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
             Builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerDependency();
-            Builder.RegisterType<ControlStrategyService>().As<IControlStrategyService>().InstancePerDependency();
 
             Builder.RegisterType<MqttService>().As<IMqttService>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();

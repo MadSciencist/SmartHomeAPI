@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.645
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API", "src\SmartHome.API\SmartHome.API.csproj", "{42D6CC80-881F-4FCF-A576-5C04090BCEF5}"
 EndProject
@@ -14,6 +14,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.DataAccess", "src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}"
+	ProjectSection(SolutionItems) = preProject
+		src\SmartHome.Contracts\readme.md = src\SmartHome.Contracts\readme.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.IoC", "src\SmartHome.Core.IoC\SmartHome.Core.IoC.csproj", "{97FA0EE5-3E1C-450A-A625-6149A7555807}"
 EndProject
@@ -24,6 +27,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.EspurnaRest", "src\SmartHome.Contracts\SmartHome.Contracts.EspurnaRest\SmartHome.Contracts.EspurnaRest.csproj", "{490506CA-A9E1-4692-BA12-25DAC88B6910}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.EspurnaMqtt", "src\SmartHome.Contracts\SmartHome.Contracts.EspurnaMqtt\SmartHome.Contracts.EspurnaMqtt.csproj", "{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{4C4E0324-514A-44A0-8745-2AC4C7C0D03C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{62E3BC64-CC3E-4CC8-A78C-A5165328BD2A}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\MigrateAndUpdateDb.ps1 = scripts\MigrateAndUpdateDb.ps1
+		scripts\RenewDb.ps1 = scripts\RenewDb.ps1
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,6 +92,7 @@ Global
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92} = {69AEE966-A8CC-40A2-A919-23663A037A54}
 		{490506CA-A9E1-4692-BA12-25DAC88B6910} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
+		{62E3BC64-CC3E-4CC8-A78C-A5165328BD2A} = {4C4E0324-514A-44A0-8745-2AC4C7C0D03C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68CAEBA0-5529-44C7-82DC-114D2B13A91E}

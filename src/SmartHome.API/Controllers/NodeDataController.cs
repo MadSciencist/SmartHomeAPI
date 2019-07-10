@@ -43,25 +43,25 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
-        [AllowAnonymous]
-        //Todo maybe extra entpoint with basic auth?
-        [HttpPost("add")]
-        public async Task<IActionResult> PostData()
-        {
-            //var data = await _nodeDataService.AddSingleAsync(EDataRequestReason.User, new NodeDataMagnitude
-            //{
-            //    Magnitude = "temperature",
-            //    Unit = "celc",
-            //    Value = "25"
-            //});
+        //[AllowAnonymous]
+        ////Todo maybe extra entpoint with basic auth?
+        //[HttpPost("add")]
+        //public async Task<IActionResult> PostData()
+        //{
+        //    var data = await _nodeDataService.AddSingleAsync(EDataRequestReason.User, new NodeDataMagnitude
+        //    {
+        //        Magnitude = "temperature",
+        //        Unit = "celc",
+        //        Value = "25"
+        //    });
 
-            //var response = new ResponseDtoContainer<NodeData>
-            //{
-            //    Data = data
-            //};
+        //    var response = new ResponseDtoContainer<NodeData>
+        //    {
+        //        Data = data
+        //    };
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
     }
 }
 

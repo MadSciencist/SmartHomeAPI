@@ -15,21 +15,16 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
     {
         public ICollection<Dictionary> Dictionaries { get; private set; }
 
-        private readonly IControlStrategyService _strategyService;
-
-        public SyntheticDictionaryService(IControlStrategyService strategyService)
-        {
-            _strategyService = strategyService;
-        }
-
         public void Initialize()
         {
-            FillDictionaries().Wait();
+            FillDictionaries();
         }
 
-        private async Task FillDictionaries()
+        private void FillDictionaries()
         {
             Dictionaries = Dictionaries ?? new List<Dictionary>();
+
+            // Add new DeviceType dict which will contain assemblies metadata (not names)
             var executorTypes = AssemblyScanner.GetCommandExecutors();
 
             foreach (var executorType in executorTypes)
@@ -40,7 +35,7 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
                 var info = FileVersionInfo.GetVersionInfo(asmLocation);
                 Dictionaries.Add(new Dictionary
                 {
-                    Name = info.ProductName,
+                    Name = $"{info.ProductName}-commands",
                     Description = info.Comments,
                     Metadata = "synthetic,command",
                     ReadOnly = true,
@@ -54,21 +49,6 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
                 });
             }
 
-
-            var controlStrategies = await _strategyService.GetAll();
-
-            Dictionaries = Dictionaries ?? new List<Dictionary>();
-            Dictionaries.Add(new Dictionary
-            {
-                Name = "ControlStrategy",
-                Values = controlStrategies.Data.Select(x => new DictionaryValue
-                {
-                    DisplayValue = x.Description,
-                    InternalValue = x.Id.ToString(),
-                    Id = x.Id,
-                    IsActive = true
-                }).ToList()
-            });
         }
 
         public bool HasDictionary(string name)

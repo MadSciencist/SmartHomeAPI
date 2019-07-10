@@ -27,14 +27,11 @@ namespace SmartHome.Core.Services
             if (message == null) return;
 
             var node = await _nodeRepository.GetByClientIdAsync(message.ClientId);
-            if (node == null) return;
+            if (node is null) return;
 
             try
             {
-                if (string.Compare(node.ControlStrategy.ReceiveProviderName, "Mqtt", StringComparison.InvariantCultureIgnoreCase) != 0)
-                    throw new SmartHomeException($"Received message from clientId: {node.ClientId} with invalid control strategy");
-
-                var handlerClass = $"SmartHome.Core.Contracts.Mqtt.MessageHandling.{node.ControlStrategy.ReceiveContext}";
+                var handlerClass = $"{node.ControlStrategy.ContractAssembly}.Handlers.Handler";
 
                 if (!(_container.ResolveNamed<object>(handlerClass) is IMqttMessageHandler messageHandler))
                     throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");

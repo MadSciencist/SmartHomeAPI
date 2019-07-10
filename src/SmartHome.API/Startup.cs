@@ -26,11 +26,13 @@ namespace SmartHome.API
     public class Startup
     {
         public IContainer ApplicationContainer { get; private set; }
-        private readonly IConfiguration _configuration;
+        public IHostingEnvironment Environment { get; }
+        public IConfiguration Configuration { get;  }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            _configuration = configuration;
+            Configuration = configuration;
+            Environment = env;
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -63,8 +65,8 @@ namespace SmartHome.API
             });
 
             // Security
-            services.AddSqlIdentityPersistence(_configuration);
-            services.AddJwtAuthentication(_configuration);
+            services.AddSqlIdentityPersistence(Configuration, Environment);
+            services.AddJwtAuthentication(Configuration);
             services.AddAuthorizationPolicies();
 
             // JWT Token handling
@@ -74,7 +76,7 @@ namespace SmartHome.API
             services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService))); // ToDo move to IoC project
 
             // CORS for dev env
-            services.AddDefaultCorsPolicy();
+            services.AddDefaultCorsPolicy(Environment);
 
             // Api docs gen
             services.AddConfiguredSwagger();
