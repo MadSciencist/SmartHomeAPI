@@ -16,22 +16,28 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
             return Directory.EnumerateFiles(appDirectory, "SmartHome.Contracts.*.dll", SearchOption.AllDirectories);
         }
 
-        public static IEnumerable<Dictionary<string, Type>> GetCommandExecutors() =>
+        public static IDictionary<string, IEnumerable<Type>> GetCommandExecutors() =>
             GetContractsAssemblies(x => typeof(IControlStrategy).IsAssignableFrom(x));
 
-        public static IEnumerable<Dictionary<string, Type>> GetMessageHandlers()
+        public static IDictionary<string, IEnumerable<Type>> GetMessageHandlers()
             => GetContractsAssemblies(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x));
 
-        private static IEnumerable<Dictionary<string, Type>> GetContractsAssemblies(Func<Type, bool> predicate)
+        private static Dictionary<string, IEnumerable<Type>> GetContractsAssemblies(Func<Type, bool> predicate)
         {
-            foreach (var path in AssemblyScanner.GetContractsLibsPaths())
+            var dict = new Dictionary<string, IEnumerable<Type>>();
+
+            foreach (var path in GetContractsLibsPaths())
             {
                 var asm = Assembly.LoadFile(path);
-                yield return asm.GetTypes()
+                var types = asm.GetTypes()
                     .Where(x => x.IsClass && !x.IsAbstract && !x.IsInterface)
                     .Where(predicate)
-                    .ToDictionary(x => x.FullName);
+                    .ToList();
+
+                dict.Add(asm.FullName, types);
             }
+
+            return dict;
         }
     }
 }

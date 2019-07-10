@@ -1,12 +1,10 @@
 ﻿using SmartHome.Core.Domain.DictionaryEntity;
-using SmartHome.Core.Services;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using SmartHome.Core.Infrastructure.AssemblyScanning;
 
 namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
 {
@@ -25,11 +23,11 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
             Dictionaries = Dictionaries ?? new List<Dictionary>();
 
             // Add new DeviceType dict which will contain assemblies metadata (not names)
-            var executorTypes = AssemblyScanner.GetCommandExecutors();
+            IDictionary<string, IEnumerable<Type>> executorTypes = AssemblyScanner.GetCommandExecutors();
 
             foreach (var executorType in executorTypes)
             {
-                var asmLocation = executorType.First().Value?.Assembly?.Location;
+                var asmLocation = executorType.Value.FirstOrDefault()?.Assembly?.Location;
                 if (asmLocation is null) continue;
 
                 var info = FileVersionInfo.GetVersionInfo(asmLocation);
@@ -39,7 +37,7 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
                     Description = info.Comments,
                     Metadata = "synthetic,command",
                     ReadOnly = true,
-                    Values = executorType.Values.Select(x => new DictionaryValue
+                    Values = executorType.Value.Select(x => new DictionaryValue
                     {
                         InternalValue = x.Name,
                         DisplayValue = x.GetAttributes<DisplayNameAttribute>()?.FirstOrDefault()?.DisplayName,

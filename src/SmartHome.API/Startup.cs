@@ -20,6 +20,8 @@ using SmartHome.Core.Services;
 using System;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 
 namespace SmartHome.API
 {
@@ -96,7 +98,7 @@ namespace SmartHome.API
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf, IMapper autoMapper)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf, IMapper autoMapper, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -106,6 +108,8 @@ namespace SmartHome.API
                 app.UseCors("CorsPolicy");
             }
 
+            ContractAssemblyAssertions.Logger = logger;
+            ContractAssemblyAssertions.AssertValidConfig();
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             // custom logging middleware 
