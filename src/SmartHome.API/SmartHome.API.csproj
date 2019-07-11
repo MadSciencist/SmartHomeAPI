@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="healthchecksdb" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.HealthChecks.MySql" Version="2.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.SignalR" Version="2.2.0" />
     <PackageReference Include="AspNetCore.HealthChecks.UI" Version="2.2.32" />
