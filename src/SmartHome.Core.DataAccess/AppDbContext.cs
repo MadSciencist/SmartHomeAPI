@@ -17,11 +17,7 @@ namespace SmartHome.Core.DataAccess
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
-        public DbSet<RegisteredSensors> RegisteredSensors { get; set; }
         public DbSet<DataRequestReason> RequestReasons { get; set; }
-
-        public DbSet<ControlStrategyLinkage> ControlStrategyLinkages { get; set; }
-        public DbSet<ControlStrategyLinkageType> LinkageType { get; set; }
 
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<DictionaryValue> DictionaryValues { get; set; }
@@ -69,10 +65,6 @@ namespace SmartHome.Core.DataAccess
                 .WithMany(x => x.EligibleNodes)
                 .HasForeignKey(x => x.UserId);
             
-            // TODO: Each row unique constraints
-            builder.Entity<ControlStrategyLinkage>()
-                .HasKey(x => x.Id);
-
             // Configure dictionaries one-to-many relationship
             builder.Entity<Dictionary>()
                 .HasKey(x => x.Id);

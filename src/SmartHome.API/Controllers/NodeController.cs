@@ -47,23 +47,23 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status201Created);
         }
 
-        // TODO
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(NodeDto dto, int id)
-        {
-            throw new NotImplementedException("UPDATE");
-        }
+        //// TODO
+        //[HttpPut("{id}")]
+        //[ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
+        //public async Task<IActionResult> Update(NodeDto dto, int id)
+        //{
+        //    throw new NotImplementedException("UPDATE");
+        //}
 
-        //TODO
-        [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteById(int id)
-        {
-            throw new NotImplementedException("DeleteById");
-        }
+        ////TODO
+        //[HttpDelete("{id}")]
+        //[ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
+        //public async Task<IActionResult> DeleteById(int id)
+        //{
+        //    throw new NotImplementedException("DeleteById");
+        //}
 
         [HttpPost("{nodeId}/command/{command}")]
         public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams)

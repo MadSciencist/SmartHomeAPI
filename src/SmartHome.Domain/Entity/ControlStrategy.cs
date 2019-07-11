@@ -9,17 +9,8 @@ namespace SmartHome.Core.Domain.Entity
     [Table("tbl_control_strategy")]
     public class ControlStrategy : EntityBase
     {
-        [Required, MaxLength(50)]
-        public string ControlProviderName { get; set; }
-
-        [Required, MaxLength(50)]
-        public string ControlContext { get; set; }
-
-        [Required, MaxLength(50)]
-        public string ReceiveProviderName { get; set; }
-
-        [Required, MaxLength(50)]
-        public string ReceiveContext { get; set; }
+        [Required, MaxLength(100)]
+        public string ContractAssembly { get; set; }
 
         [MaxLength(250)]
         public string Description { get; set; }
@@ -31,7 +22,5 @@ namespace SmartHome.Core.Domain.Entity
         public AppUser CreatedBy { get; set; }
 
         public ICollection<Node> Nodes { get; set; }
-
-        public ICollection<ControlStrategyLinkage> ControlStrategyLinkages { get; set; }
     }
 }

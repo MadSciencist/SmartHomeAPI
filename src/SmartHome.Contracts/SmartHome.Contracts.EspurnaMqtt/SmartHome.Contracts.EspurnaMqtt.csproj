@@ -2,9 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Description>Control Espurna Devices over MQTT protocol</Description>
+    <Product>Espurna MQTT</Product>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>
 

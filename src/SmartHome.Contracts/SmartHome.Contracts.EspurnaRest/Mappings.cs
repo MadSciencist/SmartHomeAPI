@@ -1,18 +1,14 @@
-﻿using System.Collections.Generic;
-using SmartHome.Core.Domain.Models;
+﻿using SmartHome.Core.Domain.Models;
+using System.Collections.Generic;
 
-namespace SmartHome.Core.Contracts.Mappings
+namespace SmartHome.Contracts.EspurnaRest
 {
-    /// <summary>
-    /// This class defines mappings between SmartHome.Core.Domain.Magnitudes
-    /// And magnitudes specific to Espurna context
-    /// </summary>
-    public static class EspurnaMapping
+    public class Mappings
     {
         public static IDictionary<string, string> Map { get; private set; }
         public static ICollection<PhysicalProperty> ValidProperties { get; private set; }
 
-        static EspurnaMapping()
+        static Mappings()
         {
             // TODO rest of mappings
             Map = new Dictionary<string, string>

@@ -13,6 +13,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Hosting;
 using SmartHome.API.Hubs;
 
 namespace SmartHome.API.Extensions
@@ -26,7 +27,7 @@ namespace SmartHome.API.Extensions
             services.AddScoped<HubTokenDecoder>();
         }
 
-        public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)
+        public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
         {
             var connectionString = configuration["ConnectionStrings:MySql"];
 
@@ -35,16 +36,20 @@ namespace SmartHome.API.Extensions
                 options.UseMySql(connectionString, mySqlOptions =>
                 {
                     mySqlOptions.ServerVersion(new Version(10, 1, 38), ServerType.MariaDb);
-                    mySqlOptions.MigrationsHistoryTable("__MigrationHistory");
-                })
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors();
+                    mySqlOptions.MigrationsHistoryTable("__migrationHistory");
+                });
                 // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
+                if (env.IsDevelopment())
+                {
+                    options.EnableSensitiveDataLogging();
+                    options.EnableDetailedErrors();
+                }
             });
 
             services.AddIdentity<AppUser, AppRole>(options =>
                 {
-                    options.Password.RequiredLength = 5; // Sample validator
+                    options.Password.RequiredLength = 5;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.User.RequireUniqueEmail = true;
@@ -94,8 +99,9 @@ namespace SmartHome.API.Extensions
             });
         }
 
-        public static void AddDefaultCorsPolicy(this IServiceCollection services)
+        public static void AddDefaultCorsPolicy(this IServiceCollection services, IHostingEnvironment env)
         {
+            if (!env.IsDevelopment()) return;
             services.AddCors(settings =>
             {
                 settings.AddPolicy("CorsPolicy", builder =>
