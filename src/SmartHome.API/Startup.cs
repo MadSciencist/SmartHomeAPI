@@ -94,7 +94,8 @@ namespace SmartHome.API
 
             services.AddHealthChecks()
                 .AddMySql(Configuration["ConnectionStrings:MySql"])
-                .AddSignalRHub("http://localhost:5000/api/notifications"); // todo relative path
+                .AddSignalRHub("http://localhost:5000/api/notifications") // todo relative path
+                .AddCheck<MqttBrokerHealthCheck>("mqtt_broker");
             services.AddHealthChecksUI();
 
             // Register SmartHome dependencies using Autofac container
@@ -145,7 +146,8 @@ namespace SmartHome.API
             app.UseHealthChecks(conf.GetValue<string>("HealthChecks:Endpoint"), new HealthCheckOptions
             {
                 Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                AllowCachingResponses = true
             });
 
             app.UseHealthChecksUI(options =>
