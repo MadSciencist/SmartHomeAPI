@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,57 +23,17 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         {
                             Id = 1,
                             IsActive = true,
-                            Description = "Control Espurna over REST and receive using MQTT and JSON payload",
-                            ControlProviderName = "Rest",
-                            ControlContext = "Espurna",
-                            ReceiveProviderName = "Mqtt",
-                            ReceiveContext = "EspurnaJsonPayload",
+                            Description = "Control Espurna over MQTT",
+                            ContractAssembly = "SmartHome.Contracts.EspurnaMqtt",
                             CreatedById = 1,
-                            ControlStrategyLinkages = new List<ControlStrategyLinkage>
-                            {
-                                new ControlStrategyLinkage
-                                {
-                                    ControlStrategyId = 1,
-                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
-                                    InternalValue = "analog",
-                                    DisplayValue = "Generic Analog"
-                                },
-                                new ControlStrategyLinkage
-                                {
-                                    ControlStrategyId = 1,
-                                    ControlStrategyLinkageTypeId = (int)LinkageType.Command,
-                                    InternalValue = "SingleRelay",
-                                    DisplayValue = "SingleRelay"
-                                }
-                            },
                             Created = DateTime.UtcNow
                         },
                         new ControlStrategy
                         {
                             Id = 2,
                             IsActive = true,
-                            Description = "Control Espurna over REST and receive using MQTT",
-                            ControlProviderName = "Rest",
-                            ControlContext = "Espurna",
-                            ReceiveProviderName = "Mqtt",
-                            ReceiveContext = "Espurna",
-                            ControlStrategyLinkages = new List<ControlStrategyLinkage>
-                            {
-                                new ControlStrategyLinkage
-                                {
-                                    ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)LinkageType.Sensor,
-                                    InternalValue = "analog",
-                                    DisplayValue = "Generic Analog"
-                                },
-                                new ControlStrategyLinkage
-                                {
-                                    ControlStrategyId = 2,
-                                    ControlStrategyLinkageTypeId = (int)LinkageType.Command,
-                                    InternalValue = "SingleRelay",
-                                    DisplayValue = "Single Relay"
-                                }
-                            },
+                            Description = "Control Espurna over REST",
+                            ContractAssembly = "SmartHome.Contracts.EspurnaRest",
                             CreatedById = 1,
                             Created = DateTime.UtcNow
                         }
@@ -84,7 +43,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     await context.SaveChangesAsync();
                 }
 
-
                 if (!context.Nodes.Any(x => x.Name == "Dev"))
                 {
                     var node = new Node
@@ -93,12 +51,13 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         ControlStrategyId = 1,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
-                        IpAddress = "http://192.168.0.101",
+                        IpAddress = "http://192.168.0.211",
                         Port = 80,
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
                         ApiKey = "03102E55CD7BBE35",
-                        ClientId = "clientId"
+                        ClientId = "clientId",
+                        BaseTopic = "root"
                     };
 
                     var createdNode = await context.Nodes.AddAsync(node);
@@ -113,15 +72,16 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     var node2 = new Node
                     {
                         Name = "Dev2",
-                        ControlStrategyId = 2,
+                        ControlStrategyId = 1,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
-                        IpAddress = "http://192.168.0.100",
+                        IpAddress = "http://192.168.0.210",
                         Port = 80,
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
                         ApiKey = "03102E55CD7BBE35",
-                        ClientId = "clientId100"
+                        ClientId = "clientId100",
+                        BaseTopic = "root"
                     };
 
                     var createdNode2 = await context.Nodes.AddAsync(node2);

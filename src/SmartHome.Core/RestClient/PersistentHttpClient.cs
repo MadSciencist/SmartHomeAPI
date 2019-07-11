@@ -13,9 +13,9 @@ namespace SmartHome.Core.RestClient
         private readonly IRestClient _client;
         private readonly RetryPolicy _retryPolicyProvider;
 
-        public PersistentHttpClient(ILoggerFactory loggerFactory)
+        public PersistentHttpClient(ILogger<PersistentHttpClient> logger)
         {
-            _logger = loggerFactory.CreateLogger(nameof(PersistentHttpClient));
+            _logger = logger;
             _retryPolicyProvider = new RetryPolicy(3);
             _client = CreateDefaultRestClient();
         }

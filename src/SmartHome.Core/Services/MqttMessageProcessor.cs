@@ -11,15 +11,15 @@ namespace SmartHome.Core.Services
 {
     public class MqttMessageProcessor
     {
+        protected ILogger Logger => _logger ?? (_logger = _container.Resolve<ILogger<MqttMessageProcessor>>());
+        private ILogger _logger;
         private readonly ILifetimeScope _container;
         private readonly INodeRepository _nodeRepository;
-        private readonly ILogger _logger;
 
-        public MqttMessageProcessor(ILifetimeScope container, INodeRepository nodeRepository, ILoggerFactory loggerFactory)
+        public MqttMessageProcessor(ILifetimeScope container, INodeRepository nodeRepository)
         {
             _container = container;
             _nodeRepository = nodeRepository;
-            _logger = loggerFactory.CreateLogger(typeof(MqttMessageProcessor));
         }
 
         public async Task ProcessMessage(MqttMessageDto message)
@@ -27,14 +27,11 @@ namespace SmartHome.Core.Services
             if (message == null) return;
 
             var node = await _nodeRepository.GetByClientIdAsync(message.ClientId);
-            if (node == null) return;
+            if (node is null) return;
 
             try
             {
-                if (string.Compare(node.ControlStrategy.ReceiveProviderName, "Mqtt", StringComparison.InvariantCultureIgnoreCase) != 0)
-                    throw new SmartHomeException($"Received message from clientId: {node.ClientId} with invalid control strategy");
-
-                var handlerClass = $"SmartHome.Core.Contracts.Mqtt.MessageHandling.{node.ControlStrategy.ReceiveContext}";
+                var handlerClass = $"{node.ControlStrategy.ContractAssembly}.Handlers.Handler";
 
                 if (!(_container.ResolveNamed<object>(handlerClass) is IMqttMessageHandler messageHandler))
                     throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");
@@ -43,7 +40,7 @@ namespace SmartHome.Core.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "MQTT processing exception");
+                Logger.LogError(ex, "MQTT processing exception");
                 throw;
             }
         }

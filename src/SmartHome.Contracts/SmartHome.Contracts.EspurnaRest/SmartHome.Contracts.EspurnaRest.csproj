@@ -2,13 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AssemblyName>SmartHome.Core.Contracts.Mqtt.Control</AssemblyName>
-    <RootNamespace>SmartHome.Core.Contracts.Mqtt.Control</RootNamespace>
+    <AssemblyName>SmartHome.Contracts.EspurnaRest</AssemblyName>
+    <RootNamespace>SmartHome.Contracts.EspurnaRest</RootNamespace>
+    <Description>Control Espurna Devices over REST protocol</Description>
+    <Product>Espurna REST</Product>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Handlers\" />
   </ItemGroup>
 
 </Project>

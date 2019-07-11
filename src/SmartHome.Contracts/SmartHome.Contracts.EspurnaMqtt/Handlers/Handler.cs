@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Contracts.Mappings;
 using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
@@ -12,11 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
+namespace SmartHome.Contracts.EspurnaMqtt.Handlers
 {
-    public class EspurnaJsonPayload : MessageHandlerBase<MqttMessageDto>, IMqttMessageHandler
+    public class Handler : MessageHandlerBase<MqttMessageDto>, IMqttMessageHandler
     {
-        public EspurnaJsonPayload(ILifetimeScope container) : base(container)
+        public Handler(ILifetimeScope container) : base(container)
         {
         }
 
@@ -30,18 +29,20 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
                 foreach (KeyValuePair<string, JToken> token in payload)
                 {
                     // Check if current token is valid espurna sensor
-                    if (EspurnaMapping.ValidProperties.Any(x => x.Magnitude == token.Key))
+                    if (Mappings.ValidProperties.Any(x => x.Magnitude == token.Key))
                     {
                         var sensorName = token.Key;
                         var sensorValue = token.Value.Value<string>();
 
                         // if the user wants to collect such sensor data
-                        if (node.ControlStrategy.ControlStrategyLinkages
-                            .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
-                            .Any(x => x.InternalValue.CompareInvariant(sensorName)))
-                        {
-                            await ExtractSaveData(node.Id, sensorName, sensorValue);
-                        }
+                        //if (node.ControlStrategy.ControlStrategyLinkages
+                        //    .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
+                        //    .Any(x => x.InternalValue.CompareInvariant(sensorName)))
+                        //{
+                        //    await ExtractSaveData(node.Id, sensorName, sensorValue);
+                        //}
+
+                        await ExtractSaveData(node.Id, sensorName, sensorValue);
                     }
                 }
             }
@@ -49,7 +50,7 @@ namespace SmartHome.Core.Contracts.Mqtt.MessageHandling
 
         private async Task ExtractSaveData(int nodeId, string sensorName, string value)
         {
-            PhysicalProperty property = SystemMagnitudes.GetPhysicalPropertyByContextDictionary(EspurnaMapping.Map, sensorName);
+            PhysicalProperty property = SystemMagnitudes.GetPhysicalPropertyByContextDictionary(Mappings.Map, sensorName);
 
             // Check if there is associated system value
             if (property != null)

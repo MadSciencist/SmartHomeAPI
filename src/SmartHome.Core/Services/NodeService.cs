@@ -105,39 +105,25 @@ namespace SmartHome.Core.Services
         {
             var response = new ServiceResult<object>(Principal);
 
-            // get the node
             var node = await _nodeRepository.GetByIdAsync(nodeId);
 
             if (!_authProvider.Authorize(null, Principal, OperationType.Execute))
             {
-                throw new SmartHomeUnauthorizedException(
-                    $"User ${Principal.Identity.Name} is not authorized to add new node.");
+                throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to add new node.");
             }
-
-            var systemCommand = node.ControlStrategy.ControlStrategyLinkages
-                .Where(x => x.ControlStrategyLinkageTypeId == (int) LinkageType.Command)
-                .FirstOrDefault(x => x.InternalValue?.ToLower() == command.ToLower());
-
-            if (systemCommand == null)
-            {
-                response.Alerts.Add(new Alert("Command not allowed.", MessageType.Error));
-                return response;
-            }
-
+            
             try
             {
                 // resolve control executor
-                var strategy = node.ControlStrategy;
-                var executorFullyQualifiedName =
-                    $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{systemCommand.InternalValue}";
+                var executorFullyQualifiedName = $"{node.ControlStrategy.ContractAssembly}.Commands.{command}";
 
-                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
+                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategy))
                 {
-                    response.Alerts.Add(new Alert("Not existing control strategy.", MessageType.Error));
+                    response.Alerts.Add(new Alert($"{command} is not valid for strategy: {node.ControlStrategy.ContractAssembly}", MessageType.Error));
                     return response;
                 }
 
-                await strategyExecutor.Execute(node, commandParams);
+                await strategy.Execute(node, commandParams);
                 response.ResponseStatusCodeOverride = StatusCodes.Status202Accepted;
                 return response;
             }

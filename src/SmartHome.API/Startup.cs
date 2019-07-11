@@ -2,17 +2,22 @@
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.API.Hubs;
 using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.IoC;
 using SmartHome.Core.MqttBroker;
@@ -20,17 +25,20 @@ using SmartHome.Core.Services;
 using System;
 using System.Linq;
 using System.Reflection;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SmartHome.API
 {
     public class Startup
     {
         public IContainer ApplicationContainer { get; private set; }
-        private readonly IConfiguration _configuration;
+        public IHostingEnvironment Environment { get; }
+        public IConfiguration Configuration { get;  }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            _configuration = configuration;
+            Configuration = configuration;
+            Environment = env;
         }
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -63,8 +71,8 @@ namespace SmartHome.API
             });
 
             // Security
-            services.AddSqlIdentityPersistence(_configuration);
-            services.AddJwtAuthentication(_configuration);
+            services.AddSqlIdentityPersistence(Configuration, Environment);
+            services.AddJwtAuthentication(Configuration);
             services.AddAuthorizationPolicies();
 
             // JWT Token handling
@@ -74,7 +82,7 @@ namespace SmartHome.API
             services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService))); // ToDo move to IoC project
 
             // CORS for dev env
-            services.AddDefaultCorsPolicy();
+            services.AddDefaultCorsPolicy(Environment);
 
             // Api docs gen
             services.AddConfiguredSwagger();
@@ -82,9 +90,13 @@ namespace SmartHome.API
             // This allows access http context and user in constructor
             services.AddHttpContextAccessor();
 
-            services.AddSignalR(settings => { settings.EnableDetailedErrors = true; });
+            services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); });
 
-            services.AddHostedService<MqttService>();
+            services.AddHealthChecks()
+                .AddMySql(Configuration["ConnectionStrings:MySql"])
+                .AddSignalRHub("http://localhost:5000/api/notifications") // todo relative path
+                .AddCheck<MqttBrokerHealthCheck>("mqtt_broker");
+            services.AddHealthChecksUI();
 
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
@@ -94,7 +106,7 @@ namespace SmartHome.API
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf, IMapper autoMapper)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf, IMapper autoMapper, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -104,6 +116,8 @@ namespace SmartHome.API
                 app.UseCors("CorsPolicy");
             }
 
+            ContractAssemblyAssertions.Logger = logger;
+            ContractAssemblyAssertions.AssertValidConfig();
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
             // custom logging middleware 
@@ -129,10 +143,34 @@ namespace SmartHome.API
             app.UseSwagger();
             app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
+            app.UseHealthChecks(conf.GetValue<string>("HealthChecks:Endpoint"), new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                AllowCachingResponses = true
+            });
+
+            app.UseHealthChecksUI(options =>
+            {
+                options.ApiPath = "/health-ui-api";
+                options.UIPath = conf.GetValue<string>("HealthChecks:UiEndpoint");
+            });
+
             InitializeDatabase(app);
 
+            var mqttOptions = new MqttServerOptionsBuilder()
+                .WithDefaultEndpointPort(conf.GetValue<int>("MqttBroker:Port"))
+                .WithConnectionBacklog(conf.GetValue<int>("MqttBroker:MaxBacklog"))
+                .WithClientId(conf.GetValue<string>("MqttBroker:ClientId"))
+                .Build();
+
+            // Create singleton instance of mqtt broker
+            var mqttService = ApplicationContainer.Resolve<IMqttBroker>();
+            mqttService.ServerOptions = mqttOptions;
+            mqttService.StartAsync().Wait();
+
             // Create singleton instance of notifier
-            var hubNotifier = ApplicationContainer.Resolve<HubNotifier>();
+            ApplicationContainer.Resolve<HubNotifier>();
         }
 
         private static void InitializeDatabase(IApplicationBuilder app)

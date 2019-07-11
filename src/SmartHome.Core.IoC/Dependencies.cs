@@ -1,18 +1,19 @@
-﻿using System;
-using Autofac;
-using SmartHome.Core.Contracts.Mqtt.Control;
-using SmartHome.Core.Contracts.Rest.Control;
-using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.MqttBroker;
-using SmartHome.Core.MqttBroker.MessageHandling;
-using SmartHome.Core.Services;
-using System.Linq;
-using System.Reflection;
-using SmartHome.Core.RestClient;
+﻿using Autofac;
 using SmartHome.Core.Authorization;
+using SmartHome.Core.Control;
+using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Notification;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 using SmartHome.Core.MessageHandlers;
+using SmartHome.Core.MqttBroker;
+using SmartHome.Core.MqttBroker.MessageHandling;
+using SmartHome.Core.RestClient;
+using SmartHome.Core.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace SmartHome.Core.IoC
 {
@@ -27,9 +28,7 @@ namespace SmartHome.Core.IoC
 
         public static ContainerBuilder Register()
         {
-            AddContractsMqttControlAssembly();
-            AddContractsRestControlAssembly();
-            AddContractsMqttMessageHandlersAssembly();
+            RegisterContractsDynamically();
 
             Builder.RegisterType<SyntheticDictionaryService>().InstancePerDependency();
             Builder.RegisterType<MqttMessageProcessor>().InstancePerDependency();
@@ -45,9 +44,8 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
             Builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerDependency();
-            Builder.RegisterType<ControlStrategyService>().As<IControlStrategyService>().InstancePerDependency();
 
-            Builder.RegisterType<MqttService>().As<IMqttService>().SingleInstance();
+            Builder.RegisterType<MqttBroker.MqttBroker>().As<IMqttBroker>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();
             Builder.RegisterType<NotificationQueue>().SingleInstance();
             Builder.RegisterType<NotificationService>().SingleInstance();
@@ -55,44 +53,29 @@ namespace SmartHome.Core.IoC
             return Builder;
         }
 
-        // TODO dynamic assembly adding, by name convention
-        private static void AddContractsRestControlAssembly()
+        private static void RegisterContractsDynamically()
         {
-            var contractsAsm = Assembly.GetAssembly(typeof(IRestControlStrategy)).GetTypes();
-            var contracts = contractsAsm.Where(x=> x.IsClass && !x.IsInterface && !x.IsAbstract && typeof(IRestControlStrategy).IsAssignableFrom(x))
-                .ToDictionary(ex => ex.FullName);
-
-            foreach (var contract in contracts)
+            foreach (var path in AssemblyScanner.GetContractsLibsPaths())
             {
-                Builder.RegisterType(contract.Value)
-                    .Named<object>(contract.Key);
+                var asm = Assembly.LoadFile(path);
+                var asmClasses = asm.GetTypes()
+                    .Where(x => x.IsClass && !x.IsAbstract && !x.IsInterface)
+                    .ToDictionary(x => x.FullName);
+
+                var commandExecutors = asmClasses.Where(x => typeof(IControlStrategy).IsAssignableFrom(x.Value));
+                RegisterNamed(commandExecutors);
+
+                var messageHandlers = asmClasses.Where(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x.Value));
+                RegisterNamed(messageHandlers);
             }
         }
 
-        private static void AddContractsMqttControlAssembly()
+        private static void RegisterNamed(IEnumerable<KeyValuePair<string, Type>> commandExecutors)
         {
-            var contractsAsm = Assembly.GetAssembly(typeof(IMqttControlStrategy)).GetTypes();
-            var contracts = contractsAsm.Where(x => x.IsClass && !x.IsInterface && !x.IsAbstract && typeof(IMqttControlStrategy).IsAssignableFrom(x))
-                .ToDictionary(ex => ex.FullName);
-
-            foreach (var contract in contracts)
+            foreach (var (key, value) in commandExecutors)
             {
-                Builder.RegisterType(contract.Value)
-                    .Named<object>(contract.Key);
-            }
-        }
-
-        private static void AddContractsMqttMessageHandlersAssembly()
-        {
-            var handlersAsm = Assembly.Load("SmartHome.Core.Contracts.Mqtt.MessageHandling").GetTypes();
-            var resolvers = handlersAsm.Where(x => x.IsClass && !x.IsAbstract && !x.IsInterface)
-                .ToDictionary(ex => ex.FullName);
-
-            foreach (var resolver in resolvers)
-            {
-                if (resolver.Key.Contains("MessageHandling"))
-                    Builder.RegisterType(resolver.Value)
-                        .Named<object>(resolver.Key);
+                Builder.RegisterType(value)
+                    .Named<object>(key);
             }
         }
     }

@@ -7,37 +7,20 @@ namespace SmartHome.Core.Infrastructure.Validators
 {
     public class ControlStrategyDtoValidator : AbstractValidator<ControlStrategyDto>
     {
-        // TODO: use assembly scanning validation
-        private static readonly string[] VALID_CONTEXTS = { "Rest", "Mqtt" };
+        // TODO: use assembly scanning validation - dictionary service
+        private static readonly string[] VALID_CONTEXTS = { "SmartHome.Contracts.EspurnaMqtt", "SmartHome.Contracts.EspurnaRest" };
 
         public ControlStrategyDtoValidator()
         {
-            this.CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.StopOnFirstFailure;
 
-            RuleFor(x => x.ControlContext)
+            RuleFor(x => x.ContractAssembly)
                 .NotNull()
                 .NotEmpty()
                 .MinimumLength(1)
                 .MaximumLength(50)
-                .When(x => VALID_CONTEXTS.Contains(x.ControlContext.ToLowerInvariant()))
+                .When(x => VALID_CONTEXTS.Contains(x.ContractAssembly.ToLowerInvariant()))
                 .WithMessage(GetContextErrorMessage());
-
-            RuleFor(x => x.ReceiveContext)
-                .NotNull()
-                .MinimumLength(1)
-                .MaximumLength(50)
-                .When(x => VALID_CONTEXTS.Contains(x.ReceiveContext.ToLowerInvariant()))
-                .WithMessage(GetContextErrorMessage());
-
-            RuleFor(x => x.ControlProvider)
-                .NotNull()
-                .MinimumLength(1)
-                .MaximumLength(50);
-
-            RuleFor(x => x.ReceiveProvider)
-                .NotNull()
-                .MinimumLength(1)
-                .MaximumLength(50);
         }
 
         private static string GetContextErrorMessage()
