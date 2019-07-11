@@ -16,9 +16,9 @@ namespace SmartHome.API.Extensions
         private readonly RequestDelegate _next;
         private static ILogger _logger;
 
-        public ExceptionLoggingMiddleware(RequestDelegate next, ILoggerFactory logger)
+        public ExceptionLoggingMiddleware(RequestDelegate next, ILogger<ExceptionLoggingMiddleware> logger)
         {
-            _logger = logger.CreateLogger(nameof(ExceptionLoggingMiddleware));
+            _logger = logger;
             _next = next;
         }
 

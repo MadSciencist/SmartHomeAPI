@@ -11,15 +11,15 @@ namespace SmartHome.Core.Services
 {
     public class MqttMessageProcessor
     {
+        protected ILogger Logger => _logger ?? (_logger = _container.Resolve<ILogger<MqttMessageProcessor>>());
+        private ILogger _logger;
         private readonly ILifetimeScope _container;
         private readonly INodeRepository _nodeRepository;
-        private readonly ILogger _logger;
 
-        public MqttMessageProcessor(ILifetimeScope container, INodeRepository nodeRepository, ILoggerFactory loggerFactory)
+        public MqttMessageProcessor(ILifetimeScope container, INodeRepository nodeRepository)
         {
             _container = container;
             _nodeRepository = nodeRepository;
-            _logger = loggerFactory.CreateLogger(typeof(MqttMessageProcessor));
         }
 
         public async Task ProcessMessage(MqttMessageDto message)
@@ -40,7 +40,7 @@ namespace SmartHome.Core.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "MQTT processing exception");
+                Logger.LogError(ex, "MQTT processing exception");
                 throw;
             }
         }

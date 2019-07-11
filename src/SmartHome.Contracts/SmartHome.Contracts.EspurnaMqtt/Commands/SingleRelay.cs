@@ -16,9 +16,9 @@ namespace SmartHome.Contracts.EspurnaMqtt.Commands
     [DisplayName("Single Relay")]
     public class SingleRelay : IControlStrategy
     {
-        private readonly IMqttService _mqttService;
+        private readonly IMqttBroker _mqttService;
 
-        public SingleRelay(IMqttService mqttService)
+        public SingleRelay(IMqttBroker mqttService)
         {
             _mqttService = mqttService;
         }

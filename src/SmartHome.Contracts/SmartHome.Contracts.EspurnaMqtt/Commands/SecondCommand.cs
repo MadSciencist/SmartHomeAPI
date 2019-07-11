@@ -16,9 +16,9 @@ namespace SmartHome.Contracts.EspurnaMqtt.Commands
     [DisplayName("Second Command")]
     public class SecondCommand : IControlStrategy
     {
-        private readonly IMqttService _mqttService;
+        private readonly IMqttBroker _mqttService;
 
-        public SecondCommand(IMqttService mqttService)
+        public SecondCommand(IMqttBroker mqttService)
         {
             _mqttService = mqttService;
         }

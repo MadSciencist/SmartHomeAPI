@@ -5,10 +5,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using SmartHome.Core.Utils;
 
 namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
 {
     // TODO refactor, some caching?
+    /// <summary>
+    /// Synthetic dictionaries are concepts of enumerating entities present in system
+    /// Which are not actually stored in DB dictionary-related tables
+    /// </summary>
     public class SyntheticDictionaryService
     {
         public ICollection<Dictionary> Dictionaries { get; private set; }
@@ -17,6 +22,15 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
         {
             FillDictionaries();
         }
+        
+        public bool HasDictionary(string name)
+            => Dictionaries.Any(x => x.Name.CompareInvariant(name));
+
+        public IEnumerable<string> GetNames()
+            => Dictionaries.Select(x => x.Name);
+
+        public Dictionary GetDictionary(string name) 
+            => Dictionaries.SingleOrDefault(x => x.Name.CompareInvariant(name));
 
         private void FillDictionaries()
         {
@@ -35,7 +49,7 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
                 {
                     Name = $"{info.ProductName}-commands",
                     Description = info.Comments,
-                    Metadata = "synthetic,command",
+                    Metadata = "synthetic=true",
                     ReadOnly = true,
                     Values = executorType.Value.Select(x => new DictionaryValue
                     {
@@ -46,23 +60,6 @@ namespace SmartHome.Core.Infrastructure.SyntheticDictionaries
                     }).ToList()
                 });
             }
-
-        }
-
-        public bool HasDictionary(string name)
-        {
-            return Dictionaries.Any(x => string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
-        }
-
-        public IEnumerable<string> GetNames()
-        {
-            return Dictionaries.Select(x => x.Name);
-        }
-
-        public Dictionary GetDictionary(string name)
-        {
-            return Dictionaries.SingleOrDefault(x =>
-                string.Equals(x.Name, name, StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }

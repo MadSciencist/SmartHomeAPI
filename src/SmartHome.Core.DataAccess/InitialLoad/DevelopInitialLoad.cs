@@ -56,7 +56,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
                         ApiKey = "03102E55CD7BBE35",
-                        ClientId = "clientId"
+                        ClientId = "clientId",
+                        BaseTopic = "root"
                     };
 
                     var createdNode = await context.Nodes.AddAsync(node);
@@ -71,7 +72,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     var node2 = new Node
                     {
                         Name = "Dev2",
-                        ControlStrategyId = 2,
+                        ControlStrategyId = 1,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
                         IpAddress = "http://192.168.0.210",
@@ -79,7 +80,8 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         GatewayIpAddress = "http://192.168.0.1",
                         Description = "Dev test node",
                         ApiKey = "03102E55CD7BBE35",
-                        ClientId = "clientId100"
+                        ClientId = "clientId100",
+                        BaseTopic = "root"
                     };
 
                     var createdNode2 = await context.Nodes.AddAsync(node2);

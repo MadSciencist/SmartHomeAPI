@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-using MQTTnet;
+﻿using MQTTnet;
 using MQTTnet.Client.Publishing;
 using MQTTnet.Server;
 using MQTTnet.Server.Status;
@@ -8,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.MqttBroker
 {
-    public interface IMqttService
+    public interface IMqttBroker
     {
-        IMqttServer Server { get; }
-        IMqttServerOptions Options { get; }
-
+        IMqttServerOptions ServerOptions { get; set; }
+        Task StartAsync();
+        Task StopAsync();
         Task<MqttClientPublishResult> PublishSystemMessageAsync(MqttApplicationMessage message);
         Task<ICollection<IMqttClientStatus>> GetClientStatusAsync();
     }

@@ -20,8 +20,10 @@ using SmartHome.Core.Services;
 using System;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SmartHome.API
 {
@@ -86,10 +88,8 @@ namespace SmartHome.API
             // This allows access http context and user in constructor
             services.AddHttpContextAccessor();
 
-            services.AddSignalR(settings => { settings.EnableDetailedErrors = true; });
-
-            services.AddHostedService<MqttService>();
-
+            services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); });
+            
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
             builder.Populate(services);
@@ -136,6 +136,17 @@ namespace SmartHome.API
             app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
             InitializeDatabase(app);
+
+            var mqttOptions = new MqttServerOptionsBuilder()
+                .WithDefaultEndpointPort(conf.GetValue<int>("MqttBroker:Port"))
+                .WithConnectionBacklog(conf.GetValue<int>("MqttBroker:MaxBacklog"))
+                .WithClientId(conf.GetValue<string>("MqttBroker:ClientId"))
+                .Build();
+
+            // Create singleton instance of mqtt broker
+            var mqttService = ApplicationContainer.Resolve<IMqttBroker>();
+            mqttService.ServerOptions = mqttOptions;
+            mqttService.StartAsync().Wait();
 
             // Create singleton instance of notifier
             var hubNotifier = ApplicationContainer.Resolve<HubNotifier>();
