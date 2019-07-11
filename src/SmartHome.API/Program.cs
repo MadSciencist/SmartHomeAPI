@@ -45,7 +45,6 @@ namespace SmartHome.API
                 .ConfigureLogging(logger =>
                 {
                     logger.ClearProviders();
-                    logger.SetMinimumLevel(LogLevel.Information);
                     logger.AddSerilog();
                 })
                 .UseKestrel(options =>
