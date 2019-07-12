@@ -1,18 +1,18 @@
-﻿using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Utils;
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Utils;
 
-namespace SmartHome.Core.Authorization
+namespace SmartHome.Core.Security
 {
     public class NodeAuthorizationProvider
     {
         public bool Authorize(Node node, ClaimsPrincipal principal, OperationType operation)
         {
-            if (principal == null) return false;
+            if (principal is null) return false;
             if (IsAdmin(principal)) return true;
 
             switch (operation)
@@ -38,27 +38,27 @@ namespace SmartHome.Core.Authorization
 
         private static bool IsAdmin(IPrincipal principal)
         {
-            return principal.IsInRole(Roles.ADMIN);
+            return principal.IsInRole(Roles.Admin);
         }
 
         private static bool HandleAddPermission(IPrincipal principal)
         {
-            return principal.IsInRole(Roles.USER) || principal.IsInRole(Roles.ADMIN);
+            return principal.IsInRole(Roles.User) || principal.IsInRole(Roles.Admin);
         }
 
         public static bool HandleReadPermission(Node node, ClaimsPrincipal principal)
         {
-            return principal.IsInRole(Roles.USER) && (IsOwnerOfNode(node, principal) || IsEligible(node, principal));
+            return principal.IsInRole(Roles.User) && (IsOwnerOfNode(node, principal) || IsEligible(node, principal));
         }
 
         public static bool HandleModifyPermission(Node node, ClaimsPrincipal principal)
         {
-            return principal.IsInRole(Roles.USER) && (IsOwnerOfNode(node, principal) || IsEligible(node, principal));
+            return principal.IsInRole(Roles.User) && (IsOwnerOfNode(node, principal) || IsEligible(node, principal));
         }
 
         public static bool HandleDeletePermission(Node node, ClaimsPrincipal principal)
         {
-            return principal.IsInRole(Roles.USER) && (IsOwnerOfNode(node, principal) || IsEligible(node, principal));
+            return principal.IsInRole(Roles.User) && (IsOwnerOfNode(node, principal) || IsEligible(node, principal));
         }
 
         private static bool IsOwnerOfNode(Node node, ClaimsPrincipal principal)

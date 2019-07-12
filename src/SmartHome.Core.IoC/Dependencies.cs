@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using SmartHome.Core.Authorization;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Notification;
@@ -14,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using SmartHome.Core.Security;
 
 namespace SmartHome.Core.IoC
 {

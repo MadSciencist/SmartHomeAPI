@@ -12,9 +12,11 @@ using SmartHome.Core.Domain.User;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using SmartHome.API.Hubs;
+using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.API.Extensions
 {
@@ -87,15 +89,9 @@ namespace SmartHome.API.Extensions
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.RequireClaim("admin"));
-                options.AddPolicy("User", policy => policy.RequireClaim("user"));
-                options.AddPolicy("Sensor", policy => policy.RequireClaim("sensor"));
-            });
-
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Admin", policy => policy.RequireRole("admin"));
+                options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
+                options.AddPolicy("User", policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
+                options.AddPolicy("Sensor", policy => policy.RequireClaim(ClaimTypes.Role, Roles.Sensor));
             });
         }
 
