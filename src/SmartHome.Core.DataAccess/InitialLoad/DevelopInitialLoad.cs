@@ -36,6 +36,15 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             ContractAssembly = "SmartHome.Contracts.EspurnaRest.dll",
                             CreatedById = 1,
                             Created = DateTime.UtcNow
+                        },
+                        new ControlStrategy
+                        {
+                            Id = 3,
+                            IsActive = true,
+                            Description = "Control generic devices over REST",
+                            ContractAssembly = "SmartHome.Contracts.GenericRest.dll",
+                            CreatedById = 1,
+                            Created = DateTime.UtcNow
                         }
                     };
 
@@ -99,7 +108,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     var node3 = new Node
                     {
                         Name = "Generic REST",
-                        ControlStrategyId = 1,
+                        ControlStrategyId = 3,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
                         IpAddress = "http://192.168.0.210",
