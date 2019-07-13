@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using MQTTnet;
+﻿using MQTTnet;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
 using SmartHome.Core.Domain.ContractParams;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.EspurnaMqtt.Commands
 {
     [ControlContract(ContractType.Mqtt)]
-    [DisplayName("Second Command")]
+    [DisplayText("Second Command")]
     public class SecondCommand : IControlStrategy
     {
         private readonly IMqttBroker _mqttService;
