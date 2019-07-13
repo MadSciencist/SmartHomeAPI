@@ -5,15 +5,13 @@ using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
-using SmartHome.Core.MessageHandlers;
-using SmartHome.Core.Utils;
+using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartHome.Contracts.EspurnaMqtt.Handlers
 {
-    public class Handler : MessageHandlerBase<MqttMessageDto>, IMqttMessageHandler
+    public class Handler : MessageHandlerBase<MqttMessageDto>
     {
         public Handler(ILifetimeScope container) : base(container)
         {
@@ -29,7 +27,7 @@ namespace SmartHome.Contracts.EspurnaMqtt.Handlers
                 foreach (KeyValuePair<string, JToken> token in payload)
                 {
                     // Check if current token is valid espurna sensor
-                    if (Mappings.ValidProperties.Any(x => x.Magnitude == token.Key))
+                    if (base.GetDataMapper(node).IsPropertyValid(token.Key))
                     {
                         var sensorName = token.Key;
                         var sensorValue = token.Value.Value<string>();

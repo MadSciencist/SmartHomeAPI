@@ -1,11 +1,12 @@
-﻿using Autofac;
+﻿using System.Threading.Tasks;
+using Autofac;
 using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Services;
-using System.Threading.Tasks;
 
-namespace SmartHome.Core.MessageHandlers
+namespace SmartHome.Core.MessageHanding
 {
-    public abstract class MessageHandlerBase<T> where T: class, new()
+    public abstract class MessageHandlerBase<T> : IMessageHandler<T> where T: class, new() 
     {
         protected ILifetimeScope Container { get; set; }
 
@@ -22,5 +23,19 @@ namespace SmartHome.Core.MessageHandlers
         }
 
         public abstract Task Handle(Node node, T message);
+
+
+        private INodeDataMapper _nodeDataMapper;
+        protected INodeDataMapper GetDataMapper(Node node)
+        {
+            if (_nodeDataMapper is null)
+            {
+                var fullname = AssemblyScanner.GetMapperClassFullNameByAssembly(node.ControlStrategy.ContractAssembly);
+
+                _nodeDataMapper = Container.ResolveNamed<object>(fullname) as INodeDataMapper;
+            }
+
+            return _nodeDataMapper;
+        }
     }
 }

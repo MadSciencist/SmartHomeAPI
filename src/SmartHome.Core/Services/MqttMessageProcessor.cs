@@ -1,39 +1,37 @@
-﻿using System;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Core.MessageHandlers;
+using SmartHome.Core.MessageHanding;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 
 namespace SmartHome.Core.Services
 {
-    public class MqttMessageProcessor
+    public class MqttMessageProcessor : MessageProcessorBase<MqttMessageDto>
     {
-        protected ILogger Logger => _logger ?? (_logger = _container.Resolve<ILogger<MqttMessageProcessor>>());
-        private ILogger _logger;
-        private readonly ILifetimeScope _container;
-        private readonly INodeRepository _nodeRepository;
-
-        public MqttMessageProcessor(ILifetimeScope container, INodeRepository nodeRepository)
+        public MqttMessageProcessor(ILifetimeScope container) : base(container)
         {
-            _container = container;
-            _nodeRepository = nodeRepository;
         }
 
-        public async Task ProcessMessage(MqttMessageDto message)
+        public override async Task Process(MqttMessageDto message)
         {
-            if (message == null) return;
+            if (message is null
+                || string.IsNullOrEmpty(message.Payload)
+                || string.IsNullOrEmpty(message.Topic)
+                || string.IsNullOrEmpty(message.ClientId)) return;
 
-            var node = await _nodeRepository.GetByClientIdAsync(message.ClientId);
+            var node = await NodeRepository.GetByClientIdAsync(message.ClientId);
             if (node is null) return;
 
             try
             {
-                var handlerClass = $"{node.ControlStrategy.ContractAssembly}.Handlers.Handler";
+                var handlerName = AssemblyScanner.GetHandlerClassFullNameByAssembly(node.ControlStrategy.ContractAssembly);
 
-                if (!(_container.ResolveNamed<object>(handlerClass) is IMqttMessageHandler messageHandler))
+                if (!(Container.ResolveNamed<object>(handlerName) is IMessageHandler<MqttMessageDto> messageHandler))
                     throw new SmartHomeException($"Received message from clientId: {node.ClientId} but the resolver is not implemented");
 
                 await messageHandler.Handle(node, message);

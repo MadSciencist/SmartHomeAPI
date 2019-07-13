@@ -5,7 +5,7 @@
     <AssemblyName>SmartHome.Contracts.EspurnaRest</AssemblyName>
     <RootNamespace>SmartHome.Contracts.EspurnaRest</RootNamespace>
     <Description>Control Espurna Devices over REST protocol</Description>
-    <Product>Espurna REST</Product>
+    <Product>Espurna REST-v1</Product>
   </PropertyGroup>
 
   <ItemGroup>

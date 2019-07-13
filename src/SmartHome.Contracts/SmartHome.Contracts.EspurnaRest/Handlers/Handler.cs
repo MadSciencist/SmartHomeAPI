@@ -1,13 +1,13 @@
 ﻿using Autofac;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto.NodeData;
-using SmartHome.Core.MessageHandlers;
 using System;
 using System.Threading.Tasks;
+using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Contracts.EspurnaRest.Handlers
 {
-    public class Handler : MessageHandlerBase<RestMessageDto>, IRestMessageHandler
+    public class Handler : MessageHandlerBase<RestMessageDto>, IMessageHandler<RestMessageDto>
     {
         public Handler(ILifetimeScope container) : base(container)
         {
