@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <Description>Control Espurna Devices over MQTT protocol</Description>
-    <Product>Espurna-MQTT-v1</Product>
+    <Product>Generic-REST-v1</Product>
+    <Description>Use REST to control all system-typed devices</Description>
   </PropertyGroup>
 
   <ItemGroup>

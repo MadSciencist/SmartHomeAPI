@@ -1,11 +1,8 @@
 ﻿using Autofac;
-using SmartHome.Core.Authorization;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Notification;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
-using SmartHome.Core.Infrastructure.SyntheticDictionaries;
-using SmartHome.Core.MessageHandlers;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
 using SmartHome.Core.RestClient;
@@ -14,6 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using SmartHome.Core.Dto;
+using SmartHome.Core.MessageHanding;
+using SmartHome.Core.Security;
 
 namespace SmartHome.Core.IoC
 {
@@ -31,9 +31,10 @@ namespace SmartHome.Core.IoC
             RegisterContractsDynamically();
 
             Builder.RegisterType<SyntheticDictionaryService>().InstancePerDependency();
-            Builder.RegisterType<MqttMessageProcessor>().InstancePerDependency();
             Builder.RegisterType<MessageInterceptor>().InstancePerDependency();
             Builder.RegisterType<NodeAuthorizationProvider>().InstancePerDependency();
+            Builder.RegisterType<MqttMessageProcessor>().As<IMessageProcessor<MqttMessageDto>>().InstancePerDependency();
+            Builder.RegisterType<RestMessageProcessor>().As<IMessageProcessor<RestMessageDto>>().InstancePerDependency();
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
@@ -67,6 +68,9 @@ namespace SmartHome.Core.IoC
 
                 var messageHandlers = asmClasses.Where(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x.Value));
                 RegisterNamed(messageHandlers);
+
+                var mappers = asmClasses.Where(x => typeof(INodeDataMapper).IsAssignableFrom(x.Value));
+                RegisterNamed(mappers);
             }
         }
 

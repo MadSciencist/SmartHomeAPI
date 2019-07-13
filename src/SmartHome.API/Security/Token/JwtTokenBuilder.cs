@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using SmartHome.Core.Domain.User;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using SmartHome.Core.Domain.User;
 
 namespace SmartHome.API.Security.Token
 {
@@ -41,8 +41,6 @@ namespace SmartHome.API.Security.Token
                 claims,
                 expires: expires,
                 signingCredentials: signingCredentials);
-
-            // TODO PoC token.Payload["AuthNodes"] = new string[] { "asd1", "asd2", "fsdf3" };
 
             return (new JwtSecurityTokenHandler().WriteToken(token), expires);
         }

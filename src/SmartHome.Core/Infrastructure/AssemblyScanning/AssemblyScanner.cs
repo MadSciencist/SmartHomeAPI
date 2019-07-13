@@ -1,15 +1,28 @@
 ﻿using SmartHome.Core.Control;
-using SmartHome.Core.MessageHandlers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Core.Infrastructure.AssemblyScanning
 {
     public class AssemblyScanner
     {
+        public static string GetHandlerClassFullNameByAssembly(string assembly)
+        {
+            var typesDictionary = GetMessageHandlers();
+            return typesDictionary[assembly].FirstOrDefault()?.FullName;
+        }
+
+        public static string GetMapperClassFullNameByAssembly(string assembly)
+        {
+            var typesDictionary = GetDataMappers();
+            return typesDictionary[assembly].FirstOrDefault()?.FullName;
+        }
+
         public static IEnumerable<string> GetContractsLibsPaths()
         {
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
@@ -21,6 +34,17 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
 
         public static IDictionary<string, IEnumerable<Type>> GetMessageHandlers()
             => GetContractsAssemblies(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x));
+
+        public static IDictionary<string, IEnumerable<Type>> GetDataMappers()
+            => GetContractsAssemblies(x => typeof(INodeDataMapper).IsAssignableFrom(x));
+
+        public static ICollection<FileVersionInfo> GetContractAssembliesInfo()
+        {
+            return GetContractsLibsPaths()
+                .Select(Assembly.LoadFile)
+                .Select(x => FileVersionInfo.GetVersionInfo(x.Location))
+                .ToList();
+        }
 
         private static Dictionary<string, IEnumerable<Type>> GetContractsAssemblies(Func<Type, bool> predicate)
         {
@@ -34,7 +58,7 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
                     .Where(predicate)
                     .ToList();
 
-                dict.Add(asm.FullName, types);
+                dict.Add(asm.ManifestModule.Name, types);
             }
 
             return dict;
