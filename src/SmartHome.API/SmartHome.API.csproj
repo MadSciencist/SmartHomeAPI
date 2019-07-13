@@ -49,6 +49,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartHome.Contracts\SmartHome.Contracts.EspurnaMqtt\SmartHome.Contracts.EspurnaMqtt.csproj" />
     <ProjectReference Include="..\SmartHome.Contracts\SmartHome.Contracts.EspurnaRest\SmartHome.Contracts.EspurnaRest.csproj" />
+    <ProjectReference Include="..\SmartHome.Contracts\SmartHome.Contracts.GenericRest\SmartHome.Contracts.GenericRest.csproj" />
     <ProjectReference Include="..\SmartHome.Core.IoC\SmartHome.Core.IoC.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />

@@ -24,7 +24,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Id = 1,
                             IsActive = true,
                             Description = "Control Espurna over MQTT",
-                            ContractAssembly = "SmartHome.Contracts.EspurnaMqtt",
+                            ContractAssembly = "SmartHome.Contracts.EspurnaMqtt.dll",
                             CreatedById = 1,
                             Created = DateTime.UtcNow
                         },
@@ -33,7 +33,16 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Id = 2,
                             IsActive = true,
                             Description = "Control Espurna over REST",
-                            ContractAssembly = "SmartHome.Contracts.EspurnaRest",
+                            ContractAssembly = "SmartHome.Contracts.EspurnaRest.dll",
+                            CreatedById = 1,
+                            Created = DateTime.UtcNow
+                        },
+                        new ControlStrategy
+                        {
+                            Id = 3,
+                            IsActive = true,
+                            Description = "Control generic devices over REST",
+                            ContractAssembly = "SmartHome.Contracts.GenericRest.dll",
                             CreatedById = 1,
                             Created = DateTime.UtcNow
                         }
@@ -91,6 +100,33 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     context.Add(new AppUserNodeLink
                     {
                         NodeId = createdNode2.Entity.Id,
+                        UserId = 1
+                    });
+
+                    await context.SaveChangesAsync();
+
+                    var node3 = new Node
+                    {
+                        Name = "Generic REST",
+                        ControlStrategyId = 3,
+                        Created = DateTime.UtcNow,
+                        CreatedById = 1,
+                        IpAddress = "http://192.168.0.210",
+                        Port = 80,
+                        GatewayIpAddress = null,
+                        Description = "Dev test node",
+                        ApiKey = "03102E55CD7BBE35",
+                        ClientId = "genericRestClient",
+                        BaseTopic = null
+                    };
+
+                    var createdNode3 = await context.Nodes.AddAsync(node3);
+                    await context.SaveChangesAsync();
+
+
+                    context.Add(new AppUserNodeLink
+                    {
+                        NodeId = createdNode3.Entity.Id,
                         UserId = 1
                     });
 

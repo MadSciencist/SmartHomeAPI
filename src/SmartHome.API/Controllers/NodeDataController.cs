@@ -7,6 +7,9 @@ using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Services;
 using System;
 using System.Threading.Tasks;
+using SmartHome.Core.Dto;
+using SmartHome.Core.MessageHanding;
+using Newtonsoft.Json.Linq;
 
 namespace SmartHome.API.Controllers
 {
@@ -18,11 +21,16 @@ namespace SmartHome.API.Controllers
     public class NodeDataController : Controller
     {
         private readonly INodeDataService _nodeDataService;
+        private readonly IMessageProcessor<RestMessageDto> _messageProcessor;
         private readonly IConfiguration _config;
 
-        public NodeDataController(INodeDataService nodeDataService, IHttpContextAccessor contextAccessor, IConfiguration config)
+        public NodeDataController(INodeDataService nodeDataService,
+            IMessageProcessor<RestMessageDto> messageProcessor,
+            IHttpContextAccessor contextAccessor,
+            IConfiguration config)
         {
             _nodeDataService = nodeDataService;
+            _messageProcessor = messageProcessor;
             _config = config;
             _nodeDataService.Principal = contextAccessor.HttpContext.User;
         }
@@ -43,25 +51,20 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
-        //[AllowAnonymous]
-        ////Todo maybe extra entpoint with basic auth?
-        //[HttpPost("add")]
-        //public async Task<IActionResult> PostData()
-        //{
-        //    var data = await _nodeDataService.AddSingleAsync(EDataRequestReason.User, new NodeDataMagnitude
-        //    {
-        //        Magnitude = "temperature",
-        //        Unit = "celc",
-        //        Value = "25"
-        //    });
+        //Todo maybe extra endpoint with basic auth?
+        [AllowAnonymous]
+        //[Authorize(Policy = "sensor")]
+        [HttpPost("addByClientId/{clientId}")]
+        public async Task<IActionResult> AddNewNodeData(string clientId, JObject payload)
+        {
+            await _messageProcessor.Process(new RestMessageDto
+            {
+                ClientId = clientId,
+                Payload = payload,
+            });
 
-        //    var response = new ResponseDtoContainer<NodeData>
-        //    {
-        //        Data = data
-        //    };
-
-        //    return Ok();
-        //}
+            return Ok();
+        }
     }
 }
 

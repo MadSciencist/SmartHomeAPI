@@ -14,6 +14,9 @@ using SmartHome.Core.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Autofac;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
+using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Contracts.EspurnaRest.Commands
 {
@@ -21,14 +24,16 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
     [DisplayName("Single Relay")]
     public class SingleRelay : IControlStrategy
     {
+        private readonly ILifetimeScope _container;
         private readonly PersistentHttpClient _httpClient;
         private readonly NotificationService _notificationService;
         private readonly INodeDataService _nodeDataService;
         private const string RelayKey = "relay/0";
 
-        public SingleRelay(PersistentHttpClient httpClient, NotificationService notificationService,
-            INodeDataService nodeDataService)
+        public SingleRelay(ILifetimeScope container, PersistentHttpClient httpClient, NotificationService notificationService,
+            INodeDataService nodeDataService, INodeDataMapper nodeDataMapper)
         {
+            _container = container;
             _httpClient = httpClient;
             _notificationService = notificationService;
             _nodeDataService = nodeDataService;
@@ -50,9 +55,12 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
 
             if (response != null)
             {
+                var assemblyName = node.ControlStrategy.ContractAssembly;
+                var mapperName = AssemblyScanner.GetMapperClassFullNameByAssembly(assemblyName);
+                var mapper = _container.ResolveNamed<object>(mapperName) as INodeDataMapper;
+
                 // Espurna response for SingleRelay has key relay/0
-                PhysicalProperty property =
-                    SystemMagnitudes.GetPhysicalPropertyByContextDictionary(Mappings.Map, RelayKey);
+                var property = mapper.GetPhysicalPropertyByContractMagnitude(RelayKey);
 
                 // Check if there is associated system value
                 if (property != null)

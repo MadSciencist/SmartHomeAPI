@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 
 namespace SmartHome.Core.Services
 {
@@ -17,7 +16,6 @@ namespace SmartHome.Core.Services
         public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary  ) : base(container)
         {
             _syntheticDictionary = syntheticDictionary;
-            _syntheticDictionary.Initialize();
         }
 
         public async Task<ServiceResult<List<string>>> GetDictionaryNames()

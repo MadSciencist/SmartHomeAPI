@@ -1,16 +1,16 @@
 ﻿using SmartHome.Core.Dto;
+using SmartHome.Core.MessageHanding;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using SmartHome.Core.Services;
 
 namespace SmartHome.Core.MqttBroker.MessageHandling
 {
     public class MessageInterceptor
     {
         public bool IsDebugLogEnabled { get; set; } = false;
-        private readonly MqttMessageProcessor _messageProcessor;
+        private readonly IMessageProcessor<MqttMessageDto> _messageProcessor;
 
-        public MessageInterceptor(MqttMessageProcessor processor)
+        public MessageInterceptor(IMessageProcessor<MqttMessageDto> processor)
         {
             _messageProcessor = processor;
         }
@@ -24,7 +24,7 @@ namespace SmartHome.Core.MqttBroker.MessageHandling
         {
             if (IsDebugLogEnabled) LogDebug(message);
 
-            await _messageProcessor.ProcessMessage(new MqttMessageDto
+            await _messageProcessor.Process(new MqttMessageDto
             {
                 ClientId = message.ClientId,
                 Topic = message.Topic,

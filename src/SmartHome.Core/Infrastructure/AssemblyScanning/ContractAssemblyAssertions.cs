@@ -12,34 +12,67 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
         public static void AssertValidConfig()
         {
             Logger.LogInformation("Starting Contract assemblies verification");
-            VerifySingleHandler();
-            VerifyMappingExist();
+            VerifySingleHandlerExist();
+            VerifySingleMappingExist();
+            VerityAtLeastOneCommandDontThrow();
             Logger.LogInformation("Contract assemblies are valid");
         }
 
-        // TODO
-        private static void VerifyMappingExist()
+        private static void VerityAtLeastOneCommandDontThrow()
         {
+            var typesDict = AssemblyScanner.GetCommandExecutors();
+
+            foreach (var type in typesDict)
+            {
+                if (!type.Value.Any())
+                {
+                    Logger.LogWarning($"Assembly {type.Key} does not contain any command");
+                }
+            }
         }
 
-        private static void VerifySingleHandler()
+        private static void VerifySingleMappingExist()
         {
-            IDictionary<string, IEnumerable<Type>> handlerAssemblies = AssemblyScanner.GetMessageHandlers();
+            IDictionary<string, IEnumerable<Type>> typesDict = AssemblyScanner.GetDataMappers();
 
-            foreach (var assembly in handlerAssemblies)
+            foreach (var type in typesDict)
             {
-                if (!assembly.Value.Any())
+                if (!type.Value.Any())
                 {
                     var msg =
-                        $"Assembly {assembly.Key} does not contain message handler which implements IMessageHandler<>";
+                        $"Assembly {type.Key} does not contain data mapper which implements INodeDataMapper";
                     Logger.LogError(msg);
                     throw new SmartHomeException(msg);
                 }
 
-                if (assembly.Value.Count() > 1)
+                if (type.Value.Count() > 1)
                 {
                     var msg =
-                        $"Assembly {assembly.Key} contain more than 1 message handler which implements IMessageHandler<>";
+                        $"Assembly {type.Key} contain more than 1 data mapper which implements INodeDataMapper";
+                    Logger.LogError(msg);
+                    throw new SmartHomeException(msg);
+                }
+            }
+        }
+
+        private static void VerifySingleHandlerExist()
+        {
+            IDictionary<string, IEnumerable<Type>> typesDict = AssemblyScanner.GetMessageHandlers();
+
+            foreach (var type in typesDict)
+            {
+                if (!type.Value.Any())
+                {
+                    var msg =
+                        $"Assembly {type.Key} does not contain message handler which implements IMessageHandler<>";
+                    Logger.LogError(msg);
+                    throw new SmartHomeException(msg);
+                }
+
+                if (type.Value.Count() > 1)
+                {
+                    var msg =
+                        $"Assembly {type.Key} contain more than 1 message handler which implements IMessageHandler<>";
                     Logger.LogError(msg);
                     throw new SmartHomeException(msg);
                 }

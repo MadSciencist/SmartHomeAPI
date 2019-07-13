@@ -1,19 +1,19 @@
 ﻿using Autofac;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto.NodeData;
-using SmartHome.Core.MessageHandlers;
 using System;
 using System.Threading.Tasks;
+using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Contracts.EspurnaRest.Handlers
 {
-    public class Handler : MessageHandlerBase<RestMessageDto>, IRestMessageHandler
+    public class Handler : MessageHandlerBase<RestMessageDto>
     {
-        public Handler(ILifetimeScope container) : base(container)
+        public Handler(ILifetimeScope container, Node node) : base(container, node)
         {
         }
 
-        public override Task Handle(Node node, RestMessageDto message)
+        public override Task Handle(RestMessageDto message)
         {
             throw new NotImplementedException();
         }
