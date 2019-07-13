@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using SmartHome.Core.Domain.Entity;
 
 namespace SmartHome.Core.MessageHanding
 {
@@ -10,6 +9,6 @@ namespace SmartHome.Core.MessageHanding
     /// <typeparam name="T"></typeparam>
     public interface IMessageHandler<in T> where T : class, new()
     {
-        Task Handle(Node node, T message);
+        Task Handle(T message);
     }
 }

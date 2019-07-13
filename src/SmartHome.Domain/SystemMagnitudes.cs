@@ -16,17 +16,17 @@ namespace SmartHome.Core.Domain
             InitValues();
         }
 
-        public static PhysicalProperty GetPhysicalPropertyByContextDictionary(IDictionary<string, string> contextDictionary, string magnitude)
+        public static PhysicalProperty GetPhysicalPropertyByContractMapping(IDictionary<string, string> contractDict, string magnitude)
         {
-            if (contextDictionary.TryGetValue(magnitude, out var value))
+            if (contractDict.TryGetValue(magnitude, out var value))
             {
-                return GetPhysicalProperty(value);
+                return GetPhysicalPropertyByMagnitude(value);
             }
 
             return null;
         }
 
-        public static PhysicalProperty GetPhysicalProperty(string magnitude)
+        public static PhysicalProperty GetPhysicalPropertyByMagnitude(string magnitude)
         {
             return Properties.SingleOrDefault(x => x.Magnitude == magnitude);
         }

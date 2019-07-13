@@ -8,7 +8,9 @@ namespace SmartHome.Core.MessageHanding
 {
     public abstract class MessageHandlerBase<T> : IMessageHandler<T> where T: class, new() 
     {
-        protected ILifetimeScope Container { get; set; }
+        protected Node Node { get; }
+
+        protected ILifetimeScope Container { get; }
 
         private INodeDataService _nodeDataService;
         protected INodeDataService NodeDataService => _nodeDataService ?? (_nodeDataService = Container.Resolve<INodeDataService>());
@@ -17,25 +19,32 @@ namespace SmartHome.Core.MessageHanding
         protected NotificationService NotificationService =>
             _notificationService ?? (_notificationService = Container.Resolve<NotificationService>());
 
-        protected MessageHandlerBase(ILifetimeScope container)
+        private INodeDataMapper _nodeDataMapper;
+        protected INodeDataMapper DataMapper
         {
+            get
+            {
+                if (_nodeDataMapper is null)
+                {
+                    var assemblyName = Node.ControlStrategy.ContractAssembly;
+                    var mapperName = AssemblyScanner.GetMapperClassFullNameByAssembly(assemblyName);
+                    _nodeDataMapper = Container.ResolveNamed<object>(mapperName) as INodeDataMapper;
+                }
+
+                return _nodeDataMapper;
+            }
+        }
+
+        #region ctor
+        protected MessageHandlerBase(ILifetimeScope container, Node node)
+        {
+            Node = node;
             Container = container;
         }
+        #endregion
 
-        public abstract Task Handle(Node node, T message);
-
-
-        private INodeDataMapper _nodeDataMapper;
-        protected INodeDataMapper GetDataMapper(Node node)
-        {
-            if (_nodeDataMapper is null)
-            {
-                var fullname = AssemblyScanner.GetMapperClassFullNameByAssembly(node.ControlStrategy.ContractAssembly);
-
-                _nodeDataMapper = Container.ResolveNamed<object>(fullname) as INodeDataMapper;
-            }
-
-            return _nodeDataMapper;
-        }
+        #region IMessageHandler<T> impl
+        public abstract Task Handle(T message);
+        #endregion
     }
 }

@@ -13,34 +13,27 @@ namespace SmartHome.Contracts.EspurnaMqtt.Handlers
 {
     public class Handler : MessageHandlerBase<MqttMessageDto>
     {
-        public Handler(ILifetimeScope container) : base(container)
+        public Handler(ILifetimeScope container, Node node) : base(container, node)
         {
         }
 
-        public override async Task Handle(Node node, MqttMessageDto message)
+        public override async Task Handle(MqttMessageDto message)
         {
             // Espurna using json payload posts all data to /data topic
             if (message.Topic.Contains("/data"))
             {
                 var payload = JObject.Parse(message.Payload);
 
+                // TODO: instead of checking one by one, gather all of them and use NodeDataService.AddManyAsync
                 foreach (KeyValuePair<string, JToken> token in payload)
                 {
                     // Check if current token is valid espurna sensor
-                    if (base.GetDataMapper(node).IsPropertyValid(token.Key))
+                    if (base.DataMapper.IsPropertyValid(token.Key))
                     {
                         var sensorName = token.Key;
                         var sensorValue = token.Value.Value<string>();
 
-                        // if the user wants to collect such sensor data
-                        //if (node.ControlStrategy.ControlStrategyLinkages
-                        //    .Where(x => x.ControlStrategyLinkageTypeId == (int)LinkageType.Sensor)
-                        //    .Any(x => x.InternalValue.CompareInvariant(sensorName)))
-                        //{
-                        //    await ExtractSaveData(node.Id, sensorName, sensorValue);
-                        //}
-
-                        await ExtractSaveData(node.Id, sensorName, sensorValue);
+                        await ExtractSaveData(base.Node.Id, sensorName, sensorValue);
                     }
                 }
             }
@@ -48,19 +41,18 @@ namespace SmartHome.Contracts.EspurnaMqtt.Handlers
 
         private async Task ExtractSaveData(int nodeId, string sensorName, string value)
         {
-            PhysicalProperty property = SystemMagnitudes.GetPhysicalPropertyByContextDictionary(Mappings.Map, sensorName);
+            PhysicalProperty property = SystemMagnitudes.GetPhysicalPropertyByContractMapping(DataMapper.Mapping, sensorName);
 
-            // Check if there is associated system value
-            if (property != null)
+            // Check if there is associated system property
+            if (property is null) return;
+
+            await NodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
             {
-                await NodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
-                {
-                    Value = value,
-                    PhysicalProperty = property
-                });
+                Value = value,
+                PhysicalProperty = property
+            });
 
-                NotificationService.PushNodeDataNotification(nodeId, property, value);
-            }
+            NotificationService.PushNodeDataNotification(nodeId, property, value);
         }
     }
 }

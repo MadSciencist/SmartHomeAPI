@@ -35,6 +35,7 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<MessageInterceptor>().InstancePerDependency();
             Builder.RegisterType<NodeAuthorizationProvider>().InstancePerDependency();
             Builder.RegisterType<MqttMessageProcessor>().As<IMessageProcessor<MqttMessageDto>>().InstancePerDependency();
+            Builder.RegisterType<RestMessageProcessor>().As<IMessageProcessor<RestMessageDto>>().InstancePerDependency();
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();

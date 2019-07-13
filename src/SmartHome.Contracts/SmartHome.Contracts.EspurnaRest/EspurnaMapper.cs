@@ -1,17 +1,21 @@
 ﻿using SmartHome.Core.Domain.Models;
+using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
 
 namespace SmartHome.Contracts.EspurnaRest
 {
-    public class Mappings
+    public class EspurnaMapper : NodeDataMapperBase, INodeDataMapper
     {
-        public static IDictionary<string, string> Map { get; private set; }
-        public static ICollection<PhysicalProperty> ValidProperties { get; private set; }
+        public EspurnaMapper()
+        {
+            InitializeMapping();
+            InitializeValidProperties();
+        }
 
-        static Mappings()
+        private void InitializeMapping()
         {
             // TODO rest of mappings
-            Map = new Dictionary<string, string>
+            base.Mapping = new Dictionary<string, string>
             {
                 {"relay/0", "relay0"},
                 {"relay/1", "relay1"},
@@ -19,9 +23,12 @@ namespace SmartHome.Contracts.EspurnaRest
                 {"relay/3", "relay3"},
                 {"analog", "generic_analog" }
             };
+        }
 
+        private void InitializeValidProperties()
+        {
             // https://github.com/xoseperez/espurna/wiki/MQTT
-            ValidProperties = new List<PhysicalProperty>
+            base.ValidProperties = new List<PhysicalProperty>
             {
                 new PhysicalProperty("temperature", "C"),
                 new PhysicalProperty("humidity", "%"),
