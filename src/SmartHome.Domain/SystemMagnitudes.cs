@@ -1,6 +1,5 @@
 ﻿using SmartHome.Core.Domain.Models;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SmartHome.Core.Domain
 {
@@ -15,39 +14,25 @@ namespace SmartHome.Core.Domain
         {
             InitValues();
         }
-
-        public static PhysicalProperty GetPhysicalPropertyByContractMapping(IDictionary<string, string> contractDict, string magnitude)
-        {
-            if (contractDict.TryGetValue(magnitude, out var value))
-            {
-                return GetPhysicalPropertyByMagnitude(value);
-            }
-
-            return null;
-        }
-
-        public static PhysicalProperty GetPhysicalPropertyByMagnitude(string magnitude)
-        {
-            return Properties.SingleOrDefault(x => x.Magnitude == magnitude);
-        }
-
+        
         private static void InitValues()
         {
+            // TODO: initialize this from some config (json???)
             Properties = new List<PhysicalProperty>
             {
-                new PhysicalProperty("temperature", "C"),
-                new PhysicalProperty("humidity", "%"),
-                new PhysicalProperty("pressure", "hPa"),
-                new PhysicalProperty("current", "A"),
-                new PhysicalProperty("voltage", "V"),
+                new PhysicalProperty("Temperature", "temperature", "C"),
+                new PhysicalProperty("Humidity", "humidity", "%"),
+                new PhysicalProperty("Pressure", "pressure", "hPa"),
+                new PhysicalProperty("Current", "current", "A"),
+                new PhysicalProperty("Voltage", "voltage", "V"),
                 new PhysicalProperty("power_active", "W"),
                 new PhysicalProperty("power_apparent", "VA"),
                 new PhysicalProperty("power_reactive", "var"),
                 new PhysicalProperty("power_factor", "%"),
                 new PhysicalProperty("energy", "kWh"),
                 new PhysicalProperty("energy_delta", "kWh"),
-                new PhysicalProperty("generic_analog", "bit"),
-                new PhysicalProperty("generic_digital", "binary"),
+                new PhysicalProperty("Generic Analog Sensor", "generic_analog", "bit"),
+                new PhysicalProperty("Generic digital (binary) Sensor", "generic_digital", "binary"),
                 new PhysicalProperty("generic_event", ""),
                 new PhysicalProperty("relay0", "bit"),
                 new PhysicalProperty("relay1", "bit"),

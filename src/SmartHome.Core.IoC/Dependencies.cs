@@ -3,7 +3,6 @@ using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Notification;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
-using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
 using SmartHome.Core.RestClient;

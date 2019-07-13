@@ -1,9 +1,7 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
@@ -39,9 +37,9 @@ namespace SmartHome.Contracts.EspurnaMqtt.Handlers
             }
         }
 
-        private async Task ExtractSaveData(int nodeId, string sensorName, string value)
+        private async Task ExtractSaveData(int nodeId, string magnitude, string value)
         {
-            PhysicalProperty property = SystemMagnitudes.GetPhysicalPropertyByContractMapping(DataMapper.Mapping, sensorName);
+            var property = base.DataMapper.GetPhysicalPropertyByContractMagnitude(magnitude);
 
             // Check if there is associated system property
             if (property is null) return;

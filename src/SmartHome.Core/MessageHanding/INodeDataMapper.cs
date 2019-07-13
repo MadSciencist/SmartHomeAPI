@@ -1,5 +1,5 @@
-﻿using SmartHome.Core.Domain.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SmartHome.Core.Domain.Models;
 
 namespace SmartHome.Core.MessageHanding
 {
@@ -11,15 +11,23 @@ namespace SmartHome.Core.MessageHanding
         IDictionary<string, string> Mapping { get; }
 
         /// <summary>
-        /// Contains all the valid properties for specific message contract
-        /// </summary>
-        ICollection<PhysicalProperty> ValidProperties { get; }
-
-        /// <summary>
         /// Check if ValidProperties collection contains property
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
         bool IsPropertyValid(string property);
+
+        /// <summary>
+        /// Returns system physical property by using magnitude in contract specific contract
+        /// </summary>
+        /// <param name="magnitude"></param>
+        /// <returns></returns>
+        PhysicalProperty GetPhysicalPropertyByContractMagnitude(string magnitude);
+
+        /// <summary>
+        /// Returns all system physical properties in specific contract
+        /// </summary>
+        /// <returns></returns>
+        ICollection<PhysicalProperty> GetAllContractPhysicalProperties();
     }
 }

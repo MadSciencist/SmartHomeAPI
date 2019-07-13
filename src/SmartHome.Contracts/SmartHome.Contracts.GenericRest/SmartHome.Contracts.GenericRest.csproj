@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <Product>GenericRest-v1</Product>
+    <Product>Generic-REST-v1</Product>
     <Description>Use REST to control all system-typed devices</Description>
   </PropertyGroup>
 

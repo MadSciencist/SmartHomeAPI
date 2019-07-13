@@ -1,6 +1,7 @@
 ﻿using SmartHome.Core.Control;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +37,14 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
 
         public static IDictionary<string, IEnumerable<Type>> GetDataMappers()
             => GetContractsAssemblies(x => typeof(INodeDataMapper).IsAssignableFrom(x));
+
+        public static ICollection<FileVersionInfo> GetContractAssembliesInfo()
+        {
+            return GetContractsLibsPaths()
+                .Select(Assembly.LoadFile)
+                .Select(x => FileVersionInfo.GetVersionInfo(x.Location))
+                .ToList();
+        }
 
         private static Dictionary<string, IEnumerable<Type>> GetContractsAssemblies(Func<Type, bool> predicate)
         {

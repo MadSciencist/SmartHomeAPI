@@ -1,14 +1,15 @@
-﻿using SmartHome.Core.Domain;
+﻿using System.Linq;
+using SmartHome.Core.Domain;
 using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Contracts.GenericRest
 {
-    public class Mappings : NodeDataMapperBase, INodeDataMapper
+    public class Mappings : NodeDataMapperBase
     {
-        public Mappings()
+        protected override void InitializeMapping()
         {
             // Use same properties as system - because this is generic handler
-            base.ValidProperties = SystemMagnitudes.Properties;
+            base.Mapping = SystemMagnitudes.Properties.ToDictionary(x => x.Magnitude, x => x.Magnitude);
         }
     }
 }
