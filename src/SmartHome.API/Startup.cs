@@ -75,6 +75,9 @@ namespace SmartHome.API
             services.AddJwtAuthentication(Configuration);
             services.AddAuthorizationPolicies();
 
+            // Caching
+            services.AddMemoryCache();
+
             // JWT Token handling
             services.AddApiServices();
 

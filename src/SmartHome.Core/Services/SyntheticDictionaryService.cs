@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using Autofac;
-using SmartHome.Core.Domain;
+﻿using Autofac;
+using Microsoft.Extensions.Caching.Memory;
 using SmartHome.Core.Domain.DictionaryEntity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.Utils;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 
 namespace SmartHome.Core.Services
 {
-    // TODO refactor, some caching?
     /// <summary>
     /// Synthetic dictionaries are concepts of enumerating entities present in system
     /// Which are not actually stored in DB dictionary-related tables
@@ -20,10 +19,15 @@ namespace SmartHome.Core.Services
     public class SyntheticDictionaryService
     {
         public ICollection<Dictionary> Dictionaries { get; private set; }
+
         private readonly ILifetimeScope _container;
-        public SyntheticDictionaryService(ILifetimeScope container)
+        private readonly IMemoryCache _cache;
+        private const string CacheKey = "syntheticDict";
+
+        public SyntheticDictionaryService(ILifetimeScope container, IMemoryCache cache)
         {
             _container = container;
+            _cache = cache;
             FillDictionaries();
         }
 
@@ -38,11 +42,18 @@ namespace SmartHome.Core.Services
 
         private void FillDictionaries()
         {
-            Dictionaries = new List<Dictionary>();
+            if(_cache.TryGetValue<List<Dictionary>>(CacheKey, out var dict))
+            {
+                Dictionaries = dict;
+                return;
+            }
 
+            Dictionaries = new List<Dictionary>();
             AddContractsDict();
             AddCommandExecutorsDict();
             AddContractPropertiesDict();
+
+            _cache.Set(CacheKey, Dictionaries, TimeSpan.FromMinutes(30));
         }
 
         private void AddContractPropertiesDict()

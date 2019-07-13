@@ -58,6 +58,7 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
                     .Where(predicate)
                     .ToList();
 
+                // TODO change .dll to product name
                 dict.Add(asm.ManifestModule.Name, types);
             }
 
