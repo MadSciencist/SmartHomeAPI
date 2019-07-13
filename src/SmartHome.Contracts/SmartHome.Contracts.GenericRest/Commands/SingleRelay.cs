@@ -6,13 +6,12 @@ using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Attributes;
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace SmartHome.Contracts.GenericRest.Commands
 {
     [ControlContract(ContractType.Rest)]
-    [DisplayName("Single Relay")]
+    [DisplayText("Single Relay")]
     public class SingleRelay : IControlStrategy
     {
         public Task Execute(Node node, JObject commandParams)

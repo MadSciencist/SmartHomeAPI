@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Server;
 using Newtonsoft.Json;
@@ -74,6 +73,9 @@ namespace SmartHome.API
             services.AddSqlIdentityPersistence(Configuration, Environment);
             services.AddJwtAuthentication(Configuration);
             services.AddAuthorizationPolicies();
+
+            // Basic caching
+            services.AddMemoryCache();
 
             // JWT Token handling
             services.AddApiServices();

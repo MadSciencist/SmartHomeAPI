@@ -11,6 +11,8 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
 {
     public class AssemblyScanner
     {
+        private const string ContractAssemblyNamingPattern = "SmartHome.Contracts.*.dll";
+
         public static string GetHandlerClassFullNameByAssembly(string assembly)
         {
             var typesDictionary = GetMessageHandlers();
@@ -26,7 +28,7 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
         public static IEnumerable<string> GetContractsLibsPaths()
         {
             var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            return Directory.EnumerateFiles(appDirectory, "SmartHome.Contracts.*.dll", SearchOption.AllDirectories);
+            return Directory.EnumerateFiles(appDirectory, ContractAssemblyNamingPattern, SearchOption.AllDirectories);
         }
 
         public static IDictionary<string, IEnumerable<Type>> GetCommandExecutors() =>
@@ -58,7 +60,8 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
                     .Where(predicate)
                     .ToList();
 
-                dict.Add(asm.ManifestModule.Name, types);
+                var productAttribute = asm.GetAttribute<AssemblyProductAttribute>();
+                dict.Add(productAttribute.Product, types);
             }
 
             return dict;
