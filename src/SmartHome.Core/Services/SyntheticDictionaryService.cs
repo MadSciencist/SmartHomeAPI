@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using SmartHome.Core.Infrastructure.Attributes;
 
 namespace SmartHome.Core.Services
 {
@@ -22,7 +23,7 @@ namespace SmartHome.Core.Services
 
         private readonly ILifetimeScope _container;
         private readonly IMemoryCache _cache;
-        private const string CacheKey = "syntheticDict";
+        private const string CacheKey = "_syntheticDict";
 
         public SyntheticDictionaryService(ILifetimeScope container, IMemoryCache cache)
         {
@@ -125,7 +126,7 @@ namespace SmartHome.Core.Services
                     Values = executorType.Value.Select(x => new DictionaryValue
                     {
                         InternalValue = x.Name,
-                        DisplayValue = x.GetAttributes<DisplayNameAttribute>()?.FirstOrDefault()?.DisplayName,
+                        DisplayValue = x.GetAttribute<DisplayTextAttribute>()?.Text,
                         IsActive = true
                     }).ToList()
                 });

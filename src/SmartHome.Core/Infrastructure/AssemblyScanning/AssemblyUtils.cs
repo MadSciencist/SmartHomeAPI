@@ -1,16 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Linq;
+using System.Reflection;
 
 namespace SmartHome.Core.Infrastructure.AssemblyScanning
 {
     public static class AssemblyUtils
     {
+        public static T GetAttribute<T>(this Assembly asm) where T : Attribute
+            => GetAttributes<T>(asm).SingleOrDefault();
 
-        public static T[] GetAttributes<T>(this Type type)
+        public static T GetAttribute<T>(this Type type) where T : Attribute 
+            => GetAttributes<T>(type).SingleOrDefault();
+
+        public static T[] GetAttributes<T>(this Type type) where T : Attribute
         {
-            object[] customAttributes = type.GetCustomAttributes(typeof(T), false);
-            return customAttributes as T[];
+            object[] attributes = type.GetCustomAttributes(typeof(T), false);
+            if (attributes == null || attributes.Length == 0)
+                return null;
+            return attributes.OfType<T>().ToArray();
+        }
+
+        public static T[] GetAttributes<T>(this Assembly asm) where T : Attribute
+        {
+            object[] attributes = asm.GetCustomAttributes(typeof(T), false);
+            if (attributes == null || attributes.Length == 0)
+                return null;
+            return attributes.OfType<T>().ToArray();
         }
 
         public static bool IsAssignableToGenericType(Type genericType, Type givenType)
@@ -32,7 +47,7 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
             return IsAssignableToGenericType(baseType, genericType);
         }
 
-        static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
+        public static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
         {
             while (toCheck != null && toCheck != typeof(object))
             {

@@ -1,27 +1,24 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Autofac;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using SmartHome.Core.Control;
-using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.ContractParams;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Attributes;
+using SmartHome.Core.MessageHanding;
 using SmartHome.Core.RestClient;
 using SmartHome.Core.Services;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using Autofac;
-using SmartHome.Core.Infrastructure.AssemblyScanning;
-using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Contracts.EspurnaRest.Commands
 {
     [ControlContract(ContractType.Rest)]
-    [DisplayName("Single Relay")]
+    [DisplayText("Single Relay")]
     public class SingleRelay : IControlStrategy
     {
         private readonly ILifetimeScope _container;

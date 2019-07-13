@@ -13,7 +13,8 @@ namespace SmartHome.Core.MessageHanding
         protected ILifetimeScope Container { get; }
 
         private INodeDataService _nodeDataService;
-        protected INodeDataService NodeDataService => _nodeDataService ?? (_nodeDataService = Container.Resolve<INodeDataService>());
+        protected INodeDataService NodeDataService =>
+            _nodeDataService ?? (_nodeDataService = Container.Resolve<INodeDataService>());
 
         private NotificationService _notificationService;
         protected NotificationService NotificationService =>
