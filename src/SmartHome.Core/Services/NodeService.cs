@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Authorization;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Security;
 
 namespace SmartHome.Core.Services
 {

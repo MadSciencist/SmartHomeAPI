@@ -2,17 +2,22 @@
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using FluentValidation.AspNetCore;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.API.Hubs;
 using SmartHome.Core.DataAccess.InitialLoad;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.IoC;
 using SmartHome.Core.MqttBroker;
@@ -20,9 +25,6 @@ using SmartHome.Core.Services;
 using System;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using SmartHome.Core.Infrastructure.AssemblyScanning;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SmartHome.API
@@ -89,7 +91,13 @@ namespace SmartHome.API
             services.AddHttpContextAccessor();
 
             services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); });
-            
+
+            services.AddHealthChecks()
+                .AddMySql(Configuration["ConnectionStrings:MySql"])
+                .AddSignalRHub("http://localhost:5000/api/notifications") // todo relative path
+                .AddCheck<MqttBrokerHealthCheck>("mqtt_broker");
+            services.AddHealthChecksUI();
+
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
             builder.Populate(services);
@@ -135,6 +143,19 @@ namespace SmartHome.API
             app.UseSwagger();
             app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
+            app.UseHealthChecks(conf.GetValue<string>("HealthChecks:Endpoint"), new HealthCheckOptions
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                AllowCachingResponses = true
+            });
+
+            app.UseHealthChecksUI(options =>
+            {
+                options.ApiPath = "/health-ui-api";
+                options.UIPath = conf.GetValue<string>("HealthChecks:UiEndpoint");
+            });
+
             InitializeDatabase(app);
 
             var mqttOptions = new MqttServerOptionsBuilder()
@@ -149,7 +170,7 @@ namespace SmartHome.API
             mqttService.StartAsync().Wait();
 
             // Create singleton instance of notifier
-            var hubNotifier = ApplicationContainer.Resolve<HubNotifier>();
+            ApplicationContainer.Resolve<HubNotifier>();
         }
 
         private static void InitializeDatabase(IApplicationBuilder app)
