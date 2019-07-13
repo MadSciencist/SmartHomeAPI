@@ -1,5 +1,4 @@
-﻿using System;
-using SmartHome.Core.Domain;
+﻿using SmartHome.Core.Domain;
 using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Contracts.GenericRest
@@ -8,6 +7,7 @@ namespace SmartHome.Contracts.GenericRest
     {
         public Mappings()
         {
+            // Use same properties as system - because this is generic handler
             base.ValidProperties = SystemMagnitudes.Properties;
         }
     }

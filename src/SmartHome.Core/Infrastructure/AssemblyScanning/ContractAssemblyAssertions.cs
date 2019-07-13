@@ -14,7 +14,21 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
             Logger.LogInformation("Starting Contract assemblies verification");
             VerifySingleHandlerExist();
             VerifySingleMappingExist();
+            VerityAtLeastOneCommandDontThrow();
             Logger.LogInformation("Contract assemblies are valid");
+        }
+
+        private static void VerityAtLeastOneCommandDontThrow()
+        {
+            var typesDict = AssemblyScanner.GetCommandExecutors();
+
+            foreach (var type in typesDict)
+            {
+                if (!type.Value.Any())
+                {
+                    Logger.LogWarning($"Assembly {type.Key} does not contain any command");
+                }
+            }
         }
 
         private static void VerifySingleMappingExist()
