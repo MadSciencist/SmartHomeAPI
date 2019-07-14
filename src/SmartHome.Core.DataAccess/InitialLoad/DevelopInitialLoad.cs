@@ -25,6 +25,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control Espurna over MQTT",
                             ContractAssembly = "SmartHome.Contracts.EspurnaMqtt.dll",
+                            AssemblyProduct = "Espurna-MQTT-v1",
                             CreatedById = 1,
                             Created = DateTime.UtcNow
                         },
@@ -34,6 +35,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control Espurna over REST",
                             ContractAssembly = "SmartHome.Contracts.EspurnaRest.dll",
+                            AssemblyProduct = "Espurna-REST-v1",
                             CreatedById = 1,
                             Created = DateTime.UtcNow
                         },
@@ -43,6 +45,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             IsActive = true,
                             Description = "Control generic devices over REST",
                             ContractAssembly = "SmartHome.Contracts.GenericRest.dll",
+                            AssemblyProduct = "Generic-REST-v1",
                             CreatedById = 1,
                             Created = DateTime.UtcNow
                         }

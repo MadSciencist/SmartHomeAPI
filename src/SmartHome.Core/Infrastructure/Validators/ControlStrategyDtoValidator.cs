@@ -1,31 +1,43 @@
 ﻿using FluentValidation;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Infrastructure.Validators
 {
     public class ControlStrategyDtoValidator : AbstractValidator<ControlStrategyDto>
     {
-        // TODO: use assembly scanning validation - dictionary service
-        private static readonly string[] VALID_CONTEXTS = { "SmartHome.Contracts.EspurnaMqtt", "SmartHome.Contracts.EspurnaRest" };
+        private readonly IDictionaryService _dictionaryService;
+        IEnumerable<string> _validStrategies;
 
-        public ControlStrategyDtoValidator()
+        public ControlStrategyDtoValidator(IDictionaryService dictionaryService)
         {
+            _dictionaryService = dictionaryService;
+            Validate().Wait();
+        }
+
+        private async Task Validate()
+        {
+            var dict = await _dictionaryService.GetDictionaryByName("contracts");
+            _validStrategies = dict.Data.Values.Select(x => x.InternalValue);
+
             CascadeMode = CascadeMode.StopOnFirstFailure;
 
-            RuleFor(x => x.ContractAssembly)
+            RuleFor(x => x.ControlStrategyName)
                 .NotNull()
                 .NotEmpty()
                 .MinimumLength(1)
-                .MaximumLength(50)
-                .When(x => VALID_CONTEXTS.Contains(x.ContractAssembly.ToLowerInvariant()))
+                .MaximumLength(250)
+                .When(x => _validStrategies.Contains(x.ControlStrategyName.ToLowerInvariant()))
                 .WithMessage(GetContextErrorMessage());
         }
 
-        private static string GetContextErrorMessage()
+        private string GetContextErrorMessage()
         {
-            return "{PropertyName} must be one of: " + string.Join(", ", VALID_CONTEXTS);
+            return "{PropertyName} must be one of: " + string.Join(", ", _validStrategies);
         }
     }
 }

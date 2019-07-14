@@ -97,6 +97,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                     DisplayValue = table.Column<string>(nullable: true),
                     InternalValue = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: false, defaultValue: true),
+                    Metadata = table.Column<string>(nullable: true),
                     DictionaryId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -222,7 +223,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ContractAssembly = table.Column<string>(maxLength: 100, nullable: false),
+                    AssemblyProduct = table.Column<string>(maxLength: 250, nullable: false),
+                    ContractAssembly = table.Column<string>(maxLength: 250, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),

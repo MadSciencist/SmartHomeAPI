@@ -34,7 +34,8 @@ namespace SmartHome.Core.Infrastructure
         {
             CreateMap<ControlStrategyDto, ControlStrategy>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
-                .ForMember(x => x.ContractAssembly, opt => opt.MapFrom(x => x.ContractAssembly))
+                .ForMember(x => x.AssemblyProduct, opt => opt.MapFrom(x => x.ControlStrategyName))
+                .ForMember(x => x.ContractAssembly, opt => opt.Ignore())
                 .ForMember(x => x.IsActive, opt => opt.MapFrom(x => x.IsActive))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
                 .ForMember(x => x.Created, opt => opt.MapFrom(x => x.Created))

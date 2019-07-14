@@ -9,7 +9,10 @@ namespace SmartHome.Core.Domain.Entity
     [Table("tbl_control_strategy")]
     public class ControlStrategy : EntityBase
     {
-        [Required, MaxLength(100)]
+        [Required, MaxLength(250)]
+        public string AssemblyProduct { get; set; }
+
+        [Required, MaxLength(250)]
         public string ContractAssembly { get; set; }
 
         [MaxLength(250)]
@@ -17,10 +20,8 @@ namespace SmartHome.Core.Domain.Entity
 
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
-
         public int CreatedById { get; set; }
         public AppUser CreatedBy { get; set; }
-
         public ICollection<Node> Nodes { get; set; }
     }
 }

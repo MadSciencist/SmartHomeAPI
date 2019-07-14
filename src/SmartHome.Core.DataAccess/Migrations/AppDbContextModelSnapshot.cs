@@ -131,6 +131,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
+                    b.Property<string>("Metadata");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DictionaryId");
@@ -161,9 +163,13 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AssemblyProduct")
+                        .IsRequired()
+                        .HasMaxLength(250);
+
                     b.Property<string>("ContractAssembly")
                         .IsRequired()
-                        .HasMaxLength(100);
+                        .HasMaxLength(250);
 
                     b.Property<DateTime>("Created");
 
