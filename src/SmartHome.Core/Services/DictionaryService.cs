@@ -100,12 +100,11 @@ namespace SmartHome.Core.Services
                 var dict = await GenericRepository.AsQueryable()
                     .Include(x => x.Values)
                     .FirstOrDefaultAsync(x => x.Name == dictionaryName);
-                if (dict == null) throw new SmartHomeEntityNotFoundException(nameof(dict));
+                if (dict is null) throw new SmartHomeEntityNotFoundException(nameof(dict));
 
                 var dictEntryToUpdate = dict.Values.SingleOrDefault(x => x.Id == entryId);
-                if (dictEntryToUpdate == null) throw new SmartHomeEntityNotFoundException(nameof(dictEntryToUpdate));
+                if (dictEntryToUpdate is null) throw new SmartHomeEntityNotFoundException(nameof(dictEntryToUpdate));
 
-                // TODO reflection?
                 dictEntryToUpdate.InternalValue = entry.InternalValue;
                 dictEntryToUpdate.DisplayValue = entry.DisplayValue;
                 dictEntryToUpdate.IsActive = entry.IsActive;

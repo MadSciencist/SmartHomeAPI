@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Security;
 
 namespace SmartHome.Core.Services
@@ -44,11 +45,11 @@ namespace SmartHome.Core.Services
                 throw;
             }
         }
-        
-        public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
+
+        public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeDto)
         {
             var response = new ServiceResult<NodeDto>(Principal);
-            var validationResult = Validator.Validate(nodeData);
+            var validationResult = Validator.Validate(nodeDto);
 
             if (!validationResult.IsValid)
             {
@@ -63,12 +64,23 @@ namespace SmartHome.Core.Services
             }
 
             var userId = GetCurrentUserId();
-            var nodeToCreate = Mapper.Map<Node>(nodeData);
+            var nodeToCreate = Mapper.Map<Node>(nodeDto);
+            nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
 
             nodeToCreate.CreatedById = userId;
             nodeToCreate.Created = DateTime.UtcNow;
 
             return await SaveNode(nodeToCreate, userId, response);
+        }
+
+        private static ControlStrategy CreateStrategy(NodeDto nodeDto)
+        {
+            return new ControlStrategy
+            {
+                AssemblyProduct = nodeDto.ControlStrategyName,
+                ContractAssembly = AssemblyScanner.GetAssemblyModuleNameByProductInfo(nodeDto.ControlStrategyName),
+                RegisteredMagnitudes = nodeDto.Magnitudes.Select(x => new RegisteredMagnitude { Magnitude = x }).ToList()
+            };
         }
 
         private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
@@ -89,7 +101,9 @@ namespace SmartHome.Core.Services
                     DbContext.SaveChanges();
                     transaction.Commit();
                     response.Data = Mapper.Map<NodeDto>(createdNode);
+                    response.Data.CreatedById = userId;
                     response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+
                     return response;
                 }
                 catch (Exception ex)
@@ -111,7 +125,7 @@ namespace SmartHome.Core.Services
             {
                 throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to add new node.");
             }
-            
+
             try
             {
                 // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass

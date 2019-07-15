@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190715172340_init")]
+    [Migration("20190715185558_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,6 +165,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AppUserId");
+
                     b.Property<string>("AssemblyProduct")
                         .IsRequired()
                         .HasMaxLength(250);
@@ -184,7 +186,7 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("tbl_control_strategy");
                 });
@@ -257,9 +259,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasIndex("ControlStrategyId");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("tbl_node");
                 });
@@ -471,10 +470,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategy", b =>
                 {
-                    b.HasOne("SmartHome.Core.Domain.User.AppUser", "CreatedBy")
+                    b.HasOne("SmartHome.Core.Domain.User.AppUser")
                         .WithMany("CreatedControlStrategies")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AppUserId");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.Node", b =>

@@ -13,6 +13,20 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
     {
         private const string ContractAssemblyNamingPattern = "SmartHome.Contracts.*.dll";
 
+        public static string GetAssemblyModuleNameByProductInfo(string productInfo)
+        {
+            if (string.IsNullOrEmpty(productInfo)) throw new ArgumentException(nameof(productInfo));
+
+            var assembliesDict = GetContractsAssemblies(_ => true);
+
+            if (assembliesDict.TryGetValue(productInfo, out var types))
+            {
+                return types.FirstOrDefault()?.Assembly.ManifestModule.Name;
+            }
+
+            return string.Empty;
+        }
+
         public static string GetHandlerClassFullNameByAssembly(string assembly)
         {
             var typesDictionary = GetMessageHandlers();

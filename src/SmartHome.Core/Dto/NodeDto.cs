@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SmartHome.Core.Dto
 {
@@ -18,6 +19,7 @@ namespace SmartHome.Core.Dto
         public string ClientId { get; set; }
         public string ConfigMetadata { get; set; }
         public string ControlStrategyName { get; set; }
+        public ICollection<string> Magnitudes { get; set; }
         public int CreatedById { get; set; }
     }
 }

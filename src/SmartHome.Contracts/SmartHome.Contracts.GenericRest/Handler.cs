@@ -1,9 +1,7 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
