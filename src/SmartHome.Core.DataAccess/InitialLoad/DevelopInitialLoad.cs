@@ -27,7 +27,14 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             ContractAssembly = "SmartHome.Contracts.EspurnaMqtt.dll",
                             AssemblyProduct = "Espurna-MQTT-v1",
                             CreatedById = 1,
-                            Created = DateTime.UtcNow
+                            Created = DateTime.UtcNow,
+                            RegisteredMagnitudes = new List<RegisteredMagnitude>
+                            {
+                                new RegisteredMagnitude { Magnitude = "generic_analog" },
+                                new RegisteredMagnitude { Magnitude = "relay2" },
+                                new RegisteredMagnitude { Magnitude = "relay1" },
+                                new RegisteredMagnitude { Magnitude = "relay0" }
+                            }
                         },
                         new ControlStrategy
                         {
@@ -37,7 +44,14 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             ContractAssembly = "SmartHome.Contracts.EspurnaRest.dll",
                             AssemblyProduct = "Espurna-REST-v1",
                             CreatedById = 1,
-                            Created = DateTime.UtcNow
+                            Created = DateTime.UtcNow,
+                            RegisteredMagnitudes = new List<RegisteredMagnitude>
+                            {
+                                new RegisteredMagnitude { Magnitude = "generic_analog" },
+                                new RegisteredMagnitude { Magnitude = "relay2" },
+                                new RegisteredMagnitude { Magnitude = "relay1" },
+                                new RegisteredMagnitude { Magnitude = "relay0" }
+                            }
                         },
                         new ControlStrategy
                         {
@@ -47,7 +61,14 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             ContractAssembly = "SmartHome.Contracts.GenericRest.dll",
                             AssemblyProduct = "Generic-REST-v1",
                             CreatedById = 1,
-                            Created = DateTime.UtcNow
+                            Created = DateTime.UtcNow,
+                            RegisteredMagnitudes = new List<RegisteredMagnitude>
+                            {
+                                new RegisteredMagnitude { Magnitude = "generic_analog" },
+                                new RegisteredMagnitude { Magnitude = "relay2" },
+                                new RegisteredMagnitude { Magnitude = "relay1" },
+                                new RegisteredMagnitude { Magnitude = "relay0" }
+                            }
                         }
                     };
 

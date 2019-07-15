@@ -17,7 +17,7 @@ namespace SmartHome.Core.Dto
         public string BaseTopic { get; set; }
         public string ClientId { get; set; }
         public string ConfigMetadata { get; set; }
-        public int ControlStrategyId { get; set; }
+        public string ControlStrategyName { get; set; }
         public int CreatedById { get; set; }
     }
 }

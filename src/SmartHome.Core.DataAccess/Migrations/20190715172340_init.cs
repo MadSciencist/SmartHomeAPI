@@ -280,6 +280,26 @@ namespace SmartHome.Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_registered_magnitude",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Magnitude = table.Column<string>(maxLength: 250, nullable: false),
+                    ControlStrategyId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_registered_magnitude", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_registered_magnitude_tbl_control_strategy_ControlStrateg~",
+                        column: x => x.ControlStrategyId,
+                        principalTable: "tbl_control_strategy",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_node_data",
                 columns: table => new
                 {
@@ -422,6 +442,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "NodeDataId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_registered_magnitude_ControlStrategyId",
+                table: "tbl_registered_magnitude",
+                column: "ControlStrategyId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "tbl_role",
                 column: "NormalizedName",
@@ -476,6 +501,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_node_data_magnitude");
+
+            migrationBuilder.DropTable(
+                name: "tbl_registered_magnitude");
 
             migrationBuilder.DropTable(
                 name: "tbl_user_node_link");
