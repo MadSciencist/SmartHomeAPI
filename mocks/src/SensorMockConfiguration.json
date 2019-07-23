@@ -1,0 +1,46 @@
+{
+  "configurations": [
+    {
+      "id": 1,
+      "broker": {
+        "host": "",
+        "port":"6666" 
+      }, 
+      "modules": [
+        {
+          "type": "Espurna",
+          "clientId": "1000",
+          "sensors": [
+            {
+              "id": "dd", 
+              "type": "Temperature",
+              "unit": "C"
+            },
+            {
+              "type": "Humidity",
+              "unit": "Percentages"
+            }
+          ]
+        },
+        {
+          "type": "Espurna",
+          "clientId": "1001",
+          "sensors": [
+            {
+              "type": "Temperature",
+              "unit": "F"
+            },
+            {
+              "type": "Temperature",
+              "unit": "C"
+            },
+            {
+              "type": "Humidity",
+              "unit": "Percentages"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
