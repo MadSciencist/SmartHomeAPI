@@ -17,7 +17,6 @@ namespace SmartHome.Core.Domain
         
         private static void InitValues()
         {
-            // TODO: initialize this from some config (json???)
             Properties = new List<PhysicalProperty>
             {
                 new PhysicalProperty("Temperature", "temperature", "C"),

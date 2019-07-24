@@ -9,6 +9,7 @@ namespace SmartHome.Core.Domain.Entity
         public string Value { get; set; }
         public string Unit { get; set; }
 
+        // Navigation properties
         public int NodeDataId { get; set; }
         public NodeData NodeData { get; set; }
     }

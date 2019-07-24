@@ -8,7 +8,6 @@ using SmartHome.Core.MqttBroker.MessageHandling;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.MqttBroker

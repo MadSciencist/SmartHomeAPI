@@ -14,6 +14,7 @@ namespace SmartHome.Core.Infrastructure
         private void CreateNodeMapping()
         {
             CreateMap<NodeDto, Node>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
                 .ForMember(x => x.IpAddress, opt => opt.MapFrom(x => x.IpAddress))
@@ -29,6 +30,7 @@ namespace SmartHome.Core.Infrastructure
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<Node, NodeDto>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
                 .ForMember(x => x.IpAddress, opt => opt.MapFrom(x => x.IpAddress))

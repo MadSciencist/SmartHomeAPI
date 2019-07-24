@@ -13,6 +13,7 @@ namespace SmartHome.Core.Domain.Entity
         [MaxLength(255)]
         public string Description { get; set; }
 
+        // Navigation property
         public ICollection<NodeData> NodeData { get; set; }
     }
 }

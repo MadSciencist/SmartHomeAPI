@@ -17,11 +17,14 @@ namespace SmartHome.Core.Domain.Entity
         [MaxLength(250)]
         public string Description { get; set; }
 
-        public ICollection<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
-
         public bool IsActive { get; set; }
         public DateTime Created { get; set; }
-        public int CreatedById { get; set; }
+
+        // Navigation & relationship properties
         public ICollection<Node> Nodes { get; set; }
+
+        public ICollection<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
+
+        public int CreatedById { get; set; }
     }
 }

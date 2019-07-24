@@ -7,33 +7,21 @@ using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.RestClient;
-using SmartHome.Core.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.Contracts.EspurnaRest.Commands
 {
-    [ControlContract(ContractType.Rest)]
     [DisplayText("Single Relay")]
-    public class SingleRelay : IControlStrategy
+    public class SingleRelay : RestControlStrategyBase, IControlStrategy
     {
-        private readonly ILifetimeScope _container;
-        private readonly PersistentHttpClient _httpClient;
-        private readonly NotificationService _notificationService;
-        private readonly INodeDataService _nodeDataService;
         private const string RelayKey = "relay/0";
 
-        public SingleRelay(ILifetimeScope container, PersistentHttpClient httpClient, NotificationService notificationService,
-            INodeDataService nodeDataService, INodeDataMapper nodeDataMapper)
+        public SingleRelay(ILifetimeScope container) : base(container)
         {
-            _container = container;
-            _httpClient = httpClient;
-            _notificationService = notificationService;
-            _nodeDataService = nodeDataService;
         }
 
         public async Task Execute(Node node, JObject commandParams)
@@ -48,23 +36,21 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
 
             var uri = BuildUri(node, param);
 
-            var response = await _httpClient.InvokeAsync<Dictionary<string, string>>(uri, Method.GET);
+            var response = await HttpClient.InvokeAsync<Dictionary<string, string>>(uri, Method.GET);
 
             if (response != null)
             {
-                var assemblyName = node.ControlStrategy.ContractAssembly;
-                var mapperName = AssemblyScanner.GetMapperClassFullNameByAssembly(assemblyName);
-                var mapper = _container.ResolveNamed<object>(mapperName) as INodeDataMapper;
+                INodeDataMapper mapper = base.GetNodeMapper(node);
 
                 // Espurna response for SingleRelay has key relay/0
-                var property = mapper.GetPhysicalPropertyByContractMagnitude(RelayKey);
+                var property = mapper?.GetPhysicalPropertyByContractMagnitude(RelayKey);
 
                 // Check if there is associated system value
                 if (property != null)
                 {
                     var value = response[RelayKey];
-                    _notificationService.PushNodeDataNotification(node.Id, property, value);
-                    await _nodeDataService.AddSingleAsync(node.Id, EDataRequestReason.Node,
+                    NotificationService.PushNodeDataNotification(node.Id, property, value);
+                    await NodeDataService.AddSingleAsync(node.Id, EDataRequestReason.Node,
                         new NodeDataMagnitudeDto(property, value));
                 }
             }

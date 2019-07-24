@@ -27,16 +27,16 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
             return string.Empty;
         }
 
-        public static string GetHandlerClassFullNameByAssembly(string assembly)
+        public static string GetHandlerClassFullNameByProductName(string productName)
         {
             var typesDictionary = GetMessageHandlers();
-            return typesDictionary[assembly].FirstOrDefault()?.FullName;
+            return typesDictionary[productName].FirstOrDefault()?.FullName;
         }
 
-        public static string GetMapperClassFullNameByAssembly(string assembly)
+        public static string GetMapperClassFullNameByProductName(string productName)
         {
             var typesDictionary = GetDataMappers();
-            return typesDictionary[assembly].FirstOrDefault()?.FullName;
+            return typesDictionary[productName].FirstOrDefault()?.FullName;
         }
 
         public static IEnumerable<string> GetContractsLibsPaths()

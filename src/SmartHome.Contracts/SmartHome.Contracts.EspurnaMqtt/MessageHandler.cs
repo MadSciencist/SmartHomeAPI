@@ -7,7 +7,7 @@ using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartHome.Contracts.EspurnaMqtt.Handlers
+namespace SmartHome.Contracts.EspurnaMqtt
 {
     public class Handler : MessageHandlerBase<MqttMessageDto>
     {
