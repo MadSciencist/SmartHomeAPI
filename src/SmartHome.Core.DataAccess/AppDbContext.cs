@@ -15,6 +15,9 @@ namespace SmartHome.Core.DataAccess
 
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
+        public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
+
+
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<DataRequestReason> RequestReasons { get; set; }
@@ -37,10 +40,6 @@ namespace SmartHome.Core.DataAccess
                 .IsUnique();
 
             builder.Entity<Node>()
-                .HasIndex(x => x.Name)
-                .IsUnique();
-
-            builder.Entity<Node>()
                 .HasOne(x => x.ControlStrategy)
                 .WithMany(x => x.Nodes)
                 .OnDelete(DeleteBehavior.SetNull)
@@ -50,6 +49,12 @@ namespace SmartHome.Core.DataAccess
                 .HasOne(x => x.CreatedBy)
                 .WithMany(u => u.CreatedNodes)
                 .HasForeignKey(n => n.CreatedById);
+
+            builder.Entity<ControlStrategy>()
+                .HasMany(x => x.RegisteredMagnitudes)
+                .WithOne(x => x.ControlStrategy)
+                .HasForeignKey(x => x.ControlStrategyId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Configure many-to-many user-node relationship
             builder.Entity<AppUserNodeLink>()

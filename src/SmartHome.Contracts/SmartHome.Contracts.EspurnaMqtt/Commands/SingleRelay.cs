@@ -1,25 +1,20 @@
-﻿using MQTTnet;
+﻿using Autofac;
+using MQTTnet;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
 using SmartHome.Core.Domain.ContractParams;
 using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Attributes;
-using SmartHome.Core.MqttBroker;
 using System.Threading.Tasks;
 
 namespace SmartHome.Contracts.EspurnaMqtt.Commands
 {
-    [ControlContract(ContractType.Mqtt)]
     [DisplayText("Single Relay")]
-    public class SingleRelay : IControlStrategy
+    public class SingleRelay : MqttControlStrategyBase, IControlStrategy
     {
-        private readonly IMqttBroker _mqttService;
-
-        public SingleRelay(IMqttBroker mqttService)
+        public SingleRelay(ILifetimeScope container) : base(container) 
         {
-            _mqttService = mqttService;
         }
 
         public async Task Execute(Node node, JObject commandParams)
@@ -37,7 +32,7 @@ namespace SmartHome.Contracts.EspurnaMqtt.Commands
                 .WithRetainFlag()
                 .Build();
 
-            await _mqttService.PublishSystemMessageAsync(message);
+            await MqttBroker.PublishSystemMessageAsync(message);
         }
     }
 }

@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190714094137_init")]
+    [Migration("20190715185558_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,6 +165,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int?>("AppUserId");
+
                     b.Property<string>("AssemblyProduct")
                         .IsRequired()
                         .HasMaxLength(250);
@@ -184,7 +186,7 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("tbl_control_strategy");
                 });
@@ -258,9 +260,6 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.HasIndex("CreatedById");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("tbl_node");
                 });
 
@@ -302,6 +301,24 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasIndex("NodeDataId");
 
                     b.ToTable("tbl_node_data_magnitude");
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.RegisteredMagnitude", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("ControlStrategyId");
+
+                    b.Property<string>("Magnitude")
+                        .IsRequired()
+                        .HasMaxLength(250);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ControlStrategyId");
+
+                    b.ToTable("tbl_registered_magnitude");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Domain.Role.AppRole", b =>
@@ -453,10 +470,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.ControlStrategy", b =>
                 {
-                    b.HasOne("SmartHome.Core.Domain.User.AppUser", "CreatedBy")
+                    b.HasOne("SmartHome.Core.Domain.User.AppUser")
                         .WithMany("CreatedControlStrategies")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("AppUserId");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Domain.Entity.Node", b =>
@@ -490,6 +506,14 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasOne("SmartHome.Core.Domain.Entity.NodeData", "NodeData")
                         .WithMany("Magnitudes")
                         .HasForeignKey("NodeDataId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.RegisteredMagnitude", b =>
+                {
+                    b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
+                        .WithMany("RegisteredMagnitudes")
+                        .HasForeignKey("ControlStrategyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

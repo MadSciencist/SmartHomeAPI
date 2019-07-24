@@ -13,8 +13,4 @@
     <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Handlers\" />
-  </ItemGroup>
-
 </Project>

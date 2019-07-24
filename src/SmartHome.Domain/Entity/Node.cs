@@ -1,9 +1,8 @@
-﻿using System;
+﻿using SmartHome.Core.Domain.User;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions.Internal;
-using SmartHome.Core.Domain.User;
 
 namespace SmartHome.Core.Domain.Entity
 {

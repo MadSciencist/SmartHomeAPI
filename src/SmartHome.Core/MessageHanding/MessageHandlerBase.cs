@@ -27,8 +27,8 @@ namespace SmartHome.Core.MessageHanding
             {
                 if (_nodeDataMapper is null)
                 {
-                    var assemblyName = Node.ControlStrategy.ContractAssembly;
-                    var mapperName = AssemblyScanner.GetMapperClassFullNameByAssembly(assemblyName);
+                    var productName = Node.ControlStrategy.AssemblyProduct;
+                    var mapperName = AssemblyScanner.GetMapperClassFullNameByProductName(productName);
                     _nodeDataMapper = Container.ResolveNamed<object>(mapperName) as INodeDataMapper;
                 }
 

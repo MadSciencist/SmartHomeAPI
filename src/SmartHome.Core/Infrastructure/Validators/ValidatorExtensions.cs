@@ -8,7 +8,7 @@ namespace SmartHome.Core.Infrastructure.Validators
     {
         public static ICollection<Alert> GetValidationMessages(this ValidationResult result)
         {
-            if (result == null)
+            if (result is null)
             {
                 throw  new SmartHomeException(nameof(ValidationResult));
             }

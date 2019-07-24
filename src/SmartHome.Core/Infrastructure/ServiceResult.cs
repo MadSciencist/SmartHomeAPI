@@ -22,7 +22,7 @@ namespace SmartHome.Core.Infrastructure
         public int? ResponseStatusCodeOverride { get; set; }
 
 
-        #region constructors
+        #region ctors
         public ServiceResult(ClaimsPrincipal principal) : this()
         {
             Principal = principal;

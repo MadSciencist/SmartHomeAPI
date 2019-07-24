@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.Domain.Entity;
@@ -16,8 +17,16 @@ namespace SmartHome.Core.DataAccess.Repository
         {
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
+                    .ThenInclude(x => x.RegisteredMagnitudes)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<string>> GetAllClientIdsAsync()
+        {
+            return await Context.Nodes
+                .Select(x => x.ClientId)
                 .ToListAsync();
         }
 
@@ -25,6 +34,7 @@ namespace SmartHome.Core.DataAccess.Repository
         {
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
+                    .ThenInclude(x => x.RegisteredMagnitudes)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -39,6 +49,7 @@ namespace SmartHome.Core.DataAccess.Repository
 
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
+                    .ThenInclude(x => x.RegisteredMagnitudes)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .FirstOrDefaultAsync(x => x.ClientId == clientId);

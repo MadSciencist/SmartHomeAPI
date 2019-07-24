@@ -228,17 +228,18 @@ namespace SmartHome.Core.DataAccess.Migrations
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
-                    CreatedById = table.Column<int>(nullable: false)
+                    CreatedById = table.Column<int>(nullable: false),
+                    AppUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_control_strategy", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tbl_control_strategy_tbl_user_CreatedById",
-                        column: x => x.CreatedById,
+                        name: "FK_tbl_control_strategy_tbl_user_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "tbl_user",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -275,6 +276,26 @@ namespace SmartHome.Core.DataAccess.Migrations
                         name: "FK_tbl_node_tbl_user_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_registered_magnitude",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Magnitude = table.Column<string>(maxLength: 250, nullable: false),
+                    ControlStrategyId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_registered_magnitude", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_registered_magnitude_tbl_control_strategy_ControlStrateg~",
+                        column: x => x.ControlStrategyId,
+                        principalTable: "tbl_control_strategy",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -375,9 +396,9 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_control_strategy_CreatedById",
+                name: "IX_tbl_control_strategy_AppUserId",
                 table: "tbl_control_strategy",
-                column: "CreatedById");
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_dictionary_value_DictionaryId",
@@ -401,12 +422,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_node_Name",
-                table: "tbl_node",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_node_data_NodeId",
                 table: "tbl_node_data",
                 column: "NodeId");
@@ -420,6 +435,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "IX_tbl_node_data_magnitude_NodeDataId",
                 table: "tbl_node_data_magnitude",
                 column: "NodeDataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_registered_magnitude_ControlStrategyId",
+                table: "tbl_registered_magnitude",
+                column: "ControlStrategyId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -476,6 +496,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_node_data_magnitude");
+
+            migrationBuilder.DropTable(
+                name: "tbl_registered_magnitude");
 
             migrationBuilder.DropTable(
                 name: "tbl_user_node_link");

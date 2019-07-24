@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Infrastructure.Attributes;
@@ -8,13 +7,9 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Contracts.GenericRest.Commands
 {
-    [DisplayText("Single Relay")]
-    public class SingleRelay : RestControlStrategyBase, IControlStrategy
+    [DisplayText("Third command")]
+    public class ThirdCommand : IControlStrategy
     {
-        public SingleRelay(ILifetimeScope container) : base(container)
-        {
-        }
-
         public Task Execute(Node node, JObject commandParams)
         {
             throw new NotImplementedException();

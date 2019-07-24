@@ -1,38 +1,38 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Domain.Models;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartHome.Contracts.GenericRest
+namespace SmartHome.Contracts.EspurnaMqtt
 {
-    /// <summary>
-    /// This class handles all messages which match witch SmartHome.Core.Domain.SystemMagnitudes properties
-    /// It assumes that payload of message is in JSON format
-    /// </summary>
-    public class Handler : MessageHandlerBase<RestMessageDto>
+    public class Handler : MessageHandlerBase<MqttMessageDto>
     {
         public Handler(ILifetimeScope container, Node node) : base(container, node)
         {
         }
 
-        public override async Task Handle(RestMessageDto message)
+        public override async Task Handle(MqttMessageDto message)
         {
-            // TODO: instead of checking one by one, gather all of them and use NodeDataService.AddManyAsync
-            foreach (KeyValuePair<string, JToken> token in message.Payload)
+            // Espurna using json payload posts all data to /data topic
+            if (message.Topic.Contains("/data"))
             {
-                // Check if current token is valid espurna sensor
-                if (base.DataMapper.IsPropertyValid(token.Key))
-                {
-                    var sensorName = token.Key;
-                    var sensorValue = token.Value.Value<string>();
+                var payload = JObject.Parse(message.Payload);
 
-                    await ExtractSaveData(base.Node.Id, sensorName, sensorValue);
+                // TODO: instead of checking one by one, gather all of them and use NodeDataService.AddManyAsync
+                foreach (KeyValuePair<string, JToken> token in payload)
+                {
+                    // Check if current token is valid espurna sensor
+                    if (base.DataMapper.IsPropertyValid(token.Key))
+                    {
+                        var sensorName = token.Key;
+                        var sensorValue = token.Value.Value<string>();
+
+                        await ExtractSaveData(base.Node.Id, sensorName, sensorValue);
+                    }
                 }
             }
         }
