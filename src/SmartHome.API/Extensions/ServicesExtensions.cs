@@ -40,7 +40,6 @@ namespace SmartHome.API.Extensions
                     mySqlOptions.ServerVersion(new Version(10, 1, 38), ServerType.MariaDb);
                     mySqlOptions.MigrationsHistoryTable("__migrationHistory");
                 });
-                // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
                 if (env.IsDevelopment())
                 {

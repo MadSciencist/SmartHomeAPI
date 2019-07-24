@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using Serilog.Events;
-using System;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using SmartHome.Core.DataAccess.InitialLoad;
+using System;
 
 namespace SmartHome.API
 {
@@ -18,18 +13,8 @@ namespace SmartHome.API
     {
         public static int Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .WriteTo.File("webapp.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: null)
-                .CreateLogger();
-
             try
             {
-                Log.Information("Starting web host");
-
                 var host = CreateWebHostBuilder(args).Build();
                 InitializeDatabase(host.Services);
                 host.Run();
@@ -52,9 +37,8 @@ namespace SmartHome.API
                 .UseStartup<Startup>()
                 .ConfigureAppConfiguration((hostContext, config) =>
                 {
-                    //var env = hostContext.HostingEnvironment;
-                    //if (env.IsDevelopment())
-                    //    config.AddUserSecrets();
+                    SetupLogger(hostContext.HostingEnvironment.EnvironmentName);
+                    config.AddUserSecrets<Startup>();
                 })
                 .ConfigureLogging(logger =>
                 {
@@ -65,8 +49,20 @@ namespace SmartHome.API
                 {
                     options.Limits.MaxConcurrentConnections = 100;
                     options.Limits.MaxConcurrentUpgradedConnections = 100;
-                    options.Listen(IPAddress.Any, 5000);
                 });
+
+        private static void SetupLogger(string env)
+        {
+            var config = env == "Development" ? "appsettings.Development.json" : "appsettings.json";
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile(config)
+                .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
+                .CreateLogger();
+        }
 
         private static void InitializeDatabase(IServiceProvider services)
         {

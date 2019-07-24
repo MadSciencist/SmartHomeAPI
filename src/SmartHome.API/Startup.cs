@@ -94,9 +94,10 @@ namespace SmartHome.API
 
             services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); });
 
+            var hubUri = $"{Configuration[WebHostDefaults.ServerUrlsKey]}/api/notifications";
             services.AddHealthChecks()
                 .AddMySql(Configuration["ConnectionStrings:MySql"])
-                .AddSignalRHub("http://localhost:5000/api/notifications") // todo relative path
+                .AddSignalRHub(hubUri)
                 .AddCheck<MqttBrokerHealthCheck>("mqtt_broker");
             services.AddHealthChecksUI();
 
@@ -108,7 +109,7 @@ namespace SmartHome.API
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IConfiguration conf, IMapper autoMapper, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper autoMapper, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -137,7 +138,7 @@ namespace SmartHome.API
 
             app.UseSignalR(routes =>
             {
-                var endpoint = conf.GetValue<string>("NotificationEndpoint");
+                var endpoint = Configuration["NotificationEndpoint"];
                 routes.MapHub<NotificationHub>(endpoint);
             });
 
@@ -145,7 +146,7 @@ namespace SmartHome.API
             app.UseSwagger();
             app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
-            app.UseHealthChecks(conf.GetValue<string>("HealthChecks:Endpoint"), new HealthCheckOptions
+            app.UseHealthChecks(Configuration["HealthChecks:Endpoint"], new HealthCheckOptions
             {
                 Predicate = _ => true,
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
@@ -155,15 +156,15 @@ namespace SmartHome.API
             app.UseHealthChecksUI(options =>
             {
                 options.ApiPath = "/health-ui-api";
-                options.UIPath = conf.GetValue<string>("HealthChecks:UiEndpoint");
+                options.UIPath = Configuration["HealthChecks:UiEndpoint"];
             });
 
             InitializeDatabase(app);
 
             var mqttOptions = new MqttServerOptionsBuilder()
-                .WithDefaultEndpointPort(conf.GetValue<int>("MqttBroker:Port"))
-                .WithConnectionBacklog(conf.GetValue<int>("MqttBroker:MaxBacklog"))
-                .WithClientId(conf.GetValue<string>("MqttBroker:ClientId"))
+                .WithDefaultEndpointPort(Configuration.GetValue<int>("MqttBroker:Port"))
+                .WithConnectionBacklog(Configuration.GetValue<int>("MqttBroker:MaxBacklog"))
+                .WithClientId(Configuration.GetValue<string>("MqttBroker:ClientId"))
                 .Build();
 
             // Create singleton instance of mqtt broker

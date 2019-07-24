@@ -8,7 +8,7 @@ namespace SmartHome.Core.Domain.DictionaryEntity
     {
         public string DisplayValue { get; set; }
         public string InternalValue { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         public string Metadata { get; set; }
 
         public int DictionaryId { get; set; }

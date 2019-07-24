@@ -21,5 +21,15 @@ prerequisites:
       userid=root
       password=<none>`
 2) Rebuild solution
-3) Run scripts/RenewDb1.ps1 (for the first time, during development use MigrateAndUpdate.ps1)
-4) Run src/SmartHome.API (from VS or by using dotnet run)
+3) Development user secrets should be set as follows:
+ ```
+{
+  "ConnectionStrings": {
+    "MySql": "server=localhost;port=3306;userid=root;password=;database=smarthomedb;SslMode=none;CharSet=utf8"
+  },
+  "Jwt": {
+    "Key": "dbhjjh2bsaskn22jkns1s2"
+  }
+```
+4) Run scripts/RenewDb1.ps1 (for the first time, during development use MigrateAndUpdate.ps1)
+5) Run src/SmartHome.API (from VS or by using dotnet run)
