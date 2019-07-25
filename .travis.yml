@@ -27,11 +27,11 @@ script:
  - ./codecov -f "SmartHome_coverage.xml" -t $CODECOV_TOKEN
 after_script:
  - bash <(curl -s https://codecov.io/bash)
- before_deploy: 
+before_deploy: 
   - "echo 'Before deploy'"
   - ./scripts/CI/createBundle.sh
 deploy:
-  provider: releases
+ provider: releases
   api_key: $GITHUB
   file: ./scripts/CI/log.txt
   skip_cleanup: true
