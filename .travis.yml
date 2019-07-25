@@ -36,6 +36,8 @@ deploy:
   file: ./scripts/CI/log.txt
   skip_cleanup: true
   draft: true
+  on:
+    branch: ci
 after_deploy:
   - "echo 'AFTER DEPLOY'"
 notifications:
