@@ -26,18 +26,15 @@ script:
  - chmod +x codecov
  - ./codecov -f "SmartHome_coverage.xml" -t $CODECOV_TOKEN
 before_deploy: 
-  - "echo 'Before deploy'"
-  - ./scripts/CI/deploy.sh
+  - bash ./scripts/CI/deploy.sh
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
-  file: bash smart_home_api_release_linux_arm.tar.gz
+  file: ./smart_home_api_release_linux_arm.tar.gz
   skip_cleanup: true
   draft: true
   on:
     branch: ci
-after_deploy:
-  - "AFTER DEPLOY"
 notifications:
   email:
     on_success: never
