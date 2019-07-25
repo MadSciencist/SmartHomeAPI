@@ -43,6 +43,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{62E3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.GenericRest", "src\SmartHome.Contracts\SmartHome.Contracts.GenericRest\SmartHome.Contracts.GenericRest.csproj", "{9EA4CA47-F771-4874-B48F-9ABE7532522B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{808B156C-850C-42E4-813F-21F65F9E37EB}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\CI\deploy.sh = scripts\CI\deploy.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +105,7 @@ Global
 		{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{62E3BC64-CC3E-4CC8-A78C-A5165328BD2A} = {4C4E0324-514A-44A0-8745-2AC4C7C0D03C}
 		{9EA4CA47-F771-4874-B48F-9ABE7532522B} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
+		{808B156C-850C-42E4-813F-21F65F9E37EB} = {62E3BC64-CC3E-4CC8-A78C-A5165328BD2A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68CAEBA0-5529-44C7-82DC-114D2B13A91E}
