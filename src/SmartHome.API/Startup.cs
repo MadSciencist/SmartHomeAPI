@@ -180,6 +180,7 @@ namespace SmartHome.API
                 options.UIPath = Configuration["HealthChecks:UiEndpoint"];
             });
         }
+        //TEST
 
         private static void InitializeDatabase(IApplicationBuilder app)
         {
