@@ -25,12 +25,12 @@ script:
  - chmod +x codecov
  - ./codecov -f "SmartHome_coverage.xml" -t $CODECOV_TOKEN
 deploy:
- - provider: script
+  - provider: script
      script: bash ./scripts/CI/deploy.sh 
      skip_cleanup: true
      on:
        tags: true
- - provider: releases
+  - provider: releases
      api_key: $GITHUB_TOKEN
      file: ./smart_home_api_release_linux_arm.tar.gz
      skip_cleanup: true
