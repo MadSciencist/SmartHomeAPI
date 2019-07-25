@@ -29,6 +29,7 @@ namespace SmartHome.API.Utils
 
         private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult, int okStatus) where T : class
         {
+            // TODO add 404
             if (serviceResult.ResponseStatusCodeOverride.HasValue)
             {
                 var response = new ObjectResult(serviceResult) { StatusCode = serviceResult.ResponseStatusCodeOverride.Value };
