@@ -94,7 +94,7 @@ namespace SmartHome.API
 
             services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); });
 
-            var hubUri = $"{Configuration[WebHostDefaults.ServerUrlsKey]}/api/notifications";
+            var hubUri = $"{Configuration[WebHostDefaults.ServerUrlsKey]}{Configuration["NotificationEndpoint"]}";
             services.AddHealthChecks()
                 .AddMySql(Configuration["ConnectionStrings:MySql"])
                 .AddSignalRHub(hubUri)
@@ -111,27 +111,45 @@ namespace SmartHome.API
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper autoMapper, ILogger<Startup> logger)
         {
+            ContractAssemblyAssertions.Logger = logger;
+            ContractAssemblyAssertions.AssertValidConfig();
+            autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
+            
+            InitializeDatabase(app);
+
+            var mqttOptions = new MqttServerOptionsBuilder()
+                .WithDefaultEndpointPort(Configuration.GetValue<int>("MqttBroker:Port"))
+                .WithConnectionBacklog(Configuration.GetValue<int>("MqttBroker:MaxBacklog"))
+                .WithClientId(Configuration.GetValue<string>("MqttBroker:ClientId"))
+                .Build();
+
+            // Create singleton instance of mqtt broker
+            var mqttService = ApplicationContainer.Resolve<IMqttBroker>();
+            mqttService.ServerOptions = mqttOptions;
+            mqttService.StartAsync().Wait();
+
+            // Create singleton instance of notifier
+            ApplicationContainer.Resolve<HubNotifier>();
+
+            /* App pipeline */
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 app.UseStatusCodePages();
-                app.UseCors("CorsPolicy");
             }
 
-            ContractAssemblyAssertions.Logger = logger;
-            ContractAssemblyAssertions.AssertValidConfig();
-            autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
-
-            // custom logging middleware 
-            app.UseLoggingExceptionHandler();
+            app.UseCors("CorsPolicy");
 
             // serve statics
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseDefaultFiles(); // will run index.html by default
+            app.UseStaticFiles(); // will serve wwwroot by default
 
             // auth middleware
             app.UseAuthentication();
+
+            // custom logging middleware 
+            app.UseLoggingExceptionHandler();
 
             // standard MVC middleware
             app.UseMvc();
@@ -155,25 +173,12 @@ namespace SmartHome.API
 
             app.UseHealthChecksUI(options =>
             {
-                options.ApiPath = "/health-ui-api";
+                options.ApiPath = "/api/health-ui-api";
+                options.ResourcesPath = "/api/ui/resources";
+                options.UseRelativeResourcesPath = false;
+                options.UseRelativeApiPath = false;
                 options.UIPath = Configuration["HealthChecks:UiEndpoint"];
             });
-
-            InitializeDatabase(app);
-
-            var mqttOptions = new MqttServerOptionsBuilder()
-                .WithDefaultEndpointPort(Configuration.GetValue<int>("MqttBroker:Port"))
-                .WithConnectionBacklog(Configuration.GetValue<int>("MqttBroker:MaxBacklog"))
-                .WithClientId(Configuration.GetValue<string>("MqttBroker:ClientId"))
-                .Build();
-
-            // Create singleton instance of mqtt broker
-            var mqttService = ApplicationContainer.Resolve<IMqttBroker>();
-            mqttService.ServerOptions = mqttOptions;
-            mqttService.StartAsync().Wait();
-
-            // Create singleton instance of notifier
-            ApplicationContainer.Resolve<HubNotifier>();
         }
 
         private static void InitializeDatabase(IApplicationBuilder app)

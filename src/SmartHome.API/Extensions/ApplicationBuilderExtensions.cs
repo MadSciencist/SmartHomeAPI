@@ -7,7 +7,7 @@ namespace SmartHome.API.Extensions
     {
         public static void UseLoggingExceptionHandler(this IApplicationBuilder app)
         {
-            if (app == null)
+            if (app is null)
                 throw new ArgumentNullException(nameof(app));
 
             app.UseMiddleware<ExceptionLoggingMiddleware>();

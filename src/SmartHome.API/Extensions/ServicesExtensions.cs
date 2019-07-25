@@ -96,7 +96,7 @@ namespace SmartHome.API.Extensions
 
         public static void AddDefaultCorsPolicy(this IServiceCollection services, IHostingEnvironment env)
         {
-            if (!env.IsDevelopment()) return;
+            //if (!env.IsDevelopment()) return;
             services.AddCors(settings =>
             {
                 settings.AddPolicy("CorsPolicy", builder =>
