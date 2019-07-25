@@ -31,7 +31,7 @@ before_deploy:
   - "echo 'Before deploy'"
   - ./scripts/CI/createBundle.sh
 deploy:
- provider: releases
+  provider: releases
   api_key: $GITHUB
   file: ./scripts/CI/log.txt
   skip_cleanup: true
