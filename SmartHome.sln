@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.Generic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{808B156C-850C-42E4-813F-21F65F9E37EB}"
 	ProjectSection(SolutionItems) = preProject
-		scripts\CI\createBundle.sh = scripts\CI\createBundle.sh
+		scripts\CI\deploy.sh = scripts\CI\deploy.sh
 	EndProjectSection
 EndProject
 Global
