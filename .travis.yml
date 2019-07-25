@@ -13,8 +13,6 @@ branches:
     - develop
     - master
     - ci
-before_install:
-  - chmod +x ./scripts/CI/deploy.sh
 install:
   - dotnet tool install --global dotnet-sonarscanner
   - dotnet restore
@@ -27,15 +25,13 @@ script:
  - curl -s https://codecov.io/bash > codecov
  - chmod +x codecov
  - ./codecov -f "SmartHome_coverage.xml" -t $CODECOV_TOKEN
-after_script:
- - bash <(curl -s https://codecov.io/bash)
 before_deploy: 
   - "echo 'Before deploy'"
   - ./scripts/CI/deploy.sh
 deploy:
   provider: releases
-  api_key: $GITHUB
-  file: ./log.txt
+  api_key: $GITHUB_TOKEN
+  file: bash smart_home_api_release_linux_arm.tar.gz
   skip_cleanup: true
   draft: true
   on:
