@@ -76,7 +76,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Content Remove="wwwroot\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\.editorconfig" />
   </ItemGroup>
 
 </Project>
