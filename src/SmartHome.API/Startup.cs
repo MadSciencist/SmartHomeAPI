@@ -109,12 +109,13 @@ namespace SmartHome.API
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper autoMapper, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper autoMapper,
+            ILogger<Startup> logger)
         {
             ContractAssemblyAssertions.Logger = logger;
             ContractAssemblyAssertions.AssertValidConfig();
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
-            
+
             InitializeDatabase(app);
 
             var mqttOptions = new MqttServerOptionsBuilder()
@@ -180,7 +181,6 @@ namespace SmartHome.API
                 options.UIPath = Configuration["HealthChecks:UiEndpoint"];
             });
         }
-        //TEST
 
         private static void InitializeDatabase(IApplicationBuilder app)
         {
