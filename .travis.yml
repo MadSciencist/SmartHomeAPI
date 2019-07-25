@@ -35,7 +35,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key: $GITHUB
-  file: ./scripts/CI/log.txt
+  file: ./log.txt
   skip_cleanup: true
   draft: true
   on:
