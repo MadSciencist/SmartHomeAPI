@@ -2,6 +2,7 @@
 using SmartHome.Core.MessageHanding;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SmartHome.Core.MqttBroker.MessageHandling
 {
@@ -10,9 +11,10 @@ namespace SmartHome.Core.MqttBroker.MessageHandling
         public bool IsDebugLogEnabled { get; set; } = false;
         private readonly IMessageProcessor<MqttMessageDto> _messageProcessor;
 
-        public MessageInterceptor(IMessageProcessor<MqttMessageDto> processor)
+        public MessageInterceptor(IMessageProcessor<MqttMessageDto> processor, IHostingEnvironment env)
         {
             _messageProcessor = processor;
+            IsDebugLogEnabled = env.IsDevelopment();
         }
 
         public MessageInterceptor(bool isDebugLogEnabled)

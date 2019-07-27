@@ -2,15 +2,12 @@
 
 namespace SmartHome.Core.Domain.ContractParams
 {
-    public class RgbLightParam : LightParam
+    public class RgbLightParam
     {
-        [Range(0, 255)]
-        public byte R { get; set; }
+        [Range(0, 2)]
+        public int? State { get; set; }
 
         [Range(0, 255)]
-        public byte G { get; set; }
-
-        [Range(0, 255)]
-        public byte B { get; set; }
+        public byte[] Rgb { get; set; }
     }
 }

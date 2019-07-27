@@ -11,4 +11,8 @@
     <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\" />
+  </ItemGroup>
+
 </Project>

@@ -164,6 +164,31 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         UserId = 1
                     });
 
+
+                    var node4 = new Node
+                    {
+                        Name = "Sonoff B1 Light",
+                        ControlStrategyId = 4,
+                        Created = DateTime.UtcNow,
+                        CreatedById = 1,
+                        IpAddress = "http://192.168.0.221",
+                        Port = 80,
+                        GatewayIpAddress = null,
+                        Description = "Sonoff B1 Light Tasmota",
+                        ApiKey = null,
+                        ClientId = "DVES_47C631",
+                        BaseTopic = "cmnd/sonoff/sonoffb1"
+                    };
+
+                    var createdNode4 = await context.Nodes.AddAsync(node4);
+                    await context.SaveChangesAsync();
+
+
+                    context.Add(new AppUserNodeLink
+                    {
+                        NodeId = createdNode4.Entity.Id,
+                        UserId = 1
+                    });
                 }
             }
         }
