@@ -69,6 +69,20 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                                 new RegisteredMagnitude { Magnitude = "relay1" },
                                 new RegisteredMagnitude { Magnitude = "relay0" }
                             }
+                        },
+                        new ControlStrategy
+                        {
+                            Id = 4,
+                            IsActive = true,
+                            Description = "Control Tasmota Socket with power measurment",
+                            ContractAssembly = "SmartHome.Contracts.TasmotaMqtt.dll",
+                            AssemblyProduct = "Tasmota-MQTT-v1",
+                            CreatedById = 1,
+                            Created = DateTime.UtcNow,
+                            RegisteredMagnitudes = new List<RegisteredMagnitude>
+                            {
+                                new RegisteredMagnitude { Magnitude = "relay0" }
+                            }
                         }
                     };
 
@@ -118,30 +132,26 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     };
 
                     var createdNode2 = await context.Nodes.AddAsync(node2);
-                    await context.SaveChangesAsync();
-
-
                     context.Add(new AppUserNodeLink
                     {
                         NodeId = createdNode2.Entity.Id,
                         UserId = 1
                     });
-
                     await context.SaveChangesAsync();
 
                     var node3 = new Node
                     {
-                        Name = "Generic REST",
-                        ControlStrategyId = 3,
+                        Name = "Blitzwolf Socket Tasmota",
+                        ControlStrategyId = 4,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
-                        IpAddress = "http://192.168.0.210",
+                        IpAddress = "http://192.168.0.220",
                         Port = 80,
                         GatewayIpAddress = null,
-                        Description = "Dev test node",
-                        ApiKey = "03102E55CD7BBE35",
-                        ClientId = "genericRestClient",
-                        BaseTopic = null
+                        Description = "Blitzwolf Socket Tasmota",
+                        ApiKey = null,
+                        ClientId = "DVES_2323B9",
+                        BaseTopic = "cmnd/sonoff/blitzwolf0"
                     };
 
                     var createdNode3 = await context.Nodes.AddAsync(node3);
@@ -154,7 +164,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         UserId = 1
                     });
 
-                    await context.SaveChangesAsync();
                 }
             }
         }

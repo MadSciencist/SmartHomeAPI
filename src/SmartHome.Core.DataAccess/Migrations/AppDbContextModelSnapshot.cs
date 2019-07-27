@@ -127,7 +127,7 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.Property<string>("InternalValue");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 

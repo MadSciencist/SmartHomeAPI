@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.GenericRest.Commands
 {
     [DisplayText("Second command")]
-    public class SecondCommand : IControlStrategy
+    public class SecondCommand : IControlCommand
     {
         public Task Execute(Node node, JObject commandParams)
         {

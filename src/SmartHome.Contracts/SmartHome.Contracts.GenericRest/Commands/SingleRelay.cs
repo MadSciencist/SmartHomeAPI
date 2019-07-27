@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.GenericRest.Commands
 {
     [DisplayText("Single Relay")]
-    public class SingleRelay : RestControlStrategyBase, IControlStrategy
+    public class SingleRelay : RestControlStrategyBase, IControlCommand
     {
         public SingleRelay(ILifetimeScope container) : base(container)
         {

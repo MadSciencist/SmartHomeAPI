@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Product>Tasmota-MQTT-v1</Product>
+    <Description>Control Tasmota devices over MQTT</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SmartHome.Core\SmartHome.Core.csproj" />
+    <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

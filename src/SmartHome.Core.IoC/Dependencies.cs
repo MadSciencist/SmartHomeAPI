@@ -63,7 +63,7 @@ namespace SmartHome.Core.IoC
                     .Where(x => x.IsClass && !x.IsAbstract && !x.IsInterface)
                     .ToDictionary(x => x.FullName);
 
-                var commandExecutors = asmClasses.Where(x => typeof(IControlStrategy).IsAssignableFrom(x.Value));
+                var commandExecutors = asmClasses.Where(x => typeof(IControlCommand).IsAssignableFrom(x.Value));
                 RegisterNamed(commandExecutors);
 
                 var messageHandlers = asmClasses.Where(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x.Value));

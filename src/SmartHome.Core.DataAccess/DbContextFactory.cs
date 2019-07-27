@@ -18,6 +18,7 @@ namespace SmartHome.Core.DataAccess
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), @"../SmartHome.API/"))
                 .AddJsonFile("appsettings.json")
+                .AddUserSecrets("001b4959-7f46-4591-8b22-121446ac4d8e")
                 .Build();
 
             var connectionString = configuration["ConnectionStrings:MySql"];

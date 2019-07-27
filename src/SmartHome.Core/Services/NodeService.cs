@@ -131,7 +131,7 @@ namespace SmartHome.Core.Services
                 // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
                 var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
 
-                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategy))
+                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlCommand strategy))
                 {
                     response.Alerts.Add(new Alert($"{command} is not valid for strategy: {node.ControlStrategy.ContractAssembly}", MessageType.Error));
                     return response;

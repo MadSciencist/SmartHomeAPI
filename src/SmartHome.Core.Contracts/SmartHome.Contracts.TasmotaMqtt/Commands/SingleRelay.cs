@@ -8,7 +8,7 @@ using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Attributes;
 using System.Threading.Tasks;
 
-namespace SmartHome.Contracts.EspurnaMqtt.Commands
+namespace SmartHome.Contracts.TasmotaMqtt.Commands
 {
     [DisplayText("Single Relay")]
     public class SingleRelay : MqttControlStrategyBase, IControlCommand
@@ -22,11 +22,10 @@ namespace SmartHome.Contracts.EspurnaMqtt.Commands
             var param = commandParams.ToObject<SingleRelayParam>();
 
             if (string.IsNullOrEmpty(param.State)) throw new SmartHomeException("Relay state cannot be null: missing 'state' key");
-            if (string.IsNullOrEmpty(param.RelayNo)) throw new SmartHomeException("Relay number cannot be null: missing 'relayNo' key");
             if (string.IsNullOrEmpty(node.BaseTopic)) throw new SmartHomeException("Base topic cannot be empty");
 
             var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"{node.BaseTopic}/relay/{param.RelayNo}/set")
+                .WithTopic($"{node.BaseTopic}/power")
                 .WithPayload(param.State)
                 .WithExactlyOnceQoS()
                 .WithRetainFlag()

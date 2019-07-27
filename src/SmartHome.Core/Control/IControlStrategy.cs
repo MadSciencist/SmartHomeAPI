@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Control
 {
-    public interface IControlStrategy
+    public interface IControlCommand
     {
         Task Execute(Node node, JObject commandParams);
     }

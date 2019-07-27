@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.EspurnaRest.Commands
 {
     [DisplayText("Single Relay")]
-    public class SingleRelay : RestControlStrategyBase, IControlStrategy
+    public class SingleRelay : RestControlStrategyBase, IControlCommand
     {
         private const string RelayKey = "relay/0";
 
