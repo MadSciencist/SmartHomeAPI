@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SmartHome.Core.Domain.Models;
 
 namespace SmartHome.Core.MessageHanding
@@ -9,6 +10,11 @@ namespace SmartHome.Core.MessageHanding
         /// Dictionary of mappings between contract and SmartHome.Core.Domain.SystemMagnitudes properties
         /// </summary>
         IDictionary<string, string> Mapping { get; }
+
+        /// <summary>
+        /// Represents type of converter for given system physical property
+        /// </summary>
+        IDictionary<string, Type> Converters { get; }
 
         /// <summary>
         /// Check if ValidProperties collection contains property

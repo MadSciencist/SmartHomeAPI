@@ -1,5 +1,7 @@
-﻿using SmartHome.Core.MessageHanding;
+﻿using System;
+using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
+using SmartHome.Core.Domain.Converters;
 
 namespace SmartHome.Contracts.TasmotaMqtt
 {
@@ -10,6 +12,14 @@ namespace SmartHome.Contracts.TasmotaMqtt
             base.Mapping = new Dictionary<string, string>
             {
                 { "POWER", "relay0" }
+            };
+        }
+
+        protected override void InitializeConverters()
+        {
+            base.Converters = new Dictionary<string, Type>
+            {
+                {"relay0", typeof(OnOffToBinaryConverter)}
             };
         }
     }

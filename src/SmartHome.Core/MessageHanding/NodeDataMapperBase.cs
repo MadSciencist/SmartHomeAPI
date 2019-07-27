@@ -1,4 +1,5 @@
-﻿using SmartHome.Core.Domain;
+﻿using System;
+using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,12 +9,14 @@ namespace SmartHome.Core.MessageHanding
     public abstract class NodeDataMapperBase : INodeDataMapper
     {
         public IDictionary<string, string> Mapping { get; protected set; }
+        public IDictionary<string, Type> Converters { get; protected set; }
 
         #region ctor
         protected NodeDataMapperBase()
         {
-            // ReSharper disable once VirtualMemberCallInConstructor
+            // ReSharper disable VirtualMemberCallInConstructor
             InitializeMapping();
+            InitializeConverters();
         }
         #endregion
 
@@ -37,6 +40,12 @@ namespace SmartHome.Core.MessageHanding
         }
         #endregion
 
+        // Required to override
         protected abstract void InitializeMapping();
+
+        // It is possible that no conversion is required
+        protected virtual void InitializeConverters()
+        {
+        }
     }
 }

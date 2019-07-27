@@ -14,6 +14,7 @@ using System.Reflection;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.Security;
+using SmartHome.Core.Domain.Converters;
 
 namespace SmartHome.Core.IoC
 {
@@ -41,6 +42,7 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
             Builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
+            Builder.RegisterType<OnOffToBinaryConverter>().InstancePerDependency();
 
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
