@@ -1,20 +1,19 @@
 ﻿using Autofac;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Domain.Notification;
+using SmartHome.Core.Dto;
+using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
+using SmartHome.Core.MessageHanding;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
 using SmartHome.Core.RestClient;
+using SmartHome.Core.Security;
 using SmartHome.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SmartHome.Core.Dto;
-using SmartHome.Core.MessageHanding;
-using SmartHome.Core.Security;
-using SmartHome.Core.Domain.Converters;
 
 namespace SmartHome.Core.IoC
 {
@@ -42,7 +41,6 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
             Builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
-            Builder.RegisterType<OnOffToBinaryConverter>().InstancePerDependency();
 
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
@@ -50,7 +48,6 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<MqttBroker.MqttBroker>().As<IMqttBroker>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();
-            Builder.RegisterType<NotificationQueue>().SingleInstance();
             Builder.RegisterType<NotificationService>().SingleInstance();
 
             return Builder;

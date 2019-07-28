@@ -1,45 +1,41 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Domain.Models;
-using SmartHome.Core.Domain.Notification;
 using SmartHome.Core.Domain.User;
-using System;
+using SmartHome.Core.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartHome.Core.Dto;
 
 namespace SmartHome.Core.Services
 {
     public class NotificationService
     {
-        public event EventHandler NotificationAdded;
-
+        // Todo: rewrite notification logic, user NotificationService mostly for authorization
+        // Provide possibity of dispatrching different types of messages
+        private readonly IMediator _mediator;
         private readonly IDictionary<string, AppUser> _connectedUsers;
-        private readonly NotificationQueue _queue;
         private readonly UserManager<AppUser> _userManager;
 
-        public NotificationService(NotificationQueue queue, UserManager<AppUser> userManager)
+        public NotificationService(UserManager<AppUser> userManager, IMediator mediator)
         {
-            _queue = queue;
             _userManager = userManager;
+            _mediator = mediator;
             _connectedUsers = new Dictionary<string, AppUser>();
         }
 
-        [Obsolete]
-        public void PushNodeDataNotification(int nodeId, PhysicalProperty physicalValue, string value)
+        public void PushDataNotification(int nodeId, NodeDataMagnitudeDto dto)
         {
-            _queue.Enqueue(new NotificationDto(nodeId, physicalValue, value));
-            NotificationAdded?.Invoke(this, EventArgs.Empty);
+            var notification = new NotificationDto(nodeId, dto.PhysicalProperty, dto.Value);
+            _mediator.Publish(notification);
         }
 
-        public void PushDataNotification(int nodeId, NodeDataMagnitudeDto magnitude)
+        public void PushDataNotification(int nodeId, IEnumerable<NodeDataMagnitudeDto> dtos)
         {
-
-        }
-
-        public void PushDataNotification(int nodeId, IEnumerable<NodeDataMagnitudeDto> magnitude)
-        {
-
+            foreach (var dto in dtos)
+            {
+                var notification = new NotificationDto(nodeId, dto.PhysicalProperty, dto.Value);
+                _mediator.Publish(notification);
+            }
         }
 
         public async Task AddClientAsync(string connectionId, int userId)

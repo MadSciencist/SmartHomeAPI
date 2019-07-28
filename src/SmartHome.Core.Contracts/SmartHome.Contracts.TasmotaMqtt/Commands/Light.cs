@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.TasmotaMqtt.Commands
 {
     [DisplayText("Light")]
+    [ParameterType(typeof(LightParam))]
     public class Light : MqttControlStrategyBase, IControlCommand
     {
         public Light(ILifetimeScope container) : base(container) 

@@ -37,7 +37,7 @@ namespace SmartHome.API.Controllers
         {
             var serviceResult = await _nodeService.GetAll();
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
         /// <summary>
@@ -68,6 +68,20 @@ namespace SmartHome.API.Controllers
             var serviceResult = await _nodeService.Control(nodeId, command, commandParams);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status202Accepted);
+        }
+
+        /// <summary>
+        /// Get parameter schema for given command5
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpGet("{nodeId}/command/{command}")]
+        public async Task<IActionResult> GetRequestBodyForCommand(int nodeId, string command)
+        {
+            var serviceResult = await _nodeService.GetCommandParam(nodeId, command);
+
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
     }
 }

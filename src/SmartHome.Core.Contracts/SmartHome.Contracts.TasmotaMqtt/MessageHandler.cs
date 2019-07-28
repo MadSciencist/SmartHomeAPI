@@ -64,7 +64,12 @@ namespace SmartHome.Contracts.TasmotaMqtt
                         Brightness = int.Parse(payload.GetValue("Dimmer").ToString()),
                         LightTemperature = int.Parse(payload.GetValue("CT").ToString())
                     };
-                    await ExtractSaveData(base.Node.Id, "light", JsonConvert.SerializeObject(param));
+
+                    var value = JsonConvert.SerializeObject(param);
+                    await ExtractSaveData(Node.Id, "light", value);
+                    var property = base.DataMapper.GetPhysicalPropertyByContractMagnitude("light");
+                    NotificationService.PushDataNotification(Node.Id,
+                        new NodeDataMagnitudeDto {PhysicalProperty = property, Value = value});
                     return true;
                 }
             }

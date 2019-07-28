@@ -2,12 +2,6 @@
 
 namespace SmartHome.Core.Domain.Converters
 {
-    public interface IDataConverter
-    {
-        string Convert(string input);
-        string ReverseConvert(string input);
-    }
-
     public class OnOffToBinaryConverter : IDataConverter
     {
         public string Convert(string input)

@@ -24,6 +24,8 @@ using SmartHome.Core.Services;
 using System;
 using System.Linq;
 using System.Reflection;
+using MediatR;
+using SmartHome.Core.Control;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SmartHome.API
@@ -81,7 +83,7 @@ namespace SmartHome.API
             services.AddApiServices();
 
             // Add AutoMapper configs
-            services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService))); // ToDo move to IoC project
+            services.AddAutoMapper(Assembly.GetAssembly(typeof(INodeService)));
 
             // CORS for dev env
             services.AddDefaultCorsPolicy(Environment);
@@ -100,6 +102,8 @@ namespace SmartHome.API
                 .AddSignalRHub(hubUri)
                 .AddCheck<MqttBrokerHealthCheck>("mqtt_broker");
             services.AddHealthChecksUI();
+
+            services.AddMediatR(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(INodeService)));
 
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
@@ -128,9 +132,6 @@ namespace SmartHome.API
             var mqttService = ApplicationContainer.Resolve<IMqttBroker>();
             mqttService.ServerOptions = mqttOptions;
             mqttService.StartAsync().Wait();
-
-            // Create singleton instance of notifier
-            ApplicationContainer.Resolve<HubNotifier>();
 
             /* App pipeline */
             if (env.IsDevelopment())

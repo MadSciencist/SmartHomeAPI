@@ -42,12 +42,13 @@ namespace SmartHome.Core.Dto.NodeData
             MetadataDictionary.Add(propertyName, descriptor);
             Properties.Add(propertyName);
         }
+
         private void ValidateAndThrow<T>(string propertyName, ICollection<T> values, MetadataDescriptor descriptor)
         {
-            if (values == null) throw new ArgumentNullException(nameof(values));
-            if (descriptor == null) throw new ArgumentNullException(nameof(descriptor));
+            if (values is null) throw new ArgumentNullException(nameof(values));
+            if (descriptor is null) throw new ArgumentNullException(nameof(descriptor));
             if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException(nameof(propertyName));
-            if (Timestamps == null) throw new InvalidOperationException("Add time stamps first");
+            if (Timestamps is null) throw new InvalidOperationException("Add time stamps first");
             if (Timestamps.Count != values.Count)
                 throw new InvalidOperationException(
                     "Collection length mismatch (timestamps length don't match values length");

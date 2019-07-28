@@ -42,7 +42,7 @@ namespace SmartHome.Core.MessageHanding
         {
             if (DataMapper.Converters.TryGetValue(magnitude, out var converterType))
             {
-                var converter = Container.Resolve(converterType) as IDataConverter;
+                var converter = Activator.CreateInstance(converterType) as IDataConverter;
                 return converter?.Convert(value);
             }
             
