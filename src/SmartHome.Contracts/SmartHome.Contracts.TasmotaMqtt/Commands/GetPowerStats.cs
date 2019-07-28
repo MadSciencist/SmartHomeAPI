@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.TasmotaMqtt.Commands
 {
     [DisplayText("Get power statistics")]
+    [ParameterType(null)]
     public class GetPowerStats : MqttControlStrategyBase, IControlCommand
     {
         public GetPowerStats(ILifetimeScope container) : base(container) 

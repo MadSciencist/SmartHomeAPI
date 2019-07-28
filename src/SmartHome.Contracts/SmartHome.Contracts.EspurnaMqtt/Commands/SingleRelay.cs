@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.EspurnaMqtt.Commands
 {
     [DisplayText("Single Relay")]
+    [ParameterType(typeof(SingleRelayParam))]
     public class SingleRelay : MqttControlStrategyBase, IControlCommand
     {
         public SingleRelay(ILifetimeScope container) : base(container) 

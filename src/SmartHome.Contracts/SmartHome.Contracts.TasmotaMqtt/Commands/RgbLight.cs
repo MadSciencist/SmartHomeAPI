@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.TasmotaMqtt.Commands
 {
     [DisplayText("RGB Light")]
+    [ParameterType(typeof(RgbLightParam))]
     public class RgbLight : MqttControlStrategyBase, IControlCommand
     {
         public RgbLight(ILifetimeScope container) : base(container) 
