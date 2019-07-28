@@ -16,16 +16,14 @@ namespace SmartHome.Contracts.TasmotaMqtt.Domain
                 var first = items.First();
                 return (first.Key, first.Value);
             }
-            else
-            {
-                var sb = new StringBuilder();
-                foreach (var (key, value) in items)
-                {
-                    sb.Append($"{key} {value};");
-                }
 
-                return ("backlog", sb.ToString());
+            var sb = new StringBuilder();
+            foreach (var (key, value) in items)
+            {
+                sb.Append($"{key} {value};");
             }
+
+            return ("backlog", sb.ToString());
         }
     }
 }

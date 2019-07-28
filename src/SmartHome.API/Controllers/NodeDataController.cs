@@ -54,7 +54,7 @@ namespace SmartHome.API.Controllers
         //Todo maybe extra endpoint with basic auth?
         [AllowAnonymous]
         //[Authorize(Policy = "sensor")]
-        [HttpPost("addByClientId/{clientId}")]
+        [HttpPost("clientId/{clientId}")]
         public async Task<IActionResult> AddNewNodeData(string clientId, JObject payload)
         {
             await _messageProcessor.Process(new RestMessageDto

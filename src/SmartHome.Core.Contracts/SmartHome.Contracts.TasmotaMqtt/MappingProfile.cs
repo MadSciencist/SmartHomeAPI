@@ -11,7 +11,14 @@ namespace SmartHome.Contracts.TasmotaMqtt
         {
             base.Mapping = new Dictionary<string, string>
             {
-                { "POWER", "relay0" }
+                { "POWER", "relay0" },
+                { "light", "light" },
+                { "Voltage", "voltage" },
+                { "Current", "current" },
+                { "Power", "power_active" },
+                { "ReactivePower", "power_reactive" },
+                { "ApparentPower", "power_apparent" },
+                { "Factor", "power_factor" },
             };
         }
 

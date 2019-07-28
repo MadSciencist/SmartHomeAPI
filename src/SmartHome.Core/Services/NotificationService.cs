@@ -6,6 +6,7 @@ using SmartHome.Core.Domain.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartHome.Core.Dto;
 
 namespace SmartHome.Core.Services
 {
@@ -24,10 +25,21 @@ namespace SmartHome.Core.Services
             _connectedUsers = new Dictionary<string, AppUser>();
         }
 
+        [Obsolete]
         public void PushNodeDataNotification(int nodeId, PhysicalProperty physicalValue, string value)
         {
             _queue.Enqueue(new NotificationDto(nodeId, physicalValue, value));
             NotificationAdded?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void PushDataNotification(int nodeId, NodeDataMagnitudeDto magnitude)
+        {
+
+        }
+
+        public void PushDataNotification(int nodeId, IEnumerable<NodeDataMagnitudeDto> magnitude)
+        {
+
         }
 
         public async Task AddClientAsync(string connectionId, int userId)

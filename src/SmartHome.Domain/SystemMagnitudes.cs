@@ -1,5 +1,6 @@
 ﻿using SmartHome.Core.Domain.Models;
 using System.Collections.Generic;
+using SmartHome.Core.Domain.ContractParams;
 
 namespace SmartHome.Core.Domain
 {
@@ -19,6 +20,7 @@ namespace SmartHome.Core.Domain
         {
             Properties = new List<PhysicalProperty>
             {
+                new PhysicalProperty("Light", "light", nameof(LightParam)),
                 new PhysicalProperty("Temperature", "temperature", "C"),
                 new PhysicalProperty("Humidity", "humidity", "%"),
                 new PhysicalProperty("Pressure", "pressure", "hPa"),

@@ -26,7 +26,7 @@ namespace SmartHome.API.Controllers
             _dictionaryService.Principal = contextAccessor.HttpContext.User;
         }
 
-        [HttpGet("names")]
+        [HttpGet]
         [ProducesResponseType(typeof(ServiceResult<IEnumerable<string>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetNames()
         {

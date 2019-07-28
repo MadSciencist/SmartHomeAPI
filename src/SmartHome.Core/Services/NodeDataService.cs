@@ -6,6 +6,7 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Infrastructure;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -29,10 +30,11 @@ namespace SmartHome.Core.Services
             var query = _nodeDataRepository.AsQueryableNoTrack()
                 .Where(x => x.NodeId == nodeId)
                 .Where(x => x.TimeStamp >= from && x.TimeStamp <= to);
-            
+
             var paginated = await PaginatedList<NodeData>.CreateAsync(query, FilterByDate, pageNumber, pageSize, order);
 
-            if (paginated.FirstOrDefault() == null) throw new SmartHomeEntityNotFoundException($"Node ID: {nodeId} data not found");
+            if (paginated.FirstOrDefault() == null)
+                throw new SmartHomeEntityNotFoundException($"Node ID: {nodeId} data not found");
 
             response.Data = GetAggregate(paginated, properties);
 
@@ -93,7 +95,7 @@ namespace SmartHome.Core.Services
         }
 
         public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason,
-                                                   NodeDataMagnitudeDto data)
+            NodeDataMagnitudeDto data)
         {
             var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
 
@@ -103,6 +105,20 @@ namespace SmartHome.Core.Services
                 Unit = data.PhysicalProperty.Unit,
                 Value = data.Value
             });
+        }
+
+        public async Task<NodeData> AddManyAsync(int nodeId, EDataRequestReason reason,
+            IEnumerable<NodeDataMagnitudeDto> data)
+        {
+            var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
+
+            return await _nodeDataRepository.AddManyAsync(nodeId, samplesToKeep, reason, data.Select(x =>
+                new NodeDataMagnitude
+                {
+                    Magnitude = x.PhysicalProperty.Magnitude,
+                    Unit = x.PhysicalProperty.Unit,
+                    Value = x.Value
+                }).ToList());
         }
     }
 }

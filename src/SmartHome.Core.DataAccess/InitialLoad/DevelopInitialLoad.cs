@@ -81,7 +81,27 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Created = DateTime.UtcNow,
                             RegisteredMagnitudes = new List<RegisteredMagnitude>
                             {
-                                new RegisteredMagnitude { Magnitude = "relay0" }
+                                new RegisteredMagnitude { Magnitude = "relay0" },
+                                new RegisteredMagnitude { Magnitude = "voltage" },
+                                new RegisteredMagnitude { Magnitude = "current" },
+                                new RegisteredMagnitude { Magnitude = "power_active" },
+                                new RegisteredMagnitude { Magnitude = "power_reactive" },
+                                new RegisteredMagnitude { Magnitude = "power_apparent" },
+                                new RegisteredMagnitude { Magnitude = "power_factor"}
+                            }
+                        },
+                        new ControlStrategy
+                        {
+                            Id = 5,
+                            IsActive = true,
+                            Description = "Control Tasmota Socket with power measurment",
+                            ContractAssembly = "SmartHome.Contracts.TasmotaMqtt.dll",
+                            AssemblyProduct = "Tasmota-MQTT-v1",
+                            CreatedById = 1,
+                            Created = DateTime.UtcNow,
+                            RegisteredMagnitudes = new List<RegisteredMagnitude>
+                            {
+                                new RegisteredMagnitude { Magnitude = "light" }
                             }
                         }
                     };
@@ -168,7 +188,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     var node4 = new Node
                     {
                         Name = "Sonoff B1 Light",
-                        ControlStrategyId = 4,
+                        ControlStrategyId = 5,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
                         IpAddress = "http://192.168.0.221",

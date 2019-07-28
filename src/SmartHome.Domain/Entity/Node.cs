@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace SmartHome.Core.Domain.Entity
 {
@@ -53,5 +54,10 @@ namespace SmartHome.Core.Domain.Entity
         public ICollection<AppUserNodeLink> AllowedUsers { get; set; }
 
         public DateTime Created { get; set; }
+
+        public bool UserWantsToSaveProperty(string magnitude)
+        {
+            return ControlStrategy.RegisteredMagnitudes.Any(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0);
+        }
     }
 }
