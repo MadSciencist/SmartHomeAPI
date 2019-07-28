@@ -1,11 +1,13 @@
-﻿namespace SmartHome.Core.Domain.ContractParams
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SmartHome.Core.Domain.ContractParams
 {
     public class RgbLightParam
     {
-        public byte Brightness { get; set; }
-        public byte R { get; set; }
-        public byte G { get; set; }
-        public byte B { get; set; }
-        public bool UseFade { get; set; }
+        [Range(0, 2)]
+        public int? State { get; set; }
+
+        [Range(0, 255)]
+        public byte[] Rgb { get; set; }
     }
 }

@@ -44,13 +44,15 @@ namespace SmartHome.Contracts.EspurnaMqtt
             // Check if there is associated system property
             if (property is null) return;
 
-            await NodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, new NodeDataMagnitudeDto
+            var magnitudeDto = new NodeDataMagnitudeDto
             {
                 Value = value,
                 PhysicalProperty = property
-            });
+            };
 
-            NotificationService.PushNodeDataNotification(nodeId, property, value);
+            await NodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, magnitudeDto);
+
+            NotificationService.PushDataNotification(nodeId, magnitudeDto);
         }
     }
 }

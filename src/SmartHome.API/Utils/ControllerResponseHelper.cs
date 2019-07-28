@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Security;
-using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Infrastructure;
 using System;
 using System.Linq;
@@ -29,7 +28,6 @@ namespace SmartHome.API.Utils
 
         private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult, int okStatus) where T : class
         {
-            // TODO add 404
             if (serviceResult.ResponseStatusCodeOverride.HasValue)
             {
                 var response = new ObjectResult(serviceResult) { StatusCode = serviceResult.ResponseStatusCodeOverride.Value };
@@ -62,12 +60,12 @@ namespace SmartHome.API.Utils
 
         private static void ValidateAndThrowIfNeeded<T>(ServiceResult<T> serviceResult) where T : class
         {
-            if (serviceResult == null)
+            if (serviceResult is null)
             {
                 throw new ArgumentNullException(nameof(ServiceResult<T>));
             }
 
-            if (serviceResult.Principal == null)
+            if (serviceResult.Principal is null)
             {
                 throw new ArgumentNullException(nameof(serviceResult.Principal));
             }

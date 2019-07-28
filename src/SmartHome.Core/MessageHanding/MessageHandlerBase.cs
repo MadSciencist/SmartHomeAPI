@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Autofac;
+using SmartHome.Core.Domain.Converters;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Services;
@@ -34,6 +36,18 @@ namespace SmartHome.Core.MessageHanding
 
                 return _nodeDataMapper;
             }
+        }
+
+        protected string ApplyConversion(string magnitude, string value)
+        {
+            if (DataMapper.Converters.TryGetValue(magnitude, out var converterType))
+            {
+                var converter = Activator.CreateInstance(converterType) as IDataConverter;
+                return converter?.Convert(value);
+            }
+            
+            // Converter not registered for given property - return original value
+            return value;
         }
 
         #region ctor

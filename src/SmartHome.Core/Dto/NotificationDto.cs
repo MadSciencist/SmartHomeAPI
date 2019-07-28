@@ -1,10 +1,11 @@
-﻿using System;
+﻿using MediatR;
 using Newtonsoft.Json;
 using SmartHome.Core.Domain.Models;
+using System;
 
-namespace SmartHome.Core.Domain.Notification
+namespace SmartHome.Core.Dto
 {
-    public class NotificationDto
+    public class NotificationDto : INotification
     {
         [JsonProperty("nodeId")]
         public int NodeId { get; }

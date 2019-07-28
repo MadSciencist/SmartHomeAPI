@@ -1,19 +1,19 @@
 ﻿using Autofac;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Domain.Notification;
+using SmartHome.Core.Dto;
+using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
+using SmartHome.Core.MessageHanding;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
 using SmartHome.Core.RestClient;
+using SmartHome.Core.Security;
 using SmartHome.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using SmartHome.Core.Dto;
-using SmartHome.Core.MessageHanding;
-using SmartHome.Core.Security;
 
 namespace SmartHome.Core.IoC
 {
@@ -48,7 +48,6 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<MqttBroker.MqttBroker>().As<IMqttBroker>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();
-            Builder.RegisterType<NotificationQueue>().SingleInstance();
             Builder.RegisterType<NotificationService>().SingleInstance();
 
             return Builder;
@@ -63,7 +62,7 @@ namespace SmartHome.Core.IoC
                     .Where(x => x.IsClass && !x.IsAbstract && !x.IsInterface)
                     .ToDictionary(x => x.FullName);
 
-                var commandExecutors = asmClasses.Where(x => typeof(IControlStrategy).IsAssignableFrom(x.Value));
+                var commandExecutors = asmClasses.Where(x => typeof(IControlCommand).IsAssignableFrom(x.Value));
                 RegisterNamed(commandExecutors);
 
                 var messageHandlers = asmClasses.Where(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x.Value));

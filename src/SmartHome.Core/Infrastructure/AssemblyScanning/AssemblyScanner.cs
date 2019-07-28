@@ -46,7 +46,7 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
         }
 
         public static IDictionary<string, IEnumerable<Type>> GetCommandExecutors() =>
-            GetContractsAssemblies(x => typeof(IControlStrategy).IsAssignableFrom(x));
+            GetContractsAssemblies(x => typeof(IControlCommand).IsAssignableFrom(x));
 
         public static IDictionary<string, IEnumerable<Type>> GetMessageHandlers()
             => GetContractsAssemblies(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x));

@@ -35,7 +35,18 @@ namespace SmartHome.API.Controllers
             _nodeDataService.Principal = contextAccessor.HttpContext.User;
         }
 
-        [AllowAnonymous]
+
+        /// <summary>
+        /// Get node data
+        /// </summary>
+        /// <param name="nodeId">Id of node</param>
+        /// <param name="properties">Collection of included properties</param>
+        /// <param name="page">Page number</param>
+        /// <param name="pageSize">Size of page</param>
+        /// <param name="from">Date from (UTC)</param>
+        /// <param name="to">Date to (UTC)</param>
+        /// <param name="orderByDate">Order by time (ASC, DESC)</param>
+        /// <returns></returns>
         [HttpGet("node/{nodeId}")]
         public async Task<IActionResult> GetPaged(int nodeId, [FromQuery] string[] properties, int? page, int? pageSize,
             DateTime? from, DateTime? to, DataOrder? orderByDate)
@@ -48,13 +59,14 @@ namespace SmartHome.API.Controllers
 
             var serviceResult = await _nodeDataService.GetNodeData(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order);
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
+        //TODO special node endpoint
         //Todo maybe extra endpoint with basic auth?
         [AllowAnonymous]
         //[Authorize(Policy = "sensor")]
-        [HttpPost("addByClientId/{clientId}")]
+        [HttpPost("clientId/{clientId}")]
         public async Task<IActionResult> AddNewNodeData(string clientId, JObject payload)
         {
             await _messageProcessor.Process(new RestMessageDto

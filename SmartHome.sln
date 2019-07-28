@@ -45,8 +45,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.Generic
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{808B156C-850C-42E4-813F-21F65F9E37EB}"
 	ProjectSection(SolutionItems) = preProject
-		scripts\CI\createBundle.sh = scripts\CI\createBundle.sh
+		scripts\CI\deploy.sh = scripts\CI\deploy.sh
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.Contracts.TasmotaMqtt", "src\SmartHome.Core.Contracts\SmartHome.Contracts.TasmotaMqtt\SmartHome.Contracts.TasmotaMqtt.csproj", "{E831D539-3AAA-40A8-B7F1-385848115B3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +96,10 @@ Global
 		{9EA4CA47-F771-4874-B48F-9ABE7532522B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EA4CA47-F771-4874-B48F-9ABE7532522B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EA4CA47-F771-4874-B48F-9ABE7532522B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{62E3BC64-CC3E-4CC8-A78C-A5165328BD2A} = {4C4E0324-514A-44A0-8745-2AC4C7C0D03C}
 		{9EA4CA47-F771-4874-B48F-9ABE7532522B} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{808B156C-850C-42E4-813F-21F65F9E37EB} = {62E3BC64-CC3E-4CC8-A78C-A5165328BD2A}
+		{E831D539-3AAA-40A8-B7F1-385848115B3B} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68CAEBA0-5529-44C7-82DC-114D2B13A91E}

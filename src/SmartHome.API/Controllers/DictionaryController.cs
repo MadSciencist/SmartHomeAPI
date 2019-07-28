@@ -26,15 +26,24 @@ namespace SmartHome.API.Controllers
             _dictionaryService.Principal = contextAccessor.HttpContext.User;
         }
 
-        [HttpGet("names")]
+        /// <summary>
+        /// Return collection of dictionary names
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
         [ProducesResponseType(typeof(ServiceResult<IEnumerable<string>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetNames()
         {
             var dictionaries = await _dictionaryService.GetDictionaryNames();
 
-            return Ok(dictionaries);
+            return ControllerResponseHelper.GetDefaultResponse(dictionaries);
         }
 
+        /// <summary>
+        /// Return dictionary by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         [HttpGet("{name}")]
         [ProducesResponseType(typeof(ServiceResult<Dictionary>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -42,12 +51,16 @@ namespace SmartHome.API.Controllers
         {
             var dictionary = await _dictionaryService.GetDictionaryByName(name);
 
-            if (dictionary == null)
-                return NotFound();
-
-            return Ok(dictionary);
+            return dictionary is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(dictionary);
         }
 
+        /// <summary>
+        /// Update dictionary entry
+        /// </summary>
+        /// <param name="dictName"></param>
+        /// <param name="entryId"></param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         [HttpPut("{dictName}/{entryId}")]
         [ProducesResponseType(typeof(ServiceResult<Dictionary>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -65,6 +78,12 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
+        /// <summary>
+        /// Soft delete dictionary entry
+        /// </summary>
+        /// <param name="dictName"></param>
+        /// <param name="entryId"></param>
+        /// <returns></returns>
         [HttpDelete("{dictName}/{entryId}")]
         [ProducesResponseType(typeof(ServiceResult<Dictionary>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,6 +94,12 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
+        /// <summary>
+        /// Add new entry to given dictionary
+        /// </summary>
+        /// <param name="dictName"></param>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         [HttpPost("{dictName}")]
         [ProducesResponseType(typeof(ServiceResult<Dictionary>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
