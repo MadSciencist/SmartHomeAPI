@@ -8,10 +8,6 @@ addons:
     organization: "madsciencist-github"
     token:
       secure: $SONAR_TOKEN
-branches:
-  only:
-    - develop
-    - master
 install:
   - dotnet tool install --global dotnet-sonarscanner
   - dotnet restore
