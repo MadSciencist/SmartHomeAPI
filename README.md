@@ -8,8 +8,6 @@ Develop:
 [![Build Status](https://travis-ci.org/MadSciencist/SmartHomeAPI.svg?branch=develop)](https://travis-ci.org/MadSciencist/SmartHomeAPI)
 Metrics:
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=MadSciencist_SmartHomeAPI&metric=ncloc)](https://sonarcloud.io/dashboard?id=MadSciencist_SmartHomeAPI)
-CodeCov:
-[![codecov](https://codecov.io/gh/MadSciencist/SmartHomeAPI/branch/master/graph/badge.svg)](https://codecov.io/gh/MadSciencist/SmartHomeAPI)
 
 ### Dev setup
 prerequisites:
