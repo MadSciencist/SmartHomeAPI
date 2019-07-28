@@ -22,7 +22,7 @@ before_deploy:
 deploy:
   - provider: releases
     api_key: $GITHUB_TOKEN
-    file: ./smart_home_api_release_linux_arm.tar.gz
+    file: ./smart_home_api_release_linux_arm.tgz
     skip_cleanup: true
     on:
       tags: true
