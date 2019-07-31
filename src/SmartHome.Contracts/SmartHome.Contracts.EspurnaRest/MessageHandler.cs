@@ -3,6 +3,7 @@ using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto.NodeData;
 using System;
 using System.Threading.Tasks;
+using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Contracts.EspurnaRest

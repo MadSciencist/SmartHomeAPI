@@ -1,153 +1,121 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Dto;
-using SmartHome.API.Security.Token;
-using SmartHome.Core.Domain.User;
-using SmartHome.Core.Utils;
+using SmartHome.API.Service;
+using SmartHome.API.Utils;
+using SmartHome.Core.Dto;
+using SmartHome.Core.Infrastructure;
 using System.Threading.Tasks;
-using SmartHome.Core.DataAccess.Repository;
 
 namespace SmartHome.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [ApiVersion("1")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class UsersController : ControllerBase
     {
-        // TODO create userService to cleanup this mess
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly IUserValidator<AppUser> _userValidator;
-        private readonly ITokenBuilder _tokenBuilder;
-        private readonly IPasswordValidator<AppUser> _passwordValidator;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UsersController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenBuilder tokenBuilder, IUserValidator<AppUser> userValidator,
-            IPasswordValidator<AppUser> passwordValidator,
-            IUserRepository userRepository)
+        public UsersController(IUserService userService, IHttpContextAccessor contextAccessor)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenBuilder = tokenBuilder;
-            _userValidator = userValidator;
-            _passwordValidator = passwordValidator;
-            _userRepository = userRepository;
+            _userService = userService;
+            _userService.Principal = contextAccessor.HttpContext.User;
         }
 
+        /// <summary>
+        /// Get user by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Get(int id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+            var result = await _userService.GetUserAsync(id);
 
-            // only admin or user itself can access
-            if (ClaimsPrincipalHelper.IsUserAdmin(User) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
-                return Ok(user); // TODO dedicated DTO to hide sensitive data
-
-            return Forbid();
+            return ControllerResponseHelper.GetDefaultResponse(result);
         }
 
+        /// <summary>
+        /// Login endpoint
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns>JWT token</returns>
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto login, string redirect)
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Login(LoginDto login)
         {
-            var user = await _userManager.FindByNameAsync(login.Login);
-            var nodes = await _userRepository.GetAllUserNodes(user.Id);
+            var result = await _userService.LoginAsync(login);
 
-            if (user == null) return NotFound();
-
-            if (!user.IsActive) return BadRequest();
-
-            await _signInManager.SignOutAsync(); // terminate existing session
-
-            var signInResult = await _signInManager.PasswordSignInAsync(user, login.Password, true, false);
-            if (!signInResult.Succeeded) return Unauthorized();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var (token, expiring) = _tokenBuilder.Build(user, roles);
-
-            return Ok(new { access = new { type = "Bearer", token, expires = expiring }, redirect });
+            return ControllerResponseHelper.GetDefaultResponse(result);
         }
 
+        /// <summary>
+        /// Register endpoint
+        /// </summary>
+        /// <param name="register"></param>
+        /// <returns>JWT token</returns>
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto register, string redirect)
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Register(RegisterDto register)
         {
-            if (await _userManager.FindByNameAsync(register.Login) != null)
-            {
-                ModelState.AddModelError("", "User with that login already exists.");
-                return BadRequest(ModelState);
-            }
+            var result = await _userService.RegisterAsync(register);
 
-            var user = new AppUser
-            {
-                Email = register.Email,
-                UserName = register.Login,
-                IsActive = false
-            };
-
-            var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, register.Password);
-            if (!passwordValidationResult.Succeeded) return BadRequest(passwordValidationResult.Errors);
-
-            var createResult = await _userManager.CreateAsync(user, register.Password);
-            if (!createResult.Succeeded) return BadRequest(createResult.Errors);
-
-            var addToRoleResult = await _userManager.AddToRoleAsync(user, "user");
-            if (!addToRoleResult.Succeeded) return BadRequest(addToRoleResult.Errors);
-
-            var signInResult = await _signInManager.PasswordSignInAsync(user, register.Password, false, false);
-            if (!signInResult.Succeeded) return Unauthorized();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var (token, expiring) = _tokenBuilder.Build(user, roles);
-
-            return CreatedAtAction(nameof(Register), "", new { access = new { token, expires = expiring }, redirect });
+            return ControllerResponseHelper.GetDefaultResponse(result, StatusCodes.Status201Created);
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        /// <summary>
+        ///  Removes user from system
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Delete(int id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+            var result = await _userService.DeleteAsync(id);
 
-            // only resource owner can modify it
-            if (!ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
-                return Forbid();
-
-            var deleteResult = await _userManager.DeleteAsync(user);
-            if (!deleteResult.Succeeded) return BadRequest(deleteResult.Errors);
-
-            return Ok();
+            return ControllerResponseHelper.GetDefaultResponse(result, StatusCodes.Status201Created);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update([FromBody] RegisterDto updatedModel, string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+        // TODO
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Update([FromBody] RegisterDto updatedModel, string id)
+        //{
+        //    var user = await _userManager.FindByIdAsync(id);
+        //    if (user == null) return NotFound();
 
-            // only resource owner can modify it
-            if (!ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
-                return Forbid();
+        //    // only resource owner can modify it
+        //    if (!ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
+        //        return Forbid();
 
-            var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, updatedModel.Password);
-            if (!passwordValidationResult.Succeeded) return BadRequest(passwordValidationResult.Errors);
+        //    var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, updatedModel.Password);
+        //    if (!passwordValidationResult.Succeeded) return BadRequest(passwordValidationResult.Errors);
 
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, updatedModel.Password);
-            user.Email = updatedModel.Email;
+        //    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, updatedModel.Password);
+        //    user.Email = updatedModel.Email;
 
-            var userValidationResult = await _userValidator.ValidateAsync(_userManager, user);
-            if (!userValidationResult.Succeeded) return BadRequest(userValidationResult.Errors);
+        //    var userValidationResult = await _userValidator.ValidateAsync(_userManager, user);
+        //    if (!userValidationResult.Succeeded) return BadRequest(userValidationResult.Errors);
 
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
+        //    var updateResult = await _userManager.UpdateAsync(user);
+        //    if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
     }
 }

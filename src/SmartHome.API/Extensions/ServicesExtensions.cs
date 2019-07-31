@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SmartHome.API.Security.Token;
+using SmartHome.API.Service;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Domain.Role;
@@ -24,7 +25,8 @@ namespace SmartHome.API.Extensions
         public static void AddApiServices(this IServiceCollection services)
         {
             services.AddTransient<ITokenBuilder, JwtTokenBuilder>();
-            services.AddScoped<HubTokenDecoder>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<HubTokenDecoder>();
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
