@@ -45,6 +45,18 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.ControlStrategyName, opt => opt.MapFrom(x => x.ControlStrategy.AssemblyProduct))
                 .ForMember(x => x.Magnitudes, opt => opt.MapFrom(x => x.ControlStrategy.RegisteredMagnitudes.Select(m => m.Magnitude)))
                 .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<UiConfiguration, UiConfigurationDto>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
+                .ForMember(x => x.Data, opt => opt.MapFrom(x => x.Data))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<UiConfigurationDto, UiConfiguration>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
+                .ForMember(x => x.Data, opt => opt.MapFrom(x => x.Data))
+                .ForAllOtherMembers(x => x.Ignore());
         }
     }
 }

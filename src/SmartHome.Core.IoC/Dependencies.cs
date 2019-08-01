@@ -2,7 +2,6 @@
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.MqttBroker;
@@ -39,12 +38,12 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
-            Builder.RegisterType<UserRepository>().As<IUserRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
 
-            Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
+            Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency(); 
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
             Builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerDependency();
+            Builder.RegisterType<UiConfigurationService>().As<IUiConfigurationService>().InstancePerDependency();
 
             Builder.RegisterType<MqttBroker.MqttBroker>().As<IMqttBroker>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();

@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Dto;
 using SmartHome.API.Service;
 using SmartHome.API.Utils;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
@@ -17,10 +20,13 @@ namespace SmartHome.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IUiConfigurationService _uiConfigService;
 
-        public UsersController(IUserService userService, IHttpContextAccessor contextAccessor)
+        public UsersController(IUserService userService, IUiConfigurationService uiConfigService, IHttpContextAccessor contextAccessor)
         {
             _userService = userService;
+            _uiConfigService = uiConfigService;
+            _uiConfigService.Principal = contextAccessor.HttpContext.User;
             _userService.Principal = contextAccessor.HttpContext.User;
         }
 
@@ -91,6 +97,85 @@ namespace SmartHome.API.Controllers
 
             return ControllerResponseHelper.GetDefaultResponse(result, StatusCodes.Status201Created);
         }
+
+        #region UI Configuration
+        /// <summary>
+        /// Get configuration
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        [HttpGet("{userId}/config")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(List<ServiceResult<UiConfigurationDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ServiceResult<UiConfigurationDto>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(List<ServiceResult<UiConfigurationDto>>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetConfigurations(int userId, [FromQuery(Name = "type")]UiConfigurationType type)
+        {
+            // type was not specified, get all configurations
+            if(type == (int)0)
+            {
+                var result = await _uiConfigService.GetUserConfigurations(userId);
+                return ControllerResponseHelper.GetDefaultResponse(result);
+            }
+            else
+            {
+                var result = await _uiConfigService.GetUserConfiguration(userId, type);
+                return ControllerResponseHelper.GetDefaultResponse(result);
+            } 
+        }
+
+ 
+        /// <summary>
+        /// Get configuration
+        /// </summary>
+        /// <param name="config"></param>
+        [HttpGet("{userId}/config/{configId}")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetConfiguration(int userId, int configId)
+        {
+            var result = await _uiConfigService.GetUserConfiguration(userId, configId);
+
+            return ControllerResponseHelper.GetDefaultResponse(result);
+        }
+
+        /// <summary>
+        /// Create new configuration to hold UI settings
+        /// </summary>
+        /// <param name="config">Parmaeter DTO</param>
+        /// <returns>Created entity</returns>
+        [HttpPost("{userId}/config")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> AddConfiguration(int userId, UiConfigurationDto config)
+        {
+            var result = await _uiConfigService.AddConfiguration(userId, config);
+
+            return ControllerResponseHelper.GetDefaultResponse(result, StatusCodes.Status201Created);
+        }
+
+        /// <summary>
+        /// Create new configuration to hold UI settings
+        /// </summary>
+        /// <param name="config">Parmaeter DTO</param>
+        /// <returns>Created entity</returns>
+        [HttpPut("{userId}/config/{configId}")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateConfiguration(int userId, int configId, UiConfigurationDto configDto)
+        {
+            var result = await _uiConfigService.UpdateUserConfiguration(userId, configId, configDto);
+
+            return ControllerResponseHelper.GetDefaultResponse(result);
+        }
+        #endregion
 
         // TODO
         //[HttpPut("{id}")]

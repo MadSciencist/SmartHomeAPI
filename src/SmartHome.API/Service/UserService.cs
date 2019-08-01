@@ -12,6 +12,10 @@ using Microsoft.AspNetCore.Http;
 using SmartHome.API.Security.Token;
 using SmartHome.Core.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.DataAccess.Repository;
+using System.Collections.Generic;
 
 namespace SmartHome.API.Service
 {
@@ -32,14 +36,18 @@ namespace SmartHome.API.Service
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenBuilder _tokenBuilder;
         private readonly IPasswordValidator<AppUser> _passwordValidator;
+        private readonly IGenericRepository<UiConfiguration> _configRepository;
+        private readonly IMapper _mapper;
 
         public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenBuilder tokenBuilder,
-            IPasswordValidator<AppUser> passwordValidator)
+            IPasswordValidator<AppUser> passwordValidator, IMapper mapper, IGenericRepository<UiConfiguration> configRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenBuilder = tokenBuilder;
             _passwordValidator = passwordValidator;
+            _configRepository = configRepository;
+            _mapper = mapper;
         }
 
         public async Task<ServiceResult<UserDto>> GetUserAsync(int userId)
@@ -51,6 +59,7 @@ namespace SmartHome.API.Service
                 .Include(x => x.CreatedControlStrategies)
                 .Include(x => x.EligibleNodes)
                 .Include(x => x.ActivatedBy)
+                .Include(x => x.UiConfiguration)
                 .SingleOrDefaultAsync(x => x.Id == userId);
 
             if (user is null)
@@ -61,7 +70,7 @@ namespace SmartHome.API.Service
             }
 
             // only admin or user itself can access
-            if (ClaimsPrincipalHelper.IsUserAdmin(Principal) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId.ToString()))
+            if (ClaimsPrincipalHelper.IsUserAdmin(Principal) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId))
             {
                 response.Data = new UserDto
                 {
@@ -76,7 +85,8 @@ namespace SmartHome.API.Service
                     IsActive = user.IsActive,
                     CreatedControlStrategies = user.CreatedControlStrategies?.Select(x => x.Id).ToList(),
                     CreatedNodes = user.CreatedNodes?.Select(x => x.Id).ToList(),
-                    EligibleNodes = user.EligibleNodes?.Select(x => x.Id).ToList()
+                    EligibleNodes = user.EligibleNodes?.Select(x => x.Id).ToList(),
+                    UiConfigurations = _mapper.Map<List<UiConfigurationDto>>(user.UiConfiguration)
                 };
 
                 return response;
@@ -229,3 +239,13 @@ namespace SmartHome.API.Service
         }
     }
 }
+
+//var config = user.UiConfiguration.SingleOrDefault(x => x.Id == configDto.Id);
+//if (config is null)
+//{
+//    response.Alerts.Add(new Alert($"Config does not exist", MessageType.Error));
+//    response.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
+//    return response;
+//}
+//config.Type = configDto.Type;
+//    config.Data = configDto.Data;

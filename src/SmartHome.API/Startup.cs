@@ -63,8 +63,9 @@ namespace SmartHome.API
                 {
                     var result = new ServiceResult<object>
                     {
-                        Alerts = context.ModelState.Select(x =>
-                            new Alert(x.Value.Errors.FirstOrDefault()?.ErrorMessage, MessageType.Error)).ToList()
+                        Alerts = context.ModelState
+                        .Where(x => !string.IsNullOrEmpty(x.Value.Errors.FirstOrDefault()?.ErrorMessage))
+                        .Select(x => new Alert(x.Value.Errors.FirstOrDefault()?.ErrorMessage, MessageType.Error)).ToList()
                     };
 
                     return new BadRequestObjectResult(result);

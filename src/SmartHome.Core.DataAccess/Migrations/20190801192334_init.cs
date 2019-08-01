@@ -243,6 +243,28 @@ namespace SmartHome.Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_ui_configuration",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Type = table.Column<int>(nullable: false),
+                    Data = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_ui_configuration", x => x.Id);
+                    table.UniqueConstraint("AK_tbl_ui_configuration_UserId_Type", x => new { x.UserId, x.Type });
+                    table.ForeignKey(
+                        name: "FK_tbl_ui_configuration_tbl_user_UserId",
+                        column: x => x.UserId,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_node",
                 columns: table => new
                 {
@@ -499,6 +521,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_registered_magnitude");
+
+            migrationBuilder.DropTable(
+                name: "tbl_ui_configuration");
 
             migrationBuilder.DropTable(
                 name: "tbl_user_node_link");

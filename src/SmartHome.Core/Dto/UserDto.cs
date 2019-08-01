@@ -17,5 +17,6 @@ namespace SmartHome.Core.Dto
         public ICollection<int> CreatedNodes { get; set; }
         public ICollection<int> CreatedControlStrategies { get; set; }
         public ICollection<int> EligibleNodes { get; set; }
+        public ICollection<UiConfigurationDto> UiConfigurations { get; set; }
     }
 }

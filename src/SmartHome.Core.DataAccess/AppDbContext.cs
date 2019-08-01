@@ -17,10 +17,10 @@ namespace SmartHome.Core.DataAccess
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
 
-
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<DataRequestReason> RequestReasons { get; set; }
+        public DbSet<UiConfiguration> UiConfigurations { get; set; }
 
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<DictionaryValue> DictionaryValues { get; set; }
@@ -30,6 +30,12 @@ namespace SmartHome.Core.DataAccess
             base.OnModelCreating(builder);
 
             builder.Entity<AppUser>().ToTable("tbl_user");
+
+            builder.Entity<AppUser>()
+                .HasMany(x => x.UiConfiguration)
+                .WithOne(x => x.User)
+                .HasForeignKey(x => x.UserId);
+
             builder.Entity<AppRole>().ToTable("tbl_role");
 
             builder.Entity<Node>()
@@ -85,6 +91,13 @@ namespace SmartHome.Core.DataAccess
                 .HasOne(x => x.Dictionary)
                 .WithMany(x => x.Values)
                 .HasForeignKey(x => x.DictionaryId);
+
+            builder.Entity<UiConfiguration>()
+                .HasKey(x => x.Id);
+
+            // Only one config type is allowed per user
+            builder.Entity<UiConfiguration>()
+                .HasAlternateKey(x => new { x.UserId, x.Type });
         }
     }
 }
