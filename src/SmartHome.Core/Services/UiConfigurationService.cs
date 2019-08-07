@@ -43,7 +43,7 @@ namespace SmartHome.Core.Services
             return response;
         }
 
-        public async Task<ServiceResult<UiConfigurationDto>> GetUserConfiguration(int userId, int configId)
+        public async Task<ServiceResult<UiConfigurationDto>> GetUserConfigurationById(int userId, int configId)
         {
             var response = new ServiceResult<UiConfigurationDto>(Principal);
 
@@ -68,9 +68,9 @@ namespace SmartHome.Core.Services
             return response;
         }
 
-        public async Task<ServiceResult<UiConfigurationDto>> GetUserConfiguration(int userId, UiConfigurationType type)
+        public async Task<ServiceResult<ICollection<UiConfigurationDto>>> GetUserConfigurationsByType(int userId, UiConfigurationType type)
         {
-            var response = new ServiceResult<UiConfigurationDto>(Principal);
+            var response = new ServiceResult<ICollection<UiConfigurationDto>>(Principal);
 
             // Simple authorization - only user itself or admin can access it
             if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
@@ -81,7 +81,8 @@ namespace SmartHome.Core.Services
             }
 
             var entity = await GenericRepository.AsQueryableNoTrack()
-                .FirstOrDefaultAsync(x => x.UserId == userId && x.Type == type);
+                .Where(x => x.UserId == userId && x.Type == type)
+                .ToListAsync();
 
             if (entity is null)
             {
@@ -89,7 +90,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            response.Data = Mapper.Map<UiConfigurationDto>(entity);
+            response.Data = Mapper.Map<List<UiConfigurationDto>>(entity);
             return response;
         }
 

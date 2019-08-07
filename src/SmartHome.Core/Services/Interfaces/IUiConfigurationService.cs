@@ -29,15 +29,15 @@ namespace SmartHome.Core.Services
         /// <param name="userId"></param>
         /// <param name="configId"></param>
         /// <returns></returns>
-        Task<ServiceResult<UiConfigurationDto>> GetUserConfiguration(int userId, int configId);
+        Task<ServiceResult<UiConfigurationDto>> GetUserConfigurationById(int userId, int configId);
 
         /// <summary>
-        /// Get specific user config by type
+        /// Get specific user configs by type
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="configId"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
-        Task<ServiceResult<UiConfigurationDto>> GetUserConfiguration(int userId, UiConfigurationType type);
+        Task<ServiceResult<ICollection<UiConfigurationDto>>> GetUserConfigurationsByType(int userId, UiConfigurationType type);
 
         /// <summary>
         /// Update sspecific configuration

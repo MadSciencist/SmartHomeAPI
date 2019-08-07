@@ -94,10 +94,6 @@ namespace SmartHome.Core.DataAccess
 
             builder.Entity<UiConfiguration>()
                 .HasKey(x => x.Id);
-
-            // Only one config type is allowed per user
-            builder.Entity<UiConfiguration>()
-                .HasAlternateKey(x => new { x.UserId, x.Type });
         }
     }
 }

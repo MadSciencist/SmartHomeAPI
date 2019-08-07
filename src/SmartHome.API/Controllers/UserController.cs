@@ -121,7 +121,7 @@ namespace SmartHome.API.Controllers
             }
             else
             {
-                var result = await _uiConfigService.GetUserConfiguration(userId, type);
+                var result = await _uiConfigService.GetUserConfigurationsByType(userId, type);
                 return ControllerResponseHelper.GetDefaultResponse(result);
             } 
         }
@@ -138,7 +138,7 @@ namespace SmartHome.API.Controllers
         [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetConfiguration(int userId, int configId)
         {
-            var result = await _uiConfigService.GetUserConfiguration(userId, configId);
+            var result = await _uiConfigService.GetUserConfigurationById(userId, configId);
 
             return ControllerResponseHelper.GetDefaultResponse(result);
         }

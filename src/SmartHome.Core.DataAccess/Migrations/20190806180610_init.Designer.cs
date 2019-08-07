@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20190801192334_init")]
+    [Migration("20190806180610_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -334,7 +334,7 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("UserId", "Type");
+                    b.HasIndex("UserId");
 
                     b.ToTable("tbl_ui_configuration");
                 });

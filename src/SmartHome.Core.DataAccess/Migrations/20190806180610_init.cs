@@ -255,7 +255,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_ui_configuration", x => x.Id);
-                    table.UniqueConstraint("AK_tbl_ui_configuration_UserId_Type", x => new { x.UserId, x.Type });
                     table.ForeignKey(
                         name: "FK_tbl_ui_configuration_tbl_user_UserId",
                         column: x => x.UserId,
@@ -468,6 +467,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                 table: "tbl_role",
                 column: "NormalizedName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_ui_configuration_UserId",
+                table: "tbl_ui_configuration",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_user_ActivatedById",

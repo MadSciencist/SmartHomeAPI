@@ -332,7 +332,7 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("UserId", "Type");
+                    b.HasIndex("UserId");
 
                     b.ToTable("tbl_ui_configuration");
                 });
