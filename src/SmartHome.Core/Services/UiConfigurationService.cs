@@ -98,6 +98,21 @@ namespace SmartHome.Core.Services
         {
             var response = new ServiceResult<UiConfigurationDto>(Principal);
 
+            if (configDto.Type == UiConfigurationType.Control || configDto.Type == UiConfigurationType.Dashboard)
+            {
+                var existing = await GenericRepository.AsQueryableNoTrack()
+                    .Where(x => x.Type == UiConfigurationType.Control || x.Type == UiConfigurationType.Dashboard)
+                    .ToListAsync();
+
+                switch (configDto.Type)
+                {
+                    case UiConfigurationType.Dashboard when existing.Any(x => x.Type == UiConfigurationType.Dashboard):
+                        throw new SmartHomeException("Only one 'Dashboard' type config is allowed");
+                    case UiConfigurationType.Control when existing.Any(x => x.Type == UiConfigurationType.Control):
+                        throw new SmartHomeException("Only one 'Control' type config is allowed");
+                }
+            }
+
             var entity = Mapper.Map<UiConfiguration>(configDto);
             entity.UserId = userId;
 
@@ -128,6 +143,34 @@ namespace SmartHome.Core.Services
             var updated = await GenericRepository.UpdateAsync(entity);
 
             response.Data = Mapper.Map<UiConfigurationDto>(updated);
+            return response;
+        }
+
+        public async Task<ServiceResult<object>> DeleteUserConfiguration(int userId, int configId)
+        {
+            var response = new ServiceResult<object>(Principal);
+
+            // Simple authorization - only user itself or admin can access it
+            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
+            {
+                response.Alerts.Add(new Alert($"You have no permission to view config {configId} of user {userId}.", MessageType.Error));
+                response.ResponseStatusCodeOverride = StatusCodes.Status403Forbidden;
+                return response;
+            }
+
+            var config = await GenericRepository.GetByIdAsync(configId);
+            if (config is null)
+            {
+                response.Alerts.Add(new Alert("Config with given ID does not exist", MessageType.Error));
+                response.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
+                return response;
+            }
+            else
+            {
+                await GenericRepository.DeleteAsync(config);
+                response.Alerts.Add(new Alert("Successfully deleted", MessageType.Success));
+            }
+
             return response;
         }
     }

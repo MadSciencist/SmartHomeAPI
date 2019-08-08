@@ -99,10 +99,13 @@ namespace SmartHome.API.Controllers
         }
 
         #region UI Configuration
+
         /// <summary>
         /// Get configuration
         /// </summary>
         /// <param name="config"></param>
+        /// <param name="userId"></param>
+        /// <param name="type"></param>
         /// <returns></returns>
         [HttpGet("{userId}/config")]
         [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
@@ -126,11 +129,12 @@ namespace SmartHome.API.Controllers
             } 
         }
 
- 
+
         /// <summary>
         /// Get configuration
         /// </summary>
-        /// <param name="config"></param>
+        /// <param name="configId"></param>
+        /// <param name="userId"></param>
         [HttpGet("{userId}/config/{configId}")]
         [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
@@ -146,7 +150,8 @@ namespace SmartHome.API.Controllers
         /// <summary>
         /// Create new configuration to hold UI settings
         /// </summary>
-        /// <param name="config">Parmaeter DTO</param>
+        /// <param name="userId"></param>
+        /// <param name="config">Parameter DTO</param>
         /// <returns>Created entity</returns>
         [HttpPost("{userId}/config")]
         [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
@@ -162,7 +167,9 @@ namespace SmartHome.API.Controllers
         /// <summary>
         /// Create new configuration to hold UI settings
         /// </summary>
-        /// <param name="config">Parmaeter DTO</param>
+        /// <param name="userId"></param>
+        /// <param name="configId"></param>
+        /// <param name="configDto"></param>
         /// <returns>Created entity</returns>
         [HttpPut("{userId}/config/{configId}")]
         [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
@@ -172,6 +179,23 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> UpdateConfiguration(int userId, int configId, UiConfigurationDto configDto)
         {
             var result = await _uiConfigService.UpdateUserConfiguration(userId, configId, configDto);
+
+            return ControllerResponseHelper.GetDefaultResponse(result);
+        }
+
+        /// <summary>
+        /// Create new configuration to hold UI settings
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="configId"></param>
+        /// <returns>Created entity</returns>
+        [HttpDelete("{userId}/config/{configId}")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteConfiguration(int userId, int configId)
+        {
+            var result = await _uiConfigService.DeleteUserConfiguration(userId, configId);
 
             return ControllerResponseHelper.GetDefaultResponse(result);
         }

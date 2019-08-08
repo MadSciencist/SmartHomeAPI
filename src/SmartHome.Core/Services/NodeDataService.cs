@@ -34,12 +34,13 @@ namespace SmartHome.Core.Services
                 .Where(x => x.NodeId == nodeId)
                 .Where(x => x.TimeStamp >= from && x.TimeStamp <= to);
 
-            var results = await FilterByDate(query, order).ToListAsync();
+            var results = FilterByDate(query, order).ToListAsync();
 
-            if (!results.Any()) throw new SmartHomeEntityNotFoundException($"Node ID: {nodeId} data not found");
+            var paginated = await PaginatedList<NodeData>.CreateAsync(query, FilterByDate, pageNumber, pageSize, order);
 
-            var aggregate = GetAggregate(results, properties);
-            response.Data = aggregate;
+            if (!paginated.Any()) throw new SmartHomeEntityNotFoundException($"Node ID: {nodeId} data not found");
+
+            response.Data = GetAggregate(paginated, properties);
 
             return response;
         }
@@ -50,10 +51,20 @@ namespace SmartHome.Core.Services
             return query.OrderByDescending(x => x.TimeStamp);
         }
 
-        private static NodeCollectionAggregate GetAggregate(List<NodeData> paginated, string[] properties)
+        private static NodeCollectionAggregate GetAggregate(PaginatedList<NodeData> paginated, string[] properties)
         {
             // Create response
-            var aggregate = new NodeCollectionAggregate();
+            var aggregate = new NodeCollectionAggregate
+            {
+                Pagination = new PaginationResult
+                {
+                    HasNextPage = paginated.HasNextPage,
+                    HasPreviousPage = paginated.HasPreviousPage,
+                    PageIndex = paginated.PageIndex,
+                    TotalCount = paginated.TotalCount,
+                    TotalPages = paginated.TotalPages
+                }
+            };
 
             var timeStamps = paginated
                 .Where(nd => nd.Magnitudes

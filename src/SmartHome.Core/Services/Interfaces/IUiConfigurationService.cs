@@ -40,12 +40,20 @@ namespace SmartHome.Core.Services
         Task<ServiceResult<ICollection<UiConfigurationDto>>> GetUserConfigurationsByType(int userId, UiConfigurationType type);
 
         /// <summary>
-        /// Update sspecific configuration
+        /// Update specific configuration
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="configId"></param>
         /// <param name="configDto"></param>
         /// <returns></returns>
         Task<ServiceResult<UiConfigurationDto>> UpdateUserConfiguration(int userId, int configId, UiConfigurationDto configDto);
+
+        /// <summary>
+        /// Delete user config
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="configId"></param>
+        /// <returns></returns>
+        Task<ServiceResult<object>> DeleteUserConfiguration(int userId, int configId);
     }
 }

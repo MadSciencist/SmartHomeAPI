@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Infrastructure
 {
@@ -16,18 +19,26 @@ namespace SmartHome.Core.Infrastructure
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
-            AddRange(items);
+            this.AddRange(items);
         }
 
         public bool HasPreviousPage => (PageIndex > 1);
 
         public bool HasNextPage => (PageIndex < TotalPages);
 
-        public static PaginatedList<T> Create(List<T> source, int pageIndex, int pageSize)
+        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source,
+                                                               Func<IQueryable<T>, DataOrder, IQueryable<T>> filterDelegate,
+                                                               int pageIndex, int pageSize, DataOrder order)
         {
-            var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+            var count = await source.CountAsync();
+            var items = filterDelegate(source, DataOrder.Desc)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
 
-            return new PaginatedList<T>(items, source.Count, pageIndex, pageSize);
+            items = filterDelegate(items, order);
+            var list = await items.ToListAsync();
+
+            return new PaginatedList<T>(list, count, pageIndex, pageSize);
         }
     }
 }
