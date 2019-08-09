@@ -1,36 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Client.Options;
 using SmartHomeMock.SensorMock.Domain.Interfaces;
+using SmartHomeMock.SensorMock.Entities.Configuration;
 using SmartHomeMock.SensorMock.Entities.Data;
+using SmartHomeMock.SensorMock.Entities.Enums;
+using SmartHomeMock.SensorMock.Infrastructure.Interfaces;
 
 namespace SmartHomeMock.SensorMock.Domain
 {
     public class EspurnaModuleMock : IModuleMock
     {
-        private IMqttFactory _mqttFactory;
+        private readonly IFactory<ESensorType, ISensorMock> _sensorMockFactory;
+        private readonly IMqttFactory _mqttFactory;
+
         private IMqttClient _client;
+        private IMqttClientOptions _options;
+
+        private Module _module;
+        private Broker _broker;
 
         private Task _task;
 
         private ISensorMock[] _sensors;
 
-        public EspurnaModuleMock(IMqttFactory mqttFactory)
+        public EspurnaModuleMock(IFactory<ESensorType, ISensorMock> sensorMockFactory, IMqttFactory mqttFactory)
         {
+            _sensorMockFactory = sensorMockFactory;
             _mqttFactory = mqttFactory;
+        }
+
+        public void Initialize(Module module, Broker broker)
+        {
+            _module = module;
+            _broker = broker;
+
+            _options = new MqttClientOptionsBuilder()
+                .WithClientId(_module.ClientId)
+                .WithTcpServer(_broker.Host, broker.Port)
+                .Build();
 
             _client = _mqttFactory.CreateMqttClient();
 
-            foreach (var sensorMock in _sensors)
-            {
-                sensorMock.DataReceived += OnSensorDataUpdated;
-            }
+            _sensors = _module.Sensors.Select(InitializeSensorMock).ToArray();
         }
 
-        public Task Start()
+        public async Task Start()
         {
+            await _client.ConnectAsync(_options);
+
+            foreach (var sensorMock in _sensors)
+            {
+                sensorMock.StateChanged += OnSensorStateChanged;
+            }
+
             _client.UseConnectedHandler(async e =>
             {
                 Console.WriteLine("### CONNECTED WITH SERVER ###");
@@ -43,15 +70,30 @@ namespace SmartHomeMock.SensorMock.Domain
 
             _client.UseApplicationMessageReceivedHandler(HandleMessage);
 
-            return null;
+            foreach (var sensorMock in _sensors)
+            {
+                StartSensorMock(sensorMock);
+            }
         }
 
-        
+        private ISensorMock InitializeSensorMock(Sensor sensor)
+        {
+            var sensorMock = _sensorMockFactory.Get(sensor.Type);
 
-        private Task HandleMessage(MqttApplicationMessageReceivedEventArgs x)
+            sensorMock.Initialize(sensor);
+
+            return sensorMock;
+        }
+
+        private void StartSensorMock(ISensorMock sensorMock)
+        {
+            sensorMock.Start();
+        }
+
+        private Task HandleMessage(MqttApplicationMessageReceivedEventArgs e)
         {
             // Zmien swoj stan 
-            _sensors[0].UpdateState();
+            _sensors[0].UpdateState(new SensorData());
             return null;
         }
         // Subscribe to MQTT - to be able handling requests like change relay state
@@ -59,7 +101,7 @@ namespace SmartHomeMock.SensorMock.Domain
         // Subscribe to Sensors events to add/public messages to MQTT
         // API
 
-        private void OnSensorDataUpdated(object sender, SensorData data)
+        private void OnSensorStateChanged(object sender, SensorData data)
         {
             // generate message
             //_client.PublishAsync()

@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartHomeMock.SensorMock.DataAccess\SmartHomeMock.SensorMock.DataAccess.csproj" />
     <ProjectReference Include="..\SmartHomeMock.SensorMock.Entities\SmartHomeMock.SensorMock.Entities.csproj" />
+    <ProjectReference Include="..\SmartHomeMock.SensorMock.Infrastructure\SmartHomeMock.SensorMock.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

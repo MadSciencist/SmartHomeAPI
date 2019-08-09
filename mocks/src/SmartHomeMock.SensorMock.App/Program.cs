@@ -4,7 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using MQTTnet;
 using SmartHomeMock.SensorMock.DataAccess;
 using SmartHomeMock.SensorMock.DataAccess.Interfaces;
+using SmartHomeMock.SensorMock.Domain;
 using SmartHomeMock.SensorMock.Domain.Interfaces;
+using SmartHomeMock.SensorMock.Entities.Enums;
+using SmartHomeMock.SensorMock.Infrastructure.Interfaces;
 
 namespace SmartHomeMock.SensorMock.App
 {
@@ -48,11 +51,27 @@ namespace SmartHomeMock.SensorMock.App
         private static void SetUpServices()
         {
             var collection = new ServiceCollection();
+
             collection.AddSingleton<IConfiguration>(_configuration);
+
+            collection.AddScoped<EspurnaModuleMock>();
 
             collection.AddTransient<ISmartHomeMock, Domain.SmartHomeMock>();
             collection.AddTransient<ISensorMockConfigurationRepository, SensorMockConfigurationRepository>();
-            collection.AddTransient<IMqttFactory, MqttFactory>();
+            collection.AddTransient<IFactory<EModuleType, IModuleMock>, ModuleMockFactory>();
+
+            collection.AddTransient<Func<EModuleType, IModuleMock>>(serviceProvider => key =>
+            {
+                switch (key)
+                {
+                    case EModuleType.Espurna:
+                        return serviceProvider.GetService<EspurnaModuleMock>();
+
+                    default:
+                        throw new Exception($"Unsupported Module Type: {key}");
+                }
+            });
+
             collection.AddTransient<IMqttFactory, MqttFactory>();
 
             _serviceProvider = collection.BuildServiceProvider();

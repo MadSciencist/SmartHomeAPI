@@ -8,7 +8,10 @@ namespace SmartHomeMock.SensorMock.Entities.Configuration
         [JsonProperty("id")]
         public int ConfigurationId { get; set; }
 
+        [JsonProperty("broker")]
+        public Broker Broker { get; set; }
+
         [JsonProperty("modules")]
-        public ICollection<Module> EspurnaModules { get; set; }
+        public ICollection<Module> Modules { get; set; }
     }
 }

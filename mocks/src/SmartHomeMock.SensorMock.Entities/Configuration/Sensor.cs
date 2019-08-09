@@ -10,5 +10,8 @@ namespace SmartHomeMock.SensorMock.Entities.Configuration
 
         [JsonProperty("unit")]
         public EUnit Unit { get; set; }
+
+        [JsonProperty("interval")]
+        public int Interval { get; set; }
     }
 }

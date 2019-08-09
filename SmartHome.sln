@@ -40,7 +40,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHomeMock.SensorMock.En
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHomeMock.SensorMock.DataAccess", "mocks\src\SmartHomeMock.SensorMock.DataAccess\SmartHomeMock.SensorMock.DataAccess.csproj", "{6B3BE9D5-6BD1-465E-8C0B-BF5FB3C2BA6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHomeMock.SensorMock.Domain", "mocks\src\SmartHomeMock.SensorMock.Domain\SmartHomeMock.SensorMock.Domain.csproj", "{AC1E6FA5-537C-49F5-8D63-6E2914E9E389}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHomeMock.SensorMock.Domain", "mocks\src\SmartHomeMock.SensorMock.Domain\SmartHomeMock.SensorMock.Domain.csproj", "{AC1E6FA5-537C-49F5-8D63-6E2914E9E389}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHomeMock.SensorMock.Infrastructure", "mocks\src\SmartHomeMock.SensorMock.Infrastructure\SmartHomeMock.SensorMock.Infrastructure.csproj", "{F353B3FA-6B08-4D0D-9637-1F59CF92A0D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,6 +110,10 @@ Global
 		{AC1E6FA5-537C-49F5-8D63-6E2914E9E389}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC1E6FA5-537C-49F5-8D63-6E2914E9E389}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC1E6FA5-537C-49F5-8D63-6E2914E9E389}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F353B3FA-6B08-4D0D-9637-1F59CF92A0D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F353B3FA-6B08-4D0D-9637-1F59CF92A0D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F353B3FA-6B08-4D0D-9637-1F59CF92A0D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F353B3FA-6B08-4D0D-9637-1F59CF92A0D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{34CC9B66-6677-4609-A060-1C3A26457059} = {492762DE-291D-4C89-ADF7-806C16FDAD5F}
 		{6B3BE9D5-6BD1-465E-8C0B-BF5FB3C2BA6A} = {492762DE-291D-4C89-ADF7-806C16FDAD5F}
 		{AC1E6FA5-537C-49F5-8D63-6E2914E9E389} = {492762DE-291D-4C89-ADF7-806C16FDAD5F}
+		{F353B3FA-6B08-4D0D-9637-1F59CF92A0D4} = {492762DE-291D-4C89-ADF7-806C16FDAD5F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {68CAEBA0-5529-44C7-82DC-114D2B13A91E}

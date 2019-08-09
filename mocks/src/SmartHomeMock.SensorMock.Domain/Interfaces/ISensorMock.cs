@@ -6,7 +6,7 @@ namespace SmartHomeMock.SensorMock.Domain.Interfaces
 {
     public interface ISensorMock
     {
-        event EventHandler<SensorData> DataReceived;
+        event EventHandler<SensorData> StateChanged;
 
         void Initialize(Sensor sensor);
 
@@ -14,6 +14,6 @@ namespace SmartHomeMock.SensorMock.Domain.Interfaces
 
         void Stop();
 
-        void UpdateState();
+        void UpdateState(SensorData data);
     }
 }
