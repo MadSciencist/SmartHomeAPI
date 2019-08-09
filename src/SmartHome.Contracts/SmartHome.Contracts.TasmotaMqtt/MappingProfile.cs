@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SmartHome.Core.Domain.Converters;
 using SmartHome.Core.MessageHanding;
+using System;
 using System.Collections.Generic;
-using SmartHome.Core.Domain.Converters;
 
 namespace SmartHome.Contracts.TasmotaMqtt
 {

@@ -50,7 +50,7 @@ namespace SmartHome.Core.DataAccess
                 .WithMany(x => x.Nodes)
                 .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
-                
+
             builder.Entity<Node>()
                 .HasOne(x => x.CreatedBy)
                 .WithMany(u => u.CreatedNodes)
@@ -75,7 +75,7 @@ namespace SmartHome.Core.DataAccess
                 .HasOne(x => x.User)
                 .WithMany(x => x.EligibleNodes)
                 .HasForeignKey(x => x.UserId);
-            
+
             // Configure dictionaries one-to-many relationship
             builder.Entity<Dictionary>()
                 .HasKey(x => x.Id);

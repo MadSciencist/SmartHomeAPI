@@ -20,7 +20,7 @@ namespace SmartHome.Core.Services
 
         public async Task<ServiceResult<ICollection<UiConfigurationDto>>> GetUserConfigurations(int userId)
         {
-            var response = new ServiceResult<ICollection<UiConfigurationDto>> (Principal);
+            var response = new ServiceResult<ICollection<UiConfigurationDto>>(Principal);
 
             // Simple authorization - only user itself or admin can access it
             if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
@@ -33,7 +33,7 @@ namespace SmartHome.Core.Services
                 .Where(x => x.UserId == userId)
                 .ToListAsync();
 
-            if(entities is null || entities.Count == 0)
+            if (entities is null || entities.Count == 0)
             {
                 response.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
                 return response;

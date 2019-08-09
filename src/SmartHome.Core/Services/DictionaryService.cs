@@ -1,11 +1,11 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Core.Infrastructure;
 
 namespace SmartHome.Core.Services
 {
@@ -13,7 +13,7 @@ namespace SmartHome.Core.Services
     {
         private readonly SyntheticDictionaryService _syntheticDictionary;
 
-        public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary  ) : base(container)
+        public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary) : base(container)
         {
             _syntheticDictionary = syntheticDictionary;
         }

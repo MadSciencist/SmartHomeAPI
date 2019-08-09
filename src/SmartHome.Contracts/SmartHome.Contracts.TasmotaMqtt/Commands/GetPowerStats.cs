@@ -12,7 +12,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
     [ParameterType(null)]
     public class GetPowerStats : MqttControlStrategyBase, IControlCommand
     {
-        public GetPowerStats(ILifetimeScope container) : base(container) 
+        public GetPowerStats(ILifetimeScope container) : base(container)
         {
         }
 

@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using SmartHome.Core.Domain.User;
+﻿using SmartHome.Core.Domain.User;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Domain.Entity
 {

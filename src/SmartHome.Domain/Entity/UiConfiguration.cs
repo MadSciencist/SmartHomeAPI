@@ -11,7 +11,7 @@ namespace SmartHome.Core.Domain.Entity
         public string Data { get; set; }
 
         // Navigation property
-        public AppUser User{ get; set; }
+        public AppUser User { get; set; }
         public int UserId { get; set; }
     }
 }

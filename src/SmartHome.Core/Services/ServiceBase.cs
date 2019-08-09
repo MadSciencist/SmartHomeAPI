@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.User;
@@ -9,11 +10,10 @@ using SmartHome.Core.Utils;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace SmartHome.Core.Services
 {
-    public abstract class ServiceBase<TValidator, TRepository> : IServiceBase where TValidator: class, new() where TRepository: class, new()
+    public abstract class ServiceBase<TValidator, TRepository> : IServiceBase where TValidator : class, new() where TRepository : class, new()
     {
         public ClaimsPrincipal Principal { get; set; }
         protected ILifetimeScope Container { get; set; }

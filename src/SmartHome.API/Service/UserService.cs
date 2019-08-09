@@ -1,21 +1,21 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SmartHome.API.Dto;
+using SmartHome.API.Security.Token;
+using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Domain.User;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using SmartHome.API.Dto;
-using SmartHome.Core.Dto;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-using SmartHome.API.Security.Token;
-using SmartHome.Core.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.DataAccess.Repository;
-using System.Collections.Generic;
 
 namespace SmartHome.API.Service
 {

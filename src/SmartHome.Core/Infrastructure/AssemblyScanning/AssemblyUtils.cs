@@ -9,7 +9,7 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
         public static T GetAttribute<T>(this Assembly asm) where T : Attribute
             => GetAttributes<T>(asm).SingleOrDefault();
 
-        public static T GetAttribute<T>(this Type type) where T : Attribute 
+        public static T GetAttribute<T>(this Type type) where T : Attribute
             => GetAttributes<T>(type).SingleOrDefault();
 
         public static T[] GetAttributes<T>(this Type type) where T : Attribute

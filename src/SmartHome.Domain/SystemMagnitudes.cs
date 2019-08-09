@@ -1,6 +1,6 @@
-﻿using SmartHome.Core.Domain.Models;
+﻿using SmartHome.Core.Domain.ContractParams;
+using SmartHome.Core.Domain.Models;
 using System.Collections.Generic;
-using SmartHome.Core.Domain.ContractParams;
 
 namespace SmartHome.Core.Domain
 {
@@ -15,7 +15,7 @@ namespace SmartHome.Core.Domain
         {
             InitValues();
         }
-        
+
         private static void InitValues()
         {
             Properties = new List<PhysicalProperty>

@@ -69,7 +69,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
                     await ExtractSaveData(Node.Id, "light", value);
                     var property = base.DataMapper.GetPhysicalPropertyByContractMagnitude("light");
                     NotificationService.PushDataNotification(Node.Id,
-                        new NodeDataMagnitudeDto {PhysicalProperty = property, Value = value});
+                        new NodeDataMagnitudeDto { PhysicalProperty = property, Value = value });
                     return true;
                 }
             }

@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -24,8 +25,6 @@ using SmartHome.Core.Services;
 using System;
 using System.Linq;
 using System.Reflection;
-using MediatR;
-using SmartHome.Core.Control;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace SmartHome.API
@@ -34,7 +33,7 @@ namespace SmartHome.API
     {
         public IContainer ApplicationContainer { get; private set; }
         public IHostingEnvironment Environment { get; }
-        public IConfiguration Configuration { get;  }
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
@@ -46,7 +45,8 @@ namespace SmartHome.API
         {
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(json => {
+                .AddJsonOptions(json =>
+                {
                     json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                     json.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                     json.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
@@ -55,7 +55,7 @@ namespace SmartHome.API
                 {
                     x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>();
                 });
-            
+
             // Create custom BadRequest response for built-in validator
             services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -91,7 +91,7 @@ namespace SmartHome.API
 
             // Api docs gen
             services.AddConfiguredSwagger();
-            
+
             // This allows access http context and user in constructor
             services.AddHttpContextAccessor();
 
