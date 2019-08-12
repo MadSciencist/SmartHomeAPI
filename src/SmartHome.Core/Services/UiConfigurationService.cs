@@ -163,7 +163,6 @@ namespace SmartHome.Core.Services
             {
                 response.Alerts.Add(new Alert("Config with given ID does not exist", MessageType.Error));
                 response.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
-                return response;
             }
             else
             {
