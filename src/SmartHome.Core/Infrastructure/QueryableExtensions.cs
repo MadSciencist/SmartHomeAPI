@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
+using SmartHome.Core.Domain.Enums;
 
 namespace SmartHome.Core.Infrastructure
 {
@@ -65,6 +67,14 @@ namespace SmartHome.Core.Infrastructure
             result.Results = await query.Skip(skip).Take(pageSize).ToListAsync();
 
             return result;
+        }
+
+        public async static Task<PagedResult<T>> GetOrderPagedAsync<T, TKey>(this IQueryable<T> query,
+                         int page, int pageSize, Expression<Func<T, TKey>> orderFunc, DataOrder order = DataOrder.Desc) where T : class
+        {
+            return order == DataOrder.Asc
+                ? await GetPagedAsync(query.OrderBy(orderFunc), page, pageSize)
+                : await GetPagedAsync(query.OrderByDescending(orderFunc), page, pageSize);
         }
     }
 }

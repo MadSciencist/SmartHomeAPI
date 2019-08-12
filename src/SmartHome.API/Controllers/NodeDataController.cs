@@ -71,10 +71,11 @@ namespace SmartHome.API.Controllers
             DateTime dateFrom = from ?? _config.GetValue<DateTime>("Defaults:Paging:DateFrom");
             DateTime dateTo = to ?? DateTime.Now;
             DataOrder order = orderByDate ?? DataOrder.Asc;
+            int maxCount = _config.GetValue<int>("Defaults:MaxCount");
 
             var paged = from is null && to is null;
 
-            var serviceResult = await _nodeDataService.GetNodeDatas(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order, paged);
+            var serviceResult = await _nodeDataService.GetNodeDatas(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order, maxCount, paged);
 
             return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }

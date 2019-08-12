@@ -7,6 +7,14 @@ namespace SmartHome.Core.Dto.NodeData
 {
     public class NodeMagnitudeDataPaged : NodeMagnitudeData
     {
-        public new PagedResult<NodeMagnitudeRecord> Data { get; set; }
+        private PagedResult<NodeMagnitudeRecord> _pagedData;
+        public PagedResult<NodeMagnitudeRecord> PagedData {
+            get => _pagedData;
+            set
+            {
+                _pagedData = value;
+                Data = value.Results;
+            }
+        }
     }
 }

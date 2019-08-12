@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace SmartHome.Core.Dto.NodeData
 {
@@ -8,6 +9,7 @@ namespace SmartHome.Core.Dto.NodeData
 
         public string Unit { get; set; }
 
+        [JsonProperty("records")]
         public ICollection<NodeMagnitudeRecord> Data { get; set; }
     }   
 }

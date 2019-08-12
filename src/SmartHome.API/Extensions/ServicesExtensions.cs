@@ -45,6 +45,7 @@ namespace SmartHome.API.Extensions
                 {
                     options.EnableSensitiveDataLogging();
                     options.EnableDetailedErrors();
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 }
             });
 
