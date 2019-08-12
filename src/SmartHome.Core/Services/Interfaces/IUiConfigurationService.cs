@@ -12,7 +12,7 @@ namespace SmartHome.Core.Services
         /// Add new user UI configuration with specified type
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="config"></param>
+        /// <param name="configDto"></param>
         /// <returns></returns>
         Task<ServiceResult<UiConfigurationDto>> AddConfiguration(int userId, UiConfigurationDto configDto);
 
