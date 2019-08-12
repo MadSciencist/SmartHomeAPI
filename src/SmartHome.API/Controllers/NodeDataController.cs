@@ -47,6 +47,21 @@ namespace SmartHome.API.Controllers
         /// <param name="to">Date to (UTC)</param>
         /// <param name="orderByDate">Order by time (ASC, DESC)</param>
         /// <returns></returns>
+        //[HttpGet("node/{nodeId}")]
+        //public async Task<IActionResult> GetPaged(int nodeId, [FromQuery] string[] properties, int? page, int? pageSize,
+        //    DateTime? from, DateTime? to, DataOrder? orderByDate)
+        //{
+        //    int pageInt = page ?? _config.GetValue<int>("Defaults:Paging:PageNumber");
+        //    int pageSizeInt = pageSize ?? _config.GetValue<int>("Defaults:Paging:PageSize");
+        //    DateTime dateFrom = from ?? _config.GetValue<DateTime>("Defaults:Paging:DateFrom");
+        //    DateTime dateTo = to ?? DateTime.Now;
+        //    DataOrder order = orderByDate ?? DataOrder.Asc;
+
+        //    var serviceResult = await _nodeDataService.GetNodeData(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order);
+
+        //    return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        //}
+
         [HttpGet("node/{nodeId}")]
         public async Task<IActionResult> GetPaged(int nodeId, [FromQuery] string[] properties, int? page, int? pageSize,
             DateTime? from, DateTime? to, DataOrder? orderByDate)
@@ -57,7 +72,9 @@ namespace SmartHome.API.Controllers
             DateTime dateTo = to ?? DateTime.Now;
             DataOrder order = orderByDate ?? DataOrder.Asc;
 
-            var serviceResult = await _nodeDataService.GetNodeData(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order);
+            var paged = from is null && to is null;
+
+            var serviceResult = await _nodeDataService.GetNodeDatas(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order, paged);
 
             return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }

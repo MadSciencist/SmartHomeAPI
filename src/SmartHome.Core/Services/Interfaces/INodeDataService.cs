@@ -43,5 +43,8 @@ namespace SmartHome.Core.Services
         /// <returns></returns>
         Task<ServiceResult<NodeCollectionAggregate>> GetNodeData(int nodeId, int pageNumber,
             int pageSize, string[] properties, DateTime from, DateTime to, DataOrder order);
+
+        Task<ServiceResult<NodeComposedData>> GetNodeDatas(int nodeId, int pageNumber,
+            int pageSize, string[] properties, DateTime from, DateTime to, DataOrder order, bool paged = false);
     }
 }
