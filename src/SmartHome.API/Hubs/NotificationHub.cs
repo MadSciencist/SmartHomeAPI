@@ -21,7 +21,7 @@ namespace SmartHome.API.Hubs
         {
             var (isAuth, id) = _tokenDecoder.GetClaimValues(Context);
 
-            if (isAuth && id.HasValue) 
+            if (isAuth && id.HasValue)
             {
                 await _notificationService.AddClientAsync(Context.ConnectionId, id.Value);
                 await base.OnConnectedAsync();

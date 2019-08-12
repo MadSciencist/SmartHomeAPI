@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using SmartHome.Core.Domain.Entity;
+﻿using SmartHome.Core.Domain.Entity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Domain.DictionaryEntity
 {

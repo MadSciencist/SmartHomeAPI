@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;

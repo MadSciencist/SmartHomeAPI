@@ -117,7 +117,7 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> GetConfigurations(int userId, [FromQuery(Name = "type")]UiConfigurationType type)
         {
             // type was not specified, get all configurations
-            if(type == (int)0)
+            if (type == (int)0)
             {
                 var result = await _uiConfigService.GetUserConfigurations(userId);
                 return ControllerResponseHelper.GetDefaultResponse(result);
@@ -126,7 +126,7 @@ namespace SmartHome.API.Controllers
             {
                 var result = await _uiConfigService.GetUserConfigurationsByType(userId, type);
                 return ControllerResponseHelper.GetDefaultResponse(result);
-            } 
+            }
         }
 
 

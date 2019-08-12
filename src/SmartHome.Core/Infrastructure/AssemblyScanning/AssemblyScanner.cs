@@ -1,11 +1,11 @@
 ﻿using SmartHome.Core.Control;
+using SmartHome.Core.MessageHanding;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using SmartHome.Core.MessageHanding;
 
 namespace SmartHome.Core.Infrastructure.AssemblyScanning
 {

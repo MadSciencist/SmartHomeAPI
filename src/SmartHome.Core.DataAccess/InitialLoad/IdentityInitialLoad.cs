@@ -27,7 +27,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
             using (var scope = _provider.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
-   
+
                 if (!await roleManager.RoleExistsAsync("admin")
                     && !await roleManager.RoleExistsAsync("user")
                     && !await roleManager.RoleExistsAsync("sensor"))

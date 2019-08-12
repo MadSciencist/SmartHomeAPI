@@ -2,14 +2,13 @@
 using Microsoft.Extensions.Caching.Memory;
 using SmartHome.Core.Domain.DictionaryEntity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
+using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using SmartHome.Core.Infrastructure.Attributes;
 
 namespace SmartHome.Core.Services
 {
@@ -38,12 +37,12 @@ namespace SmartHome.Core.Services
         public IEnumerable<string> GetNames()
             => Dictionaries.Select(x => x.Name);
 
-        public Dictionary GetDictionary(string name) 
+        public Dictionary GetDictionary(string name)
             => Dictionaries.SingleOrDefault(x => x.Name.CompareInvariant(name));
 
         private void FillDictionaries()
         {
-            if(_cache.TryGetValue<List<Dictionary>>(CacheKey, out var dict))
+            if (_cache.TryGetValue<List<Dictionary>>(CacheKey, out var dict))
             {
                 Dictionaries = dict;
                 return;
@@ -70,7 +69,7 @@ namespace SmartHome.Core.Services
                 var mapperName = mapper.Value.First()?.FullName;
                 var dataMapper = _container.ResolveNamed<object>(mapperName) as INodeDataMapper;
                 if (dataMapper is null) throw new InvalidOperationException($"{asmLocation} has no mapper");
-                
+
                 Dictionaries.Add(new Dictionary
                 {
                     Name = $"{info.ProductName}-properties",

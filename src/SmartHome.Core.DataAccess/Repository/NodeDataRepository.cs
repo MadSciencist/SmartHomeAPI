@@ -37,7 +37,7 @@ namespace SmartHome.Core.DataAccess.Repository
 
             var nodeData = new NodeData
             {
-                RequestReasonId = (int) reason,
+                RequestReasonId = (int)reason,
                 TimeStamp = DateTime.UtcNow,
                 Magnitudes = new List<NodeDataMagnitude>
                 {

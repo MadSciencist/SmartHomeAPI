@@ -14,7 +14,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
     [ParameterType(typeof(RgbLightParam))]
     public class RgbLight : MqttControlStrategyBase, IControlCommand
     {
-        public RgbLight(ILifetimeScope container) : base(container) 
+        public RgbLight(ILifetimeScope container) : base(container)
         {
         }
 
@@ -24,7 +24,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
 
             var logic = new LightLogic();
             var (topic, payload) = logic.GetTopicPayloadForRgbLight(param);
-            
+
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic($"{node.BaseTopic}/{topic}")
                 .WithPayload(payload)

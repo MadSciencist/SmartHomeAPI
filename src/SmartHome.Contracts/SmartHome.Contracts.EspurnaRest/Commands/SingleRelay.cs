@@ -52,7 +52,7 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
                     var value = response[RelayKey];
                     var magnitudeDto = new NodeDataMagnitudeDto(property, value);
                     NotificationService.PushDataNotification(node.Id, magnitudeDto);
-                    await NodeDataService.AddSingleAsync(node.Id, EDataRequestReason.Node,magnitudeDto);
+                    await NodeDataService.AddSingleAsync(node.Id, EDataRequestReason.Node, magnitudeDto);
                 }
             }
         }

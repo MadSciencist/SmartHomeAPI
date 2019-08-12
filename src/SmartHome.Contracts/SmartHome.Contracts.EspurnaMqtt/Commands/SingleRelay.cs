@@ -14,7 +14,7 @@ namespace SmartHome.Contracts.EspurnaMqtt.Commands
     [ParameterType(typeof(SingleRelayParam))]
     public class SingleRelay : MqttControlStrategyBase, IControlCommand
     {
-        public SingleRelay(ILifetimeScope container) : base(container) 
+        public SingleRelay(ILifetimeScope container) : base(container)
         {
         }
 

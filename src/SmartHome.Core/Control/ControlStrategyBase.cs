@@ -14,7 +14,7 @@ namespace SmartHome.Core.Control
         {
             Container = container;
         }
-        
+
         private NotificationService _notificationService;
         protected NotificationService NotificationService =>
             _notificationService ?? (_notificationService = Container.Resolve<NotificationService>());

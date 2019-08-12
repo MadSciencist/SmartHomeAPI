@@ -1,10 +1,10 @@
-﻿using System;
+﻿using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Utils;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Utils;
 
 namespace SmartHome.Core.Security
 {

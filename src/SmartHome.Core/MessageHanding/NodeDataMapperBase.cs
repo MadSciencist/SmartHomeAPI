@@ -1,6 +1,6 @@
-﻿using System;
-using SmartHome.Core.Domain;
+﻿using SmartHome.Core.Domain;
 using SmartHome.Core.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -48,7 +48,7 @@ namespace SmartHome.Core.MqttBroker
             await Server.StopAsync();
             _logger.LogInformation("Mqtt broker stopped");
         }
-        
+
         public async Task<MqttClientPublishResult> PublishSystemMessageAsync(MqttApplicationMessage message)
         {
             return await Server.PublishAsync(message);
@@ -74,7 +74,7 @@ namespace SmartHome.Core.MqttBroker
                     });
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "MQTT Broker exception");
                 throw;

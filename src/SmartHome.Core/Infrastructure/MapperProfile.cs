@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
+using System.Linq;
 
 namespace SmartHome.Core.Infrastructure
 {
