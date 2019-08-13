@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -37,28 +36,6 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                             Id = (int) EDataRequestReason.User,
                             Reason = "User",
                             Description = "User was initiator"
-                        }
-                    };
-
-                    await context.AddRangeAsync(requestReasons);
-                    await context.SaveChangesAsync();
-                }
-
-                if (!context.LinkageType.Any())
-                {
-                    var requestReasons = new List<ControlStrategyLinkageType>
-                    {
-                        new ControlStrategyLinkageType
-                        {
-                            Id = (int) LinkageType.Sensor,
-                            Name = LinkageType.Sensor.ToString(),
-                            Description = "Control strategy - sensor many-many relation ship"
-                        },
-                        new ControlStrategyLinkageType
-                        {
-                            Id = (int) LinkageType.Command,
-                            Name = LinkageType.Command.ToString(),
-                            Description = "Control strategy - command many-many relation ship"
                         }
                     };
 

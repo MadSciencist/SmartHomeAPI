@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using SmartHome.Core.Domain.Entity;
+﻿using SmartHome.Core.Domain.Entity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Domain.DictionaryEntity
 {
@@ -8,7 +8,8 @@ namespace SmartHome.Core.Domain.DictionaryEntity
     {
         public string DisplayValue { get; set; }
         public string InternalValue { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
+        public string Metadata { get; set; }
 
         public int DictionaryId { get; set; }
         public Dictionary Dictionary { get; set; }

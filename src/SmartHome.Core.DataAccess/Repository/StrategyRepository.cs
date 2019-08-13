@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.Domain.Entity;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
@@ -12,18 +11,9 @@ namespace SmartHome.Core.DataAccess.Repository
         {
         }
 
-        public new async Task<IEnumerable<ControlStrategy>> GetAll()
+        public override IQueryable<ControlStrategy> AsQueryableNoTrack()
         {
-            return await Context.ControlStrategies
-                .Include(x => x.ControlStrategyLinkages)
-                .ToListAsync();
-        }
-
-        public override async Task<ControlStrategy> GetByIdAsync(int id)
-        {
-            return await Context.ControlStrategies
-                .Include(x => x.ControlStrategyLinkages)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return base.AsQueryableNoTrack().Include(x => x.RegisteredMagnitudes);
         }
     }
 }

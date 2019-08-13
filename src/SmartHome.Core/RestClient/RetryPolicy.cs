@@ -6,7 +6,7 @@ using System.Net;
 namespace SmartHome.Core.RestClient
 {
     public class RetryPolicy
-    { 
+    {
         public int RetryCount { get; set; }
 
         public RetryPolicy(int retryCount)
@@ -23,7 +23,7 @@ namespace SmartHome.Core.RestClient
         private static bool ResultPredicate(IRestResponse response)
         {
             var isCompleted = response.ResponseStatus == ResponseStatus.Completed;
-            var isNotOk =  response.StatusCode != HttpStatusCode.OK;
+            var isNotOk = response.StatusCode != HttpStatusCode.OK;
 
             return isCompleted && isNotOk;
         }

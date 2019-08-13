@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Security;
-using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Infrastructure;
 using System;
 using System.Linq;
@@ -42,7 +41,7 @@ namespace SmartHome.API.Utils
 
             if (serviceResult.Alerts.Any(x => x.MessageType == MessageType.Exception))
             {
-                var response = new ObjectResult(serviceResult) {StatusCode = StatusCodes.Status500InternalServerError};
+                var response = new ObjectResult(serviceResult) { StatusCode = StatusCodes.Status500InternalServerError };
                 return response;
             }
 
@@ -61,12 +60,12 @@ namespace SmartHome.API.Utils
 
         private static void ValidateAndThrowIfNeeded<T>(ServiceResult<T> serviceResult) where T : class
         {
-            if (serviceResult == null)
+            if (serviceResult is null)
             {
                 throw new ArgumentNullException(nameof(ServiceResult<T>));
             }
 
-            if (serviceResult.Principal == null)
+            if (serviceResult.Principal is null)
             {
                 throw new ArgumentNullException(nameof(serviceResult.Principal));
             }

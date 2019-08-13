@@ -16,9 +16,9 @@ namespace SmartHome.API.Extensions
         private readonly RequestDelegate _next;
         private static ILogger _logger;
 
-        public ExceptionLoggingMiddleware(RequestDelegate next, ILoggerFactory logger)
+        public ExceptionLoggingMiddleware(RequestDelegate next, ILogger<ExceptionLoggingMiddleware> logger)
         {
-            _logger = logger.CreateLogger(nameof(ExceptionLoggingMiddleware));
+            _logger = logger;
             _next = next;
         }
 
@@ -28,7 +28,7 @@ namespace SmartHome.API.Extensions
             {
                 await _next(httpContext);
             }
-            catch(SmartHomeUnauthorizedException ex)
+            catch (SmartHomeUnauthorizedException ex)
             {
                 await HandleExceptionAsync(ex, httpContext, HttpStatusCode.Forbidden);
             }
@@ -58,7 +58,7 @@ namespace SmartHome.API.Extensions
             var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
             var uiMessage = isTrusted ? $"{ex.Message} {ex.InnerException?.Message}" : "System error occured";
 
-            var response = new ServiceResult<object> {Metadata = {ProblemDetails = CreateProblemDetails(ex, context, correlationId, isTrusted) } };
+            var response = new ServiceResult<object> { Metadata = { ProblemDetails = CreateProblemDetails(ex, context, correlationId, isTrusted) } };
             response.Alerts.Add(new Alert(uiMessage, MessageType.Exception));
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));

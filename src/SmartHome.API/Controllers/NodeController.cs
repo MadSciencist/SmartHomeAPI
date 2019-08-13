@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -8,13 +6,14 @@ using SmartHome.API.Utils;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.API.Controllers
 {
-    [Authorize]
     [ApiController]
-    [ApiVersion("1")]
+    [Authorize(Policy = "Admin")]
+    [Authorize(Policy = "User")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class NodeController : ControllerBase
@@ -27,6 +26,10 @@ namespace SmartHome.API.Controllers
             _nodeService.Principal = contextAccessor.HttpContext.User;
         }
 
+        /// <summary>
+        /// List all nodes
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [ProducesResponseType(typeof(ServiceResult<IEnumerable<NodeDto>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<IEnumerable<NodeDto>>), StatusCodes.Status400BadRequest)]
@@ -34,9 +37,14 @@ namespace SmartHome.API.Controllers
         {
             var serviceResult = await _nodeService.GetAll();
 
-            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
 
+        /// <summary>
+        /// Add new node
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
         [HttpPost]
         [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
@@ -47,30 +55,33 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status201Created);
         }
 
-        // TODO
-        [HttpPut("{id}")]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(NodeDto dto, int id)
-        {
-            throw new NotImplementedException("UPDATE");
-        }
-
-        //TODO
-        [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> DeleteById(int id)
-        {
-            throw new NotImplementedException("DeleteById");
-        }
-
+        /// <summary>
+        /// Execute a command on a node
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="command"></param>
+        /// <param name="commandParams"></param>
+        /// <returns></returns>
         [HttpPost("{nodeId}/command/{command}")]
-        public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams)
+        public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams = null)
         {
             var serviceResult = await _nodeService.Control(nodeId, command, commandParams);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status202Accepted);
+        }
+
+        /// <summary>
+        /// Get parameter schema for given command5
+        /// </summary>
+        /// <param name="nodeId"></param>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        [HttpGet("{nodeId}/command/{command}")]
+        public async Task<IActionResult> GetRequestBodyForCommand(int nodeId, string command)
+        {
+            var serviceResult = await _nodeService.GetCommandParam(nodeId, command);
+
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
     }
 }

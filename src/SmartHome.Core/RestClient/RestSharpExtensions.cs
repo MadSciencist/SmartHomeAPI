@@ -21,9 +21,9 @@ namespace SmartHome.Core.RestClient
         }
 
         public static async Task<IRestResponse> ExecuteWithPolicyAsync(
-            this IRestClient client, 
-            IRestRequest request, 
-            CancellationToken cancellationToken, 
+            this IRestClient client,
+            IRestRequest request,
+            CancellationToken cancellationToken,
             AsyncRetryPolicy<IRestResponse> policy)
         {
             var policyResult = await policy.ExecuteAndCaptureAsync(ct => client.ExecuteTaskAsync(request, ct), cancellationToken);
@@ -36,9 +36,9 @@ namespace SmartHome.Core.RestClient
         }
 
         public static async Task<IRestResponse<T>> ExecuteWithPolicyAsync<T>(
-            this IRestClient client, 
-            IRestRequest request, 
-            CancellationToken cancellationToken, 
+            this IRestClient client,
+            IRestRequest request,
+            CancellationToken cancellationToken,
             AsyncRetryPolicy<IRestResponse<T>> policy)
         {
             var policyResult = await policy.ExecuteAndCaptureAsync(ct => client.ExecuteTaskAsync<T>(request, ct), cancellationToken);

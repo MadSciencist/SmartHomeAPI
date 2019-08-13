@@ -1,14 +1,17 @@
 ﻿using Autofac;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Authorization;
+using Newtonsoft.Json.Schema.Generation;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
+using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.Infrastructure.Validators;
+using SmartHome.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,11 +47,11 @@ namespace SmartHome.Core.Services
                 throw;
             }
         }
-        
-        public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData)
+
+        public async Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeDto)
         {
             var response = new ServiceResult<NodeDto>(Principal);
-            var validationResult = Validator.Validate(nodeData);
+            var validationResult = Validator.Validate(nodeDto);
 
             if (!validationResult.IsValid)
             {
@@ -63,12 +66,23 @@ namespace SmartHome.Core.Services
             }
 
             var userId = GetCurrentUserId();
-            var nodeToCreate = Mapper.Map<Node>(nodeData);
+            var nodeToCreate = Mapper.Map<Node>(nodeDto);
+            nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
 
             nodeToCreate.CreatedById = userId;
             nodeToCreate.Created = DateTime.UtcNow;
 
             return await SaveNode(nodeToCreate, userId, response);
+        }
+
+        private static ControlStrategy CreateStrategy(NodeDto nodeDto)
+        {
+            return new ControlStrategy
+            {
+                AssemblyProduct = nodeDto.ControlStrategyName,
+                ContractAssembly = AssemblyScanner.GetAssemblyModuleNameByProductInfo(nodeDto.ControlStrategyName),
+                RegisteredMagnitudes = nodeDto.Magnitudes.Select(x => new RegisteredMagnitude { Magnitude = x }).ToList()
+            };
         }
 
         private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
@@ -89,7 +103,9 @@ namespace SmartHome.Core.Services
                     DbContext.SaveChanges();
                     transaction.Commit();
                     response.Data = Mapper.Map<NodeDto>(createdNode);
+                    response.Data.CreatedById = userId;
                     response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+
                     return response;
                 }
                 catch (Exception ex)
@@ -103,42 +119,68 @@ namespace SmartHome.Core.Services
 
         public async Task<ServiceResult<object>> Control(int nodeId, string command, JObject commandParams)
         {
+            if (string.IsNullOrEmpty(command)) throw new ArgumentException(nameof(command));
+
             var response = new ServiceResult<object>(Principal);
 
-            // get the node
             var node = await _nodeRepository.GetByIdAsync(nodeId);
 
             if (!_authProvider.Authorize(null, Principal, OperationType.Execute))
             {
-                throw new SmartHomeUnauthorizedException(
-                    $"User ${Principal.Identity.Name} is not authorized to add new node.");
-            }
-
-            var systemCommand = node.ControlStrategy.ControlStrategyLinkages
-                .Where(x => x.ControlStrategyLinkageTypeId == (int) LinkageType.Command)
-                .FirstOrDefault(x => x.InternalValue?.ToLower() == command.ToLower());
-
-            if (systemCommand == null)
-            {
-                response.Alerts.Add(new Alert("Command not allowed.", MessageType.Error));
-                return response;
+                throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to add new node.");
             }
 
             try
             {
-                // resolve control executor
-                var strategy = node.ControlStrategy;
-                var executorFullyQualifiedName =
-                    $"SmartHome.Core.Contracts.{strategy.ControlProviderName}.Control.{strategy.ControlContext}.{systemCommand.InternalValue}";
+                // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
+                var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
 
-                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlStrategy strategyExecutor))
+                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlCommand strategy))
                 {
-                    response.Alerts.Add(new Alert("Not existing control strategy.", MessageType.Error));
+                    response.Alerts.Add(new Alert($"{command} is not valid for strategy: {node.ControlStrategy.ContractAssembly}", MessageType.Error));
                     return response;
                 }
 
-                await strategyExecutor.Execute(node, commandParams);
+                await strategy.Execute(node, commandParams);
                 response.ResponseStatusCodeOverride = StatusCodes.Status202Accepted;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
+            }
+        }
+
+        public async Task<ServiceResult<object>> GetCommandParam(int nodeId, string command)
+        {
+            if (string.IsNullOrEmpty(command)) throw new ArgumentException(nameof(command));
+
+            var response = new ServiceResult<object>(Principal);
+
+            var node = await _nodeRepository.GetByIdAsync(nodeId);
+
+            if (!_authProvider.Authorize(null, Principal, OperationType.Read))
+            {
+                throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to add new node.");
+            }
+
+            try
+            {
+                // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
+                var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
+
+                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlCommand strategy))
+                {
+                    response.Alerts.Add(new Alert($"{command} is not valid for strategy: {node.ControlStrategy.ContractAssembly}", MessageType.Error));
+                    return response;
+                }
+
+                var attr = strategy.GetType().GetAttribute<ParameterTypeAttribute>();
+                var generator = new JSchemaGenerator();
+                var schema = generator.Generate(attr.ParameterType);
+                response.Data = schema;
+
                 return response;
             }
             catch (Exception ex)

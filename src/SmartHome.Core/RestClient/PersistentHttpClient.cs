@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using RestSharp;
-using SmartHome.Core.Infrastructure;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,9 +12,9 @@ namespace SmartHome.Core.RestClient
         private readonly IRestClient _client;
         private readonly RetryPolicy _retryPolicyProvider;
 
-        public PersistentHttpClient(ILoggerFactory loggerFactory)
+        public PersistentHttpClient(ILogger<PersistentHttpClient> logger)
         {
-            _logger = loggerFactory.CreateLogger(nameof(PersistentHttpClient));
+            _logger = logger;
             _retryPolicyProvider = new RetryPolicy(3);
             _client = CreateDefaultRestClient();
         }
@@ -33,16 +32,16 @@ namespace SmartHome.Core.RestClient
             return await InvokeAsync<object>(url, method);
         }
 
-        public async Task<T> InvokeAsync<T>(string url, Method method) where T: class, new()
+        public async Task<T> InvokeAsync<T>(string url, Method method) where T : class, new()
         {
-            _client.BaseUrl = new Uri(url); 
+            _client.BaseUrl = new Uri(url);
             var rr = new RestRequest("", method, DataFormat.Json);
             var result = await ExecuteRequestAsync<T>(rr);
 
             return result;
         }
 
-        private async Task<T> ExecuteRequestAsync<T>(IRestRequest request) where T: class, new()
+        private async Task<T> ExecuteRequestAsync<T>(IRestRequest request) where T : class, new()
         {
             try
             {

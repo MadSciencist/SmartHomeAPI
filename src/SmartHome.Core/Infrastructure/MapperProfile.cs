@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Dto;
+using System.Linq;
 
 namespace SmartHome.Core.Infrastructure
 {
@@ -9,12 +10,11 @@ namespace SmartHome.Core.Infrastructure
         public MapperProfile()
         {
             CreateNodeMapping();
-            CreateControlStrategyMapping();
         }
-
         private void CreateNodeMapping()
         {
             CreateMap<NodeDto, Node>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
                 .ForMember(x => x.IpAddress, opt => opt.MapFrom(x => x.IpAddress))
@@ -26,26 +26,36 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.BaseTopic, opt => opt.MapFrom(x => x.BaseTopic))
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
-                .ForMember(x => x.ControlStrategyId, opt => opt.MapFrom(x => x.ControlStrategyId))
+                .ForMember(x => x.ControlStrategyId, opt => opt.Ignore())
                 .ForAllOtherMembers(x => x.Ignore());
-        }
-        
-        private void CreateControlStrategyMapping()
-        {
-            CreateMap<ControlStrategyDto, ControlStrategy>()
+
+            CreateMap<Node, NodeDto>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
-                .ForMember(x => x.ControlContext, opt => opt.MapFrom(x => x.ControlContext))
-                .ForMember(x => x.ReceiveContext, opt => opt.MapFrom(x => x.ReceiveContext))
-                .ForMember(x => x.ControlProviderName, opt => opt.MapFrom(x => x.ControlProvider))
-                .ForMember(x => x.ReceiveProviderName, opt => opt.MapFrom(x => x.ReceiveProvider))
-                .ForMember(x => x.IsActive, opt => opt.MapFrom(x => x.IsActive))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
-                .ForMember(x => x.Created, opt => opt.MapFrom(x => x.Created))
-                .ForMember(x => x.CreatedById, opt => opt.MapFrom(x => x.CreatedById))
-                .ForMember(x => x.CreatedBy, opt => opt.Ignore())
-                .ForMember(x => x.ControlStrategyLinkages, opt => opt.Ignore())
-                .ForMember(x => x.Nodes, opt => opt.Ignore())
-                .ReverseMap()
+                .ForMember(x => x.IpAddress, opt => opt.MapFrom(x => x.IpAddress))
+                .ForMember(x => x.Port, opt => opt.MapFrom(x => x.Port))
+                .ForMember(x => x.GatewayIpAddress, opt => opt.MapFrom(x => x.GatewayIpAddress))
+                .ForMember(x => x.Login, opt => opt.MapFrom(x => x.Login))
+                .ForMember(x => x.Password, opt => opt.MapFrom(x => x.Password))
+                .ForMember(x => x.ApiKey, opt => opt.MapFrom(x => x.ApiKey))
+                .ForMember(x => x.BaseTopic, opt => opt.MapFrom(x => x.BaseTopic))
+                .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
+                .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
+                .ForMember(x => x.ControlStrategyName, opt => opt.MapFrom(x => x.ControlStrategy.AssemblyProduct))
+                .ForMember(x => x.Magnitudes, opt => opt.MapFrom(x => x.ControlStrategy.RegisteredMagnitudes.Select(m => m.Magnitude)))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<UiConfiguration, UiConfigurationDto>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
+                .ForMember(x => x.Data, opt => opt.MapFrom(x => x.Data))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<UiConfigurationDto, UiConfiguration>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
+                .ForMember(x => x.Data, opt => opt.MapFrom(x => x.Data))
                 .ForAllOtherMembers(x => x.Ignore());
         }
     }

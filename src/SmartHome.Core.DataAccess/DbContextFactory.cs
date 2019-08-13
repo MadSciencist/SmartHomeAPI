@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
+using System.IO;
 
 namespace SmartHome.Core.DataAccess
 {
@@ -12,19 +15,16 @@ namespace SmartHome.Core.DataAccess
     {
         public AppDbContext CreateDbContext(string[] args)
         {
-            //TODO
-            //IConfigurationRoot configuration = new ConfigurationBuilder()
-            //    .SetBasePath(Directory.GetCurrentDirectory())
-            //    .AddJsonFile("appsettings.json")
-            //    .Build();
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), @"../SmartHome.API/"))
+                .AddJsonFile("appsettings.json")
+                .AddUserSecrets("001b4959-7f46-4591-8b22-121446ac4d8e")
+                .Build();
 
-            //  var connectionString = configuration["ConnectionStrings:MySql"];
+            var connectionString = configuration["ConnectionStrings:MySql"];
 
-            var connectionString = @"server=localhost;port=3306;userid=root;password=;database=smarthomedb;SslMode=none;CharSet=utf8";
-
-            var builder = new DbContextOptionsBuilder<AppDbContext>();
-
-            builder.UseMySql(connectionString, mySqlOptions =>
+            var builder = new DbContextOptionsBuilder<AppDbContext>()
+                .UseMySql(connectionString, mySqlOptions =>
                 {
                     mySqlOptions.ServerVersion(new Version(10, 1, 38), ServerType.MariaDb);
                     mySqlOptions.MigrationsHistoryTable("__MigrationHistory");

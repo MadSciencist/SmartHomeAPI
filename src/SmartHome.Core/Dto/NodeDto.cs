@@ -1,11 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 
 namespace SmartHome.Core.Dto
 {
     public class NodeDto
     {
         public int Id { get; set; }
-        [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public string IpAddress { get; set; }
@@ -17,7 +16,8 @@ namespace SmartHome.Core.Dto
         public string BaseTopic { get; set; }
         public string ClientId { get; set; }
         public string ConfigMetadata { get; set; }
-        public int ControlStrategyId { get; set; }
+        public string ControlStrategyName { get; set; }
+        public ICollection<string> Magnitudes { get; set; }
         public int CreatedById { get; set; }
     }
 }

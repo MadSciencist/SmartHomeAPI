@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -6,14 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SmartHome.API.Security.Token;
+using SmartHome.API.Service;
 using SmartHome.Core.DataAccess;
+using SmartHome.Core.Domain.Enums;
 using SmartHome.Core.Domain.Role;
 using SmartHome.Core.Domain.User;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
-using SmartHome.API.Hubs;
 
 namespace SmartHome.API.Extensions
 {
@@ -22,11 +25,11 @@ namespace SmartHome.API.Extensions
         public static void AddApiServices(this IServiceCollection services)
         {
             services.AddTransient<ITokenBuilder, JwtTokenBuilder>();
-            services.AddSingleton<HubNotifier>();
-            services.AddScoped<HubTokenDecoder>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<HubTokenDecoder>();
         }
 
-        public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration)
+        public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
         {
             var connectionString = configuration["ConnectionStrings:MySql"];
 
@@ -35,16 +38,20 @@ namespace SmartHome.API.Extensions
                 options.UseMySql(connectionString, mySqlOptions =>
                 {
                     mySqlOptions.ServerVersion(new Version(10, 1, 38), ServerType.MariaDb);
-                    mySqlOptions.MigrationsHistoryTable("__MigrationHistory");
-                })
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors();
-                // .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    mySqlOptions.MigrationsHistoryTable("__migrationHistory");
+                });
+
+                if (env.IsDevelopment())
+                {
+                    options.EnableSensitiveDataLogging();
+                    options.EnableDetailedErrors();
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                }
             });
 
             services.AddIdentity<AppUser, AppRole>(options =>
                 {
-                    options.Password.RequiredLength = 5; // Sample validator
+                    options.Password.RequiredLength = 5;
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.User.RequireUniqueEmail = true;
@@ -82,20 +89,15 @@ namespace SmartHome.API.Extensions
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.RequireClaim("admin"));
-                options.AddPolicy("User", policy => policy.RequireClaim("user"));
-                options.AddPolicy("Sensor", policy => policy.RequireClaim("sensor"));
-            });
-
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Admin", policy => policy.RequireRole("admin"));
+                options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
+                options.AddPolicy("User", policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
+                options.AddPolicy("Sensor", policy => policy.RequireClaim(ClaimTypes.Role, Roles.Sensor));
             });
         }
 
-        public static void AddDefaultCorsPolicy(this IServiceCollection services)
+        public static void AddDefaultCorsPolicy(this IServiceCollection services, IHostingEnvironment env)
         {
+            if (!env.IsDevelopment()) return;
             services.AddCors(settings =>
             {
                 settings.AddPolicy("CorsPolicy", builder =>
@@ -112,7 +114,8 @@ namespace SmartHome.API.Extensions
         {
             services.AddSwaggerGen(swagger =>
             {
-                swagger.SwaggerDoc("dev", new Info { Title = "Home Sensor Server API", Version = "v1", Contact = new Contact { Email = "mkrysz1337@gmail.com" } });
+                var contact = new Contact { Email = "mkrysz1337@gmail.com", Name = "Matty" };
+                swagger.SwaggerDoc("dev", new Info { Title = "Home Sensor Server API", Version = "v1", Contact = contact });
                 swagger.AddSecurityDefinition("Bearer", new ApiKeyScheme()
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
@@ -120,6 +123,7 @@ namespace SmartHome.API.Extensions
                     In = "header",
                     Type = "apiKey"
                 });
+
                 swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[]{}}

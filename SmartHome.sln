@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.645
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API", "src\SmartHome.API\SmartHome.API.csproj", "{42D6CC80-881F-4FCF-A576-5C04090BCEF5}"
 EndProject
@@ -9,17 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Domain", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core", "src\SmartHome.Core\SmartHome.Core.csproj", "{2BF9D23E-C397-4816-943B-5A440CB5AD9B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.DataAccess.Tests", "test\SmartHome.UnitTests\SmartHome.DataAccess.Tests.csproj", "{47BABBDC-39DB-461B-A7EE-D2813981DE99}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Tests", "test\SmartHome.UnitTests\SmartHome.Core.Tests.csproj", "{47BABBDC-39DB-461B-A7EE-D2813981DE99}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.DataAccess", "src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Mqtt.MessageHandling", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.MessageHandling\SmartHome.Core.Contracts.Mqtt.MessageHandling.csproj", "{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Mqtt.Control", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mqtt.Control\SmartHome.Core.Contracts.Mqtt.Control.csproj", "{74B33063-5FEC-492E-ACE0-F126A37F1588}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Rest.Control", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Rest.Control\SmartHome.Core.Contracts.Rest.Control.csproj", "{C17498C5-6A12-4DAF-A8CA-5C75B80F7221}"
+	ProjectSection(SolutionItems) = preProject
+		src\SmartHome.Contracts\readme.md = src\SmartHome.Contracts\readme.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.IoC", "src\SmartHome.Core.IoC\SmartHome.Core.IoC.csproj", "{97FA0EE5-3E1C-450A-A625-6149A7555807}"
 EndProject
@@ -27,14 +24,38 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{69AEE966
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.API.Tests", "test\SmartHome.API.Tests\SmartHome.API.Tests.csproj", "{FB582FBA-88CE-4843-8962-2F4185BF3F92}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Contracts.Mappings", "src\SmartHome.Core.Contracts\SmartHome.Core.Contracts.Mappings\SmartHome.Core.Contracts.Mappings.csproj", "{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.EspurnaRest", "src\SmartHome.Contracts\SmartHome.Contracts.EspurnaRest\SmartHome.Contracts.EspurnaRest.csproj", "{490506CA-A9E1-4692-BA12-25DAC88B6910}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.EspurnaMqtt", "src\SmartHome.Contracts\SmartHome.Contracts.EspurnaMqtt\SmartHome.Contracts.EspurnaMqtt.csproj", "{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mocks", "Mocks", "{492762DE-291D-4C89-ADF7-806C16FDAD5F}"
 	ProjectSection(SolutionItems) = preProject
 		mocks\src\SensorMockConfiguration.json = mocks\src\SensorMockConfiguration.json
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solution Items", "{4C4E0324-514A-44A0-8745-2AC4C7C0D03C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		README.md = README.md
+	EndProjectSection
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHomeMock.SensorMock.App", "mocks\src\SmartHomeMock.SensorMock.App\SmartHomeMock.SensorMock.App.csproj", "{ACD0E138-5C3A-4725-B818-37896BA7A061}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{62E3BC64-CC3E-4CC8-A78C-A5165328BD2A}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\MigrateAndUpdateDb.ps1 = scripts\MigrateAndUpdateDb.ps1
+		scripts\RenewDb.ps1 = scripts\RenewDb.ps1
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.GenericRest", "src\SmartHome.Contracts\SmartHome.Contracts.GenericRest\SmartHome.Contracts.GenericRest.csproj", "{9EA4CA47-F771-4874-B48F-9ABE7532522B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{808B156C-850C-42E4-813F-21F65F9E37EB}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\CI\deploy.sh = scripts\CI\deploy.sh
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartHome.Contracts.TasmotaMqtt", "src\SmartHome.Contracts\SmartHome.Contracts.TasmotaMqtt\SmartHome.Contracts.TasmotaMqtt.csproj", "{E831D539-3AAA-40A8-B7F1-385848115B3B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHomeMock.SensorMock.Entities", "mocks\src\SmartHomeMock.SensorMock.Entities\SmartHomeMock.SensorMock.Entities.csproj", "{34CC9B66-6677-4609-A060-1C3A26457059}"
 EndProject
@@ -70,18 +91,6 @@ Global
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{74B33063-5FEC-492E-ACE0-F126A37F1588}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{74B33063-5FEC-492E-ACE0-F126A37F1588}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{74B33063-5FEC-492E-ACE0-F126A37F1588}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{74B33063-5FEC-492E-ACE0-F126A37F1588}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C17498C5-6A12-4DAF-A8CA-5C75B80F7221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C17498C5-6A12-4DAF-A8CA-5C75B80F7221}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C17498C5-6A12-4DAF-A8CA-5C75B80F7221}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C17498C5-6A12-4DAF-A8CA-5C75B80F7221}.Release|Any CPU.Build.0 = Release|Any CPU
 		{97FA0EE5-3E1C-450A-A625-6149A7555807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{97FA0EE5-3E1C-450A-A625-6149A7555807}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97FA0EE5-3E1C-450A-A625-6149A7555807}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -90,6 +99,22 @@ Global
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{490506CA-A9E1-4692-BA12-25DAC88B6910}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{490506CA-A9E1-4692-BA12-25DAC88B6910}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{490506CA-A9E1-4692-BA12-25DAC88B6910}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{490506CA-A9E1-4692-BA12-25DAC88B6910}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EA4CA47-F771-4874-B48F-9ABE7532522B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EA4CA47-F771-4874-B48F-9ABE7532522B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EA4CA47-F771-4874-B48F-9ABE7532522B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EA4CA47-F771-4874-B48F-9ABE7532522B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E831D539-3AAA-40A8-B7F1-385848115B3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -120,10 +145,13 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{47BABBDC-39DB-461B-A7EE-D2813981DE99} = {69AEE966-A8CC-40A2-A919-23663A037A54}
-		{0EB9307D-CC43-43D6-AE33-9D66A647C4CD} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
-		{74B33063-5FEC-492E-ACE0-F126A37F1588} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
-		{C17498C5-6A12-4DAF-A8CA-5C75B80F7221} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{FB582FBA-88CE-4843-8962-2F4185BF3F92} = {69AEE966-A8CC-40A2-A919-23663A037A54}
+		{490506CA-A9E1-4692-BA12-25DAC88B6910} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
+		{D58BB588-AFF9-4CF2-BD0E-B1AF7AF21408} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
+		{62E3BC64-CC3E-4CC8-A78C-A5165328BD2A} = {4C4E0324-514A-44A0-8745-2AC4C7C0D03C}
+		{9EA4CA47-F771-4874-B48F-9ABE7532522B} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
+		{808B156C-850C-42E4-813F-21F65F9E37EB} = {62E3BC64-CC3E-4CC8-A78C-A5165328BD2A}
+		{E831D539-3AAA-40A8-B7F1-385848115B3B} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{91C74E6A-A0D3-4A1B-91F4-AE6397E965EC} = {FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}
 		{ACD0E138-5C3A-4725-B818-37896BA7A061} = {492762DE-291D-4C89-ADF7-806C16FDAD5F}
 		{34CC9B66-6677-4609-A060-1C3A26457059} = {492762DE-291D-4C89-ADF7-806C16FDAD5F}

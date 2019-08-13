@@ -42,8 +42,6 @@ namespace SmartHome.API.Security.Token
                 expires: expires,
                 signingCredentials: signingCredentials);
 
-            // TODO PoC token.Payload["AuthNodes"] = new string[] { "asd1", "asd2", "fsdf3" };
-
             return (new JwtSecurityTokenHandler().WriteToken(token), expires);
         }
     }

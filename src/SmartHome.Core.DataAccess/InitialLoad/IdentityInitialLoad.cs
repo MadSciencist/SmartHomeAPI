@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SmartHome.Core.Domain.Entity;
 using SmartHome.Core.Domain.Role;
 using SmartHome.Core.Domain.User;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
@@ -25,7 +27,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
             using (var scope = _provider.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
-   
+
                 if (!await roleManager.RoleExistsAsync("admin")
                     && !await roleManager.RoleExistsAsync("user")
                     && !await roleManager.RoleExistsAsync("sensor"))
@@ -46,6 +48,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
 
                 if (await userManager.FindByNameAsync("admin") != null) return;
 
+                // id = 1
                 var adminUser = new AppUser
                 {
                     UserName = "admin",
@@ -53,7 +56,22 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     EmailConfirmed = true,
                     IsActive = true,
                     ActivatedBy = null,
-                    ActivationDate = DateTime.UtcNow
+                    ActivationDate = DateTime.UtcNow,
+                    UiConfiguration = new List<UiConfiguration>
+                    {
+                        new UiConfiguration
+                        {
+                            Type = Domain.Enums.UiConfigurationType.Dashboard,
+                            Data = "{}",
+                            UserId = 1,
+                        },
+                        new UiConfiguration
+                        {
+                            Type = Domain.Enums.UiConfigurationType.Control,
+                            Data = "{}",
+                            UserId = 1,
+                        }
+                    }
                 };
 
                 const string password = "admin1";

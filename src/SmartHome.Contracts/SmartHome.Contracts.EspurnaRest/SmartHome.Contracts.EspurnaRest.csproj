@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>SmartHome.Contracts.EspurnaRest</AssemblyName>
+    <RootNamespace>SmartHome.Contracts.EspurnaRest</RootNamespace>
+    <Description>Control Espurna Devices over REST protocol</Description>
+    <Product>Espurna-REST-v1</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SmartHome.Core\SmartHome.Core.csproj" />
+    <ProjectReference Include="..\..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

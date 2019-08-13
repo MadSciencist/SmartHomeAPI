@@ -1,12 +1,11 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Core.Infrastructure;
-using SmartHome.Core.Infrastructure.SyntheticDictionaries;
 
 namespace SmartHome.Core.Services
 {
@@ -14,10 +13,9 @@ namespace SmartHome.Core.Services
     {
         private readonly SyntheticDictionaryService _syntheticDictionary;
 
-        public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary  ) : base(container)
+        public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary) : base(container)
         {
             _syntheticDictionary = syntheticDictionary;
-            _syntheticDictionary.Initialize();
         }
 
         public async Task<ServiceResult<List<string>>> GetDictionaryNames()
@@ -102,12 +100,11 @@ namespace SmartHome.Core.Services
                 var dict = await GenericRepository.AsQueryable()
                     .Include(x => x.Values)
                     .FirstOrDefaultAsync(x => x.Name == dictionaryName);
-                if (dict == null) throw new SmartHomeEntityNotFoundException(nameof(dict));
+                if (dict is null) throw new SmartHomeEntityNotFoundException(nameof(dict));
 
                 var dictEntryToUpdate = dict.Values.SingleOrDefault(x => x.Id == entryId);
-                if (dictEntryToUpdate == null) throw new SmartHomeEntityNotFoundException(nameof(dictEntryToUpdate));
+                if (dictEntryToUpdate is null) throw new SmartHomeEntityNotFoundException(nameof(dictEntryToUpdate));
 
-                // TODO reflection?
                 dictEntryToUpdate.InternalValue = entry.InternalValue;
                 dictEntryToUpdate.DisplayValue = entry.DisplayValue;
                 dictEntryToUpdate.IsActive = entry.IsActive;
