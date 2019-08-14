@@ -7,6 +7,6 @@ namespace SmartHomeMock.SensorMock.Domain.Interfaces
     {
         void Initialize(Module module, Broker broker);
 
-        Task Start();
+        void Start();
     }
 }

@@ -4,5 +4,7 @@
     {
         Temperature = 1,
         Humidity = 2,
+        Relay0 = 3,
+        Switch = 4,
     }
 }

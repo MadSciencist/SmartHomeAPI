@@ -3,43 +3,74 @@
     {
       "id": 1,
       "broker": {
-        "host": "",
-        "port":"6666" 
+        "host": "localhost",
+        "port": "1883"
       }, 
       "modules": [
         {
-          "type": "Espurna",
+          "type": "Tasmota",
           "clientId": "1000",
           "sensors": [
             {
-              "id": "dd", 
+              "id": "T1",
               "type": "Temperature",
-              "unit": "C"
+              "topic": "tele/dupa1/dupAAAA",
+              "unit": "C",
+              "interval": 500,
+              "payload": "T1: {0}"
             },
             {
+              "id": "H1", 
               "type": "Humidity",
-              "unit": "Percentages"
+              "unit": "Percentages",
+              "interval": 300,
+              "topic": "tele/dupa2/dup",
+              "payload": "H1: {0}"
+            },
+            {
+              "id": "R1",
+              "topic": "stat/sonoff-switch/STATUS",
+              "type": "Relay0",
+              "unit": "Bit",
+              "interval": 0,
+              "payload": "R1: {0}"
             }
-          ]
-        },
-        {
-          "type": "Espurna",
-          "clientId": "1001",
-          "sensors": [
+          ],
+          "listeners": [
             {
-              "type": "Temperature",
-              "unit": "F"
+              "sensorId": "R1",
+              "topic": "cmnd/sonoff-switch/Power",
+              "payload": ""
             },
             {
-              "type": "Temperature",
-              "unit": "C"
-            },
-            {
-              "type": "Humidity",
-              "unit": "Percentages"
+              "sensorId": "R1",
+              "topic": "cmnd/sonoff-switch/DUPA",
+              "payload": ""
             }
           ]
         }
+        //{
+        //  "type": "Espurna",
+        //  "clientId": "1001",
+        //  "sensors": [
+        //    {
+        //      "type": "Temperature",
+        //      "unit": "F",
+        //      "interval": 500
+        //    },
+        //    {
+        //      "type": "Temperature",
+        //      "unit": "C",
+        //      "interval": 500
+        //    },
+        //    {
+        //      "type": "Humidity",
+        //      "unit": "Percentages",
+        //      "interval": 500
+        //    }
+        //  ],
+        //  "listeners": []
+        //}
       ]
     }
   ]

@@ -7,6 +7,7 @@ using SmartHomeMock.SensorMock.DataAccess.Interfaces;
 using SmartHomeMock.SensorMock.Domain;
 using SmartHomeMock.SensorMock.Domain.Interfaces;
 using SmartHomeMock.SensorMock.Entities.Enums;
+using SmartHomeMock.SensorMock.Infrastructure;
 using SmartHomeMock.SensorMock.Infrastructure.Interfaces;
 
 namespace SmartHomeMock.SensorMock.App
@@ -33,6 +34,8 @@ namespace SmartHomeMock.SensorMock.App
             var mock = _serviceProvider.GetService<ISmartHomeMock>();
 
             mock.Run(configurationId);
+
+            Console.ReadKey();
         }
 
         private static void SetUp()
@@ -54,10 +57,14 @@ namespace SmartHomeMock.SensorMock.App
 
             collection.AddSingleton<IConfiguration>(_configuration);
 
-            collection.AddScoped<EspurnaModuleMock>();
+            collection.AddTransient<EspurnaModuleMock>();
+            collection.AddTransient<TasmotaModuleMock>();
+
+            collection.AddTransient<Domain.SensorMock>();
 
             collection.AddTransient<ISmartHomeMock, Domain.SmartHomeMock>();
             collection.AddTransient<ISensorMockConfigurationRepository, SensorMockConfigurationRepository>();
+            collection.AddTransient<IFactory<ESensorType, ISensorMock>, FactoryBase<ESensorType, ISensorMock>>();
             collection.AddTransient<IFactory<EModuleType, IModuleMock>, ModuleMockFactory>();
 
             collection.AddTransient<Func<EModuleType, IModuleMock>>(serviceProvider => key =>
@@ -67,8 +74,20 @@ namespace SmartHomeMock.SensorMock.App
                     case EModuleType.Espurna:
                         return serviceProvider.GetService<EspurnaModuleMock>();
 
+                    case EModuleType.Tasmota:
+                        return serviceProvider.GetService<TasmotaModuleMock>();
+
                     default:
                         throw new Exception($"Unsupported Module Type: {key}");
+                }
+            });
+
+            collection.AddTransient<Func<ESensorType, ISensorMock>>(serviceProvider => key =>
+            {
+                switch (key)
+                {
+                    default:
+                        return serviceProvider.GetService<Domain.SensorMock>();
                 }
             });
 

@@ -8,6 +8,8 @@ namespace SmartHomeMock.SensorMock.Domain.Interfaces
     {
         event EventHandler<SensorData> StateChanged;
 
+        string Id { get; }
+
         void Initialize(Sensor sensor);
 
         void Start();

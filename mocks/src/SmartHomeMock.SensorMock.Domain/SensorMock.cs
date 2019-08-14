@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SmartHomeMock.SensorMock.Domain.Interfaces;
 using SmartHomeMock.SensorMock.Entities.Configuration;
@@ -10,7 +11,11 @@ namespace SmartHomeMock.SensorMock.Domain
     {
         private Sensor _sensor;
 
+        private string _currentValue;
+
         public event EventHandler<SensorData> StateChanged;
+
+        public string Id => _sensor.Id;
 
         public void Initialize(Sensor sensor)
         {
@@ -51,6 +56,8 @@ namespace SmartHomeMock.SensorMock.Domain
 
         public void UpdateState(SensorData data)
         {
+            _currentValue = data.Values.First();
+
             if (StateChanged is null)
             {
                 throw new Exception("StateChanged event is null");
@@ -61,7 +68,13 @@ namespace SmartHomeMock.SensorMock.Domain
 
         private SensorData GenerateNewData()
         {
-            return new SensorData();
+            _currentValue = Guid.NewGuid().ToString();
+
+            return new SensorData
+            {
+                Sensor = _sensor,
+                Values = new []{_currentValue}
+            };
         }
     }
 }

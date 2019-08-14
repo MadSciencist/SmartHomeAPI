@@ -18,8 +18,6 @@ namespace SmartHomeMock.SensorMock.Domain
 
         private IModuleMock[] _moduleMocks;
 
-        private Task[] _moduleMocksTasks;
-
         public SmartHomeMock(ISensorMockConfigurationRepository sensorMockConfigurationRepository, IFactory<EModuleType, IModuleMock> moduleMockFactory)
         {
             _sensorMockConfigurationRepository = sensorMockConfigurationRepository;
@@ -32,7 +30,10 @@ namespace SmartHomeMock.SensorMock.Domain
 
             _moduleMocks = configuration.Modules.Select(m => InitializeModuleMock(m, configuration.Broker)).ToArray();
 
-            _moduleMocksTasks = _moduleMocks.Select(StartModuleMock).ToArray();
+            foreach(var moduleMock in _moduleMocks)
+            {
+                StartModuleMock(moduleMock);
+            }
         }
 
         private IModuleMock InitializeModuleMock(Module module, Broker broker)
@@ -44,9 +45,9 @@ namespace SmartHomeMock.SensorMock.Domain
             return moduleMock;
         }
 
-        private Task StartModuleMock(IModuleMock moduleMock)
+        private void StartModuleMock(IModuleMock moduleMock)
         {
-            return moduleMock.Start();
+            moduleMock.Start();
         }
     }
 }

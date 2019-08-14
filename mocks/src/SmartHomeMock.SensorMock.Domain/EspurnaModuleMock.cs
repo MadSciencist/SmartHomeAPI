@@ -24,8 +24,6 @@ namespace SmartHomeMock.SensorMock.Domain
         private Module _module;
         private Broker _broker;
 
-        private Task _task;
-
         private ISensorMock[] _sensors;
 
         public EspurnaModuleMock(IFactory<ESensorType, ISensorMock> sensorMockFactory, IMqttFactory mqttFactory)
@@ -49,9 +47,9 @@ namespace SmartHomeMock.SensorMock.Domain
             _sensors = _module.Sensors.Select(InitializeSensorMock).ToArray();
         }
 
-        public async Task Start()
+        public void Start()
         {
-            await _client.ConnectAsync(_options);
+            _client.ConnectAsync(_options).Wait();
 
             foreach (var sensorMock in _sensors)
             {
@@ -63,7 +61,7 @@ namespace SmartHomeMock.SensorMock.Domain
                 Console.WriteLine("### CONNECTED WITH SERVER ###");
 
                 // Subscribe to a topic
-                await _client.SubscribeAsync(new TopicFilterBuilder().WithTopic("my/topic").Build());
+                await _client.SubscribeAsync(new TopicFilterBuilder().Build());
 
                 Console.WriteLine("### SUBSCRIBED ###");
             });
@@ -93,8 +91,10 @@ namespace SmartHomeMock.SensorMock.Domain
         private Task HandleMessage(MqttApplicationMessageReceivedEventArgs e)
         {
             // Zmien swoj stan 
-            _sensors[0].UpdateState(new SensorData());
+            //_sensors[0].UpdateState(new SensorData());
             return null;
+
+
         }
         // Subscribe to MQTT - to be able handling requests like change relay state
 
@@ -104,8 +104,12 @@ namespace SmartHomeMock.SensorMock.Domain
         private void OnSensorStateChanged(object sender, SensorData data)
         {
             // generate message
-            //_client.PublishAsync()
-        }
 
+            var message = new MqttApplicationMessageBuilder().
+                WithTopic("").
+                Build();
+
+            //_client.PublishAsync().Wait();
+        }
     }
 }
