@@ -26,6 +26,8 @@ deploy:
     skip_cleanup: true
     on:
       tags: true
+after_script:
+ - bash <(curl -s https://codecov.io/bash)
 notifications:
   email:
     on_success: never
