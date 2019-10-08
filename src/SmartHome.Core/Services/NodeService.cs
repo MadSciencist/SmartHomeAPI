@@ -170,13 +170,13 @@ namespace SmartHome.Core.Services
                 // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
                 var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
 
-                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlCommand strategy))
+                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlCommand commandExecutor))
                 {
                     response.Alerts.Add(new Alert($"{command} is not valid for strategy: {node.ControlStrategy.ContractAssembly}", MessageType.Error));
                     return response;
                 }
 
-                var attr = strategy.GetType().GetAttribute<ParameterTypeAttribute>();
+                var attr = commandExecutor.GetType().GetAttribute<ParameterTypeAttribute>();
                 var generator = new JSchemaGenerator();
                 var schema = generator.Generate(attr.ParameterType);
                 response.Data = schema;

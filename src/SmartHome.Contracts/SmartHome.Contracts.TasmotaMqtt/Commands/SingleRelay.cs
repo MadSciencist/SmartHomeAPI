@@ -20,9 +20,8 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
 
         public async Task Execute(Node node, JObject commandParams)
         {
-            var param = commandParams.ToObject<SingleRelayParam>();
+            var param = commandParams.ToObject<SingleRelayParam>().Validate();
 
-            if (string.IsNullOrEmpty(param.State)) throw new SmartHomeException("Relay state cannot be null: missing 'state' key");
             if (string.IsNullOrEmpty(node.BaseTopic)) throw new SmartHomeException("Base topic cannot be empty");
 
             var message = new MqttApplicationMessageBuilder()

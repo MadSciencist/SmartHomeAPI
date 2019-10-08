@@ -2,13 +2,13 @@
 
 namespace SmartHome.Core.Entities.ContractParams
 {
-    public class LightParam
+    public class LightParam : ValidatableParamBase<LightParam>
     {
         /// <summary>
         /// Set the device on (1), off(0) or toggles (2).
-        /// Overrides brightness.
         /// </summary>
         [Range(0, 2)]
+        [Required]
         public int? State { get; set; }
 
         [Range(0, 100)]

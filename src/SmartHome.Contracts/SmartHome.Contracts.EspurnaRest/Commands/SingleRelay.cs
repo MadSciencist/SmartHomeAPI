@@ -27,12 +27,8 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
 
         public async Task Execute(Node node, JObject commandParams)
         {
-            var param = commandParams.ToObject<SingleRelayParam>();
+            var param = commandParams.ToObject<SingleRelayParam>().Validate();
 
-            if (string.IsNullOrEmpty(param.State))
-                throw new SmartHomeException("Relay state cannot be null: missing 'state' key");
-            if (string.IsNullOrEmpty(param.RelayNo))
-                throw new SmartHomeException("Relay number cannot be null: missing 'relayNo' key");
             if (string.IsNullOrEmpty(node.ApiKey)) throw new SmartHomeException("API key cannot be empty");
 
             var uri = BuildUri(node, param);

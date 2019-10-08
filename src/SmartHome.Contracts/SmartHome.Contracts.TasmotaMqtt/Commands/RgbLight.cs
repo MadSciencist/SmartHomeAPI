@@ -20,7 +20,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
 
         public async Task Execute(Node node, JObject commandParams)
         {
-            var param = commandParams.ToObject<RgbLightParam>();
+            var param = commandParams.ToObject<RgbLightParam>().Validate();
 
             var logic = new LightLogic();
             var (topic, payload) = logic.GetTopicPayloadForRgbLight(param);
