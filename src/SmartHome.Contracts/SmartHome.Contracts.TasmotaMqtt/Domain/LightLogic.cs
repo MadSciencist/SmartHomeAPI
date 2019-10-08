@@ -1,4 +1,5 @@
 ﻿using SmartHome.Core.Domain.ContractParams;
+using SmartHome.Core.Entities.ContractParams;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Domain
         private const int MaxLightTemperature = 500;
 
         public (string topic, string payload) GetTopicPayloadForLight(LightParam param)
-        { 
+        {
             if (param is null) throw new ArgumentNullException();
 
             // Only state is given
@@ -65,7 +66,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Domain
                     {"power", param.State.ToString()},
                     {"ct", ConvertRange(param.LightTemperature.Value, 0, 100, MinLightTemperature, MaxLightTemperature).ToString()}
                 });
-                
+
                 return backlog;
             }
 
@@ -104,7 +105,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Domain
             // Only RGB
             if (param.Rgb != null && !param.State.HasValue)
             {
-                for(var i = 0; i < 3; i++)
+                for (var i = 0; i < 3; i++)
                     if (param.Rgb[i] > 255)
                         throw new ArgumentException($"Parameter RGB is not in given range, {nameof(RgbLightParam)}");
                 return ("color", $"{param.Rgb[0].ToString()}, {param.Rgb[1].ToString()}, {param.Rgb[2].ToString()}");

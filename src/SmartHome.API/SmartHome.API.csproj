@@ -58,7 +58,7 @@
     <ProjectReference Include="..\SmartHome.Contracts\SmartHome.Contracts.TasmotaMqtt\SmartHome.Contracts.TasmotaMqtt.csproj" />
     <ProjectReference Include="..\SmartHome.Core.IoC\SmartHome.Core.IoC.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
-    <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
+    <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Entities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

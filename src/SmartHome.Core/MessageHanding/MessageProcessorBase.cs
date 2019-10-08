@@ -1,9 +1,7 @@
-﻿using SmartHome.Core.Domain.Entity;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Services;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.MessageHanding
 {

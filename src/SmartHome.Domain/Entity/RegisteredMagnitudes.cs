@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartHome.Core.Domain.Entity
+namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_registered_magnitude")]
     public class RegisteredMagnitude : EntityBase

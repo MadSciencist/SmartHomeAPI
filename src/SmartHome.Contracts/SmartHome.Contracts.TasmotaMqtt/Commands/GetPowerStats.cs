@@ -2,7 +2,7 @@
 using MQTTnet;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.Attributes;
 using System.Threading.Tasks;
 
@@ -10,9 +10,9 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
 {
     [DisplayText("Get power statistics")]
     [ParameterType(null)]
-    public class GetPowerStats : MqttControlStrategyBase, IControlCommand
+    public class GetPowerStats : MqttControlCommand, IControlCommand
     {
-        public GetPowerStats(ILifetimeScope container) : base(container) 
+        public GetPowerStats(ILifetimeScope container) : base(container)
         {
         }
 

@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Domain.User;
+using SmartHome.Core.Entities.User;
 using SmartHome.Core.Dto;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,7 +11,7 @@ namespace SmartHome.Core.Services
     public class NotificationService
     {
         // Todo: rewrite notification logic, user NotificationService mostly for authorization
-        // Provide possibity of dispatrching different types of messages
+        // Provide possibity of dispatching different types of messages
         private readonly IMediator _mediator;
         private readonly IDictionary<string, AppUser> _connectedUsers;
         private readonly UserManager<AppUser> _userManager;

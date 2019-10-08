@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
-using SmartHome.Core.Domain.Models;
+using SmartHome.Core.Entities.Models;
 using System;
 
 namespace SmartHome.Core.Dto

@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SmartHome.Core.Entities.Models;
+using System;
 using System.Collections.Generic;
-using SmartHome.Core.Domain.Models;
 
 namespace SmartHome.Core.MessageHanding
 {

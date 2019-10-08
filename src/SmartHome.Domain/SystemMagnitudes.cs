@@ -1,8 +1,8 @@
-﻿using SmartHome.Core.Domain.Models;
+﻿using SmartHome.Core.Entities.ContractParams;
+using SmartHome.Core.Entities.Models;
 using System.Collections.Generic;
-using SmartHome.Core.Domain.ContractParams;
 
-namespace SmartHome.Core.Domain
+namespace SmartHome.Core.Entities
 {
     /// <summary>
     /// This class defines all magnitudes that system is able to collect
@@ -15,7 +15,7 @@ namespace SmartHome.Core.Domain
         {
             InitValues();
         }
-        
+
         private static void InitValues()
         {
             Properties = new List<PhysicalProperty>

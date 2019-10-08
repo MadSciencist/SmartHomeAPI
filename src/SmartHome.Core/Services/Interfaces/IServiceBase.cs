@@ -1,5 +1,4 @@
-﻿using SmartHome.Core.DataAccess;
-using SmartHome.Core.Domain.User;
+﻿using SmartHome.Core.Entities.User;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace SmartHome.Core.Domain.Enums
+namespace SmartHome.Core.Entities.Enums
 {
     public enum DataOrder
     {

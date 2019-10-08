@@ -28,7 +28,7 @@ namespace SmartHome.API.Extensions
             {
                 await _next(httpContext);
             }
-            catch(SmartHomeUnauthorizedException ex)
+            catch (SmartHomeUnauthorizedException ex)
             {
                 await HandleExceptionAsync(ex, httpContext, HttpStatusCode.Forbidden);
             }
@@ -58,7 +58,7 @@ namespace SmartHome.API.Extensions
             var isTrusted = TrustFactory.GetDefaultTrustProvider().IsTrustedRequest(context.User);
             var uiMessage = isTrusted ? $"{ex.Message} {ex.InnerException?.Message}" : "System error occured";
 
-            var response = new ServiceResult<object> {Metadata = {ProblemDetails = CreateProblemDetails(ex, context, correlationId, isTrusted) } };
+            var response = new ServiceResult<object> { Metadata = { ProblemDetails = CreateProblemDetails(ex, context, correlationId, isTrusted) } };
             response.Alerts.Add(new Alert(uiMessage, MessageType.Exception));
 
             return context.Response.WriteAsync(JsonConvert.SerializeObject(response));

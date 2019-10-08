@@ -17,11 +17,10 @@ namespace SmartHome.Core.Infrastructure.Validators
             CascadeMode = CascadeMode.StopOnFirstFailure;
 
             RuleFor(x => x.Name)
-                .NotNull();
+                .NotEmpty();
 
             RuleFor(x => x.ClientId)
                 .NotEmpty()
-                .NotNull()
                 .MinimumLength(1)
                 .MaximumLength(250);
 

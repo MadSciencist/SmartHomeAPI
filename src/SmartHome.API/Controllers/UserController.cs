@@ -1,153 +1,230 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Dto;
-using SmartHome.API.Security.Token;
-using SmartHome.Core.Domain.User;
-using SmartHome.Core.Utils;
+using SmartHome.API.Service;
+using SmartHome.API.Utils;
+using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Enums;
+using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartHome.Core.DataAccess.Repository;
 
 namespace SmartHome.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [ApiVersion("1")]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class UsersController : ControllerBase
     {
-        // TODO create userService to cleanup this mess
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly IUserValidator<AppUser> _userValidator;
-        private readonly ITokenBuilder _tokenBuilder;
-        private readonly IPasswordValidator<AppUser> _passwordValidator;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
+        private readonly IUiConfigurationService _uiConfigService;
 
-        public UsersController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager,
-            ITokenBuilder tokenBuilder, IUserValidator<AppUser> userValidator,
-            IPasswordValidator<AppUser> passwordValidator,
-            IUserRepository userRepository)
+        public UsersController(IUserService userService, IUiConfigurationService uiConfigService, IHttpContextAccessor contextAccessor)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _tokenBuilder = tokenBuilder;
-            _userValidator = userValidator;
-            _passwordValidator = passwordValidator;
-            _userRepository = userRepository;
+            _userService = userService;
+            _uiConfigService = uiConfigService;
+            _uiConfigService.Principal = contextAccessor.HttpContext.User;
+            _userService.Principal = contextAccessor.HttpContext.User;
         }
 
+        /// <summary>
+        /// Get user by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Get(int id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+            var result = await _userService.GetUserAsync(id);
 
-            // only admin or user itself can access
-            if (ClaimsPrincipalHelper.IsUserAdmin(User) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
-                return Ok(user); // TODO dedicated DTO to hide sensitive data
-
-            return Forbid();
+            return ControllerResponseHelper.GetDefaultResponse(result);
         }
 
+        /// <summary>
+        /// Login endpoint
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns>JWT token</returns>
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto login, string redirect)
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Login(LoginDto login)
         {
-            var user = await _userManager.FindByNameAsync(login.Login);
-            var nodes = await _userRepository.GetAllUserNodes(user.Id);
+            var result = await _userService.LoginAsync(login);
 
-            if (user == null) return NotFound();
-
-            if (!user.IsActive) return BadRequest();
-
-            await _signInManager.SignOutAsync(); // terminate existing session
-
-            var signInResult = await _signInManager.PasswordSignInAsync(user, login.Password, true, false);
-            if (!signInResult.Succeeded) return Unauthorized();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var (token, expiring) = _tokenBuilder.Build(user, roles);
-
-            return Ok(new { access = new { type = "Bearer", token, expires = expiring }, redirect });
+            return ControllerResponseHelper.GetDefaultResponse(result);
         }
 
+        /// <summary>
+        /// Register endpoint
+        /// </summary>
+        /// <param name="register"></param>
+        /// <returns>JWT token</returns>
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto register, string redirect)
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Register(RegisterDto register)
         {
-            if (await _userManager.FindByNameAsync(register.Login) != null)
+            var result = await _userService.RegisterAsync(register);
+
+            return ControllerResponseHelper.GetDefaultResponse(result, StatusCodes.Status201Created);
+        }
+
+        /// <summary>
+        ///  Removes user from system
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _userService.DeleteAsync(id);
+
+            return ControllerResponseHelper.GetDefaultResponse(result, StatusCodes.Status201Created);
+        }
+
+        #region UI Configuration
+
+        /// <summary>
+        /// Get configuration
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="userId"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [HttpGet("{userId}/config")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(List<ServiceResult<UiConfigurationDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ServiceResult<UiConfigurationDto>>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(List<ServiceResult<UiConfigurationDto>>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetConfigurations(int userId, [FromQuery(Name = "type")]UiConfigurationType type)
+        {
+            // type was not specified, get all configurations
+            if (type == (int)0)
             {
-                ModelState.AddModelError("", "User with that login already exists.");
-                return BadRequest(ModelState);
+                var result = await _uiConfigService.GetUserConfigurations(userId);
+                return ControllerResponseHelper.GetDefaultResponse(result);
             }
-
-            var user = new AppUser
+            else
             {
-                Email = register.Email,
-                UserName = register.Login,
-                IsActive = false
-            };
-
-            var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, register.Password);
-            if (!passwordValidationResult.Succeeded) return BadRequest(passwordValidationResult.Errors);
-
-            var createResult = await _userManager.CreateAsync(user, register.Password);
-            if (!createResult.Succeeded) return BadRequest(createResult.Errors);
-
-            var addToRoleResult = await _userManager.AddToRoleAsync(user, "user");
-            if (!addToRoleResult.Succeeded) return BadRequest(addToRoleResult.Errors);
-
-            var signInResult = await _signInManager.PasswordSignInAsync(user, register.Password, false, false);
-            if (!signInResult.Succeeded) return Unauthorized();
-
-            var roles = await _userManager.GetRolesAsync(user);
-            var (token, expiring) = _tokenBuilder.Build(user, roles);
-
-            return CreatedAtAction(nameof(Register), "", new { access = new { token, expires = expiring }, redirect });
+                var result = await _uiConfigService.GetUserConfigurationsByType(userId, type);
+                return ControllerResponseHelper.GetDefaultResponse(result);
+            }
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+
+        /// <summary>
+        /// Get configuration
+        /// </summary>
+        /// <param name="configId"></param>
+        /// <param name="userId"></param>
+        [HttpGet("{userId}/config/{configId}")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetConfiguration(int userId, int configId)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+            var result = await _uiConfigService.GetUserConfigurationById(userId, configId);
 
-            // only resource owner can modify it
-            if (!ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
-                return Forbid();
-
-            var deleteResult = await _userManager.DeleteAsync(user);
-            if (!deleteResult.Succeeded) return BadRequest(deleteResult.Errors);
-
-            return Ok();
+            return ControllerResponseHelper.GetDefaultResponse(result);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update([FromBody] RegisterDto updatedModel, string id)
+        /// <summary>
+        /// Create new configuration to hold UI settings
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="config">Parameter DTO</param>
+        /// <returns>Created entity</returns>
+        [HttpPost("{userId}/config")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> AddConfiguration(int userId, UiConfigurationDto config)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
+            var result = await _uiConfigService.AddConfiguration(userId, config);
 
-            // only resource owner can modify it
-            if (!ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
-                return Forbid();
-
-            var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, updatedModel.Password);
-            if (!passwordValidationResult.Succeeded) return BadRequest(passwordValidationResult.Errors);
-
-            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, updatedModel.Password);
-            user.Email = updatedModel.Email;
-
-            var userValidationResult = await _userValidator.ValidateAsync(_userManager, user);
-            if (!userValidationResult.Succeeded) return BadRequest(userValidationResult.Errors);
-
-            var updateResult = await _userManager.UpdateAsync(user);
-            if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
-
-            return Ok();
+            return ControllerResponseHelper.GetDefaultResponse(result, StatusCodes.Status201Created);
         }
+
+        /// <summary>
+        /// Create new configuration to hold UI settings
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="configId"></param>
+        /// <param name="configDto"></param>
+        /// <returns>Created entity</returns>
+        [HttpPut("{userId}/config/{configId}")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateConfiguration(int userId, int configId, UiConfigurationDto configDto)
+        {
+            var result = await _uiConfigService.UpdateUserConfiguration(userId, configId, configDto);
+
+            return ControllerResponseHelper.GetDefaultResponse(result);
+        }
+
+        /// <summary>
+        /// Create new configuration to hold UI settings
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="configId"></param>
+        /// <returns>Created entity</returns>
+        [HttpDelete("{userId}/config/{configId}")]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<UiConfigurationDto>), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteConfiguration(int userId, int configId)
+        {
+            var result = await _uiConfigService.DeleteUserConfiguration(userId, configId);
+
+            return ControllerResponseHelper.GetDefaultResponse(result);
+        }
+        #endregion
+
+        // TODO
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> Update([FromBody] RegisterDto updatedModel, string id)
+        //{
+        //    var user = await _userManager.FindByIdAsync(id);
+        //    if (user == null) return NotFound();
+
+        //    // only resource owner can modify it
+        //    if (!ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
+        //        return Forbid();
+
+        //    var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, updatedModel.Password);
+        //    if (!passwordValidationResult.Succeeded) return BadRequest(passwordValidationResult.Errors);
+
+        //    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, updatedModel.Password);
+        //    user.Email = updatedModel.Email;
+
+        //    var userValidationResult = await _userValidator.ValidateAsync(_userManager, user);
+        //    if (!userValidationResult.Succeeded) return BadRequest(userValidationResult.Errors);
+
+        //    var updateResult = await _userManager.UpdateAsync(user);
+        //    if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
+
+        //    return Ok();
+        //}
     }
 }

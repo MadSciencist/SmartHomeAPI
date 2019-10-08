@@ -10,7 +10,7 @@ namespace SmartHome.Core.Services
     {
         Task<ServiceResult<IEnumerable<NodeDto>>> GetAll();
         Task<ServiceResult<NodeDto>> CreateNode(NodeDto nodeData);
-        Task<ServiceResult<object>> Control(int nodeId, string operations, JObject commandParams);
+        Task<ServiceResult<object>> ExecuteCommand(int nodeId, string operations, JObject commandParams);
         Task<ServiceResult<object>> GetCommandParam(int nodeId, string command);
     }
 }

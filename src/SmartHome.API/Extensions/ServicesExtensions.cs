@@ -7,10 +7,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SmartHome.API.Security.Token;
+using SmartHome.API.Service;
 using SmartHome.Core.DataAccess;
-using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Domain.Role;
-using SmartHome.Core.Domain.User;
+using SmartHome.Core.Entities.Enums;
+using SmartHome.Core.Entities.Role;
+using SmartHome.Core.Entities.User;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,8 @@ namespace SmartHome.API.Extensions
         public static void AddApiServices(this IServiceCollection services)
         {
             services.AddTransient<ITokenBuilder, JwtTokenBuilder>();
-            services.AddScoped<HubTokenDecoder>();
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<HubTokenDecoder>();
         }
 
         public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
@@ -43,6 +45,7 @@ namespace SmartHome.API.Extensions
                 {
                     options.EnableSensitiveDataLogging();
                     options.EnableDetailedErrors();
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 }
             });
 

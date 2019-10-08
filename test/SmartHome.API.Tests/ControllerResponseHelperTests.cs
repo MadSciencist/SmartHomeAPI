@@ -1,10 +1,10 @@
-using System;
-using Xunit;
-using Moq;
-using SmartHome.Core.Infrastructure;
-using SmartHome.API.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
+using SmartHome.API.Utils;
+using SmartHome.Core.Infrastructure;
+using System;
 using System.Net;
+using Xunit;
 
 namespace SmartHome.API.Tests
 {
@@ -52,7 +52,7 @@ namespace SmartHome.API.Tests
                 Data = new object(),
                 Principal = new System.Security.Claims.ClaimsPrincipal()
             };
-            result.Alerts.Add(new Alert { Message = "", MessageType = MessageType.Exception});
+            result.Alerts.Add(new Alert { Message = "", MessageType = MessageType.Exception });
 
             // Act
             IActionResult response = ControllerResponseHelper.GetDefaultResponse(result);

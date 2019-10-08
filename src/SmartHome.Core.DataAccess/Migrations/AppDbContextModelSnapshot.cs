@@ -319,6 +319,24 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.ToTable("tbl_registered_magnitude");
                 });
 
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.UiConfiguration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Data");
+
+                    b.Property<int>("Type");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("tbl_ui_configuration");
+                });
+
             modelBuilder.Entity("SmartHome.Core.Domain.Role.AppRole", b =>
                 {
                     b.Property<int>("Id")
@@ -512,6 +530,14 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasOne("SmartHome.Core.Domain.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany("RegisteredMagnitudes")
                         .HasForeignKey("ControlStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Domain.Entity.UiConfiguration", b =>
+                {
+                    b.HasOne("SmartHome.Core.Domain.User.AppUser", "User")
+                        .WithMany("UiConfiguration")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

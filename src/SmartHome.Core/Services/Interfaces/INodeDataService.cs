@@ -1,5 +1,5 @@
-﻿using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+﻿using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Infrastructure;
@@ -43,5 +43,8 @@ namespace SmartHome.Core.Services
         /// <returns></returns>
         Task<ServiceResult<NodeCollectionAggregate>> GetNodeData(int nodeId, int pageNumber,
             int pageSize, string[] properties, DateTime from, DateTime to, DataOrder order);
+
+        Task<ServiceResult<ICollection<NodeMagnitudeData>>> GetNodeDatas(int nodeId, int pageNumber,
+            int pageSize, string[] properties, DateTime from, DateTime to, DataOrder order, int maxCount = 1000, bool paged = false);
     }
 }

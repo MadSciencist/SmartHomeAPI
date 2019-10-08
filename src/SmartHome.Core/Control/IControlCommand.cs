@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.Entity;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Control

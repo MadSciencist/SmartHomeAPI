@@ -2,8 +2,8 @@
 using MQTTnet;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
-using SmartHome.Core.Domain.ContractParams;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.ContractParams;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Attributes;
 using System.Threading.Tasks;
@@ -12,9 +12,9 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
 {
     [DisplayText("Single Relay")]
     [ParameterType(typeof(SingleRelayParam))]
-    public class SingleRelay : MqttControlStrategyBase, IControlCommand
+    public class SingleRelay : MqttControlCommand, IControlCommand
     {
-        public SingleRelay(ILifetimeScope container) : base(container) 
+        public SingleRelay(ILifetimeScope container) : base(container)
         {
         }
 

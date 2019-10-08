@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace SmartHome.Core.DataAccess.Repository
 
             var nodeData = new NodeData
             {
-                RequestReasonId = (int) reason,
+                RequestReasonId = (int)reason,
                 TimeStamp = DateTime.UtcNow,
                 Magnitudes = new List<NodeDataMagnitude>
                 {

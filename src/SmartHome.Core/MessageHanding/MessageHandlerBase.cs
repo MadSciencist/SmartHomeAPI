@@ -1,14 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using Autofac;
-using SmartHome.Core.Domain.Converters;
-using SmartHome.Core.Domain.Entity;
+﻿using Autofac;
+using SmartHome.Core.Entities.Converters;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Services;
+using System;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.MessageHanding
 {
-    public abstract class MessageHandlerBase<T> : IMessageHandler<T> where T: class, new() 
+    public abstract class MessageHandlerBase<T> : IMessageHandler<T> where T : class, new()
     {
         protected Node Node { get; }
 
@@ -45,7 +45,7 @@ namespace SmartHome.Core.MessageHanding
                 var converter = Activator.CreateInstance(converterType) as IDataConverter;
                 return converter?.Convert(value);
             }
-            
+
             // Converter not registered for given property - return original value
             return value;
         }

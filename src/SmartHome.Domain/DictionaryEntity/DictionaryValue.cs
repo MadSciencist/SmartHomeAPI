@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using SmartHome.Core.Domain.Entity;
+﻿using SmartHome.Core.Entities.Entity;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartHome.Core.Domain.DictionaryEntity
+namespace SmartHome.Core.Entities.DictionaryEntity
 {
     [Table("tbl_dictionary_value")]
     public class DictionaryValue : EntityBase

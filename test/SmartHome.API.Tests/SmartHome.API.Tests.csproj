@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -21,7 +21,7 @@
     <ProjectReference Include="..\..\src\SmartHome.API\SmartHome.API.csproj" />
     <ProjectReference Include="..\..\src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj" />
     <ProjectReference Include="..\..\src\SmartHome.Core\SmartHome.Core.csproj" />
-    <ProjectReference Include="..\..\src\SmartHome.Domain\SmartHome.Core.Domain.csproj" />
+    <ProjectReference Include="..\..\src\SmartHome.Domain\SmartHome.Core.Entities.csproj" />
   </ItemGroup>
 
 </Project>

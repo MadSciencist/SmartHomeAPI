@@ -2,18 +2,19 @@
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Domain.User;
+using SmartHome.Core.Entities.User;
 using SmartHome.Core.Utils;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace SmartHome.Core.Services
 {
-    public abstract class ServiceBase<TValidator, TRepository> : IServiceBase where TValidator: class, new() where TRepository: class, new()
+    public abstract class ServiceBase<TValidator, TRepository> : IServiceBase where TValidator : class, new() where TRepository : class, new()
     {
         public ClaimsPrincipal Principal { get; set; }
         protected ILifetimeScope Container { get; set; }
@@ -35,6 +36,12 @@ namespace SmartHome.Core.Services
 
         private IConfiguration _config;
         protected IConfiguration Config => _config ?? (_config = Container.Resolve<IConfiguration>());
+
+        private ILogger _logger;
+        protected ILogger Logger
+        {
+            get { return _logger ?? (_logger = Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName)); }
+        }
 
         #region constructor
 

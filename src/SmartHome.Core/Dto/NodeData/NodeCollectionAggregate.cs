@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SmartHome.Core.Infrastructure;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +13,7 @@ namespace SmartHome.Core.Dto.NodeData
         [JsonProperty("timeStamps")]
         public ICollection<DateTime> Timestamps { get; private set; }
 
-        [JsonProperty("metadata")]
+        [JsonProperty("magnitudeMetadata")]
         public IDictionary<string, MetadataDescriptor> MetadataDictionary { get; private set; }
 
         [JsonProperty("properties")]
@@ -50,8 +51,10 @@ namespace SmartHome.Core.Dto.NodeData
             if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException(nameof(propertyName));
             if (Timestamps is null) throw new InvalidOperationException("Add time stamps first");
             if (Timestamps.Count != values.Count)
-                throw new InvalidOperationException(
-                    "Collection length mismatch (timestamps length don't match values length");
+            {
+                var msg = "Collection length mismatch (timestamps length don't match values length) - selected properties cannot be retrieved together";
+                throw new SmartHomeException(msg);
+            }
         }
     }
 }

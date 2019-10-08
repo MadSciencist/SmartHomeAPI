@@ -1,8 +1,8 @@
-﻿using SmartHome.Core.Dto;
+﻿using Microsoft.AspNetCore.Hosting;
+using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 
 namespace SmartHome.Core.MqttBroker.MessageHandling
 {

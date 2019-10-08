@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartHome.Core.Infrastructure.AssemblyScanning;
+﻿using SmartHome.Core.Infrastructure.AssemblyScanning;
 using Xunit;
 
 namespace SmartHome.Core.Tests.CoreTests

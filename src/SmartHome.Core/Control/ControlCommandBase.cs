@@ -1,20 +1,20 @@
 ﻿using Autofac;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.Services;
 
 namespace SmartHome.Core.Control
 {
-    public abstract class ControlStrategyBase
+    public abstract class ControlCommandBase
     {
         protected ILifetimeScope Container { get; }
 
-        protected ControlStrategyBase(ILifetimeScope container)
+        protected ControlCommandBase(ILifetimeScope container)
         {
             Container = container;
         }
-        
+
         private NotificationService _notificationService;
         protected NotificationService NotificationService =>
             _notificationService ?? (_notificationService = Container.Resolve<NotificationService>());

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,21 +17,21 @@ namespace SmartHome.Core.DataAccess.InitialLoad
 
                 if (!context.RequestReasons.Any())
                 {
-                    var requestReasons = new List<Domain.Entity.DataRequestReason>
+                    var requestReasons = new List<Entities.Entity.DataRequestReason>
                     {
-                        new Domain.Entity.DataRequestReason
+                        new Entities.Entity.DataRequestReason
                         {
                             Id = (int) EDataRequestReason.Node,
                             Reason = "Node",
                             Description = "Node was initiator"
                         },
-                        new Domain.Entity.DataRequestReason
+                        new Entities.Entity.DataRequestReason
                         {
                             Id = (int) EDataRequestReason.Scheduler,
                             Reason = "Scheduler",
                             Description = "Task scheduler was initiator"
                         },
-                        new Domain.Entity.DataRequestReason
+                        new Entities.Entity.DataRequestReason
                         {
                             Id = (int) EDataRequestReason.User,
                             Reason = "User",
