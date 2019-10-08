@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SmartHome.Core.Domain.User;
+using SmartHome.Core.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;

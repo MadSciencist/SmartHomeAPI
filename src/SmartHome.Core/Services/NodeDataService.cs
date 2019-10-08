@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Infrastructure;
@@ -20,13 +21,11 @@ namespace SmartHome.Core.Services
     {
         private readonly INodeDataRepository _nodeDataRepository;
         private readonly INodeDataMagnitudeRepository _nodeDataMagnitudeRepository;
-        private readonly IServiceProvider _serviceProvider;
 
-        public NodeDataService(ILifetimeScope container, IServiceProvider serviceProvider, INodeDataRepository nodeDataRepository, INodeDataMagnitudeRepository nodeDataMagnitudeRepository) : base(container)
+        public NodeDataService(ILifetimeScope container, INodeDataRepository nodeDataRepository, INodeDataMagnitudeRepository nodeDataMagnitudeRepository) : base(container)
         {
             _nodeDataRepository = nodeDataRepository;
             _nodeDataMagnitudeRepository = nodeDataMagnitudeRepository;
-            _serviceProvider = serviceProvider;
         }
 
         public async Task<ServiceResult<NodeCollectionAggregate>> GetNodeData(int nodeId, int pageNumber, int pageSize,
@@ -81,12 +80,9 @@ namespace SmartHome.Core.Services
                         : query.OrderByDescending(p => p.TimeStamp);
 
             if(!paged)
-            {
                 query = query.Take(maxCount);
-            }
 
-            var sql = query.ToSql();
-            Console.WriteLine($"Generated SQL: {sql}");
+            Logger.LogTrace($"Generated SQL: {query.ToSql()}");
 
             if (paged)
             {

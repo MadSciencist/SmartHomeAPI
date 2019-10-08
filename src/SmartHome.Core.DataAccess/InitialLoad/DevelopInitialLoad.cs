@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

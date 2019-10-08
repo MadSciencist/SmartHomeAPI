@@ -1,4 +1,4 @@
-﻿using SmartHome.Core.Domain.Entity;
+﻿using SmartHome.Core.Entities.Entity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SmartHome.Core.Entities.ContractParams;
+using System.Collections.Generic;
 
 namespace SmartHome.Core.Domain.ContractParams
 {

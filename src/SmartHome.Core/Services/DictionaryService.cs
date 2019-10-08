@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure;
 using System;
 using System.Collections.Generic;

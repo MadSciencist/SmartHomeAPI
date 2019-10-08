@@ -1,4 +1,4 @@
-﻿using SmartHome.Core.Domain.Converters;
+﻿using SmartHome.Core.Entities.Converters;
 using SmartHome.Core.MessageHanding;
 using System;
 using System.Collections.Generic;

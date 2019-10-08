@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Caching.Memory;
-using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.MessageHanding;

@@ -1,8 +1,8 @@
-﻿using SmartHome.Core.Domain.ContractParams;
-using SmartHome.Core.Domain.Models;
+﻿using SmartHome.Core.Entities.ContractParams;
+using SmartHome.Core.Entities.Models;
 using System.Collections.Generic;
 
-namespace SmartHome.Core.Domain
+namespace SmartHome.Core.Entities
 {
     /// <summary>
     /// This class defines all magnitudes that system is able to collect

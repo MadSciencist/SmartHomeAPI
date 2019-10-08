@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Role;
-using SmartHome.Core.Domain.User;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Role;
+using SmartHome.Core.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -61,13 +61,13 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     {
                         new UiConfiguration
                         {
-                            Type = Domain.Enums.UiConfigurationType.Dashboard,
+                            Type = Entities.Enums.UiConfigurationType.Dashboard,
                             Data = "{}",
                             UserId = 1,
                         },
                         new UiConfiguration
                         {
-                            Type = Domain.Enums.UiConfigurationType.Control,
+                            Type = Entities.Enums.UiConfigurationType.Control,
                             Data = "{}",
                             UserId = 1,
                         }

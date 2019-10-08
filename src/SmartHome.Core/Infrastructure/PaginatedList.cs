@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,6 @@ namespace SmartHome.Core.Infrastructure
         }
 
         public bool HasPreviousPage => (PageIndex > 1);
-
         public bool HasNextPage => (PageIndex < TotalPages);
 
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source,

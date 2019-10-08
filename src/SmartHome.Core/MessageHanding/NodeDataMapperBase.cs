@@ -1,5 +1,5 @@
-﻿using SmartHome.Core.Domain;
-using SmartHome.Core.Domain.Models;
+﻿using SmartHome.Core.Entities;
+using SmartHome.Core.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

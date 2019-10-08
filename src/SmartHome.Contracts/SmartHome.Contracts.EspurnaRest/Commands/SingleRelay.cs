@@ -2,9 +2,9 @@
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using SmartHome.Core.Control;
-using SmartHome.Core.Domain.ContractParams;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.ContractParams;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Attributes;
@@ -17,7 +17,7 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
 {
     [DisplayText("Single Relay")]
     [ParameterType(typeof(SingleRelayParam))]
-    public class SingleRelay : RestControlStrategyBase, IControlCommand
+    public class SingleRelay : RestControlCommand, IControlCommand
     {
         private const string RelayKey = "relay/0";
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartHome.Core.Domain.Entity
+namespace SmartHome.Core.Entities.Entity
 {
     public class EntityBase
     {

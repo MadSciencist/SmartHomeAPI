@@ -1,8 +1,8 @@
-﻿using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Domain.User;
+﻿using SmartHome.Core.Entities.Enums;
+using SmartHome.Core.Entities.User;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartHome.Core.Domain.Entity
+namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_ui_configuration")]
     public class UiConfiguration : EntityBase

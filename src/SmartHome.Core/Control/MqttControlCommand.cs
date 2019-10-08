@@ -3,9 +3,9 @@ using SmartHome.Core.MqttBroker;
 
 namespace SmartHome.Core.Control
 {
-    public class MqttControlStrategyBase : ControlStrategyBase
+    public abstract class MqttControlCommand : ControlCommandBase
     {
-        protected MqttControlStrategyBase(ILifetimeScope container) : base(container)
+        protected MqttControlCommand(ILifetimeScope container) : base(container)
         {
         }
 

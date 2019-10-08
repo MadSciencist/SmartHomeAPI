@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Dto;
 using SmartHome.API.Utils;
-using SmartHome.Core.Domain.DictionaryEntity;
+using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services;
 using System.Collections.Generic;

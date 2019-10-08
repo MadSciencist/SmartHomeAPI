@@ -1,5 +1,5 @@
-﻿using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+﻿using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

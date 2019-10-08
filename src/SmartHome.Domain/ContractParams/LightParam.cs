@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SmartHome.Core.Domain.ContractParams
+namespace SmartHome.Core.Entities.ContractParams
 {
     public class LightParam
     {

@@ -1,4 +1,4 @@
-﻿using SmartHome.Core.Domain;
+﻿using SmartHome.Core.Entities;
 using SmartHome.Core.MessageHanding;
 using System.Linq;
 

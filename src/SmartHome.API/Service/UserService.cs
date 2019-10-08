@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using SmartHome.API.Dto;
 using SmartHome.API.Security.Token;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
-using SmartHome.Core.Domain.User;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
+using SmartHome.Core.Entities.User;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Utils;
 using System;
@@ -239,13 +239,3 @@ namespace SmartHome.API.Service
         }
     }
 }
-
-//var config = user.UiConfiguration.SingleOrDefault(x => x.Id == configDto.Id);
-//if (config is null)
-//{
-//    response.Alerts.Add(new Alert($"Config does not exist", MessageType.Error));
-//    response.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
-//    return response;
-//}
-//config.Type = configDto.Type;
-//    config.Data = configDto.Data;

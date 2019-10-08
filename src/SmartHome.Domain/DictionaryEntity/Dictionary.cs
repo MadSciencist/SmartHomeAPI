@@ -1,8 +1,8 @@
-﻿using SmartHome.Core.Domain.Entity;
+﻿using SmartHome.Core.Entities.Entity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SmartHome.Core.Domain.DictionaryEntity
+namespace SmartHome.Core.Entities.DictionaryEntity
 {
     [Table("tbl_dictionary")]
     public class Dictionary : EntityBase

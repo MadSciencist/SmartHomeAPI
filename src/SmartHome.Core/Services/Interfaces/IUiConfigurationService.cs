@@ -1,4 +1,4 @@
-﻿using SmartHome.Core.Domain.Enums;
+﻿using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using System.Collections.Generic;

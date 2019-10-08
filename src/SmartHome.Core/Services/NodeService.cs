@@ -4,8 +4,8 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema.Generation;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
@@ -117,7 +117,7 @@ namespace SmartHome.Core.Services
             }
         }
 
-        public async Task<ServiceResult<object>> Control(int nodeId, string command, JObject commandParams)
+        public async Task<ServiceResult<object>> ExecuteCommand(int nodeId, string command, JObject commandParams)
         {
             if (string.IsNullOrEmpty(command)) throw new ArgumentException(nameof(command));
 
@@ -125,9 +125,9 @@ namespace SmartHome.Core.Services
 
             var node = await _nodeRepository.GetByIdAsync(nodeId);
 
-            if (!_authProvider.Authorize(null, Principal, OperationType.Execute))
+            if (!_authProvider.Authorize(node, Principal, OperationType.Execute))
             {
-                throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to add new node.");
+                throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to execute command.");
             }
 
             try

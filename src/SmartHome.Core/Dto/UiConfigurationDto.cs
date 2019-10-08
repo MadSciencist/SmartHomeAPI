@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Enums;
 
 namespace SmartHome.Core.Dto
 {

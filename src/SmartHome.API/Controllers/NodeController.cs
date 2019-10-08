@@ -65,7 +65,7 @@ namespace SmartHome.API.Controllers
         [HttpPost("{nodeId}/command/{command}")]
         public async Task<IActionResult> ExecuteCommand(int nodeId, string command, JObject commandParams = null)
         {
-            var serviceResult = await _nodeService.Control(nodeId, command, commandParams);
+            var serviceResult = await _nodeService.ExecuteCommand(nodeId, command, commandParams);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult, StatusCodes.Status202Accepted);
         }

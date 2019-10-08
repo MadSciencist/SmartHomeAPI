@@ -3,9 +3,9 @@ using SmartHome.Core.RestClient;
 
 namespace SmartHome.Core.Control
 {
-    public abstract class RestControlStrategyBase : ControlStrategyBase
+    public abstract class RestControlCommand : ControlCommandBase
     {
-        protected RestControlStrategyBase(ILifetimeScope container) : base(container)
+        protected RestControlCommand(ILifetimeScope container) : base(container)
         {
         }
 

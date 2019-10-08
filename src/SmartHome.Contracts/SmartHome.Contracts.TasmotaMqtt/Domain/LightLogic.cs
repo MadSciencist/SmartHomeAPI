@@ -1,4 +1,5 @@
 ﻿using SmartHome.Core.Domain.ContractParams;
+using SmartHome.Core.Entities.ContractParams;
 using System;
 using System.Collections.Generic;
 using System.Linq;

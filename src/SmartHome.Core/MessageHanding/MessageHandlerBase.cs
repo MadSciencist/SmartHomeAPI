@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using SmartHome.Core.Domain.Converters;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.Converters;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Services;
 using System;

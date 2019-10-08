@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SmartHome.Contracts.TasmotaMqtt.Domain.Models;
-using SmartHome.Core.Domain.ContractParams;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.ContractParams;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;

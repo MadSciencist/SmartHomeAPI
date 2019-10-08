@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Enums;
 
 namespace SmartHome.Core.Infrastructure
 {

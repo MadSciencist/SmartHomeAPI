@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using SmartHome.Core.Domain.Entity;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using System;

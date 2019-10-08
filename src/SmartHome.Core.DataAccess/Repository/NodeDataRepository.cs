@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.Domain.Entity;
-using SmartHome.Core.Domain.Enums;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
