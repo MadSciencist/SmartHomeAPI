@@ -42,7 +42,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
             if (payload.ContainsKey(relay0Key))
             {
                 var mappedProperty = DataMapper.Mapping[relay0Key];
-                if (Node.UserWantsToSaveProperty(mappedProperty))
+                if (Node.ShouldMagnitudeBeStored(mappedProperty))
                 {
                     var sensorValue = payload.GetValue(relay0Key).ToString();
                     await ExtractSaveData(base.Node.Id, relay0Key, sensorValue);
@@ -56,7 +56,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
         {
             if (payload.ContainsKey("POWER") && payload.ContainsKey("Dimmer") && payload.ContainsKey("CT"))
             {
-                if (Node.UserWantsToSaveProperty("light"))
+                if (Node.ShouldMagnitudeBeStored("light"))
                 {
                     var param = new LightParam
                     {
@@ -98,7 +98,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
                 foreach (var (key, value) in energyMap)
                 {
                     var mapped = base.DataMapper.GetPhysicalPropertyByContractMagnitude(key);
-                    if (Node.UserWantsToSaveProperty(mapped.Magnitude))
+                    if (Node.ShouldMagnitudeBeStored(mapped.Magnitude))
                     {
                         magnitudesDto.Add(new NodeDataMagnitudeDto(mapped, base.ApplyConversion(key, value)));
                     }

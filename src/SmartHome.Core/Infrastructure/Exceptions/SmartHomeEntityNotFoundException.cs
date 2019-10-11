@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartHome.Core.Infrastructure
+namespace SmartHome.Core.Infrastructure.Exceptions
 {
     public class SmartHomeEntityNotFoundException : SmartHomeException
     {

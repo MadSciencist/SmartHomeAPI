@@ -10,6 +10,7 @@ using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.User;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Utils;
 using System;
 using System.Collections.Generic;

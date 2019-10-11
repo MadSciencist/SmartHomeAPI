@@ -9,6 +9,7 @@ using SmartHome.Core.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Infrastructure.Exceptions;
 
 namespace SmartHome.Core.Services
 {

@@ -2,12 +2,12 @@
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using SmartHome.Core.Control;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.ContractParams;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Dto;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Attributes;
+using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.RestClient;
 using System.Collections.Generic;
@@ -21,23 +21,23 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
     {
         private const string RelayKey = "relay/0";
 
-        public SingleRelay(ILifetimeScope container) : base(container)
+        public SingleRelay(ILifetimeScope container, Node node) : base(container, node)
         {
         }
 
-        public async Task Execute(Node node, JObject commandParams)
+        public async Task Execute(JObject commandParams)
         {
             var param = commandParams.ToObject<SingleRelayParam>().Validate();
 
-            if (string.IsNullOrEmpty(node.ApiKey)) throw new SmartHomeException("API key cannot be empty");
+            if (string.IsNullOrEmpty(Node.ApiKey)) throw new SmartHomeException("API key cannot be empty");
 
-            var uri = BuildUri(node, param);
+            var uri = BuildUri(Node, param);
 
             var response = await HttpClient.InvokeAsync<Dictionary<string, string>>(uri, Method.GET);
 
             if (response != null)
             {
-                INodeDataMapper mapper = base.GetNodeMapper(node);
+                INodeDataMapper mapper = base.GetNodeMapper(Node);
 
                 // Espurna response for SingleRelay has key relay/0
                 var property = mapper?.GetPhysicalPropertyByContractMagnitude(RelayKey);
@@ -47,8 +47,8 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
                 {
                     var value = response[RelayKey];
                     var magnitudeDto = new NodeDataMagnitudeDto(property, value);
-                    NotificationService.PushDataNotification(node.Id, magnitudeDto);
-                    await NodeDataService.AddSingleAsync(node.Id, EDataRequestReason.Node, magnitudeDto);
+                    NotificationService.PushDataNotification(Node.Id, magnitudeDto);
+                    await NodeDataService.AddSingleAsync(Node.Id, EDataRequestReason.Node, magnitudeDto);
                 }
             }
         }

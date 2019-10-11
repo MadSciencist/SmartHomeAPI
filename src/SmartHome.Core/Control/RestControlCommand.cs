@@ -1,11 +1,12 @@
 ﻿using Autofac;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.RestClient;
 
 namespace SmartHome.Core.Control
 {
     public abstract class RestControlCommand : ControlCommandBase
     {
-        protected RestControlCommand(ILifetimeScope container) : base(container)
+        protected RestControlCommand(ILifetimeScope container, Node node) : base(container, node)
         {
         }
 

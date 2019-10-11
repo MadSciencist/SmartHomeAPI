@@ -79,7 +79,7 @@ namespace SmartHome.API.Controllers
         [HttpGet("{nodeId}/command/{command}")]
         public async Task<IActionResult> GetRequestBodyForCommand(int nodeId, string command)
         {
-            var serviceResult = await _nodeService.GetCommandParam(nodeId, command);
+            var serviceResult = await _nodeService.GetCommandParamSchema(nodeId, command);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }

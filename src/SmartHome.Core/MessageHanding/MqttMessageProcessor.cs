@@ -1,8 +1,8 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.Dto;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
+using SmartHome.Core.Infrastructure.Exceptions;
 using System;
 using System.Threading.Tasks;
 
