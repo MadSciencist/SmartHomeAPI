@@ -4,6 +4,7 @@ using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Control

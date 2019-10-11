@@ -18,8 +18,8 @@ namespace SmartHome.Core.Entities.Entity
         [MaxLength(500)]
         public string Description { get; set; }
 
-        //[MaxLength(10)]
-        //public string UriSchema { get; set; }
+        [MaxLength(10)]
+        public string UriSchema { get; set; }
 
         [MaxLength(20)]
         public string IpAddress { get; set; }

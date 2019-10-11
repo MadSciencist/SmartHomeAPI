@@ -4,7 +4,7 @@ using System.Security.Claims;
 
 namespace SmartHome.Core.Infrastructure
 {
-    public class ServiceResult<T> where T : class
+    public class ServiceResult<T>
     {
         [JsonProperty("data", NullValueHandling = NullValueHandling.Include)]
         public T Data { get; set; }

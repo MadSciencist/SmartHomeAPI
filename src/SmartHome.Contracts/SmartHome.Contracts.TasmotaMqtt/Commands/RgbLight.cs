@@ -26,6 +26,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
             var logic = new LightLogic();
             var (topic, payload) = logic.GetTopicPayloadForRgbLight(param);
 
+            // TODO abstract await the MQTTNet message builder
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic($"{Node.BaseTopic}/{topic}")
                 .WithPayload(payload)

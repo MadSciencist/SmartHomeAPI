@@ -1,19 +1,20 @@
 ﻿using Autofac;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.Exceptions;
+using SmartHome.Core.Services.Abstractions;
 using SmartHome.Core.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartHome.Core.Infrastructure.Exceptions;
 
 namespace SmartHome.Core.Services
 {
-    public class UiConfigurationService : ServiceBase<UiConfigurationDto, UiConfiguration>, IUiConfigurationService
+    public class UiConfigurationService : CrudServiceBase<UiConfigurationDto, UiConfiguration>, IUiConfigurationService
     {
         public UiConfigurationService(ILifetimeScope container) : base(container)
         {

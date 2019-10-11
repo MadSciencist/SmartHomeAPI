@@ -9,10 +9,17 @@ using SmartHome.Core.MqttBroker.MessageHandling;
 using SmartHome.Core.RestClient;
 using SmartHome.Core.Security;
 using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Hosting;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
+using SmartHome.Core.Scheduling;
+using SmartHome.Core.Scheduling.Jobs;
 
 namespace SmartHome.Core.IoC
 {
@@ -45,10 +52,20 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
             Builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerDependency();
             Builder.RegisterType<UiConfigurationService>().As<IUiConfigurationService>().InstancePerDependency();
+            Builder.RegisterType<SchedulingService>().As<ISchedulingService>().InstancePerDependency();
 
             Builder.RegisterType<MqttBroker.MqttBroker>().As<IMqttBroker>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();
             Builder.RegisterType<NotificationService>().SingleInstance();
+
+            // Scheduler
+            Builder.RegisterType<SchedulerHostedService>().As<IHostedService>().InstancePerDependency();
+
+            Builder.RegisterType<JobFactory>().As<IJobFactory>().SingleInstance();
+            Builder.RegisterType<StdSchedulerFactory>().As<ISchedulerFactory>().SingleInstance();
+            // Jobs
+            Builder.RegisterType<ExecuteNodeCommandJob>().SingleInstance();
+            Builder.RegisterType<TestJob>().SingleInstance();
 
             return Builder;
         }

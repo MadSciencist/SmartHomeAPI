@@ -13,6 +13,7 @@ using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Security;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeService : ServiceBase<NodeDto, object>, INodeService
+    public class NodeService : CrudServiceBase<NodeDto, object>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
         private readonly NodeAuthorizationProvider _authProvider;

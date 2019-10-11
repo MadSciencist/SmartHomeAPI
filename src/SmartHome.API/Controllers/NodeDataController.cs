@@ -7,7 +7,7 @@ using SmartHome.API.Utils;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.MessageHanding;
-using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Threading.Tasks;
 

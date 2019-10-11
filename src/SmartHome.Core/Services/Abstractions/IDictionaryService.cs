@@ -3,7 +3,7 @@ using SmartHome.Core.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.Services
+namespace SmartHome.Core.Services.Abstractions
 {
     public interface IDictionaryService : IServiceBase
     {
