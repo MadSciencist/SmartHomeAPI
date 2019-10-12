@@ -9,6 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Autofac.Core;
+using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Entities.SchedulingEntity;
 
 namespace SmartHome.Core.Services
 {
@@ -52,6 +55,7 @@ namespace SmartHome.Core.Services
             AddContractsDict();
             AddCommandExecutorsDict();
             AddContractPropertiesDict();
+            AddJobTypesDict();
 
             _cache.Set(CacheKey, Dictionaries, TimeSpan.FromMinutes(30));
         }
@@ -130,6 +134,26 @@ namespace SmartHome.Core.Services
                     }).ToList()
                 });
             }
+        }
+
+        private void AddJobTypesDict()
+        {
+            var jobRepo = _container.Resolve<IGenericRepository<JobType>>();
+            var jobs = jobRepo.GetAll();
+
+            Dictionaries.Add(new Dictionary
+            {
+                Name = nameof(JobType),
+                Description = string.Empty,
+                Metadata = "synthetic=true",
+                ReadOnly = true,
+                Values = jobs.Select(job => new DictionaryValue
+                {
+                    InternalValue = job.Id.ToString(),
+                    DisplayValue = job.DisplayName,
+                    IsActive = true
+                }).ToList()
+            });
         }
     }
 }

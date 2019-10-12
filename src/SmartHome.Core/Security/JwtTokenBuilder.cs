@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace SmartHome.API.Security.Token
+namespace SmartHome.Core.Security
 {
     public class JwtTokenBuilder : ITokenBuilder
     {

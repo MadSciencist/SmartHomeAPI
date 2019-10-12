@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Role;
+using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Entities.User;
 
 namespace SmartHome.Core.DataAccess
@@ -20,6 +21,8 @@ namespace SmartHome.Core.DataAccess
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<DataRequestReason> RequestReasons { get; set; }
+        public DbSet<SchedulesPersistence> SchedulesPersistence { get; set; }
+        public DbSet<JobType> JobTypes { get; set; }
         public DbSet<UiConfiguration> UiConfigurations { get; set; }
 
         public DbSet<Dictionary> Dictionaries { get; set; }

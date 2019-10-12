@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.SchedulingEntity;
 
 namespace SmartHome.Core.DataAccess.InitialLoad
 {
@@ -17,21 +19,21 @@ namespace SmartHome.Core.DataAccess.InitialLoad
 
                 if (!context.RequestReasons.Any())
                 {
-                    var requestReasons = new List<Entities.Entity.DataRequestReason>
+                    var requestReasons = new List<DataRequestReason>
                     {
-                        new Entities.Entity.DataRequestReason
+                        new DataRequestReason
                         {
                             Id = (int) EDataRequestReason.Node,
                             Reason = "Node",
                             Description = "Node was initiator"
                         },
-                        new Entities.Entity.DataRequestReason
+                        new DataRequestReason
                         {
                             Id = (int) EDataRequestReason.Scheduler,
                             Reason = "Scheduler",
                             Description = "Task scheduler was initiator"
                         },
-                        new Entities.Entity.DataRequestReason
+                        new DataRequestReason
                         {
                             Id = (int) EDataRequestReason.User,
                             Reason = "User",
@@ -40,6 +42,23 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     };
 
                     await context.AddRangeAsync(requestReasons);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.JobTypes.Any())
+                {
+                    var jobTypes = new List<JobType>
+                    {
+                        new JobType
+                        {
+                            Id = 1000,
+                            DisplayName = "Execute command on node",
+                            FullyQualifiedName = "SmartHome.Core.Scheduling.Jobs.ExecuteNodeCommandJob",
+                            AssemblyName = "SmartHome.Core"
+                        }
+                    };
+
+                    await context.AddRangeAsync(jobTypes);
                     await context.SaveChangesAsync();
                 }
             }

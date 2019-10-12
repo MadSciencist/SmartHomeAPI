@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.API.Dto;
-using SmartHome.API.Security.Token;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
@@ -17,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SmartHome.Core.Security;
 
 namespace SmartHome.API.Service
 {

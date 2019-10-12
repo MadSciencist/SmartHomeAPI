@@ -13,6 +13,7 @@ namespace SmartHome.Core.Security
         public bool Authorize(Node node, ClaimsPrincipal principal, OperationType operation)
         {
             if (principal is null) return false;
+            if (ClaimsPrincipalHelper.GetClaimedIdentifier(principal) == "1") return true; // system user
             if (IsAdmin(principal)) return true;
 
             switch (operation)

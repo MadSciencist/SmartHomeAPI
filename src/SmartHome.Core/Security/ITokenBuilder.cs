@@ -1,8 +1,8 @@
-﻿using SmartHome.Core.Entities.User;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SmartHome.Core.Entities.User;
 
-namespace SmartHome.API.Security.Token
+namespace SmartHome.Core.Security
 {
     public interface ITokenBuilder
     {

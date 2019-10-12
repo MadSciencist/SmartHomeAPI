@@ -1,10 +1,10 @@
-﻿using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Dto;
+﻿using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.Services
+namespace SmartHome.Core.Services.Abstractions
 {
     public interface IUiConfigurationService : IServiceBase
     {

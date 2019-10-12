@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
-    public interface IGenericRepository<T> where T : class, new()
+    public interface IGenericRepository<T> where T : EntityBase, new()
     {
         AppDbContext Context { get; }
         IEnumerable<T> GetAll();

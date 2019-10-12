@@ -21,11 +21,12 @@ using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.IoC;
 using SmartHome.Core.MqttBroker;
-using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Linq;
 using System.Reflection;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using SmartHome.Core.Scheduling;
+using SmartHome.Core.Scheduling.Jobs;
 
 namespace SmartHome.API
 {
@@ -109,7 +110,7 @@ namespace SmartHome.API
             }
 
             services.AddMediatR(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(INodeService)));
-
+            
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
             builder.Populate(services);

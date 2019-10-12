@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class DictionaryService : ServiceBase<object, Dictionary>, IDictionaryService
+    public class DictionaryService : CrudServiceBase<object, Dictionary>, IDictionaryService
     {
         private readonly SyntheticDictionaryService _syntheticDictionary;
 

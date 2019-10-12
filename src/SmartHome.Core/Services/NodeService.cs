@@ -13,6 +13,7 @@ using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Security;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeService : ServiceBase<NodeDto, object>, INodeService
+    public class NodeService : CrudServiceBase<NodeDto, EntityBase>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
         private readonly NodeAuthorizationProvider _authProvider;
@@ -137,13 +138,15 @@ namespace SmartHome.Core.Services
                 // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
                 var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
 
-                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName, new NamedParameter("node", node)) is IControlCommand executor))
+                if (!Container.IsRegisteredWithName<object>(executorFullyQualifiedName))
                 {
-                    response.Alerts.Add(new Alert($"{command} is not valid for strategy: {node.ControlStrategy.ContractAssembly}", MessageType.Error));
+                    response.Alerts.Add(new Alert($"Given command is invalid in this context: {command}",  MessageType.Error));
                     return response;
                 }
 
-                await executor.Execute(commandParams);
+                var executor = Container.ResolveNamed<object>(executorFullyQualifiedName, new NamedParameter("node", node)) as IControlCommand;
+                if (executor != null) await executor.Execute(commandParams);
+
                 response.ResponseStatusCodeOverride = StatusCodes.Status202Accepted;
                 return response;
             }
@@ -173,15 +176,17 @@ namespace SmartHome.Core.Services
                 // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
                 var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
 
-                if (!(Container.ResolveNamed<object>(executorFullyQualifiedName) is IControlCommand commandExecutor))
+                if (!Container.IsRegisteredWithName<object>(executorFullyQualifiedName))
                 {
-                    response.Alerts.Add(new Alert($"{command} is not valid for strategy: {node.ControlStrategy.ContractAssembly}", MessageType.Error));
+                    response.Alerts.Add(new Alert($"Given command is invalid in this context: {command}", MessageType.Error));
                     return response;
                 }
 
-                var attr = commandExecutor.GetType().GetAttribute<ParameterTypeAttribute>();
+                var executor = Container.ResolveNamed<object>(executorFullyQualifiedName, new NamedParameter("node", node)) as IControlCommand;
+
+                var attr = executor?.GetType().GetAttribute<ParameterTypeAttribute>();
                 var generator = new JSchemaGenerator();
-                var schema = generator.Generate(attr.ParameterType);
+                var schema = generator.Generate(attr?.ParameterType);
                 response.Data = schema;
 
                 return response;
