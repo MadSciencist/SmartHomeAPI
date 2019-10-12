@@ -5,7 +5,7 @@ using SmartHome.API.Dto;
 using SmartHome.API.Utils;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

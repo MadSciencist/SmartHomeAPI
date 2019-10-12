@@ -3,6 +3,7 @@ using SmartHome.Core.Entities.Converters;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Threading.Tasks;
 

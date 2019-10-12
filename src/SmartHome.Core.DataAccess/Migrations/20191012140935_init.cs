@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
 
 namespace SmartHome.Core.DataAccess.Migrations
 {
@@ -51,6 +51,20 @@ namespace SmartHome.Core.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_role", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_scheduling_job_type",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    FullyQualifiedName = table.Column<string>(maxLength: 255, nullable: false),
+                    AssemblyName = table.Column<string>(maxLength: 255, nullable: false),
+                    DisplayName = table.Column<string>(maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_scheduling_job_type", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -243,6 +257,36 @@ namespace SmartHome.Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_scheduling_schedules",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 255, nullable: true),
+                    JobTypeId = table.Column<int>(nullable: false),
+                    CronExpression = table.Column<string>(maxLength: 20, nullable: false),
+                    CreatedById = table.Column<int>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    JobParams = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_scheduling_schedules", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_scheduling_schedules_tbl_user_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_scheduling_schedules_tbl_scheduling_job_type_JobTypeId",
+                        column: x => x.JobTypeId,
+                        principalTable: "tbl_scheduling_job_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_ui_configuration",
                 columns: table => new
                 {
@@ -271,6 +315,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: true),
+                    UriSchema = table.Column<string>(maxLength: 10, nullable: true),
                     IpAddress = table.Column<string>(maxLength: 20, nullable: true),
                     Port = table.Column<int>(nullable: false),
                     GatewayIpAddress = table.Column<string>(maxLength: 20, nullable: true),
@@ -469,6 +514,16 @@ namespace SmartHome.Core.DataAccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_scheduling_schedules_CreatedById",
+                table: "tbl_scheduling_schedules",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_scheduling_schedules_JobTypeId",
+                table: "tbl_scheduling_schedules",
+                column: "JobTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_ui_configuration_UserId",
                 table: "tbl_ui_configuration",
                 column: "UserId");
@@ -527,6 +582,9 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "tbl_registered_magnitude");
 
             migrationBuilder.DropTable(
+                name: "tbl_scheduling_schedules");
+
+            migrationBuilder.DropTable(
                 name: "tbl_ui_configuration");
 
             migrationBuilder.DropTable(
@@ -540,6 +598,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_node_data");
+
+            migrationBuilder.DropTable(
+                name: "tbl_scheduling_job_type");
 
             migrationBuilder.DropTable(
                 name: "tbl_node");

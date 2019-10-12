@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.Services
+namespace SmartHome.Core.Services.Abstractions
 {
     public interface IServiceBase
     {

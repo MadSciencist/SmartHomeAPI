@@ -1,15 +1,15 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.Exceptions;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeDataService : ServiceBase<object, object>, INodeDataService
+    public class NodeDataService : CrudServiceBase<object, EntityBase>, INodeDataService
     {
         private readonly INodeDataRepository _nodeDataRepository;
         private readonly INodeDataMagnitudeRepository _nodeDataMagnitudeRepository;

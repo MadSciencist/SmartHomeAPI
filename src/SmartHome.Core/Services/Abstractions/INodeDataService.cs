@@ -1,13 +1,13 @@
-﻿using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Dto;
+﻿using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.Services
+namespace SmartHome.Core.Services.Abstractions
 {
     public interface INodeDataService : IServiceBase
     {

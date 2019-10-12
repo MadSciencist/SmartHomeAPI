@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using SmartHome.Core.Infrastructure.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

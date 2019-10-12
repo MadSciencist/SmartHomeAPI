@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using SmartHome.API.Security.Token;
+using SmartHome.API.Security;
 using SmartHome.Core.Services;
 using System;
 using System.Threading.Tasks;

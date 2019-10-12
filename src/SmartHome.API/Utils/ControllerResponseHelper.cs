@@ -17,7 +17,7 @@ namespace SmartHome.API.Utils
         }
 
         public static IActionResult GetDefaultResponse<T>(ServiceResult<T> serviceResult,
-            int overrideOkStatus = StatusCodes.Status200OK) where T : class
+            int overrideOkStatus = StatusCodes.Status200OK)
         {
             ValidateAndThrowIfNeeded(serviceResult);
 
@@ -26,7 +26,7 @@ namespace SmartHome.API.Utils
             return InferResponseType(serviceResult, overrideOkStatus);
         }
 
-        private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult, int okStatus) where T : class
+        private static IActionResult InferResponseType<T>(ServiceResult<T> serviceResult, int okStatus)
         {
             if (serviceResult.ResponseStatusCodeOverride.HasValue)
             {
@@ -48,7 +48,7 @@ namespace SmartHome.API.Utils
             return new ObjectResult(serviceResult) { StatusCode = okStatus };
         }
 
-        private static void ProcessExceptionsMessageVisibility<T>(ServiceResult<T> serviceResult) where T : class
+        private static void ProcessExceptionsMessageVisibility<T>(ServiceResult<T> serviceResult)
         {
             var isTrusted = TrustProvider.IsTrustedRequest(serviceResult.Principal);
 
@@ -58,7 +58,7 @@ namespace SmartHome.API.Utils
             }
         }
 
-        private static void ValidateAndThrowIfNeeded<T>(ServiceResult<T> serviceResult) where T : class
+        private static void ValidateAndThrowIfNeeded<T>(ServiceResult<T> serviceResult)
         {
             if (serviceResult is null)
             {

@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using SmartHome.API.Utils;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure;
-using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -79,7 +79,7 @@ namespace SmartHome.API.Controllers
         [HttpGet("{nodeId}/command/{command}")]
         public async Task<IActionResult> GetRequestBodyForCommand(int nodeId, string command)
         {
-            var serviceResult = await _nodeService.GetCommandParam(nodeId, command);
+            var serviceResult = await _nodeService.GetCommandParamSchema(nodeId, command);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }

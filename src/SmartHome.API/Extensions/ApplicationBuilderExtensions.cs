@@ -10,7 +10,7 @@ namespace SmartHome.API.Extensions
             if (app is null)
                 throw new ArgumentNullException(nameof(app));
 
-            app.UseMiddleware<ExceptionLoggingMiddleware>();
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
         }
     }
 }

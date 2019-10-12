@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SmartHome.API.Security;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.Exceptions;
 using System;
 using System.Globalization;
 using System.Net;
@@ -11,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace SmartHome.API.Extensions
 {
-    public class ExceptionLoggingMiddleware
+    public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
         private static ILogger _logger;
 
-        public ExceptionLoggingMiddleware(RequestDelegate next, ILogger<ExceptionLoggingMiddleware> logger)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             _logger = logger;
             _next = next;

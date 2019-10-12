@@ -21,11 +21,12 @@ using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.IoC;
 using SmartHome.Core.MqttBroker;
-using SmartHome.Core.Services;
+using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Linq;
 using System.Reflection;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using SmartHome.Core.Scheduling;
+using SmartHome.Core.Scheduling.Jobs;
 
 namespace SmartHome.API
 {
@@ -97,15 +98,19 @@ namespace SmartHome.API
 
             services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); });
 
-            var hubUri = $"{Configuration[WebHostDefaults.ServerUrlsKey]}{Configuration["NotificationEndpoint"]}";
-            services.AddHealthChecks()
-                .AddMySql(Configuration["ConnectionStrings:MySql"])
-                .AddSignalRHub(hubUri)
-                .AddCheck<MqttBrokerHealthCheck>("mqtt_broker");
-            services.AddHealthChecksUI();
+            var useHealthChecks = Configuration.GetValue<bool>("HealthChecks:Enable");
+            if (useHealthChecks)
+            {
+                var hubUri = $"{Configuration[WebHostDefaults.ServerUrlsKey]}{Configuration["NotificationEndpoint"]}";
+                services.AddHealthChecks()
+                    .AddMySql(Configuration["ConnectionStrings:MySql"])
+                    .AddSignalRHub(hubUri)
+                    .AddCheck<MqttBrokerHealthCheck>("mqtt_broker");
+                services.AddHealthChecksUI();
+            }
 
             services.AddMediatR(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(INodeService)));
-
+            
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
             builder.Populate(services);
@@ -167,21 +172,25 @@ namespace SmartHome.API
             app.UseSwagger();
             app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
 
-            app.UseHealthChecks(Configuration["HealthChecks:Endpoint"], new HealthCheckOptions
-            {
-                Predicate = _ => true,
-                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-                AllowCachingResponses = true
-            });
+            var useHealthChecks = Configuration.GetValue<bool>("HealthChecks:Enable");
+            if (useHealthChecks)
+            { 
+                app.UseHealthChecks(Configuration["HealthChecks:Endpoint"], new HealthCheckOptions
+                {
+                    Predicate = _ => true,
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                    AllowCachingResponses = true
+                });
 
-            app.UseHealthChecksUI(options =>
-            {
-                options.ApiPath = "/api/health-ui-api";
-                options.ResourcesPath = "/api/ui/resources";
-                options.UseRelativeResourcesPath = false;
-                options.UseRelativeApiPath = false;
-                options.UIPath = Configuration["HealthChecks:UiEndpoint"];
-            });
+                app.UseHealthChecksUI(options =>
+                {
+                    options.ApiPath = "/api/health-ui-api";
+                    options.ResourcesPath = "/api/ui/resources";
+                    options.UseRelativeResourcesPath = false;
+                    options.UseRelativeApiPath = false;
+                    options.UIPath = Configuration["HealthChecks:UiEndpoint"];
+                });
+            }
         }
 
         private static void InitializeDatabase(IApplicationBuilder app)

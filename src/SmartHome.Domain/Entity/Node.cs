@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Entities.Entity
 {
@@ -15,6 +17,9 @@ namespace SmartHome.Core.Entities.Entity
 
         [MaxLength(500)]
         public string Description { get; set; }
+
+        [MaxLength(10)]
+        public string UriSchema { get; set; }
 
         [MaxLength(20)]
         public string IpAddress { get; set; }
@@ -55,9 +60,40 @@ namespace SmartHome.Core.Entities.Entity
 
         public DateTime Created { get; set; }
 
-        public bool UserWantsToSaveProperty(string magnitude)
+        /// <summary>
+        /// Checks whether magnitude should be saved in DB
+        /// </summary>
+        /// <param name="magnitude"></param>
+        /// <returns></returns>
+        public bool ShouldMagnitudeBeStored(string magnitude)
         {
             return ControlStrategy.RegisteredMagnitudes.Any(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0);
         }
+        
+        /// <summary>
+        /// Check whether node is online by sending ICMP packet
+        /// Uses configurable timeout via appSettings
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> IsPingable()
+        {
+            if (string.IsNullOrEmpty(IpAddress))
+                throw new NullReferenceException("Attempting to ping node which doesn't have IP address provided");
+
+            // TODO get configuration here somehow
+            var timeout = 1000;
+
+            using (var ping = new Ping())
+            {
+                var result = await ping.SendPingAsync(IpAddress, timeout, new byte[1]);
+                return result.Status == IPStatus.Success;
+            }
+        }
+
+        /// <summary>
+        /// Returns node name
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString() => Name;
     }
 }

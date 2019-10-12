@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SmartHome.Core.Infrastructure;
+using SmartHome.Core.Infrastructure.Exceptions;
 using System;
 using System.Collections.Generic;
 

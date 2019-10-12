@@ -1,4 +1,5 @@
 ﻿using FluentValidation.Results;
+using SmartHome.Core.Infrastructure.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 

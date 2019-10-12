@@ -12,14 +12,16 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
     [ParameterType(null)]
     public class GetPowerStats : MqttControlCommand, IControlCommand
     {
-        public GetPowerStats(ILifetimeScope container) : base(container)
+        public GetPowerStats(ILifetimeScope container, Node node) : base(container, node)
         {
         }
 
-        public async Task Execute(Node node, JObject commandParams)
+        public async Task Execute(JObject commandParams)
         {
+            await EnsureNodeOnline();
+
             var message = new MqttApplicationMessageBuilder()
-                .WithTopic($"{node.BaseTopic}/status")
+                .WithTopic($"{Node.BaseTopic}/status")
                 .WithPayload("8")
                 .WithExactlyOnceQoS()
                 .WithRetainFlag()
