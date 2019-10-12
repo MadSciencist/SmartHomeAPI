@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
-    public class NodeDataService : CrudServiceBase<object, object>, INodeDataService
+    public class NodeDataService : CrudServiceBase<object, EntityBase>, INodeDataService
     {
         private readonly INodeDataRepository _nodeDataRepository;
         private readonly INodeDataMagnitudeRepository _nodeDataMagnitudeRepository;

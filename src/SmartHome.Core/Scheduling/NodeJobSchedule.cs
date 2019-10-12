@@ -1,24 +1,48 @@
 ﻿using System;
-using SmartHome.Core.Entities.Entity;
+using Quartz;
 
 namespace SmartHome.Core.Scheduling
 {
     public class NodeJobSchedule : JobSchedule
     {
-        public Node Node { get; }
-
-        public NodeJobSchedule(Type type, Node node, string cronExpression) : base(type, cronExpression)
-        {
-            Node = node;
-        }
+        /// <summary>
+        /// Node that will be target od the job.
+        /// </summary>
+        public int NodeId{ get; }
 
         /// <summary>
-        /// Gets the identity which identifies job. Guid is added to make possible of adding multiple jobs on same node.
+        /// Command to execute on the node on job trigger
         /// </summary>
-        /// <returns></returns>
+        public string Command { get; }
+
+        /// <summary>
+        /// Additional parameters that are passed to command handler - JSON
+        /// </summary>
+        public object CommandParams { get; }
+
+        public NodeJobSchedule(Type type, int nodeId, string command, object commandParams, string cronExpression) : base(type, cronExpression)
+        {
+            NodeId = nodeId;
+            Command = command;
+            CommandParams = commandParams;
+        }
+
+        /// <inheritdoc/>
+        public override JobDataMap GetJobData()
+        {
+            return new JobDataMap
+            {
+                { nameof(NodeId), NodeId },
+                { nameof(Command), Command },
+                { nameof(CommandParams), CommandParams }
+            };
+        }
+
+        /// <inheritdoc/>
         public override string GetIdentity()
         {
-            return base.GetIdentity() + "_NODE_ID_" + Node.Id + Guid.NewGuid();
+            var hash = CommandParams == null ? "NO_PARAMS" : $"PARAMS_HASH: {CommandParams.GetHashCode()}";
+            return $"{base.GetIdentity()}_NODE_ID_{NodeId}_CMD_{Command}_{hash}";
         }
     }
 }

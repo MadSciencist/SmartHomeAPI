@@ -1,46 +1,85 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using System;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Quartz;
 using Quartz.Spi;
+using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Entities.SchedulingEntity;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SmartHome.Core.Scheduling
 {
     public class SchedulerHostedService : IHostedService
     {
-        public IScheduler Scheduler { get; set; }
-
+        private IScheduler _scheduler;
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly IJobFactory _jobFactory;
-        private readonly IEnumerable<JobSchedule> _jobSchedules;
+        private readonly ISchedulesPersistenceRepository _scheduleRepository;
+        private readonly ILogger<SchedulerHostedService> _logger;
 
-        public SchedulerHostedService(ISchedulerFactory schedulerFactory, IJobFactory jobFactory, IEnumerable<JobSchedule> jobSchedules)
+        public SchedulerHostedService(ISchedulerFactory schedulerFactory, 
+            IJobFactory jobFactory, 
+            ISchedulesPersistenceRepository scheduleRepo,
+            ILogger<SchedulerHostedService> logger)
         {
             _schedulerFactory = schedulerFactory;
-            _jobSchedules = jobSchedules;
+            _scheduleRepository = scheduleRepo;
+            _logger = logger;
             _jobFactory = jobFactory;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            Scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
-            Scheduler.JobFactory = _jobFactory;
-
-            foreach (var jobSchedule in _jobSchedules)
+            _logger.LogInformation($"Starting hosted service: {nameof(SchedulerHostedService)}");
+            try
             {
-                var job = JobCreationHelper.CreateJob(jobSchedule);
-                var trigger = JobCreationHelper.CreateTrigger(jobSchedule);
+                _scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
+                _scheduler.JobFactory = _jobFactory;
 
-                await Scheduler.ScheduleJob(job, trigger, cancellationToken);
+                var persistedJobs = _scheduleRepository.GetAll();
+
+                foreach (var job in persistedJobs)
+                {
+                    _logger.LogInformation($"Adding scheduled job: {job.ToString()}");
+
+                    var jobSchedule = CreateJobSchedule(job);
+                    await _scheduler.ScheduleJob(jobSchedule.CreateJob(), jobSchedule.CreateTrigger(),
+                        cancellationToken);
+                }
+
+                await _scheduler.Start(cancellationToken);
+                _logger.LogInformation("Successfully started scheduling service.");
             }
-
-            await Scheduler.Start(cancellationToken);
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Error while starting scheduler");
+                throw;
+            }
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            if (Scheduler != null) await Scheduler.Shutdown(cancellationToken);
+            _logger.LogInformation("Shutting down scheduling service.");
+            if (_scheduler != null) await _scheduler.Shutdown(cancellationToken);
+        }
+
+        private JobSchedule CreateJobSchedule(SchedulesPersistence job)
+        {
+            // TODO Think of more polymorphic way...
+            var jobParams = JsonConvert.DeserializeObject<Dictionary<string, object>>(job.JobParams);
+            if (jobParams.ContainsKey(nameof(NodeJobSchedule.NodeId)) && jobParams.ContainsKey(nameof(NodeJobSchedule.Command)))
+            {
+                var nodeId = (int)(long)jobParams[nameof(NodeJobSchedule.NodeId)];
+                var command = jobParams[nameof(NodeJobSchedule.Command)] as string;
+                var commandParams = jobParams[nameof(NodeJobSchedule.CommandParams)];
+
+                return new NodeJobSchedule(job.JobType.GetJobType(), nodeId, command, commandParams, job.CronExpression);
+            }
+
+            return new JobSchedule(job.JobType.GetJobType(), job.CronExpression);
         }
     }
 }

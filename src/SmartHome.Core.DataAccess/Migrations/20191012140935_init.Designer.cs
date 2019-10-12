@@ -9,7 +9,7 @@ using SmartHome.Core.DataAccess;
 namespace SmartHome.Core.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20191011202028_init")]
+    [Migration("20191012140935_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -386,6 +386,35 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.ToTable("tbl_scheduling_job_type");
                 });
 
+            modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.SchedulesPersistence", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<int>("CreatedById");
+
+                    b.Property<string>("CronExpression")
+                        .IsRequired()
+                        .HasMaxLength(20);
+
+                    b.Property<string>("JobParams");
+
+                    b.Property<int>("JobTypeId");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("JobTypeId");
+
+                    b.ToTable("tbl_scheduling_schedules");
+                });
+
             modelBuilder.Entity("SmartHome.Core.Entities.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
@@ -564,6 +593,19 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "User")
                         .WithMany("UiConfiguration")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.SchedulesPersistence", b =>
+                {
+                    b.HasOne("SmartHome.Core.Entities.User.AppUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Core.Entities.SchedulingEntity.JobType", "JobType")
+                        .WithMany()
+                        .HasForeignKey("JobTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

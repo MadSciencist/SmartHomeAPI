@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SmartHome.Core.Entities.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class, new()
+    public class GenericRepository<T> : IGenericRepository<T> where T : EntityBase, new()
     {
         public AppDbContext Context { get; }
         protected ILogger Logger { get; private set; }

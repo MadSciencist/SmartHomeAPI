@@ -46,6 +46,7 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataMagnitudeRepository>().As<INodeDataMagnitudeRepository>().InstancePerDependency();
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
+            Builder.RegisterType<SchedulesPersistenceRepository>().As<ISchedulesPersistenceRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
 
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
@@ -65,7 +66,6 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<StdSchedulerFactory>().As<ISchedulerFactory>().SingleInstance();
             // Jobs
             Builder.RegisterType<ExecuteNodeCommandJob>().SingleInstance();
-            Builder.RegisterType<TestJob>().SingleInstance();
 
             return Builder;
         }

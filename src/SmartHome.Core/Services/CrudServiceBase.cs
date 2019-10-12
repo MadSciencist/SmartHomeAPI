@@ -3,10 +3,11 @@ using AutoMapper;
 using FluentValidation;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Services
 {
-    public class CrudServiceBase<TValidator, TRepository> : ServiceBase where TValidator : class, new() where TRepository : class, new()
+    public class CrudServiceBase<TValidator, TRepository> : ServiceBase where TValidator : class, new() where TRepository : EntityBase, new()
     {
         private AppDbContext _context;
         protected AppDbContext DbContext 

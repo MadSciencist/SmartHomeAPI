@@ -21,6 +21,7 @@ namespace SmartHome.Core.DataAccess
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<DataRequestReason> RequestReasons { get; set; }
+        public DbSet<SchedulesPersistence> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
         public DbSet<UiConfiguration> UiConfigurations { get; set; }
 

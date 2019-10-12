@@ -2,8 +2,11 @@
 
 namespace SmartHome.Core.Dto
 {
-    public class ExecuteNodeCommandJobDto
-    { 
+    public class ScheduleNodeCommandJobDto
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
         [JsonProperty("jobTypeId")]
         public int JobTypeId { get; }
 
@@ -13,8 +16,16 @@ namespace SmartHome.Core.Dto
         [JsonProperty("cronExpression")]
         public string CronExpression { get; }
 
-        public ExecuteNodeCommandJobDto(int jobTypeId, int nodeId, string cronExpression)
+        [JsonProperty("command")]
+        public string Command { get; }
+
+        [JsonProperty("commandParams")]
+        public object CommandParams { get; }
+
+        public ScheduleNodeCommandJobDto(string name, string command, object commandParams, int jobTypeId, int nodeId, string cronExpression)
         {
+            Name = name;
+            Command = command;
             JobTypeId = jobTypeId;
             NodeId = nodeId;
             CronExpression = cronExpression;

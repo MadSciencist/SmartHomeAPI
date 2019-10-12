@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 
-namespace SmartHome.API.Security.Token
+namespace SmartHome.API.Security
 {
     public class HubTokenDecoder
     {

@@ -29,13 +29,11 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<AppRole>>();
 
                 if (!await roleManager.RoleExistsAsync("admin")
-                    && !await roleManager.RoleExistsAsync("user")
-                    && !await roleManager.RoleExistsAsync("sensor"))
+                    && !await roleManager.RoleExistsAsync("user"))
                 {
                     _logger.LogInformation("Creating roles");
                     await roleManager.CreateAsync(new AppRole("admin"));
                     await roleManager.CreateAsync(new AppRole("user"));
-                    await roleManager.CreateAsync(new AppRole("sensor"));
                 }
             }
         }
@@ -47,6 +45,17 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
                 if (await userManager.FindByNameAsync("admin") != null) return;
+
+                // id = 1
+                var systemUser = new AppUser
+                {
+                    UserName = "system",
+                    Email = "system@system.com",
+                    EmailConfirmed = true,
+                    IsActive = true,
+                    ActivatedBy = null,
+                    ActivationDate = DateTime.UtcNow
+                };
 
                 // id = 1
                 var adminUser = new AppUser
@@ -63,24 +72,28 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         {
                             Type = Entities.Enums.UiConfigurationType.Dashboard,
                             Data = "{}",
-                            UserId = 1,
+                            UserId = 2,
                         },
                         new UiConfiguration
                         {
                             Type = Entities.Enums.UiConfigurationType.Control,
                             Data = "{}",
-                            UserId = 1,
+                            UserId = 2,
                         }
                     }
                 };
 
                 const string password = "admin1";
 
+                _logger.LogInformation("Creating system user");
+                await userManager.CreateAsync(systemUser, password);
+                await userManager.AddToRoleAsync(systemUser, "admin");
+                await userManager.AddToRoleAsync(systemUser, "user");
+
                 _logger.LogInformation("Creating admin user");
                 await userManager.CreateAsync(adminUser, password);
                 await userManager.AddToRoleAsync(adminUser, "admin");
                 await userManager.AddToRoleAsync(adminUser, "user");
-                await userManager.AddToRoleAsync(adminUser, "sensor");
             }
         }
     }

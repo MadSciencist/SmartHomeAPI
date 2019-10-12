@@ -6,12 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using SmartHome.API.Security.Token;
+using SmartHome.API.Security;
 using SmartHome.API.Service;
 using SmartHome.Core.DataAccess;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.Role;
 using SmartHome.Core.Entities.User;
+using SmartHome.Core.Security;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,6 @@ namespace SmartHome.API.Extensions
             {
                 options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
                 options.AddPolicy("User", policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
-                options.AddPolicy("Sensor", policy => policy.RequireClaim(ClaimTypes.Role, Roles.Sensor));
             });
         }
 
