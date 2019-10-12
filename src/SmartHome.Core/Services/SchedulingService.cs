@@ -25,7 +25,7 @@ namespace SmartHome.Core.Services
     {
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly IGenericRepository<JobType> _jobTypeRepository;
-        private readonly IValidator _validator;
+        private readonly IValidator<ScheduleNodeCommandJobDto> _validator;
         private readonly NodeAuthorizationProvider _authorizationProvider;
         private readonly INodeRepository _nodeRepository;
         private readonly ISchedulesPersistenceRepository _scheduleRepository;
@@ -35,7 +35,7 @@ namespace SmartHome.Core.Services
             INodeRepository nodeRepository,
             ISchedulesPersistenceRepository scheduleRepository,
             IGenericRepository<JobType> jobTypeRepository,
-            IValidator validator,
+            IValidator<ScheduleNodeCommandJobDto> validator,
             NodeAuthorizationProvider authorizationProvider) : base(container)
         {
             _schedulerFactory = schedulerFactory;
