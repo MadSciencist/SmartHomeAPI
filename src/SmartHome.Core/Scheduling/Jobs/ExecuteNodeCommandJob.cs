@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Quartz;
 using SmartHome.Core.Security;
 using SmartHome.Core.Services.Abstractions;
@@ -10,20 +9,16 @@ namespace SmartHome.Core.Scheduling.Jobs
     [DisallowConcurrentExecution]
     public class ExecuteNodeCommandJob : IJob
     {
-        private readonly ILogger<ExecuteNodeCommandJob> _logger;
         private readonly INodeService _nodeService;
 
-        public ExecuteNodeCommandJob(ILogger<ExecuteNodeCommandJob> logger, INodeService nodeService)
+        public ExecuteNodeCommandJob(INodeService nodeService)
         {
-            _logger = logger;
             _nodeService = nodeService;
             _nodeService.Principal = SystemClaimPrincipalProvider.GetSystemClaimPrincipal();
         }
 
         public async Task Execute(IJobExecutionContext context)
-        {
-            _logger.LogDebug($"NODE EXECUTION NODE EXECUTION NODE EXECUTION NODE EXECUTION");
-
+        { 
             var nodeId = context.JobDetail.JobDataMap.GetInt(nameof(NodeJobSchedule.NodeId));
             var command = context.JobDetail.JobDataMap.GetString(nameof(NodeJobSchedule.Command));
 

@@ -11,7 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj" />
     <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
-    <ProjectReference Include="..\SmartHome.Domain\SmartHome.Core.Entities.csproj" />
+    <ProjectReference Include="..\SmartHome.Entities\SmartHome.Core.Entities.csproj" />
   </ItemGroup>
 
 </Project>
