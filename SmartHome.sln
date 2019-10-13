@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core", "src\Smart
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Tests", "test\SmartHome.UnitTests\SmartHome.Core.Tests.csproj", "{47BABBDC-39DB-461B-A7EE-D2813981DE99}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.DataAccess", "src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Core.Data", "src\SmartHome.Core.Data\SmartHome.Core.Data.csproj", "{A5E2B357-3A8C-4786-90A2-A586CEEEBE7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contracts", "Contracts", "{FAE4FE9B-6E88-4F6C-8D60-CCC065B0B15B}"
 	ProjectSection(SolutionItems) = preProject
@@ -50,7 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{808B156C-850C-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.TasmotaMqtt", "src\SmartHome.Contracts\SmartHome.Contracts.TasmotaMqtt\SmartHome.Contracts.TasmotaMqtt.csproj", "{E831D539-3AAA-40A8-B7F1-385848115B3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Matty.Framework", "Matty.Framework\Matty.Framework.csproj", "{1EB24633-8BF4-4EA8-B1F1-517EDE91293A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Matty.Framework", "Matty.Framework\Matty.Framework.csproj", "{1EB24633-8BF4-4EA8-B1F1-517EDE91293A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
