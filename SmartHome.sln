@@ -50,7 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{808B156C-850C-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartHome.Contracts.TasmotaMqtt", "src\SmartHome.Contracts\SmartHome.Contracts.TasmotaMqtt\SmartHome.Contracts.TasmotaMqtt.csproj", "{E831D539-3AAA-40A8-B7F1-385848115B3B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Matty.Framework", "Matty.Framework\Matty.Framework.csproj", "{1EB24633-8BF4-4EA8-B1F1-517EDE91293A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Matty.Framework", "src\Matty.Framework\Matty.Framework.csproj", "{1EB24633-8BF4-4EA8-B1F1-517EDE91293A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

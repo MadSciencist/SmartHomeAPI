@@ -1,7 +1,8 @@
+using Matty.Framework;
+using Matty.Framework.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SmartHome.API.Utils;
-using SmartHome.Core.Infrastructure;
 using System;
 using System.Net;
 using Xunit;
