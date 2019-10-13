@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace SmartHome.Core.DataAccess.Repository
             return base.AsQueryableNoTrack().Include(x => x.Magnitudes);
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, int samplesToKeep, EDataRequestReason reason, NodeDataMagnitude data)
+        public async Task<NodeData> AddSingleAsync(int nodeId, int samplesToKeep, NodeDataMagnitude data)
         {
             var currentCount = await Context.NodeData.CountAsync(x =>
                 x.NodeId == nodeId && x.Magnitudes.Any(m => m.Magnitude == data.Magnitude));
@@ -37,7 +36,6 @@ namespace SmartHome.Core.DataAccess.Repository
 
             var nodeData = new NodeData
             {
-                RequestReasonId = (int)reason,
                 TimeStamp = DateTime.UtcNow,
                 Magnitudes = new List<NodeDataMagnitude>
                 {
@@ -49,7 +47,7 @@ namespace SmartHome.Core.DataAccess.Repository
             return await base.CreateAsync(nodeData);
         }
 
-        public async Task<NodeData> AddManyAsync(int nodeId, int samplesToKeep, EDataRequestReason reason, ICollection<NodeDataMagnitude> data)
+        public async Task<NodeData> AddManyAsync(int nodeId, int samplesToKeep, ICollection<NodeDataMagnitude> data)
         {
             foreach (var magnitude in data)
             {
@@ -69,7 +67,6 @@ namespace SmartHome.Core.DataAccess.Repository
 
             var nodeData = new NodeData
             {
-                RequestReasonId = (int)reason,
                 TimeStamp = DateTime.UtcNow,
                 Magnitudes = data,
                 NodeId = nodeId

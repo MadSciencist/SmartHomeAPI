@@ -34,7 +34,7 @@ namespace SmartHome.API.Extensions
         {
             var connectionString = configuration["ConnectionStrings:MySql"];
 
-            services.AddDbContext<AppDbContext>(options =>
+            services.AddDbContext<EntityFrameworkContext>(options =>
             {
                 options.UseMySql(connectionString, mySqlOptions =>
                 {
@@ -58,7 +58,7 @@ namespace SmartHome.API.Extensions
                     options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedEmail = false;
                 })
-                .AddEntityFrameworkStores<AppDbContext>()
+                .AddEntityFrameworkStores<EntityFrameworkContext>()
                 .AddDefaultTokenProviders()
                 .AddRoles<AppRole>();
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using SmartHome.Core.Entities.Abstractions;
 
 namespace SmartHome.Core.Entities.Converters
 {

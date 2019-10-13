@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Utils;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartHome.Core.Entities.Enums;
 
 namespace SmartHome.API.Controllers
 {
@@ -60,6 +60,8 @@ namespace SmartHome.API.Controllers
         /// <returns></returns>
         [HttpPut("jobs/{id:int}")]
         [ProducesResponseType(typeof(ServiceResult<DateTimeOffset>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> UpdateJobStatus(int id, JobStatus status)
         {
             var serviceResult = await _schedulingService.UpdateJobStatus(id, status);
@@ -73,6 +75,8 @@ namespace SmartHome.API.Controllers
         /// <returns></returns>
         [HttpDelete("jobs/{id:int}")]
         [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteJob(int id)
         {
             var serviceResult = await _schedulingService.RemoveJob(id);

@@ -71,7 +71,7 @@ namespace SmartHome.Core.Services
 
             var jobSchedule = new NodeJobSchedule(executorType, node.Id, param.Command, param.CommandParams, param.CronExpression);
             
-            using (var transaction = _scheduleRepository.Context.Database.BeginTransaction())
+            using (var transaction = _scheduleRepository.BeginTransaction())
             {
                 try
                 {
@@ -105,7 +105,7 @@ namespace SmartHome.Core.Services
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, $"Rolling back transaction {transaction.TransactionId}");
+                    Logger.LogError(ex, $"Rolling back transaction {transaction.Identifier}");
                     transaction.Rollback();
                     await scheduler.DeleteJob(new JobKey(jobSchedule.GetIdentity(), "DEFAULT"));
                     throw;
@@ -121,10 +121,13 @@ namespace SmartHome.Core.Services
             var scheduler = await _schedulerFactory.GetScheduler(CancellationToken.None);
             var schedule = await _scheduleRepository.GetByIdAsync(id);
 
+            if (schedule is null)
+                throw new SmartHomeEntityNotFoundException($"Schedule with id: {id} does not exists.");
+
             if (!_schedulesAuth.Authorize(schedule, Principal, OperationType.Modify))
                 throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to edit this schedule");
 
-            using (var transaction = _scheduleRepository.Context.Database.BeginTransaction())
+            using (var transaction = _scheduleRepository.BeginTransaction())
             {
                 try
                 {
@@ -144,7 +147,7 @@ namespace SmartHome.Core.Services
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, $"Rolling back transaction {transaction.TransactionId}");
+                    Logger.LogError(ex, $"Rolling back transaction {transaction.Identifier}");
                     transaction.Rollback();
                     throw;
                 }
@@ -157,10 +160,13 @@ namespace SmartHome.Core.Services
             var scheduler = await _schedulerFactory.GetScheduler(CancellationToken.None);
             var schedule = await _scheduleRepository.GetByIdAsync(id);
 
+            if (schedule is null)
+                throw new SmartHomeEntityNotFoundException($"Schedule with id: {id} does not exists.");
+
             if (!_schedulesAuth.Authorize(schedule, Principal, OperationType.HardDelete))
                 throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to delete this schedule");
 
-            using (var transaction = _scheduleRepository.Context.Database.BeginTransaction())
+            using (var transaction = _scheduleRepository.BeginTransaction())
             {
                 try
                 {
@@ -174,7 +180,7 @@ namespace SmartHome.Core.Services
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, $"Rolling back transaction {transaction.TransactionId}");
+                    Logger.LogError(ex, $"Rolling back transaction {transaction.Identifier}");
                     transaction.Rollback();
                     throw;
                 }
@@ -196,12 +202,10 @@ namespace SmartHome.Core.Services
 
         public async Task<ServiceResult<IEnumerable<ScheduleEntity>>> GetJobs()
         {
-            // TODO 
-            var response = new ServiceResult<IEnumerable<ScheduleEntity>>(Principal);
-            var jobs = await _scheduleRepository.GetAllAsync();
-
-            response.Data = jobs;
-            return response;
+            return new ServiceResult<IEnumerable<ScheduleEntity>>(Principal)
+            {
+                Data = await _scheduleRepository.GetAllAsync()
+            };
         }
     }
 }

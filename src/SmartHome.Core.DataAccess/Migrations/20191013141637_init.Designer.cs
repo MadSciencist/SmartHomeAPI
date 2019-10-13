@@ -8,7 +8,7 @@ using SmartHome.Core.DataAccess;
 
 namespace SmartHome.Core.DataAccess.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(EntityFrameworkContext))]
     [Migration("20191013141637_init")]
     partial class init
     {

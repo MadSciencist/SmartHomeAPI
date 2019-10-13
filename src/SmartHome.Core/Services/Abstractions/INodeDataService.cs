@@ -18,7 +18,7 @@ namespace SmartHome.Core.Services.Abstractions
         /// <param name="reason"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitudeDto data);
+        Task<NodeData> AddSingleAsync(int nodeId, NodeDataMagnitudeDto data);
 
         /// <summary>
         /// Add new collection of data to repository and use retention policy
@@ -27,8 +27,7 @@ namespace SmartHome.Core.Services.Abstractions
         /// <param name="reason"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        Task<NodeData> AddManyAsync(int nodeId, EDataRequestReason reason,
-            IEnumerable<NodeDataMagnitudeDto> data);
+        Task<NodeData> AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data);
 
         /// <summary>
         /// Query data repository

@@ -46,9 +46,11 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<RestMessageProcessor>().As<IMessageProcessor<RestMessageDto>>().InstancePerDependency();
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
-            Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
+            Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency(); 
             Builder.RegisterType<NodeDataMagnitudeRepository>().As<INodeDataMagnitudeRepository>().InstancePerDependency();
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
+            Builder.RegisterType<AppUserNodeLinkRepository>().As<IAppUserNodeLinkRepository>().InstancePerDependency();
+            Builder.RegisterType<DictionaryRepository>().As<IDictionaryRepository>().InstancePerDependency();
             Builder.RegisterType<SchedulesPersistenceRepository>().As<ISchedulesPersistenceRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
 

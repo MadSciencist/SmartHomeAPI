@@ -14,8 +14,5 @@ namespace SmartHome.Core.Entities.Entity
 
         public int NodeId { get; set; }
         public Node Node { get; set; }
-
-        public int RequestReasonId { get; set; }
-        public DataRequestReason RequestReason { get; set; }
     }
 }

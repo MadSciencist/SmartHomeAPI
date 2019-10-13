@@ -2,10 +2,9 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SmartHome.Contracts.TasmotaMqtt.Domain.Models;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.ContractParams;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -104,7 +103,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
                     }
                 }
 
-                await NodeDataService.AddManyAsync(Node.Id, EDataRequestReason.Node, magnitudesDto);
+                await NodeDataService.AddManyAsync(Node.Id, magnitudesDto);
                 NotificationService.PushDataNotification(Node.Id, magnitudesDto);
                 return true;
             }
@@ -125,7 +124,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
                 PhysicalProperty = property
             };
 
-            await NodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, magnitudeDto);
+            await NodeDataService.AddSingleAsync(nodeId, magnitudeDto);
             NotificationService.PushDataNotification(nodeId, magnitudeDto);
         }
     }

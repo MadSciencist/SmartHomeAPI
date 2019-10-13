@@ -4,6 +4,7 @@ using SmartHome.Core.Entities.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.AspNetCore.Http;
@@ -16,8 +17,9 @@ namespace SmartHome.Core.DataAccess.Repository
     {
         protected ILifetimeScope Container { get; }
 
-        private AppDbContext _context;
-        public AppDbContext Context => _context ?? (_context = Container.Resolve<AppDbContext>());
+        private EntityFrameworkContext _context;
+
+        public EntityFrameworkContext Context => _context ?? (_context = Container.Resolve<EntityFrameworkContext>());
 
         private ILogger _logger;
         protected ILogger Logger => _logger ?? (_logger = Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName));
@@ -29,6 +31,9 @@ namespace SmartHome.Core.DataAccess.Repository
         {
             Container = container;
         }
+
+        public IDatabaseTransaction BeginTransaction()
+            => new EntityFrameworkTransaction(Context);
 
         public virtual async Task<T> CreateAsync(T entity)
         {
@@ -79,15 +84,17 @@ namespace SmartHome.Core.DataAccess.Repository
             }
         }
 
-        public virtual IEnumerable<T> Find(Func<T, bool> predicate) => Context.Set<T>().Where(predicate);
+        public virtual async Task<T> GetFiltered(Expression<Func<T, bool>> predicate)
+            => await Context.Set<T>().FirstOrDefaultAsync(predicate);
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync() => await Context.Set<T>().ToListAsync();
+        public virtual async Task<IEnumerable<T>> GetManyFiltered(Expression<Func<T, bool>> predicate)
+            => await Context.Set<T>().Where(predicate).ToListAsync();
 
-        public virtual IQueryable<T> AsQueryable() => Context.Set<T>().AsQueryable();
+        public virtual async Task<IEnumerable<T>> GetAllAsync() 
+            => await Context.Set<T>().ToListAsync();
 
-        public virtual IQueryable<T> AsQueryableNoTrack() => Context.Set<T>().AsNoTracking().AsQueryable();
-
-        public virtual async Task<T> GetByIdAsync(int id) => await Context.Set<T>().FindAsync(id);
+        public virtual async Task<T> GetByIdAsync(int id) 
+            => await Context.Set<T>().FindAsync(id);
 
         public virtual async Task<T> UpdateAsync(T entity)
         {
@@ -117,5 +124,9 @@ namespace SmartHome.Core.DataAccess.Repository
 
             return entity;
         }
+
+        // TODO to refactor - dont want to return IQueryable
+
+        public virtual IQueryable<T> AsQueryableNoTrack() => Context.Set<T>().AsNoTracking().AsQueryable();
     }
 }

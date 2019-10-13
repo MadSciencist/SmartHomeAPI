@@ -31,11 +31,10 @@ namespace SmartHome.Core.Services
                 response.ResponseStatusCodeOverride = StatusCodes.Status403Forbidden;
                 return response;
             }
-            var entities = await GenericRepository.AsQueryableNoTrack()
-                .Where(x => x.UserId == userId)
-                .ToListAsync();
 
-            if (entities is null || entities.Count == 0)
+            var entities = await GenericRepository.GetManyFiltered(x => x.UserId == userId);
+
+            if (entities is null || entities.Count() == 0)
             {
                 response.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
                 return response;
@@ -57,8 +56,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            var entity = await GenericRepository.AsQueryableNoTrack()
-                .FirstOrDefaultAsync(x => x.Id == configId);
+            var entity = await GenericRepository.GetFiltered(x => x.Id == configId);
 
             if (entity is null)
             {
@@ -82,9 +80,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            var entity = await GenericRepository.AsQueryableNoTrack()
-                .Where(x => x.UserId == userId && x.Type == type)
-                .ToListAsync();
+            var entity = await GenericRepository.GetManyFiltered(x => x.UserId == userId && x.Type == type);
 
             if (entity is null)
             {
@@ -102,9 +98,8 @@ namespace SmartHome.Core.Services
 
             if (configDto.Type == UiConfigurationType.Control || configDto.Type == UiConfigurationType.Dashboard)
             {
-                var existing = await GenericRepository.AsQueryableNoTrack()
-                    .Where(x => x.Type == UiConfigurationType.Control || x.Type == UiConfigurationType.Dashboard)
-                    .ToListAsync();
+                var existing = await GenericRepository.GetManyFiltered(x =>
+                    x.Type == UiConfigurationType.Control || x.Type == UiConfigurationType.Dashboard);
 
                 switch (configDto.Type)
                 {
@@ -136,8 +131,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            var entity = await GenericRepository.AsQueryableNoTrack()
-                .FirstOrDefaultAsync(x => x.Id == configId);
+            var entity = await GenericRepository.GetFiltered(x => x.Id == configId);
 
             entity.Data = configDto.Data;
             entity.Type = configDto.Type;

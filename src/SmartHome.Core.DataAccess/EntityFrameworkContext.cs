@@ -8,9 +8,9 @@ using SmartHome.Core.Entities.User;
 
 namespace SmartHome.Core.DataAccess
 {
-    public class AppDbContext : IdentityDbContext<AppUser, AppRole, int>
+    public class EntityFrameworkContext : IdentityDbContext<AppUser, AppRole, int>
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public EntityFrameworkContext(DbContextOptions<EntityFrameworkContext> options) : base(options)
         {
         }
 
@@ -19,7 +19,6 @@ namespace SmartHome.Core.DataAccess
         public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
-        public DbSet<DataRequestReason> RequestReasons { get; set; }
         public DbSet<ScheduleEntity> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
         public DbSet<JobStatusEntity> JobStatusEntity { get; set; }

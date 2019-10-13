@@ -16,35 +16,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
         {
             using (IServiceScope scope = provider.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                if (!context.RequestReasons.Any())
-                {
-                    var requestReasons = new List<DataRequestReason>
-                    {
-                        new DataRequestReason
-                        {
-                            Id = (int) EDataRequestReason.Node,
-                            Reason = "Node",
-                            Description = "Node was initiator"
-                        },
-                        new DataRequestReason
-                        {
-                            Id = (int) EDataRequestReason.Scheduler,
-                            Reason = "Scheduler",
-                            Description = "Task scheduler was initiator"
-                        },
-                        new DataRequestReason
-                        {
-                            Id = (int) EDataRequestReason.User,
-                            Reason = "User",
-                            Description = "User was initiator"
-                        }
-                    };
-
-                    await context.AddRangeAsync(requestReasons);
-                    await context.SaveChangesAsync();
-                }
+                var context = scope.ServiceProvider.GetRequiredService<EntityFrameworkContext>();
 
                 if (!context.JobTypes.Any())
                 {

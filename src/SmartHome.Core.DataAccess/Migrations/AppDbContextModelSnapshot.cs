@@ -7,7 +7,7 @@ using SmartHome.Core.DataAccess;
 
 namespace SmartHome.Core.DataAccess.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(EntityFrameworkContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
