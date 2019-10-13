@@ -5,22 +5,41 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Microsoft.AspNetCore.Http;
+using SmartHome.Core.Entities.Abstractions;
+using SmartHome.Core.Entities.Utils;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : EntityBase, new()
     {
-        public AppDbContext Context { get; }
-        protected ILogger Logger { get; private set; }
+        protected ILifetimeScope Container { get; }
 
-        public GenericRepository(AppDbContext context, ILoggerFactory loggerFactory)
+        private AppDbContext _context;
+        public AppDbContext Context => _context ?? (_context = Container.Resolve<AppDbContext>());
+
+        private ILogger _logger;
+        protected ILogger Logger => _logger ?? (_logger = Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName));
+
+        private IHttpContextAccessor _accessor;
+        protected IHttpContextAccessor HttpContextAccessor =>_accessor ?? (_accessor = Container.Resolve<IHttpContextAccessor>());
+
+        public GenericRepository(ILifetimeScope container)
         {
-            Context = context;
-            Logger = loggerFactory.CreateLogger(nameof(GenericRepository<T>));
+            Container = container;
         }
 
         public virtual async Task<T> CreateAsync(T entity)
         {
+            var currentUser = HttpContextAccessor.HttpContext.User;
+
+            if (entity is ICreationAudit audit)
+            {
+                audit.Created = DateTime.UtcNow;
+                audit.CreatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
+            }
+
             await Context.AddAsync(entity);
 
             try
@@ -62,7 +81,7 @@ namespace SmartHome.Core.DataAccess.Repository
 
         public virtual IEnumerable<T> Find(Func<T, bool> predicate) => Context.Set<T>().Where(predicate);
 
-        public virtual IEnumerable<T> GetAll() => Context.Set<T>();
+        public virtual async Task<IEnumerable<T>> GetAllAsync() => await Context.Set<T>().ToListAsync();
 
         public virtual IQueryable<T> AsQueryable() => Context.Set<T>().AsQueryable();
 
@@ -72,6 +91,14 @@ namespace SmartHome.Core.DataAccess.Repository
 
         public virtual async Task<T> UpdateAsync(T entity)
         {
+            var currentUser = HttpContextAccessor.HttpContext.User;
+
+            if (entity is IModificationAudit audit)
+            {
+                audit.Updated = DateTime.UtcNow;
+                audit.UpdatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
+            }
+
             Context.Set<T>().Update(entity);
 
             try

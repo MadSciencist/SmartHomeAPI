@@ -47,5 +47,10 @@ namespace SmartHome.Core.Infrastructure
 
             return this;
         }
+
+        public void AddSuccessMessage(string message)
+        {
+            Alerts.Add(new Alert(message, MessageType.Success));
+        }
     }
 }

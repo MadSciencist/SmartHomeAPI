@@ -12,6 +12,7 @@ using System.Linq;
 using Autofac.Core;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Entities.SchedulingEntity;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
 {
@@ -136,10 +137,10 @@ namespace SmartHome.Core.Services
             }
         }
 
-        private void AddJobTypesDict()
+        private async Task AddJobTypesDict()
         {
             var jobRepo = _container.Resolve<IGenericRepository<JobType>>();
-            var jobs = jobRepo.GetAll();
+            var jobs = await jobRepo.GetAllAsync();
 
             Dictionaries.Add(new Dictionary
             {

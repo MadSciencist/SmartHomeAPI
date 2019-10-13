@@ -3,6 +3,7 @@ using SmartHome.Core.Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.SchedulingEntity;
@@ -61,7 +62,32 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     await context.AddRangeAsync(jobTypes);
                     await context.SaveChangesAsync();
                 }
+
+                if (!context.JobStatusEntity.Any())
+                {
+                    var entities = Enum.GetValues(typeof(JobStatus))
+                        .Cast<int>()
+                        .Where(i => !i.Equals(0))
+                        .Select(e => new JobStatusEntity
+                        {
+                            Id = e,
+                            Name = GetEnumMemberAttrValue<JobStatus>(Enum.Parse<JobStatus>(e.ToString()))
+                        })
+                        .ToList();
+
+                    await context.AddRangeAsync(entities);
+                    await context.SaveChangesAsync();
+                }
             }
+        }
+
+        // TODO move this somewhere
+        public static string GetEnumMemberAttrValue<T>(T enumVal)
+        {
+            var enumType = typeof(T);
+            var memInfo = enumType.GetMember(enumVal.ToString());
+            var attr = memInfo.FirstOrDefault()?.GetCustomAttributes(false).OfType<EnumMemberAttribute>().FirstOrDefault();
+            return attr?.Value;
         }
     }
 }

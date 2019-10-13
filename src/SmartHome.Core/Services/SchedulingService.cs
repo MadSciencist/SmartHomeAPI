@@ -26,7 +26,8 @@ namespace SmartHome.Core.Services
         private readonly ISchedulerFactory _schedulerFactory;
         private readonly IGenericRepository<JobType> _jobTypeRepository;
         private readonly IValidator<ScheduleNodeCommandJobDto> _validator;
-        private readonly NodeAuthorizationProvider _authorizationProvider;
+        private readonly IAuthorizationProvider<Node> _nodeAuth;
+        private readonly IAuthorizationProvider<ScheduleEntity> _schedulesAuth;
         private readonly INodeRepository _nodeRepository;
         private readonly ISchedulesPersistenceRepository _scheduleRepository;
 
@@ -36,19 +37,21 @@ namespace SmartHome.Core.Services
             ISchedulesPersistenceRepository scheduleRepository,
             IGenericRepository<JobType> jobTypeRepository,
             IValidator<ScheduleNodeCommandJobDto> validator,
-            NodeAuthorizationProvider authorizationProvider) : base(container)
+            IAuthorizationProvider<Node> nodeAuth,
+            IAuthorizationProvider<ScheduleEntity> schedulesAuth) : base(container)
         {
             _schedulerFactory = schedulerFactory;
             _nodeRepository = nodeRepository;
             _scheduleRepository = scheduleRepository;
             _jobTypeRepository = jobTypeRepository;
             _validator = validator;
-            _authorizationProvider = authorizationProvider;
+            _nodeAuth = nodeAuth;
+            _schedulesAuth = schedulesAuth;
         }
 
-        public async Task<ServiceResult<SchedulesPersistence>> AddNodeCommandJobAsync(ScheduleNodeCommandJobDto param)
+        public async Task<ServiceResult<ScheduleEntity>> AddNodeCommandJobAsync(ScheduleNodeCommandJobDto param)
         {
-            var response = new ServiceResult<SchedulesPersistence>(Principal);
+            var response = new ServiceResult<ScheduleEntity>(Principal);
             var validationResult = _validator.Validate(param);
 
             if (!_validator.Validate(param).IsValid)
@@ -57,7 +60,7 @@ namespace SmartHome.Core.Services
                 return response;
             }
 
-            if (!_authorizationProvider.Authorize(null, Principal, OperationType.Execute))
+            if (!_nodeAuth.Authorize(null, Principal, OperationType.Execute))
             {
                 throw new SmartHomeUnauthorizedException(
                     $"User ${Principal.Identity.Name} is not authorized to use this node");
@@ -74,13 +77,14 @@ namespace SmartHome.Core.Services
                 {
                     await scheduler.ScheduleJob(jobSchedule.CreateJob(), jobSchedule.CreateTrigger());
 
-                    var entity = new SchedulesPersistence
+                    var entity = new ScheduleEntity
                     {
                         Name = param.Name,
+                        JobName = jobSchedule.GetIdentity(),
+                        JobGroup = "DEFAULT",
+                        JobStatusEntityId = (int)JobStatus.Running,
                         CronExpression = param.CronExpression,
                         JobTypeId = param.JobTypeId,
-                        CreatedById = GetCurrentUserId(),
-                        Created = DateTime.UtcNow,
                         JobParams = new SerializableParamBuilder()
                             .Add(nameof(param.NodeId), param.NodeId)
                             .Add(nameof(param.Command), param.Command)
@@ -91,6 +95,7 @@ namespace SmartHome.Core.Services
                     var created = await _scheduleRepository.CreateAsync(entity);
                     transaction.Commit();
                     response.Alerts.Add(new Alert("Successfully added new job.", MessageType.Success));
+                    //TODO mapping
                     response.Data = created;
                 }
                 catch (ObjectAlreadyExistsException)
@@ -102,11 +107,78 @@ namespace SmartHome.Core.Services
                 {
                     Logger.LogError(ex, $"Rolling back transaction {transaction.TransactionId}");
                     transaction.Rollback();
+                    await scheduler.DeleteJob(new JobKey(jobSchedule.GetIdentity(), "DEFAULT"));
                     throw;
                 }
             }
 
             return response;
+        }
+
+        public async Task<ServiceResult<ScheduleEntity>> UpdateJobStatus(int id, JobStatus status)
+        {
+            var response = new ServiceResult<ScheduleEntity>(Principal);
+            var scheduler = await _schedulerFactory.GetScheduler(CancellationToken.None);
+            var schedule = await _scheduleRepository.GetByIdAsync(id);
+
+            if (!_schedulesAuth.Authorize(schedule, Principal, OperationType.Modify))
+                throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to edit this schedule");
+
+            using (var transaction = _scheduleRepository.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var jobKey = new JobKey(schedule.JobName, schedule.JobGroup);
+                    if (status == JobStatus.Running)
+                        await scheduler.ResumeJob(jobKey);
+                    else if (status == JobStatus.Paused)
+                        await scheduler.PauseJob(jobKey);
+                    else throw new InvalidOperationException();
+
+                    schedule.JobStatusEntityId = (int)status;
+                    var updated = await _scheduleRepository.UpdateAsync(schedule);
+                    transaction.Commit();
+                    response.Data = updated;
+                    response.AddSuccessMessage($"Successfully updated job {schedule.Name} status to {status.ToString()}");
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, $"Rolling back transaction {transaction.TransactionId}");
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        public async Task<ServiceResult<object>> RemoveJob(int id)
+        {
+            var response = new ServiceResult<object>(Principal);
+            var scheduler = await _schedulerFactory.GetScheduler(CancellationToken.None);
+            var schedule = await _scheduleRepository.GetByIdAsync(id);
+
+            if (!_schedulesAuth.Authorize(schedule, Principal, OperationType.HardDelete))
+                throw new SmartHomeUnauthorizedException($"User ${Principal.Identity.Name} is not authorized to delete this schedule");
+
+            using (var transaction = _scheduleRepository.Context.Database.BeginTransaction())
+            {
+                try
+                {
+                    var jobKey = new JobKey(schedule.JobName, schedule.JobGroup);
+                    await scheduler.DeleteJob(jobKey);
+
+                    await _scheduleRepository.DeleteAsync(schedule);
+                    transaction.Commit();
+                    response.AddSuccessMessage($"Successfully deleted {schedule.Name} job.");
+                    return response;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, $"Rolling back transaction {transaction.TransactionId}");
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         private async Task<Tuple<Node, Type>> GetNodeAndJobTypeEntities(ScheduleNodeCommandJobDto param)
@@ -122,14 +194,14 @@ namespace SmartHome.Core.Services
             return new Tuple<Node, Type>(node, executorType);
         }
 
-        public Task<ServiceResult<IEnumerable<SchedulesPersistence>>> GetJobs()
+        public async Task<ServiceResult<IEnumerable<ScheduleEntity>>> GetJobs()
         {
             // TODO 
-            var response = new ServiceResult<IEnumerable<SchedulesPersistence>>(Principal);
-            var jobs = _scheduleRepository.GetAll();
+            var response = new ServiceResult<IEnumerable<ScheduleEntity>>(Principal);
+            var jobs = await _scheduleRepository.GetAllAsync();
 
             response.Data = jobs;
-            return Task.FromResult(response);
+            return response;
         }
     }
 }

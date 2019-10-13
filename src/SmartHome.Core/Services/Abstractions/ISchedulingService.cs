@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using SmartHome.Core.Dto;
-using System.Threading.Tasks;
+﻿using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Infrastructure;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services.Abstractions
 {
     public interface ISchedulingService : IServiceBase
     {
-        Task<ServiceResult<IEnumerable<SchedulesPersistence>>> GetJobs();
-        Task<ServiceResult<SchedulesPersistence>> AddNodeCommandJobAsync(ScheduleNodeCommandJobDto pram);
+        Task<ServiceResult<IEnumerable<ScheduleEntity>>> GetJobs();
+        Task<ServiceResult<ScheduleEntity>> AddNodeCommandJobAsync(ScheduleNodeCommandJobDto pram);
+        Task<ServiceResult<ScheduleEntity>> UpdateJobStatus(int id, JobStatus status);
+        Task<ServiceResult<object>> RemoveJob(int id);
     }
 }

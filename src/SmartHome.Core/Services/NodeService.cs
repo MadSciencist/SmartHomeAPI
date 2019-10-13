@@ -24,9 +24,9 @@ namespace SmartHome.Core.Services
     public class NodeService : CrudServiceBase<NodeDto, EntityBase>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly NodeAuthorizationProvider _authProvider;
+        private readonly IAuthorizationProvider<Node> _authProvider;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, NodeAuthorizationProvider authorizationProvider) : base(container)
+        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, IAuthorizationProvider<Node> authorizationProvider) : base(container)
         {
             _nodeRepository = nodeRepository;
             _authProvider = authorizationProvider;

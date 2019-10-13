@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Entities.Entity;
 using System.Linq;
 
@@ -7,7 +7,7 @@ namespace SmartHome.Core.DataAccess.Repository
 {
     public class StrategyRepository : GenericRepository<ControlStrategy>, IStrategyRepository
     {
-        public StrategyRepository(AppDbContext context, ILoggerFactory loggerFactory) : base(context, loggerFactory)
+        public StrategyRepository(ILifetimeScope container) : base(container)
         {
         }
 

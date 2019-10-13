@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System;
+using Newtonsoft.Json.Linq;
 using Quartz;
 using SmartHome.Core.Security;
 using SmartHome.Core.Services.Abstractions;
@@ -18,7 +19,8 @@ namespace SmartHome.Core.Scheduling.Jobs
         }
 
         public async Task Execute(IJobExecutionContext context)
-        { 
+        {
+            Console.WriteLine("JOB JOB JOB JOB");
             var nodeId = context.JobDetail.JobDataMap.GetInt(nameof(NodeJobSchedule.NodeId));
             var command = context.JobDetail.JobDataMap.GetString(nameof(NodeJobSchedule.Command));
 

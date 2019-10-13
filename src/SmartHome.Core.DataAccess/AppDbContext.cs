@@ -17,14 +17,13 @@ namespace SmartHome.Core.DataAccess
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
-
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<DataRequestReason> RequestReasons { get; set; }
-        public DbSet<SchedulesPersistence> SchedulesPersistence { get; set; }
+        public DbSet<ScheduleEntity> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
+        public DbSet<JobStatusEntity> JobStatusEntity { get; set; }
         public DbSet<UiConfiguration> UiConfigurations { get; set; }
-
         public DbSet<Dictionary> Dictionaries { get; set; }
         public DbSet<DictionaryValue> DictionaryValues { get; set; }
 
@@ -32,14 +31,22 @@ namespace SmartHome.Core.DataAccess
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUser>().ToTable("tbl_user");
+            builder.Entity<AppUser>()
+                .ToTable("tbl_user");
 
             builder.Entity<AppUser>()
                 .HasMany(x => x.UiConfiguration)
                 .WithOne(x => x.User)
                 .HasForeignKey(x => x.UserId);
 
-            builder.Entity<AppRole>().ToTable("tbl_role");
+            builder.Entity<AppUser>()
+                .HasMany(x => x.CreatedNodes);
+
+            builder.Entity<AppUser>()
+                .HasMany(x => x.CreatedControlStrategies);
+
+            builder.Entity<AppRole>()
+                .ToTable("tbl_role");
 
             builder.Entity<Node>()
                 .HasKey(x => x.Id);
@@ -49,21 +56,28 @@ namespace SmartHome.Core.DataAccess
                 .IsUnique();
 
             builder.Entity<Node>()
+                .HasOne(x => x.CreatedBy);
+
+            builder.Entity<Node>()
+                .HasOne(x => x.UpdatedBy);
+
+            builder.Entity<Node>()
                 .HasOne(x => x.ControlStrategy)
                 .WithMany(x => x.Nodes)
                 .OnDelete(DeleteBehavior.SetNull)
                 .IsRequired(false);
-
-            builder.Entity<Node>()
-                .HasOne(x => x.CreatedBy)
-                .WithMany(u => u.CreatedNodes)
-                .HasForeignKey(n => n.CreatedById);
 
             builder.Entity<ControlStrategy>()
                 .HasMany(x => x.RegisteredMagnitudes)
                 .WithOne(x => x.ControlStrategy)
                 .HasForeignKey(x => x.ControlStrategyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ControlStrategy>()
+                .HasOne(x => x.CreatedBy);
+
+            builder.Entity<ControlStrategy>()
+                .HasOne(x => x.UpdatedBy);
 
             // Configure many-to-many user-node relationship
             builder.Entity<AppUserNodeLink>()

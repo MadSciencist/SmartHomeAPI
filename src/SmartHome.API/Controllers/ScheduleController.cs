@@ -8,6 +8,7 @@ using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Enums;
 
 namespace SmartHome.API.Controllers
 {
@@ -48,6 +49,33 @@ namespace SmartHome.API.Controllers
         public async Task<IActionResult> ScheduleNodeCommandJob(ScheduleNodeCommandJobDto dto)
         {
             var serviceResult = await _schedulingService.AddNodeCommandJobAsync(dto);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        }
+
+        /// <summary>
+        /// Update status of given job
+        /// </summary>
+        /// <param name="id">ID of the job</param>
+        /// <param name="status">New status of the job</param>
+        /// <returns></returns>
+        [HttpPut("jobs/{id:int}")]
+        [ProducesResponseType(typeof(ServiceResult<DateTimeOffset>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateJobStatus(int id, JobStatus status)
+        {
+            var serviceResult = await _schedulingService.UpdateJobStatus(id, status);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        }
+
+        /// <summary>
+        /// Stops and removes job permanently
+        /// </summary>
+        /// <param name="id">ID of the job</param>
+        /// <returns></returns>
+        [HttpDelete("jobs/{id:int}")]
+        [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteJob(int id)
+        {
+            var serviceResult = await _schedulingService.RemoveJob(id);
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
     }

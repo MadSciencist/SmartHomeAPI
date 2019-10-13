@@ -8,28 +8,18 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.User;
+using SmartHome.Core.Entities.Utils;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
-using SmartHome.Core.Utils;
+using SmartHome.Core.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using SmartHome.Core.Security;
 
 namespace SmartHome.API.Service
 {
-    public interface IUserService
-    {
-        ClaimsPrincipal Principal { get; set; }
-        Task<ServiceResult<UserDto>> GetUserAsync(int userId);
-        Task<ServiceResult<TokenDto>> LoginAsync(LoginDto login);
-        Task<ServiceResult<TokenDto>> RegisterAsync(RegisterDto register);
-        Task<ServiceResult<object>> UpdateAsync(RegisterDto update, int userId);
-        Task<ServiceResult<object>> DeleteAsync(int userId);
-    }
-
     public class UserService : IUserService
     {
         public ClaimsPrincipal Principal { get; set; }

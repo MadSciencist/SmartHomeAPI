@@ -2,7 +2,7 @@
 
 namespace SmartHome.Core.DataAccess.Repository
 {
-    public interface ISchedulesPersistenceRepository : IGenericRepository<SchedulesPersistence>
+    public interface ISchedulesPersistenceRepository : IGenericRepository<ScheduleEntity>
     {
     }
 }

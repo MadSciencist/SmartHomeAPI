@@ -20,6 +20,8 @@ using Quartz.Impl;
 using Quartz.Spi;
 using SmartHome.Core.Scheduling;
 using SmartHome.Core.Scheduling.Jobs;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.SchedulingEntity;
 
 namespace SmartHome.Core.IoC
 {
@@ -38,7 +40,8 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<SyntheticDictionaryService>().InstancePerDependency();
             Builder.RegisterType<MessageInterceptor>().InstancePerDependency();
-            Builder.RegisterType<NodeAuthorizationProvider>().InstancePerDependency();
+            Builder.RegisterType<NodeAuthorizationProvider>().As<IAuthorizationProvider<Node>>().InstancePerDependency();
+            Builder.RegisterType<ScheduleAuthorizationProvider>().As<IAuthorizationProvider<ScheduleEntity>>().InstancePerDependency();
             Builder.RegisterType<MqttMessageProcessor>().As<IMessageProcessor<MqttMessageDto>>().InstancePerDependency();
             Builder.RegisterType<RestMessageProcessor>().As<IMessageProcessor<RestMessageDto>>().InstancePerDependency();
 
