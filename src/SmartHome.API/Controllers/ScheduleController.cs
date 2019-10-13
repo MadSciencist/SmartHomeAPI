@@ -9,6 +9,8 @@ using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Matty.Framework;
+using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.API.Controllers
 {

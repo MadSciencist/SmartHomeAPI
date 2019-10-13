@@ -1,14 +1,15 @@
-﻿using SmartHome.Core.Entities.Abstractions;
+﻿using Matty.Framework.Abstractions;
 using SmartHome.Core.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Matty.Framework;
 
 namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_control_strategy")]
-    public class ControlStrategy : EntityBase, ICreationAudit, IModificationAudit
+    public class ControlStrategy : EntityBase<int>, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
     {
         [Required, MaxLength(250)]
         public string AssemblyProduct { get; set; }

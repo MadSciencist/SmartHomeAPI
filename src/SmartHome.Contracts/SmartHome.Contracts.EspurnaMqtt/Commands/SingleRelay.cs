@@ -2,9 +2,9 @@
 using MQTTnet;
 using Newtonsoft.Json.Linq;
 using SmartHome.Core.Control;
+using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.ContractParams;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.Infrastructure.Exceptions;
 using System.Threading.Tasks;
 

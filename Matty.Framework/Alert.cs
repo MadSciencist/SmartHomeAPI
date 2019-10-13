@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Matty.Framework.Enums;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace SmartHome.Core.Infrastructure
+namespace Matty.Framework
 {
     public class Alert
     {

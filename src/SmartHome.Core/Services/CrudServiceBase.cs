@@ -1,12 +1,12 @@
 ﻿using Autofac;
 using AutoMapper;
 using FluentValidation;
+using Matty.Framework.Abstractions;
 using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Services
 {
-    public class CrudServiceBase<TValidator, TRepository> : ServiceBase where TValidator : class, new() where TRepository : EntityBase, new()
+    public class CrudServiceBase<TValidator, TRepository> : ServiceBase where TValidator : class, new() where TRepository : class, IEntity, new()
     {
         private IMapper _mapper;
         protected IMapper Mapper 

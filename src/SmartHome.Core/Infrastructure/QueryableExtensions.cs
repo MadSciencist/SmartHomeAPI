@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using Matty.Framework.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
-using SmartHome.Core.Entities.Enums;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Infrastructure
 {
@@ -52,7 +52,7 @@ namespace SmartHome.Core.Infrastructure
             return result;
         }
 
-        public async static Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query,
+        public static async Task<PagedResult<T>> GetPagedAsync<T>(this IQueryable<T> query,
                                  int page, int pageSize) where T : class
         {
             var result = new PagedResult<T>();
@@ -69,7 +69,7 @@ namespace SmartHome.Core.Infrastructure
             return result;
         }
 
-        public async static Task<PagedResult<T>> GetOrderPagedAsync<T, TKey>(this IQueryable<T> query,
+        public static async Task<PagedResult<T>> GetOrderPagedAsync<T, TKey>(this IQueryable<T> query,
                          int page, int pageSize, Expression<Func<T, TKey>> orderFunc, DataOrder order = DataOrder.Desc) where T : class
         {
             return order == DataOrder.Asc

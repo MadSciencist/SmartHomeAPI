@@ -1,11 +1,11 @@
-﻿using SmartHome.Core.Dto;
+﻿using Matty.Framework.Enums;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Matty.Framework;
 
 namespace SmartHome.Core.Services.Abstractions
 {
@@ -15,7 +15,6 @@ namespace SmartHome.Core.Services.Abstractions
         /// Add new data to repository and use retention policy
         /// </summary>
         /// <param name="nodeId"></param>
-        /// <param name="reason"></param>
         /// <param name="data"></param>
         /// <returns></returns>
         Task<NodeData> AddSingleAsync(int nodeId, NodeDataMagnitudeDto data);
@@ -24,7 +23,6 @@ namespace SmartHome.Core.Services.Abstractions
         /// Add new collection of data to repository and use retention policy
         /// </summary>
         /// <param name="nodeId"></param>
-        /// <param name="reason"></param>
         /// <param name="data"></param>
         /// <returns></returns>
         Task<NodeData> AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data);
@@ -39,10 +37,9 @@ namespace SmartHome.Core.Services.Abstractions
         /// <param name="from">Starts date</param>
         /// <param name="to">Ends date</param>
         /// <param name="order">Order data by timestamps (ASC or DESC)</param>
+        /// <param name="maxCount">Limit count</param>
+        /// <param name="paged">Should result be paged</param>
         /// <returns></returns>
-        Task<ServiceResult<NodeCollectionAggregate>> GetNodeData(int nodeId, int pageNumber,
-            int pageSize, string[] properties, DateTime from, DateTime to, DataOrder order);
-
         Task<ServiceResult<ICollection<NodeMagnitudeData>>> GetNodeDatas(int nodeId, int pageNumber,
             int pageSize, string[] properties, DateTime from, DateTime to, DataOrder order, int maxCount = 1000, bool paged = false);
     }

@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SmartHome.Core.Entities.User;
-using SmartHome.Core.Entities.Utils;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Matty.Framework.Utils;
 
 namespace SmartHome.Core.Services
 {

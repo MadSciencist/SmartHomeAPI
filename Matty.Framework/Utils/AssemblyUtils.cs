@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace SmartHome.Core.Infrastructure.AssemblyScanning
+namespace Matty.Framework.Utils
 {
     public static class AssemblyUtils
     {

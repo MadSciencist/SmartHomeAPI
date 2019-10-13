@@ -1,6 +1,7 @@
-﻿using SmartHome.Core.Entities.Enums;
+﻿using Matty.Framework.Abstractions;
+using Matty.Framework.Enums;
+using Matty.Framework.Utils;
 using SmartHome.Core.Entities.SchedulingEntity;
-using SmartHome.Core.Entities.Utils;
 using System.Security.Claims;
 
 namespace SmartHome.Core.Security

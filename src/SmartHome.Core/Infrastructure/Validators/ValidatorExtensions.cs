@@ -1,4 +1,6 @@
 ﻿using FluentValidation.Results;
+using Matty.Framework;
+using Matty.Framework.Enums;
 using SmartHome.Core.Infrastructure.Exceptions;
 using System.Collections.Generic;
 using System.Linq;

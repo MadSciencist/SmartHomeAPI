@@ -1,7 +1,6 @@
-﻿using SmartHome.Core.Entities.ContractParams;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace SmartHome.Core.Domain.ContractParams
+namespace SmartHome.Core.Entities.ContractParams
 {
     public class MultipleRelayParam
     {

@@ -1,4 +1,6 @@
-﻿using SmartHome.Core.Entities.User;
+﻿using Matty.Framework;
+using Matty.Framework.Abstractions;
+using SmartHome.Core.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,12 +8,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using SmartHome.Core.Entities.Abstractions;
 
 namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_node")]
-    public class Node : EntityBase, ICreationAudit, IModificationAudit
+    public class Node : EntityBase<int>, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
     {
         [Required, MaxLength(50)]
         public string Name { get; set; }

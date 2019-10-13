@@ -1,4 +1,4 @@
-﻿using SmartHome.Core.Entities.Models;
+﻿using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Dto
 {

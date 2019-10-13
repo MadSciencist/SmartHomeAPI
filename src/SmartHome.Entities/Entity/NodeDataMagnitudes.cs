@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Matty.Framework;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_node_data_magnitude")]
-    public class NodeDataMagnitude : EntityBase
+    public class NodeDataMagnitude : EntityBase<int>
     {
         public string Magnitude { get; set; }
         public string Value { get; set; }
