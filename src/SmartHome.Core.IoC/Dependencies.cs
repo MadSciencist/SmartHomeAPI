@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Matty.Framework.Abstractions;
+using Matty.Framework.Utils;
 using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;

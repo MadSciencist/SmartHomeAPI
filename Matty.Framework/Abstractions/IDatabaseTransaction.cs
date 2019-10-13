@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace SmartHome.Core.Entities.Abstractions
+namespace Matty.Framework.Abstractions
 {
     /// <summary>
     /// Represents database transaction
     /// </summary>
-    public interface IDatabaseTransaction : IDisposable
+    public interface ITransaction : IDisposable
     {
         /// <summary>
         /// Unique transaction identifier

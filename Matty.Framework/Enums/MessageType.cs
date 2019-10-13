@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace SmartHome.Core.Infrastructure
+namespace Matty.Framework.Enums
 {
     public enum MessageType
     {

@@ -3,6 +3,8 @@ using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using HealthChecks.UI.Client;
+using Matty.Framework;
+using Matty.Framework.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -16,7 +18,6 @@ using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.API.Hubs;
 using SmartHome.Core.DataAccess.InitialLoad;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.IoC;
@@ -25,8 +26,6 @@ using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Linq;
 using System.Reflection;
-using SmartHome.Core.Scheduling;
-using SmartHome.Core.Scheduling.Jobs;
 
 namespace SmartHome.API
 {
@@ -62,12 +61,10 @@ namespace SmartHome.API
             {
                 options.InvalidModelStateResponseFactory = context =>
                 {
-                    var result = new ServiceResult<object>
-                    {
-                        Alerts = context.ModelState
+                    var result = new ServiceResult<object>(context.ModelState
                         .Where(x => !string.IsNullOrEmpty(x.Value.Errors.FirstOrDefault()?.ErrorMessage))
-                        .Select(x => new Alert(x.Value.Errors.FirstOrDefault()?.ErrorMessage, MessageType.Error)).ToList()
-                    };
+                        .Select(x => new Alert(x.Value.Errors.FirstOrDefault()?.ErrorMessage, MessageType.Error))
+                        .ToList());
 
                     return new BadRequestObjectResult(result);
                 };

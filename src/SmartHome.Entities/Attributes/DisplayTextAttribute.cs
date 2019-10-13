@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartHome.Core.Infrastructure.Attributes
+namespace SmartHome.Core.Entities.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class DisplayTextAttribute : Attribute

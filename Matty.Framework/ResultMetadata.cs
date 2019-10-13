@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SmartHome.Core.Infrastructure
+namespace Matty.Framework
 {
     public class ResultMetadata
     {

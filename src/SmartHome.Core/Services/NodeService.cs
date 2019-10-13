@@ -1,23 +1,24 @@
 ﻿using Autofac;
+using Matty.Framework;
+using Matty.Framework.Abstractions;
+using Matty.Framework.Enums;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema.Generation;
 using SmartHome.Core.Control;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
-using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
-using SmartHome.Core.Security;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Matty.Framework.Utils;
 
 namespace SmartHome.Core.Services
 {
@@ -62,7 +63,7 @@ namespace SmartHome.Core.Services
 
             if (!validationResult.IsValid)
             {
-                response.Alerts = validationResult.GetValidationMessages();
+                response.AddAlerts(validationResult.GetValidationMessages());
                 return response;
             }
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Matty.Framework.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace SmartHome.Core.Entities.ContractParams
 {

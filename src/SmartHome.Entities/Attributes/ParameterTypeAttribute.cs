@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartHome.Core.Infrastructure.Attributes
+namespace SmartHome.Core.Entities.Attributes
 {
     public class ParameterTypeAttribute : Attribute
     {

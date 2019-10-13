@@ -1,7 +1,7 @@
-﻿using SmartHome.Core.Entities.Enums;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Matty.Framework.Enums;
 
-namespace SmartHome.Core.Security
+namespace Matty.Framework.Abstractions
 {
     public interface IAuthorizationProvider<in T> where T : class, new()
     {

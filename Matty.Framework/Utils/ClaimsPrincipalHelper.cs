@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using SmartHome.Core.Entities.Enums;
 
-namespace SmartHome.Core.Entities.Utils
+namespace Matty.Framework.Utils
 {
     public static class ClaimsPrincipalHelper
     {
@@ -32,9 +31,9 @@ namespace SmartHome.Core.Entities.Utils
             return principal.FindFirstValue("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
         }
 
-        public static bool IsUserAdmin(ClaimsPrincipal principal) => principal.IsInRole(Roles.Admin);
-
         public static IEnumerable<string> GetClaimedRoles(ClaimsPrincipal principal) =>
             principal.FindAll(ClaimTypes.Role).Select(x => x.Value);
+
+        public static bool IsInRole(ClaimsPrincipal principal, string role) => principal.IsInRole(role);
     }
 }

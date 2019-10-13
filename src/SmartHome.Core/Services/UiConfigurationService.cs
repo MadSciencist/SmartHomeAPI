@@ -1,16 +1,16 @@
 ﻿using Autofac;
+using Matty.Framework.Enums;
+using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Entities.Utils;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Services.Abstractions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Matty.Framework;
 
 namespace SmartHome.Core.Services
 {
@@ -25,7 +25,7 @@ namespace SmartHome.Core.Services
             var response = new ServiceResult<ICollection<UiConfigurationDto>>(Principal);
 
             // Simple authorization - only user itself or admin can access it
-            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
+            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId)) || ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin))
             {
                 response.Alerts.Add(new Alert($"You have no permissions to view configs of user {userId}.", MessageType.Error));
                 response.ResponseStatusCodeOverride = StatusCodes.Status403Forbidden;
@@ -49,7 +49,7 @@ namespace SmartHome.Core.Services
             var response = new ServiceResult<UiConfigurationDto>(Principal);
 
             // Simple authorization - only user itself or admin can access it
-            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
+            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin)))
             {
                 response.Alerts.Add(new Alert($"You have no permission to view config {configId} of user {userId}.", MessageType.Error));
                 response.ResponseStatusCodeOverride = StatusCodes.Status403Forbidden;
@@ -73,7 +73,7 @@ namespace SmartHome.Core.Services
             var response = new ServiceResult<ICollection<UiConfigurationDto>>(Principal);
 
             // Simple authorization - only user itself or admin can access it
-            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
+            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin)))
             {
                 response.Alerts.Add(new Alert($"You have no permission to view config of user {userId}.", MessageType.Error));
                 response.ResponseStatusCodeOverride = StatusCodes.Status403Forbidden;
@@ -124,7 +124,7 @@ namespace SmartHome.Core.Services
             var response = new ServiceResult<UiConfigurationDto>(Principal);
 
             // Simple authorization - only user itself or admin can access it
-            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
+            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin)))
             {
                 response.Alerts.Add(new Alert($"You have no permission to view config {configId} of user {userId}.", MessageType.Error));
                 response.ResponseStatusCodeOverride = StatusCodes.Status403Forbidden;
@@ -147,7 +147,7 @@ namespace SmartHome.Core.Services
             var response = new ServiceResult<object>(Principal);
 
             // Simple authorization - only user itself or admin can access it
-            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsUserAdmin(Principal)))
+            if (!(ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId) || ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin)))
             {
                 response.Alerts.Add(new Alert($"You have no permission to view config {configId} of user {userId}.", MessageType.Error));
                 response.ResponseStatusCodeOverride = StatusCodes.Status403Forbidden;
