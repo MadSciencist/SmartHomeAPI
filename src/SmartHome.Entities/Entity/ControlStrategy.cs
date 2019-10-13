@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SmartHome.Core.Entities.Abstractions;
+using SmartHome.Core.Entities.User;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_control_strategy")]
-    public class ControlStrategy : EntityBase
+    public class ControlStrategy : EntityBase, ICreationAudit, IModificationAudit
     {
         [Required, MaxLength(250)]
         public string AssemblyProduct { get; set; }
@@ -18,13 +20,22 @@ namespace SmartHome.Core.Entities.Entity
         public string Description { get; set; }
 
         public bool IsActive { get; set; }
-        public DateTime Created { get; set; }
 
         // Navigation & relationship properties
         public ICollection<Node> Nodes { get; set; }
 
         public ICollection<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
 
+        #region ICreationAudit impl
         public int CreatedById { get; set; }
+        public AppUser CreatedBy { get; set; }
+        public DateTime Created { get; set; }
+        #endregion
+
+        #region IModificationAudit impl
+        public int? UpdatedById { get; set; }
+        public AppUser UpdatedBy { get; set; }
+        public DateTime? Updated { get; set; }
+        #endregion
     }
 }

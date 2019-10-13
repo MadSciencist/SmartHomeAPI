@@ -1,9 +1,9 @@
-﻿using SmartHome.Core.Entities.Enums;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using SmartHome.Core.Entities.Enums;
 
-namespace SmartHome.Core.Utils
+namespace SmartHome.Core.Entities.Utils
 {
     public static class ClaimsPrincipalHelper
     {
@@ -20,6 +20,11 @@ namespace SmartHome.Core.Utils
             }
 
             return false;
+        }
+
+        public static int GetClaimedIdentifierInt(ClaimsPrincipal principal)
+        {
+            return int.Parse(GetClaimedIdentifier(principal));
         }
 
         public static string GetClaimedIdentifier(ClaimsPrincipal principal)

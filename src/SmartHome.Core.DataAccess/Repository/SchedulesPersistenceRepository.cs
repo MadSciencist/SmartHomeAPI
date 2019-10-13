@@ -1,23 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Entities.SchedulingEntity;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
-    public class SchedulesPersistenceRepository : GenericRepository<SchedulesPersistence>, ISchedulesPersistenceRepository
+    public class SchedulesPersistenceRepository : GenericRepository<ScheduleEntity>, ISchedulesPersistenceRepository
     {
-        public SchedulesPersistenceRepository(AppDbContext context, ILoggerFactory loggerFactory) : base(context, loggerFactory)
+        public SchedulesPersistenceRepository(ILifetimeScope container) : base(container)
         {
         }
 
-        public override IEnumerable<SchedulesPersistence> GetAll()
+        public override async Task<IEnumerable<ScheduleEntity>> GetAllAsync()
         {
-            return Context.SchedulesPersistence
+            return await Context.SchedulesPersistence
                 .Include(x => x.CreatedBy)
                 .Include(x => x.JobType)
-                .ToList();
+                .ToListAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace SmartHome.Core.Infrastructure.AssemblyScanning
 {
@@ -59,6 +60,14 @@ namespace SmartHome.Core.Infrastructure.AssemblyScanning
                 toCheck = toCheck.BaseType;
             }
             return false;
+        }
+
+        public static string GetEnumMemberAttrValue<T>(T enumVal)
+        {
+            var enumType = typeof(T);
+            var memInfo = enumType.GetMember(enumVal.ToString());
+            var attr = memInfo.FirstOrDefault()?.GetCustomAttributes(false).OfType<EnumMemberAttribute>().FirstOrDefault();
+            return attr?.Value;
         }
     }
 }

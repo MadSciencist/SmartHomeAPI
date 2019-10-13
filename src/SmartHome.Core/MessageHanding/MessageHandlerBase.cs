@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using SmartHome.Core.Entities.Converters;
+using SmartHome.Core.Entities.Abstractions;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Services;

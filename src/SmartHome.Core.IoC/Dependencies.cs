@@ -20,6 +20,8 @@ using Quartz.Impl;
 using Quartz.Spi;
 using SmartHome.Core.Scheduling;
 using SmartHome.Core.Scheduling.Jobs;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.SchedulingEntity;
 
 namespace SmartHome.Core.IoC
 {
@@ -38,14 +40,17 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<SyntheticDictionaryService>().InstancePerDependency();
             Builder.RegisterType<MessageInterceptor>().InstancePerDependency();
-            Builder.RegisterType<NodeAuthorizationProvider>().InstancePerDependency();
+            Builder.RegisterType<NodeAuthorizationProvider>().As<IAuthorizationProvider<Node>>().InstancePerDependency();
+            Builder.RegisterType<ScheduleAuthorizationProvider>().As<IAuthorizationProvider<ScheduleEntity>>().InstancePerDependency();
             Builder.RegisterType<MqttMessageProcessor>().As<IMessageProcessor<MqttMessageDto>>().InstancePerDependency();
             Builder.RegisterType<RestMessageProcessor>().As<IMessageProcessor<RestMessageDto>>().InstancePerDependency();
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
-            Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
+            Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency(); 
             Builder.RegisterType<NodeDataMagnitudeRepository>().As<INodeDataMagnitudeRepository>().InstancePerDependency();
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
+            Builder.RegisterType<AppUserNodeLinkRepository>().As<IAppUserNodeLinkRepository>().InstancePerDependency();
+            Builder.RegisterType<DictionaryRepository>().As<IDictionaryRepository>().InstancePerDependency();
             Builder.RegisterType<SchedulesPersistenceRepository>().As<ISchedulesPersistenceRepository>().InstancePerDependency();
             Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
 

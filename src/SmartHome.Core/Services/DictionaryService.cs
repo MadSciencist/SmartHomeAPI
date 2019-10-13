@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
@@ -14,10 +14,12 @@ namespace SmartHome.Core.Services
     public class DictionaryService : CrudServiceBase<object, Dictionary>, IDictionaryService
     {
         private readonly SyntheticDictionaryService _syntheticDictionary;
+        private readonly IDictionaryRepository _dictionaryRepository;
 
-        public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary) : base(container)
+        public DictionaryService(ILifetimeScope container, SyntheticDictionaryService syntheticDictionary, IDictionaryRepository dictionaryRepository) : base(container)
         {
             _syntheticDictionary = syntheticDictionary;
+            _dictionaryRepository = dictionaryRepository;
         }
 
         public async Task<ServiceResult<List<string>>> GetDictionaryNames()
@@ -26,10 +28,9 @@ namespace SmartHome.Core.Services
 
             try
             {
-                response.Data = await GenericRepository.AsQueryableNoTrack()
-                    .Distinct()
-                    .Select(x => x.Name)
-                    .ToListAsync();
+                var names = await _dictionaryRepository.GetNames();
+                response.Data = names.ToList();
+                    
                 response.Data.AddRange(_syntheticDictionary.GetNames());
 
                 return response;
@@ -56,9 +57,7 @@ namespace SmartHome.Core.Services
                     return response;
                 }
 
-                response.Data = await GenericRepository.AsQueryableNoTrack()
-                    .Include(x => x.Values)
-                    .FirstOrDefaultAsync(x => x.Name == dictionaryName);
+                response.Data = await _dictionaryRepository.GetFiltered(x => x.Name == dictionaryName);
 
                 return response;
             }
@@ -75,9 +74,7 @@ namespace SmartHome.Core.Services
 
             try
             {
-                var dict = await GenericRepository.AsQueryable()
-                    .Include(x => x.Values)
-                    .FirstOrDefaultAsync(x => x.Name == dictionaryName);
+                var dict = await _dictionaryRepository.GetFiltered(x => x.Name == dictionaryName);
                 if (dict == null) throw new SmartHomeEntityNotFoundException(nameof(dict));
 
                 dict.Values.Add(entry);
@@ -99,9 +96,7 @@ namespace SmartHome.Core.Services
 
             try
             {
-                var dict = await GenericRepository.AsQueryable()
-                    .Include(x => x.Values)
-                    .FirstOrDefaultAsync(x => x.Name == dictionaryName);
+                var dict = await _dictionaryRepository.GetFiltered(x => x.Name == dictionaryName);
                 if (dict is null) throw new SmartHomeEntityNotFoundException(nameof(dict));
 
                 var dictEntryToUpdate = dict.Values.SingleOrDefault(x => x.Id == entryId);
@@ -129,9 +124,7 @@ namespace SmartHome.Core.Services
 
             try
             {
-                var dict = await GenericRepository.AsQueryable()
-                    .Include(x => x.Values)
-                    .SingleOrDefaultAsync(x => x.Name == dictionaryName);
+                var dict = await _dictionaryRepository.GetFiltered(x => x.Name == dictionaryName);
                 if (dict == null) throw new SmartHomeEntityNotFoundException(nameof(dict));
 
                 var dictEntryToRemove = dict.Values.SingleOrDefault(x => x.Id == entryId);

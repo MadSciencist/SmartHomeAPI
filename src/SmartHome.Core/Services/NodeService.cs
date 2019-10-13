@@ -24,12 +24,17 @@ namespace SmartHome.Core.Services
     public class NodeService : CrudServiceBase<NodeDto, EntityBase>, INodeService
     {
         private readonly INodeRepository _nodeRepository;
-        private readonly NodeAuthorizationProvider _authProvider;
+        private readonly IAuthorizationProvider<Node> _authProvider;
+        private readonly IAppUserNodeLinkRepository _appUserNodeLinkRepository;
 
-        public NodeService(ILifetimeScope container, INodeRepository nodeRepository, NodeAuthorizationProvider authorizationProvider) : base(container)
+        public NodeService(ILifetimeScope container, 
+            INodeRepository nodeRepository, 
+            IAuthorizationProvider<Node> authorizationProvider,
+            IAppUserNodeLinkRepository appUserNodeLinkRepository) : base(container)
         {
             _nodeRepository = nodeRepository;
             _authProvider = authorizationProvider;
+            _appUserNodeLinkRepository = appUserNodeLinkRepository;
         }
 
         public async Task<ServiceResult<IEnumerable<NodeDto>>> GetAll()
@@ -89,20 +94,19 @@ namespace SmartHome.Core.Services
 
         private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
         {
-            using (var transaction = DbContext.Database.BeginTransaction())
+            using (var transaction = _nodeRepository.BeginTransaction())
             {
                 try
                 {
                     var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
 
                     // create entry in link table
-                    DbContext.Add(new AppUserNodeLink
+                    await _appUserNodeLinkRepository.CreateAsync(new AppUserNodeLink
                     {
                         NodeId = createdNode.Id,
                         UserId = userId
                     });
 
-                    DbContext.SaveChanges();
                     transaction.Commit();
                     response.Data = Mapper.Map<NodeDto>(createdNode);
                     response.Data.CreatedById = userId;

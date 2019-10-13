@@ -54,6 +54,18 @@ namespace SmartHome.Core.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbl_scheduling_job_status",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_scheduling_job_status", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbl_scheduling_job_type",
                 columns: table => new
                 {
@@ -241,8 +253,10 @@ namespace SmartHome.Core.DataAccess.Migrations
                     ContractAssembly = table.Column<string>(maxLength: 250, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
                     IsActive = table.Column<bool>(nullable: false),
-                    Created = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<int>(nullable: false),
+                    Created = table.Column<DateTime>(nullable: false),
+                    UpdatedById = table.Column<int>(nullable: true),
+                    Updated = table.Column<DateTime>(nullable: true),
                     AppUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -251,6 +265,18 @@ namespace SmartHome.Core.DataAccess.Migrations
                     table.ForeignKey(
                         name: "FK_tbl_control_strategy_tbl_user_AppUserId",
                         column: x => x.AppUserId,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tbl_control_strategy_tbl_user_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_control_strategy_tbl_user_UpdatedById",
+                        column: x => x.UpdatedById,
                         principalTable: "tbl_user",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -263,10 +289,15 @@ namespace SmartHome.Core.DataAccess.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 255, nullable: true),
+                    JobName = table.Column<string>(nullable: false),
+                    JobGroup = table.Column<string>(nullable: true),
+                    JobStatusEntityId = table.Column<int>(nullable: false),
                     JobTypeId = table.Column<int>(nullable: false),
                     CronExpression = table.Column<string>(maxLength: 20, nullable: false),
                     CreatedById = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
+                    UpdatedById = table.Column<int>(nullable: true),
+                    Updated = table.Column<DateTime>(nullable: true),
                     JobParams = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -279,11 +310,23 @@ namespace SmartHome.Core.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_tbl_scheduling_schedules_tbl_scheduling_job_status_JobStatus~",
+                        column: x => x.JobStatusEntityId,
+                        principalTable: "tbl_scheduling_job_status",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_tbl_scheduling_schedules_tbl_scheduling_job_type_JobTypeId",
                         column: x => x.JobTypeId,
                         principalTable: "tbl_scheduling_job_type",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_scheduling_schedules_tbl_user_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -326,12 +369,21 @@ namespace SmartHome.Core.DataAccess.Migrations
                     ClientId = table.Column<string>(maxLength: 100, nullable: true),
                     ConfigMetadata = table.Column<string>(maxLength: 2147483647, nullable: true),
                     ControlStrategyId = table.Column<int>(nullable: true),
+                    Created = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<int>(nullable: false),
-                    Created = table.Column<DateTime>(nullable: false)
+                    UpdatedById = table.Column<int>(nullable: true),
+                    Updated = table.Column<DateTime>(nullable: true),
+                    AppUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_node", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbl_node_tbl_user_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_tbl_node_tbl_control_strategy_ControlStrategyId",
                         column: x => x.ControlStrategyId,
@@ -344,6 +396,12 @@ namespace SmartHome.Core.DataAccess.Migrations
                         principalTable: "tbl_user",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_node_tbl_user_UpdatedById",
+                        column: x => x.UpdatedById,
+                        principalTable: "tbl_user",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -467,9 +525,24 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_control_strategy_CreatedById",
+                table: "tbl_control_strategy",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_control_strategy_UpdatedById",
+                table: "tbl_control_strategy",
+                column: "UpdatedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_dictionary_value_DictionaryId",
                 table: "tbl_dictionary_value",
                 column: "DictionaryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_node_AppUserId",
+                table: "tbl_node",
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_node_ClientId",
@@ -486,6 +559,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "IX_tbl_node_CreatedById",
                 table: "tbl_node",
                 column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_node_UpdatedById",
+                table: "tbl_node",
+                column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_node_data_NodeId",
@@ -519,9 +597,19 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbl_scheduling_schedules_JobStatusEntityId",
+                table: "tbl_scheduling_schedules",
+                column: "JobStatusEntityId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbl_scheduling_schedules_JobTypeId",
                 table: "tbl_scheduling_schedules",
                 column: "JobTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_scheduling_schedules_UpdatedById",
+                table: "tbl_scheduling_schedules",
+                column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_ui_configuration_UserId",
@@ -598,6 +686,9 @@ namespace SmartHome.Core.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_node_data");
+
+            migrationBuilder.DropTable(
+                name: "tbl_scheduling_job_status");
 
             migrationBuilder.DropTable(
                 name: "tbl_scheduling_job_type");

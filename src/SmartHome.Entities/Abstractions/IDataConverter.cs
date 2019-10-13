@@ -1,4 +1,4 @@
-﻿namespace SmartHome.Core.Entities.Converters
+﻿namespace SmartHome.Core.Entities.Abstractions
 {
     public interface IDataConverter
     {

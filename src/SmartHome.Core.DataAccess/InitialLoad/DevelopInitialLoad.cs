@@ -13,7 +13,7 @@ namespace SmartHome.Core.DataAccess.InitialLoad
         {
             using (IServiceScope scope = provider.CreateScope())
             {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var context = scope.ServiceProvider.GetRequiredService<EntityFrameworkContext>();
 
                 if (!context.ControlStrategies.Any())
                 {

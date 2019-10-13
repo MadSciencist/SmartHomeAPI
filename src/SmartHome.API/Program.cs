@@ -6,13 +6,18 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using SmartHome.Core.DataAccess.InitialLoad;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using SmartHome.Core.Entities.Enums;
+using SmartHome.Core.Infrastructure.AssemblyScanning;
 
 namespace SmartHome.API
 {
     public class Program
     {
         public static int Main(string[] args)
-        {
+        { 
             try
             {
                 var host = CreateWebHostBuilder(args).Build();

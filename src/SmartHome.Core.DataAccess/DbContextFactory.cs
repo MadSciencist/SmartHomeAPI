@@ -11,9 +11,9 @@ namespace SmartHome.Core.DataAccess
     /// <summary>
     /// Used by EF CLI
     /// </summary>
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<EntityFrameworkContext>
     {
-        public AppDbContext CreateDbContext(string[] args)
+        public EntityFrameworkContext CreateDbContext(string[] args)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), @"../SmartHome.API/"))
@@ -23,7 +23,7 @@ namespace SmartHome.Core.DataAccess
 
             var connectionString = configuration["ConnectionStrings:MySql"];
 
-            var builder = new DbContextOptionsBuilder<AppDbContext>()
+            var builder = new DbContextOptionsBuilder<EntityFrameworkContext>()
                 .UseMySql(connectionString, mySqlOptions =>
                 {
                     mySqlOptions.ServerVersion(new Version(10, 1, 38), ServerType.MariaDb);
@@ -32,7 +32,7 @@ namespace SmartHome.Core.DataAccess
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors();
 
-            return new AppDbContext(builder.Options);
+            return new EntityFrameworkContext(builder.Options);
         }
     }
 }
