@@ -6,11 +6,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Abstractions;
 
 namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_node")]
-    public class Node : EntityBase
+    public class Node : EntityBase, ICreationAudit, IModificationAudit
     {
         [Required, MaxLength(50)]
         public string Name { get; set; }
@@ -54,12 +55,21 @@ namespace SmartHome.Core.Entities.Entity
         public ControlStrategy ControlStrategy { get; set; }
         public int? ControlStrategyId { get; set; }
 
-        public int CreatedById { get; set; }
-        public AppUser CreatedBy { get; set; }
         public ICollection<AppUserNodeLink> AllowedUsers { get; set; }
 
+        #region ICreationAudit impl
         public DateTime Created { get; set; }
+        public int CreatedById { get; set; }
+        public AppUser CreatedBy { get; set; }
+        #endregion
 
+        #region IModificationAudit impl
+        public int? UpdatedById { get; set; }
+        public AppUser UpdatedBy { get; set; }
+        public DateTime? Updated { get; set; }
+        #endregion
+
+        #region Public methods
         /// <summary>
         /// Checks whether magnitude should be saved in DB
         /// </summary>
@@ -95,5 +105,6 @@ namespace SmartHome.Core.Entities.Entity
         /// </summary>
         /// <returns></returns>
         public override string ToString() => Name;
+        #endregion
     }
 }

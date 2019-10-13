@@ -1,8 +1,7 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
-using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.MessageHanding;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -48,7 +47,7 @@ namespace SmartHome.Contracts.GenericRest
                 PhysicalProperty = property
             };
 
-            await NodeDataService.AddSingleAsync(nodeId, EDataRequestReason.Node, magnitudeDto);
+            await NodeDataService.AddSingleAsync(nodeId, magnitudeDto);
 
             NotificationService.PushDataNotification(nodeId, magnitudeDto);
         }

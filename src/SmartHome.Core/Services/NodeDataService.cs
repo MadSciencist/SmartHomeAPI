@@ -154,11 +154,11 @@ namespace SmartHome.Core.Services
             return aggregate.MagnitudeDictionary.Count == 0 ? new NodeCollectionAggregate() : aggregate;
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, EDataRequestReason reason, NodeDataMagnitudeDto data)
+        public async Task<NodeData> AddSingleAsync(int nodeId, NodeDataMagnitudeDto data)
         {
             var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
 
-            return await _nodeDataRepository.AddSingleAsync(nodeId, samplesToKeep, reason, new NodeDataMagnitude
+            return await _nodeDataRepository.AddSingleAsync(nodeId, samplesToKeep, new NodeDataMagnitude
             {
                 Magnitude = data.PhysicalProperty.Magnitude,
                 Unit = data.PhysicalProperty.Unit,
@@ -166,11 +166,11 @@ namespace SmartHome.Core.Services
             });
         }
 
-        public async Task<NodeData> AddManyAsync(int nodeId, EDataRequestReason reason, IEnumerable<NodeDataMagnitudeDto> data)
+        public async Task<NodeData> AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data)
         {
             var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
 
-            return await _nodeDataRepository.AddManyAsync(nodeId, samplesToKeep, reason, data.Select(x =>
+            return await _nodeDataRepository.AddManyAsync(nodeId, samplesToKeep, data.Select(x =>
                 new NodeDataMagnitude
                 {
                     Magnitude = x.PhysicalProperty.Magnitude,

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using SmartHome.Core.Entities.Abstractions;
 
 namespace SmartHome.Core.Entities.ContractParams
 {

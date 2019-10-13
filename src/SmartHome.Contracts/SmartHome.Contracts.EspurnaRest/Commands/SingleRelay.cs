@@ -5,7 +5,6 @@ using SmartHome.Core.Control;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.ContractParams;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.MessageHanding;
@@ -48,7 +47,7 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
                     var value = response[RelayKey];
                     var magnitudeDto = new NodeDataMagnitudeDto(property, value);
                     NotificationService.PushDataNotification(Node.Id, magnitudeDto);
-                    await NodeDataService.AddSingleAsync(Node.Id, EDataRequestReason.Node, magnitudeDto);
+                    await NodeDataService.AddSingleAsync(Node.Id, magnitudeDto);
                 }
             }
         }

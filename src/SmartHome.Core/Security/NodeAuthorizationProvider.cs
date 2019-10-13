@@ -1,6 +1,6 @@
 ﻿using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
-using SmartHome.Core.Utils;
+using SmartHome.Core.Entities.Utils;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -8,12 +8,12 @@ using System.Security.Principal;
 
 namespace SmartHome.Core.Security
 {
-    public class NodeAuthorizationProvider
+    public class NodeAuthorizationProvider : AuthorizationProviderBase, IAuthorizationProvider<Node>
     {
         public bool Authorize(Node node, ClaimsPrincipal principal, OperationType operation)
         {
             if (principal is null) return false;
-            if (ClaimsPrincipalHelper.GetClaimedIdentifier(principal) == "1") return true; // system user
+            if (IsSystemUser(principal)) return true;
             if (IsAdmin(principal)) return true;
 
             switch (operation)
@@ -35,11 +35,6 @@ namespace SmartHome.Core.Security
                 default:
                     return false;
             }
-        }
-
-        private static bool IsAdmin(IPrincipal principal)
-        {
-            return principal.IsInRole(Roles.Admin);
         }
 
         private static bool HandleAddPermission(IPrincipal principal)

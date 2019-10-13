@@ -39,7 +39,7 @@ namespace SmartHome.Core.Scheduling
                 _scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
                 _scheduler.JobFactory = _jobFactory;
 
-                var persistedJobs = _scheduleRepository.GetAll();
+                var persistedJobs = await _scheduleRepository.GetAllAsync();
 
                 foreach (var job in persistedJobs)
                 {
@@ -66,7 +66,7 @@ namespace SmartHome.Core.Scheduling
             if (_scheduler != null) await _scheduler.Shutdown(cancellationToken);
         }
 
-        private JobSchedule CreateJobSchedule(SchedulesPersistence job)
+        private JobSchedule CreateJobSchedule(ScheduleEntity job)
         {
             // TODO Think of more polymorphic way...
             var jobParams = JsonConvert.DeserializeObject<Dictionary<string, object>>(job.JobParams);
