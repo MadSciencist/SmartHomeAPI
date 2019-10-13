@@ -18,10 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Matty.Framework\Matty.Framework.csproj" />
     <ProjectReference Include="..\..\src\SmartHome.API\SmartHome.API.csproj" />
-    <ProjectReference Include="..\..\src\SmartHome.Core.DataAccess\SmartHome.Core.DataAccess.csproj" />
+    <ProjectReference Include="..\..\src\SmartHome.Core.Data\SmartHome.Core.Data.csproj" />
     <ProjectReference Include="..\..\src\SmartHome.Core\SmartHome.Core.csproj" />
-    <ProjectReference Include="..\..\src\SmartHome.Domain\SmartHome.Core.Entities.csproj" />
+    <ProjectReference Include="..\..\src\SmartHome.Entities\SmartHome.Core.Entities.csproj" />
   </ItemGroup>
 
 </Project>
