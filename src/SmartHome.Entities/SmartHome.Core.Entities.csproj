@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Matty.Framework\Matty.Framework.csproj" />
+    <ProjectReference Include="..\src\Matty.Framework\Matty.Framework.csproj" />
   </ItemGroup>
 
 </Project>
