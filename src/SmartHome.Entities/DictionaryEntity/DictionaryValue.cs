@@ -1,10 +1,10 @@
-﻿using SmartHome.Core.Entities.Entity;
+﻿using Matty.Framework;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Entities.DictionaryEntity
 {
     [Table("tbl_dictionary_value")]
-    public class DictionaryValue : EntityBase
+    public class DictionaryValue : EntityBase<int>
     {
         public string DisplayValue { get; set; }
         public string InternalValue { get; set; }

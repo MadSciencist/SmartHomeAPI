@@ -1,4 +1,4 @@
-﻿namespace SmartHome.Core.Entities.Enums
+﻿namespace Matty.Framework.Enums
 {
     public enum OperationType
     {

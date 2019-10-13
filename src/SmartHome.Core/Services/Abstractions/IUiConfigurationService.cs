@@ -3,6 +3,8 @@ using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Infrastructure;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Matty.Framework;
+using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Services.Abstractions
 {

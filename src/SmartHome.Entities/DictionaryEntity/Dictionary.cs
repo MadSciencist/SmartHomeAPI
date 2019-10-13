@@ -1,11 +1,11 @@
-﻿using SmartHome.Core.Entities.Entity;
+﻿using Matty.Framework;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Entities.DictionaryEntity
 {
     [Table("tbl_dictionary")]
-    public class Dictionary : EntityBase
+    public class Dictionary : EntityBase<int>
     {
         public string Name { get; set; }
         public string Description { get; set; }

@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Matty.Framework;
 
 namespace SmartHome.Core.Entities.Entity
 {
-    public class EntityBase
+    public class EntityBase : EntityBase<int>
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public virtual int Id { get; set; }
+        public override int Id { get; set; }
     }
 }

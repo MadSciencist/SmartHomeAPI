@@ -1,10 +1,11 @@
-﻿using SmartHome.Core.Entities.User;
+﻿using Matty.Framework;
+using SmartHome.Core.Entities.User;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_user_node_link")]
-    public class AppUserNodeLink : EntityBase
+    public class AppUserNodeLink : EntityBase<int>
     {
         public int NodeId { get; set; }
         public int UserId { get; set; }

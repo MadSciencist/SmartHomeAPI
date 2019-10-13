@@ -18,13 +18,16 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Matty.Framework;
+using Matty.Framework.Abstractions;
+using Matty.Framework.Enums;
 
 namespace SmartHome.Core.Services
 {
     public class SchedulingService : ServiceBase, ISchedulingService
     {
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly IGenericRepository<JobType> _jobTypeRepository;
+        private readonly DataAccess.Repository.IGenericRepository<JobType> _jobTypeRepository;
         private readonly IValidator<ScheduleNodeCommandJobDto> _validator;
         private readonly IAuthorizationProvider<Node> _nodeAuth;
         private readonly IAuthorizationProvider<ScheduleEntity> _schedulesAuth;
@@ -56,7 +59,7 @@ namespace SmartHome.Core.Services
 
             if (!_validator.Validate(param).IsValid)
             {
-                response.Alerts = validationResult.GetValidationMessages();
+                response.AddAlerts(validationResult.GetValidationMessages());
                 return response;
             }
 

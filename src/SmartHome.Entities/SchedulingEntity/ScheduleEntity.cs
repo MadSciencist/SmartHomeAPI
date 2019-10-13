@@ -1,14 +1,14 @@
-﻿using SmartHome.Core.Entities.Entity;
+﻿using Matty.Framework;
+using Matty.Framework.Abstractions;
 using SmartHome.Core.Entities.User;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SmartHome.Core.Entities.Abstractions;
 
 namespace SmartHome.Core.Entities.SchedulingEntity
 {
     [Table("tbl_scheduling_schedules")]
-    public class ScheduleEntity : EntityBase, ICreationAudit, IModificationAudit
+    public class ScheduleEntity : EntityBase<int>, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
     {
         /// <summary>
         /// User display name

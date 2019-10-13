@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SmartHome.Core.Entities.Abstractions;
+using Matty.Framework.Abstractions;
 
-namespace SmartHome.Core.Entities.ContractParams
+namespace Matty.Framework.Validation
 {
     public abstract class ValidatableParamBase<T> : IValidatable<T> where T : class, new()
     {

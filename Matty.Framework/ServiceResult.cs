@@ -1,16 +1,21 @@
-﻿using Newtonsoft.Json;
+﻿using Matty.Framework.Enums;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Security.Claims;
 
-namespace SmartHome.Core.Infrastructure
+namespace Matty.Framework
 {
+    /// <summary>
+    /// Container class for business logic response
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ServiceResult<T>
     {
         [JsonProperty("data", NullValueHandling = NullValueHandling.Include)]
         public T Data { get; set; }
 
         [JsonProperty("alerts", NullValueHandling = NullValueHandling.Include)]
-        public ICollection<Alert> Alerts { get; set; }
+        public List<Alert> Alerts { get; private set; }
 
         [JsonProperty("metadata", NullValueHandling = NullValueHandling.Include)]
         public ResultMetadata Metadata { get; set; }
@@ -26,6 +31,12 @@ namespace SmartHome.Core.Infrastructure
         public ServiceResult(ClaimsPrincipal principal) : this()
         {
             Principal = principal;
+        }
+
+        public ServiceResult(List<Alert> alerts)
+        {
+            Alerts = alerts;
+            Metadata = new ResultMetadata();
         }
 
         public ServiceResult()
@@ -48,9 +59,14 @@ namespace SmartHome.Core.Infrastructure
             return this;
         }
 
-        public void AddSuccessMessage(string message)
-        {
-            Alerts.Add(new Alert(message, MessageType.Success));
-        }
+        public void AddAlert(string message, MessageType type) => Alerts.Add(new Alert(message, type));
+
+        public void AddAlert(Alert alert) => Alerts.Add(alert);
+
+        public void AddAlerts(IEnumerable<Alert> alerts) => Alerts.AddRange(alerts);
+
+        public void AddSuccessMessage(string message) => AddAlert(message, MessageType.Success);
+
+        public void AddErrorMessage(string message) => AddAlert(message, MessageType.Error);
     }
 }

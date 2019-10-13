@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Entities.Enums;
+﻿using Matty.Framework.Enums;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Matty.Framework.Enums;
+using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,8 +10,6 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.User;
-using SmartHome.Core.Entities.Utils;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Security;
 using System;
@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Matty.Framework;
 
 namespace SmartHome.API.Service
 {
@@ -61,7 +62,7 @@ namespace SmartHome.API.Service
             }
 
             // only admin or user itself can access
-            if (ClaimsPrincipalHelper.IsUserAdmin(Principal) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId))
+            if (ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId))
             {
                 response.Data = new UserDto
                 {
@@ -151,7 +152,7 @@ namespace SmartHome.API.Service
             var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, register.Password);
             if (!passwordValidationResult.Succeeded)
             {
-                response.Alerts = passwordValidationResult.Errors.Select(x => new Alert(x.Description, MessageType.Error)).ToList();
+                response.AddAlerts(passwordValidationResult.Errors.Select(x => new Alert(x.Description, MessageType.Error)));
                 response.ResponseStatusCodeOverride = StatusCodes.Status400BadRequest;
                 return response;
             }
@@ -159,7 +160,7 @@ namespace SmartHome.API.Service
             var createResult = await _userManager.CreateAsync(user, register.Password);
             if (!createResult.Succeeded)
             {
-                response.Alerts = createResult.Errors.Select(x => new Alert(x.Description, MessageType.Error)).ToList();
+                response.AddAlerts(createResult.Errors.Select(x => new Alert(x.Description, MessageType.Error)));
                 response.ResponseStatusCodeOverride = StatusCodes.Status400BadRequest;
                 return response;
             }
@@ -167,7 +168,7 @@ namespace SmartHome.API.Service
             var addToRoleResult = await _userManager.AddToRoleAsync(user, Roles.User);
             if (!addToRoleResult.Succeeded)
             {
-                response.Alerts = addToRoleResult.Errors.Select(x => new Alert(x.Description, MessageType.Error)).ToList();
+                response.AddAlerts(addToRoleResult.Errors.Select(x => new Alert(x.Description, MessageType.Error)));
                 response.ResponseStatusCodeOverride = StatusCodes.Status400BadRequest;
                 return response;
             }
@@ -202,12 +203,12 @@ namespace SmartHome.API.Service
             }
 
             // only admin or user itself can access
-            if (ClaimsPrincipalHelper.IsUserAdmin(Principal) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId.ToString()))
+            if (ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId.ToString()))
             {
                 var deleteResult = await _userManager.DeleteAsync(user);
                 if (deleteResult.Succeeded)
                 {
-                    response.Alerts.Add(new Alert("Sucessfully deleted", MessageType.Success));
+                    response.Alerts.Add(new Alert("Successfully deleted", MessageType.Success));
                 }
                 else
                 {

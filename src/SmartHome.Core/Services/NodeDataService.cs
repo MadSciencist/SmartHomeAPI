@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Matty.Framework;
+using Matty.Framework.Enums;
 
 namespace SmartHome.Core.Services
 {
@@ -26,28 +28,6 @@ namespace SmartHome.Core.Services
         {
             _nodeDataRepository = nodeDataRepository;
             _nodeDataMagnitudeRepository = nodeDataMagnitudeRepository;
-        }
-
-        public async Task<ServiceResult<NodeCollectionAggregate>> GetNodeData(int nodeId, int pageNumber, int pageSize,
-            string[] properties, DateTime from, DateTime to, DataOrder order)
-        {
-            if (properties.Length == 0 || properties is null) throw new SmartHomeException("No properties selected.");
-
-            var response = new ServiceResult<NodeCollectionAggregate>(Principal);
-
-            var query = _nodeDataRepository.AsQueryableNoTrack()
-                .Where(x => x.NodeId == nodeId)
-                .Where(x => x.TimeStamp >= from && x.TimeStamp <= to);
-
-            var results = FilterByDate(query, order).ToListAsync();
-
-            var paginated = await PaginatedList<NodeData>.CreateAsync(query, FilterByDate, pageNumber, pageSize, order);
-
-            if (!paginated.Any()) throw new SmartHomeEntityNotFoundException($"Node ID: {nodeId} data not found");
-
-            response.Data = GetAggregate(paginated, properties);
-
-            return response;
         }
 
         public async Task<ServiceResult<ICollection<NodeMagnitudeData>>> GetNodeDatas(int nodeId, int pageNumber, int pageSize,
@@ -98,60 +78,6 @@ namespace SmartHome.Core.Services
                 Magnitude = property,
                 Data = await query.ToListAsync()
             };
-        }
-
-
-        private IQueryable<NodeData> FilterByDate(IQueryable<NodeData> query, DataOrder order)
-        {
-            if (order == DataOrder.Asc) return query.OrderBy(x => x.TimeStamp);
-            return query.OrderByDescending(x => x.TimeStamp);
-        }
-
-        private static NodeCollectionAggregate GetAggregate(PaginatedList<NodeData> paginated, string[] properties)
-        {
-            // Create response
-            var aggregate = new NodeCollectionAggregate
-            {
-                Pagination = new PaginationResult
-                {
-                    HasNextPage = paginated.HasNextPage,
-                    HasPreviousPage = paginated.HasPreviousPage,
-                    PageIndex = paginated.PageIndex,
-                    TotalCount = paginated.TotalCount,
-                    TotalPages = paginated.TotalPages
-                }
-            };
-
-            var timeStamps = paginated
-                .Where(nd => nd.Magnitudes
-                .Any(ndm => properties.Any(magn => magn == ndm.Magnitude)))
-                .Select(x => x.TimeStamp)
-                .ToList();
-
-            aggregate.AddTimestamps(timeStamps);
-
-            foreach (var property in properties)
-            {
-                var nodeDataMagnitudes = paginated
-                    .SelectMany(x => x.Magnitudes)
-                    .Where(x => x.Magnitude == property);
-
-                if (!nodeDataMagnitudes.Any()) throw new SmartHomeEntityNotFoundException($"Property {property} is not valid");
-
-                var descriptor = new MetadataDescriptor
-                {
-                    Magnitude = property,
-                    Unit = nodeDataMagnitudes.FirstOrDefault()?.Unit,
-                    CollectionLength = nodeDataMagnitudes.Count()
-                };
-
-                var values = nodeDataMagnitudes.Select(x => x.Value).ToList();
-
-                aggregate.AddProperty<string>(property, values, descriptor);
-
-            }
-
-            return aggregate.MagnitudeDictionary.Count == 0 ? new NodeCollectionAggregate() : aggregate;
         }
 
         public async Task<NodeData> AddSingleAsync(int nodeId, NodeDataMagnitudeDto data)

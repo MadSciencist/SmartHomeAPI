@@ -1,17 +1,17 @@
 ﻿using Autofac;
+using Matty.Framework.Extensions;
+using Matty.Framework.Utils;
 using Microsoft.Extensions.Caching.Memory;
+using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.DictionaryEntity;
+using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
-using SmartHome.Core.Infrastructure.Attributes;
 using SmartHome.Core.MessageHanding;
-using SmartHome.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Autofac.Core;
-using SmartHome.Core.DataAccess.Repository;
-using SmartHome.Core.Entities.SchedulingEntity;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
@@ -56,7 +56,7 @@ namespace SmartHome.Core.Services
             AddContractsDict();
             AddCommandExecutorsDict();
             AddContractPropertiesDict();
-            AddJobTypesDict();
+            AddJobTypesDict().Wait();
 
             _cache.Set(CacheKey, Dictionaries, TimeSpan.FromMinutes(30));
         }

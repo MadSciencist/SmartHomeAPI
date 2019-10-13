@@ -10,6 +10,7 @@ using SmartHome.Core.MessageHanding;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Threading.Tasks;
+using Matty.Framework.Enums;
 
 namespace SmartHome.API.Controllers
 {

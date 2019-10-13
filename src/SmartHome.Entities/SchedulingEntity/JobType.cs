@@ -1,4 +1,5 @@
-﻿using SmartHome.Core.Entities.Entity;
+﻿using Matty.Framework;
+using Matty.Framework.Abstractions;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SmartHome.Core.Entities.SchedulingEntity
 {
     [Table("tbl_scheduling_job_type")]
-    public class JobType : EntityBase
+    public class JobType : EntityBase<int>
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public override int Id { get; set; }

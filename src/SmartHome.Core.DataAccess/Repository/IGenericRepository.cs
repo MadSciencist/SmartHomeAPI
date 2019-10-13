@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Matty.Framework.Abstractions;
+using SmartHome.Core.Entities.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using SmartHome.Core.Entities.Abstractions;
-using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
-    public interface IGenericRepository<T> where T : EntityBase, new()
+    public interface IGenericRepository<T> where T : IEntity, new()
     {
-        IDatabaseTransaction BeginTransaction();
+        ITransaction BeginTransaction();
+
         // this needs to be cleaned asap to move interfaces to entity assembly
         IQueryable<T> AsQueryableNoTrack();
 

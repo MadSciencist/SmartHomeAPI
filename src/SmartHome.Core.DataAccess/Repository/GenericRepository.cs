@@ -1,19 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Autofac;
+using Matty.Framework.Abstractions;
+using Matty.Framework.Utils;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Autofac;
-using Microsoft.AspNetCore.Http;
-using SmartHome.Core.Entities.Abstractions;
-using SmartHome.Core.Entities.Utils;
 
 namespace SmartHome.Core.DataAccess.Repository
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : EntityBase, new()
+    public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity, new()
     {
         protected ILifetimeScope Container { get; }
 
@@ -32,14 +32,14 @@ namespace SmartHome.Core.DataAccess.Repository
             Container = container;
         }
 
-        public IDatabaseTransaction BeginTransaction()
+        public ITransaction BeginTransaction()
             => new EntityFrameworkTransaction(Context);
 
         public virtual async Task<T> CreateAsync(T entity)
         {
             var currentUser = HttpContextAccessor.HttpContext.User;
 
-            if (entity is ICreationAudit audit)
+            if (entity is ICreationAudit<AppUser, int> audit)
             {
                 audit.Created = DateTime.UtcNow;
                 audit.CreatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
@@ -100,7 +100,7 @@ namespace SmartHome.Core.DataAccess.Repository
         {
             var currentUser = HttpContextAccessor.HttpContext.User;
 
-            if (entity is IModificationAudit audit)
+            if (entity is IModificationAudit<AppUser, int?> audit)
             {
                 audit.Updated = DateTime.UtcNow;
                 audit.UpdatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);

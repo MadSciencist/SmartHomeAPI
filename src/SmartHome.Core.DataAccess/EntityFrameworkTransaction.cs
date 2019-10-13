@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Matty.Framework.Abstractions;
 using Microsoft.EntityFrameworkCore.Storage;
-using SmartHome.Core.Entities.Abstractions;
+using System;
 
 namespace SmartHome.Core.DataAccess
 {
-    public class EntityFrameworkTransaction : IDatabaseTransaction
+    public class EntityFrameworkTransaction : ITransaction
     {
         public Guid Identifier => _transaction.TransactionId;
 

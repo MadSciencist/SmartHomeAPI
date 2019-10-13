@@ -1,4 +1,4 @@
-﻿namespace SmartHome.Core.Entities.Models
+﻿namespace SmartHome.Core.Entities.Entity
 {
     public class PhysicalProperty
     {

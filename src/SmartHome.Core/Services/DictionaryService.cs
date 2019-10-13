@@ -1,7 +1,8 @@
 ﻿using Autofac;
+using Matty.Framework;
+using Matty.Framework.Enums;
 using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Entities.DictionaryEntity;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Services.Abstractions;
 using System;
@@ -37,7 +38,7 @@ namespace SmartHome.Core.Services
             }
             catch (Exception ex)
             {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                response.AddAlert(ex.Message, MessageType.Exception);
                 throw;
             }
         }
@@ -63,7 +64,7 @@ namespace SmartHome.Core.Services
             }
             catch (Exception ex)
             {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                response.AddAlert(ex.Message, MessageType.Exception);
                 throw;
             }
         }
@@ -79,13 +80,13 @@ namespace SmartHome.Core.Services
 
                 dict.Values.Add(entry);
                 response.Data = await GenericRepository.UpdateAsync(dict);
-                response.Alerts.Add(new Alert("Successfully added new entry", MessageType.Success));
+                response.AddSuccessMessage("Successfully added new entry");
 
                 return response;
             }
             catch (Exception ex)
             {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                response.AddAlert(ex.Message, MessageType.Exception);
                 throw;
             }
         }
@@ -107,13 +108,13 @@ namespace SmartHome.Core.Services
                 dictEntryToUpdate.IsActive = entry.IsActive;
 
                 response.Data = await GenericRepository.UpdateAsync(dict);
-                response.Alerts.Add(new Alert("Successfully updated", MessageType.Success));
+                response.AddSuccessMessage("Successfully updated");
 
                 return response;
             }
             catch (Exception ex)
             {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                response.AddAlert(ex.Message, MessageType.Exception);
                 throw;
             }
         }
@@ -134,13 +135,13 @@ namespace SmartHome.Core.Services
                 dictEntryToRemove.IsActive = false;
 
                 response.Data = await GenericRepository.UpdateAsync(dict);
-                response.Alerts.Add(new Alert("Successfully deleted entry", MessageType.Success));
+                response.AddSuccessMessage("Successfully deleted entry");
 
                 return response;
             }
             catch (Exception ex)
             {
-                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                response.AddAlert(ex.Message, MessageType.Exception);
                 throw;
             }
         }

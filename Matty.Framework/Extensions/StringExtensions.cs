@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartHome.Core.Utils
+namespace Matty.Framework.Extensions
 {
     public static class StringExtensions
     {
