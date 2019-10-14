@@ -1,12 +1,11 @@
-﻿using Matty.Framework.Abstractions;
-using SmartHome.Core.Entities.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Matty.Framework.Abstractions;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public interface IGenericRepository<T> where T : IEntity, new()
     {

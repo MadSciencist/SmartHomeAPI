@@ -2,7 +2,7 @@
 using Matty.Framework.Extensions;
 using Matty.Framework.Utils;
 using Microsoft.Extensions.Caching.Memory;
-using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Entities.SchedulingEntity;

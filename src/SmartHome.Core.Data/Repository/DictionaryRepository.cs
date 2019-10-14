@@ -1,13 +1,13 @@
-﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Entities.DictionaryEntity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Autofac;
+using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Entities.DictionaryEntity;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public class DictionaryRepository : GenericRepository<Dictionary>, IDictionaryRepository
     {

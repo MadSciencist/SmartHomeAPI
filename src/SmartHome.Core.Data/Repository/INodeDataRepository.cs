@@ -1,8 +1,8 @@
-﻿using SmartHome.Core.Entities.Entity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Entity;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public interface INodeDataRepository : IGenericRepository<NodeData>
     {
