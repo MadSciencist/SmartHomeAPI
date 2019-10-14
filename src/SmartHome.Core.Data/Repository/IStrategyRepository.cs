@@ -1,6 +1,6 @@
 ﻿using SmartHome.Core.Entities.Entity;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public interface IStrategyRepository : IGenericRepository<ControlStrategy>
     {

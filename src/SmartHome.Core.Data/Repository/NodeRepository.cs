@@ -1,11 +1,11 @@
-﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Entities.Entity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Entities.Entity;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public class NodeRepository : GenericRepository<Node>, INodeRepository
     {
@@ -13,7 +13,7 @@ namespace SmartHome.Core.DataAccess.Repository
         {
         }
 
-        public new async Task<IEnumerable<Node>> GetAll()
+        public override async Task<IEnumerable<Node>> GetAllAsync()
         {
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)

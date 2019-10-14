@@ -1,12 +1,12 @@
-﻿using Autofac;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Entities.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
+using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Entities.Entity;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public class NodeDataRepository : GenericRepository<NodeData>, INodeDataRepository
     {

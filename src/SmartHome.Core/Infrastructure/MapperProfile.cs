@@ -2,6 +2,7 @@
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Dto;
 using System.Linq;
+using SmartHome.Core.Entities.SchedulingEntity;
 
 namespace SmartHome.Core.Infrastructure
 {
@@ -56,6 +57,23 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
                 .ForMember(x => x.Data, opt => opt.MapFrom(x => x.Data))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<ScheduleEntity, JobScheduleDto>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
+                .ForMember(x => x.CronExpression, opt => opt.MapFrom(x => x.CronExpression))
+                .ForMember(x => x.JobStatusId, opt => opt.MapFrom(x => x.JobStatusEntityId))
+                .ForMember(x => x.JobStatus, opt => opt.MapFrom(x => x.JobStatusEntity.Name))
+                .ForMember(x => x.JobTypeId, opt => opt.MapFrom(x => x.JobTypeId))
+                .ForMember(x => x.JobType, opt => opt.MapFrom(x => x.JobType.DisplayName))
+                .ForMember(x => x.JobParams, opt => opt.MapFrom(x => x.JobParams))
+                .ForMember(x => x.CreatedById, opt => opt.MapFrom(x => x.CreatedById))
+                .ForMember(x => x.CreatedBy, opt => opt.MapFrom(x => x.CreatedBy.UserName))
+                .ForMember(x => x.Created, opt => opt.MapFrom(x => x.Created))
+                .ForMember(x => x.LastUpdatedById, opt => opt.MapFrom(x => x.UpdatedById))
+                .ForMember(x => x.LastUpdatedBy, opt => opt.MapFrom(x => x.UpdatedBy.UserName))
+                .ForMember(x => x.LastUpdated, opt => opt.MapFrom(x => x.Updated))
                 .ForAllOtherMembers(x => x.Ignore());
         }
     }

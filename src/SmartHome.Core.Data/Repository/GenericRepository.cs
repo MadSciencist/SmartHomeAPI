@@ -1,17 +1,18 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Autofac;
 using Matty.Framework.Abstractions;
 using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SmartHome.Core.DataAccess;
 using SmartHome.Core.Entities.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity, new()
     {

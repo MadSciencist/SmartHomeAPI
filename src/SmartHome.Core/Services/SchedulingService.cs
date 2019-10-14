@@ -1,33 +1,33 @@
 ﻿using Autofac;
+using AutoMapper;
 using FluentValidation;
+using Matty.Framework;
+using Matty.Framework.Abstractions;
+using Matty.Framework.Enums;
 using Microsoft.Extensions.Logging;
 using Quartz;
-using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.SchedulingEntity;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Scheduling;
-using SmartHome.Core.Security;
 using SmartHome.Core.Services.Abstractions;
 using SmartHome.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Matty.Framework;
-using Matty.Framework.Abstractions;
-using Matty.Framework.Enums;
 
 namespace SmartHome.Core.Services
 {
     public class SchedulingService : ServiceBase, ISchedulingService
     {
+        private readonly IMapper _mapper;
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly DataAccess.Repository.IGenericRepository<JobType> _jobTypeRepository;
+        private readonly IGenericRepository<JobType> _jobTypeRepository;
         private readonly IValidator<ScheduleNodeCommandJobDto> _validator;
         private readonly IAuthorizationProvider<Node> _nodeAuth;
         private readonly IAuthorizationProvider<ScheduleEntity> _schedulesAuth;
@@ -35,6 +35,7 @@ namespace SmartHome.Core.Services
         private readonly ISchedulesPersistenceRepository _scheduleRepository;
 
         public SchedulingService(ILifetimeScope container, 
+            IMapper mapper,
             ISchedulerFactory schedulerFactory, 
             INodeRepository nodeRepository,
             ISchedulesPersistenceRepository scheduleRepository,
@@ -43,6 +44,7 @@ namespace SmartHome.Core.Services
             IAuthorizationProvider<Node> nodeAuth,
             IAuthorizationProvider<ScheduleEntity> schedulesAuth) : base(container)
         {
+            _mapper = mapper;
             _schedulerFactory = schedulerFactory;
             _nodeRepository = nodeRepository;
             _scheduleRepository = scheduleRepository;
@@ -52,9 +54,9 @@ namespace SmartHome.Core.Services
             _schedulesAuth = schedulesAuth;
         }
 
-        public async Task<ServiceResult<ScheduleEntity>> AddNodeCommandJobAsync(ScheduleNodeCommandJobDto param)
+        public async Task<ServiceResult<JobScheduleDto>> AddNodeCommandJobAsync(ScheduleNodeCommandJobDto param)
         {
-            var response = new ServiceResult<ScheduleEntity>(Principal);
+            var response = new ServiceResult<JobScheduleDto>(Principal);
             var validationResult = _validator.Validate(param);
 
             if (!_validator.Validate(param).IsValid)
@@ -98,8 +100,7 @@ namespace SmartHome.Core.Services
                     var created = await _scheduleRepository.CreateAsync(entity);
                     transaction.Commit();
                     response.Alerts.Add(new Alert("Successfully added new job.", MessageType.Success));
-                    //TODO mapping
-                    response.Data = created;
+                    response.Data = _mapper.Map<JobScheduleDto>(created);
                 }
                 catch (ObjectAlreadyExistsException)
                 {
@@ -118,9 +119,9 @@ namespace SmartHome.Core.Services
             return response;
         }
 
-        public async Task<ServiceResult<ScheduleEntity>> UpdateJobStatus(int id, JobStatus status)
+        public async Task<ServiceResult<JobScheduleDto>> UpdateJobStatus(int id, JobStatus status)
         {
-            var response = new ServiceResult<ScheduleEntity>(Principal);
+            var response = new ServiceResult<JobScheduleDto>(Principal);
             var scheduler = await _schedulerFactory.GetScheduler(CancellationToken.None);
             var schedule = await _scheduleRepository.GetByIdAsync(id);
 
@@ -144,7 +145,7 @@ namespace SmartHome.Core.Services
                     schedule.JobStatusEntityId = (int)status;
                     var updated = await _scheduleRepository.UpdateAsync(schedule);
                     transaction.Commit();
-                    response.Data = updated;
+                    response.Data = _mapper.Map<JobScheduleDto>(updated);
                     response.AddSuccessMessage($"Successfully updated job {schedule.Name} status to {status.ToString()}");
                     return response;
                 }
@@ -203,11 +204,19 @@ namespace SmartHome.Core.Services
             return new Tuple<Node, Type>(node, executorType);
         }
 
-        public async Task<ServiceResult<IEnumerable<ScheduleEntity>>> GetJobs()
+        public async Task<ServiceResult<IEnumerable<JobScheduleDto>>> GetJobs()
         {
-            return new ServiceResult<IEnumerable<ScheduleEntity>>(Principal)
+            return new ServiceResult<IEnumerable<JobScheduleDto>>(Principal)
             {
-                Data = await _scheduleRepository.GetAllAsync()
+                Data = _mapper.Map<IEnumerable<JobScheduleDto>>(await _scheduleRepository.GetAllAsync())
+            };
+        }
+
+        public async Task<ServiceResult<JobScheduleDto>> GeJobById(int id)
+        {
+            return new ServiceResult<JobScheduleDto>(Principal)
+            {
+                Data = _mapper.Map<JobScheduleDto>(await _scheduleRepository.GetByIdAsync(id))
             };
         }
     }

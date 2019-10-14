@@ -3,12 +3,12 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Quartz;
 using Quartz.Spi;
-using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Entities.SchedulingEntity;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SmartHome.Core.Data.Repository;
 
 namespace SmartHome.Core.Scheduling
 {
