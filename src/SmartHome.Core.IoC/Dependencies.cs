@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using SmartHome.Core.Control;
-using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.MessageHanding;
@@ -20,6 +19,7 @@ using Microsoft.Extensions.Hosting;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
+using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Scheduling;
 using SmartHome.Core.Scheduling.Jobs;
 using SmartHome.Core.Entities.Entity;

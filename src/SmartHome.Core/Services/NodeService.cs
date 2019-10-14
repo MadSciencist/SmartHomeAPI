@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema.Generation;
 using SmartHome.Core.Control;
-using SmartHome.Core.DataAccess.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.Entity;
@@ -19,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Matty.Framework.Utils;
+using SmartHome.Core.Data.Repository;
 
 namespace SmartHome.Core.Services
 {
@@ -44,7 +44,7 @@ namespace SmartHome.Core.Services
 
             try
             {
-                var nodes = await _nodeRepository.GetAll();
+                var nodes = await _nodeRepository.GetAllAsync();
                 response.Data = Mapper.Map<IEnumerable<NodeDto>>(nodes);
 
                 return response;

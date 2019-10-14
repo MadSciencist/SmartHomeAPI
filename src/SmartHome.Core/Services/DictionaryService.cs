@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Matty.Framework;
 using Matty.Framework.Enums;
-using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Services.Abstractions;

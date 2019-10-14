@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using SmartHome.Core.Entities.Entity;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public class AppUserNodeLinkRepository : GenericRepository<AppUserNodeLink>, IAppUserNodeLinkRepository
     {

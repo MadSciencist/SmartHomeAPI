@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SmartHome.Core.DataAccess.Repository;
+using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Dto;
 using System.Linq;
 using System.Threading.Tasks;

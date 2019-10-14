@@ -1,14 +1,12 @@
-﻿using SmartHome.Core.Entities.Entity;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Entity;
 
-namespace SmartHome.Core.DataAccess.Repository
+namespace SmartHome.Core.Data.Repository
 {
     public interface INodeRepository : IGenericRepository<Node>
     {
-        new Task<IEnumerable<Node>> GetAll();
         Task<IEnumerable<string>> GetAllClientIdsAsync();
-        new Task<Node> GetByIdAsync(int id);
         Task<Node> GetByClientIdAsync(string clientId);
     }
 }
