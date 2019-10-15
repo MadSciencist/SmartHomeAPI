@@ -17,7 +17,7 @@ using MQTTnet.Server;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.API.Hubs;
-using SmartHome.Core.DataAccess.InitialLoad;
+using SmartHome.Core.Data.InitialLoad;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.IoC;

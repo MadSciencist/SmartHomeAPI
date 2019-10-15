@@ -1,4 +1,4 @@
-$migrationsDirectory = Join-Path -Path $PSScriptRoot -ChildPath "..\src\SmartHome.Core.DataAccess\Migrations"
+$migrationsDirectory = Join-Path -Path $PSScriptRoot -ChildPath "..\src\SmartHome.Core.Data\Migrations"
 Write-Host $migrationsDirectory
 
 If(Test-Path -Path $migrationsDirectory)

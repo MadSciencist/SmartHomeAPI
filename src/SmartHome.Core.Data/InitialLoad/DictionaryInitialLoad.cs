@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.DataAccess.InitialLoad
+namespace SmartHome.Core.Data.InitialLoad
 {
     public class DictionaryInitialLoad
     {

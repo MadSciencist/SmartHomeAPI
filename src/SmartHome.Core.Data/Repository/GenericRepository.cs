@@ -9,7 +9,7 @@ using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.DataAccess;
+using SmartHome.Core.Data;
 using SmartHome.Core.Entities.User;
 
 namespace SmartHome.Core.Data.Repository
@@ -107,7 +107,7 @@ namespace SmartHome.Core.Data.Repository
                 audit.UpdatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
             }
 
-            Context.Set<T>().Update(entity);
+            Context.Entry(entity).State = EntityState.Modified;
 
             try
             {

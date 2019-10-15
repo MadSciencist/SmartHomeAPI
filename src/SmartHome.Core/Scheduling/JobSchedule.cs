@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using Quartz;
+using System;
 
 namespace SmartHome.Core.Scheduling
 {
+    [JsonObject(MemberSerialization.Fields)]
     public class JobSchedule
     {
         public Type JobType { get; }

@@ -6,7 +6,7 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 using System.IO;
 
-namespace SmartHome.Core.DataAccess
+namespace SmartHome.Core.Data
 {
     /// <summary>
     /// Used by EF CLI

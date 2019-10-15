@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
 
-namespace SmartHome.Core.DataAccess
+namespace SmartHome.Core.Data
 {
     public class EntityFrameworkTransaction : ITransaction
     {

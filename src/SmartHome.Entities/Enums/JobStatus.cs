@@ -6,6 +6,7 @@ namespace SmartHome.Core.Entities.Enums
     {
         [EnumMember(Value = "Running")]
         Running = 1,
+
         [EnumMember(Value = "Paused")]
         Paused = 10
     }

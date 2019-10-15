@@ -6,7 +6,7 @@ using SmartHome.Core.Entities.Role;
 using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Entities.User;
 
-namespace SmartHome.Core.DataAccess
+namespace SmartHome.Core.Data
 {
     public class EntityFrameworkContext : IdentityDbContext<AppUser, AppRole, int>
     {
@@ -21,6 +21,7 @@ namespace SmartHome.Core.DataAccess
         public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<ScheduleEntity> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
+        public DbSet<ScheduleType> ScheduleTypes { get; set; }
         public DbSet<JobStatusEntity> JobStatusEntity { get; set; }
         public DbSet<UiConfiguration> UiConfigurations { get; set; }
         public DbSet<Dictionary> Dictionaries { get; set; }

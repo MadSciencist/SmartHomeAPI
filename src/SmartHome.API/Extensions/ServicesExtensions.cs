@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SmartHome.API.Security;
 using SmartHome.API.Service;
-using SmartHome.Core.DataAccess;
+using SmartHome.Core.Data;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.Role;
 using SmartHome.Core.Entities.User;

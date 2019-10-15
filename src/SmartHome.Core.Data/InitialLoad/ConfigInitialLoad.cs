@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SmartHome.Core.Entities.Enums;
+using SmartHome.Core.Entities.SchedulingEntity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.SchedulingEntity;
 
-namespace SmartHome.Core.DataAccess.InitialLoad
+namespace SmartHome.Core.Data.InitialLoad
 {
     public class ConfigInitialLoad
     {
@@ -32,6 +31,30 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     };
 
                     await context.AddRangeAsync(jobTypes);
+                    await context.SaveChangesAsync();
+                }
+
+                if (!context.ScheduleTypes.Any())
+                {
+                    var scheduleTypes = new List<ScheduleType>
+                    {
+                        new ScheduleType
+                        {
+                            Id = 2000,
+                            DisplayName = "Generic schedule type",
+                            FullyQualifiedName = "SmartHome.Core.Scheduling.JobSchedule",
+                            AssemblyName = "SmartHome.Core"
+                        },
+                        new ScheduleType
+                        {
+                            Id = 2001,
+                            DisplayName = "Node-centric schedule type",
+                            FullyQualifiedName = "SmartHome.Core.Scheduling.NodeJobSchedule",
+                            AssemblyName = "SmartHome.Core"
+                        }
+                    };
+
+                    await context.AddRangeAsync(scheduleTypes);
                     await context.SaveChangesAsync();
                 }
 
