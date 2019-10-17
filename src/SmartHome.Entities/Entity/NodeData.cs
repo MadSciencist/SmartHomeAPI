@@ -1,7 +1,5 @@
 ﻿using Matty.Framework;
-using Matty.Framework.Abstractions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartHome.Core.Entities.Entity
@@ -10,10 +8,9 @@ namespace SmartHome.Core.Entities.Entity
     public class NodeData : EntityBase<int>
     {
         public DateTime TimeStamp { get; set; }
-
-        // Navigation properties
-        public ICollection<NodeDataMagnitude> Magnitudes { get; set; }
-
+        public string Magnitude { get; set; }
+        public string Value { get; set; }
+        public string Unit { get; set; }
         public int NodeId { get; set; }
         public Node Node { get; set; }
     }

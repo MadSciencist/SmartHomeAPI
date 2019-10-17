@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Matty.Framework.Abstractions;
 
 namespace SmartHome.Core.Services
 {
@@ -57,8 +58,10 @@ namespace SmartHome.Core.Services
             AddCommandExecutorsDict();
             AddContractPropertiesDict();
             AddJobTypesDict().Wait();
+            AddJobSchedueTypesDict().Wait();
+            AddJobStatusDict().Wait();
 
-            _cache.Set(CacheKey, Dictionaries, TimeSpan.FromMinutes(30));
+            _cache.Set(CacheKey, Dictionaries, TimeSpan.FromHours(12));
         }
 
         private void AddContractPropertiesDict()
@@ -152,6 +155,49 @@ namespace SmartHome.Core.Services
                 {
                     InternalValue = job.Id.ToString(),
                     DisplayValue = job.DisplayName,
+                    Id = job.Id,
+                    IsActive = true
+                }).ToList()
+            });
+        }
+
+        private async Task AddJobSchedueTypesDict()
+        {
+            var jobRepo = _container.Resolve<IGenericRepository<ScheduleType>>();
+            var jobs = await jobRepo.GetAllAsync();
+
+            Dictionaries.Add(new Dictionary
+            {
+                Name = nameof(ScheduleType),
+                Description = string.Empty,
+                Metadata = "synthetic=true",
+                ReadOnly = true,
+                Values = jobs.Select(job => new DictionaryValue
+                {
+                    InternalValue = job.Id.ToString(),
+                    DisplayValue = job.DisplayName,
+                    Id = job.Id,
+                    IsActive = true
+                }).ToList()
+            });
+        }
+
+        private async Task AddJobStatusDict()
+        {
+            var jobRepo = _container.Resolve<IGenericRepository<JobStatusEntity>>();
+            var jobs = await jobRepo.GetAllAsync();
+
+            Dictionaries.Add(new Dictionary
+            {
+                Name = "JobStatus",
+                Description = string.Empty,
+                Metadata = "synthetic=true",
+                ReadOnly = true,
+                Values = jobs.Select(job => new DictionaryValue
+                {
+                    InternalValue = job.Id.ToString(),
+                    DisplayValue = job.Name,
+                    Id = job.Id,
                     IsActive = true
                 }).ToList()
             });

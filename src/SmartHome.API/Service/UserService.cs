@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.API.Dto;
-using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Dto;
-using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.User;
 using SmartHome.Core.Infrastructure.Exceptions;
@@ -28,17 +26,15 @@ namespace SmartHome.API.Service
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenBuilder _tokenBuilder;
         private readonly IPasswordValidator<AppUser> _passwordValidator;
-        private readonly IGenericRepository<UiConfiguration> _configRepository;
         private readonly IMapper _mapper;
 
         public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenBuilder tokenBuilder,
-            IPasswordValidator<AppUser> passwordValidator, IMapper mapper, IGenericRepository<UiConfiguration> configRepository)
+            IPasswordValidator<AppUser> passwordValidator, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenBuilder = tokenBuilder;
             _passwordValidator = passwordValidator;
-            _configRepository = configRepository;
             _mapper = mapper;
         }
 

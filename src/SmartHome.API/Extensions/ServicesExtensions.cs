@@ -48,7 +48,7 @@ namespace SmartHome.API.Extensions
                     options.EnableDetailedErrors();
                     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 }
-            });
+            }, ServiceLifetime.Transient);
 
             services.AddIdentity<AppUser, AppRole>(options =>
                 {

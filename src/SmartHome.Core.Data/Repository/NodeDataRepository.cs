@@ -14,65 +14,56 @@ namespace SmartHome.Core.Data.Repository
         {
         }
 
-        public override IQueryable<NodeData> AsQueryableNoTrack()
+        public async Task<NodeData> AddSingleAsync(NodeData data, int samplesToKeep)
         {
-            return base.AsQueryableNoTrack().Include(x => x.Magnitudes);
-        }
+            var currentCount = await Context.NodeData
+                .AsNoTracking()
+                .CountAsync(x => x.NodeId == data.NodeId && x.Magnitude == data.Magnitude);
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, int samplesToKeep, NodeDataMagnitude data)
-        {
-            var currentCount = await Context.NodeData.CountAsync(x =>
-                x.NodeId == nodeId && x.Magnitudes.Any(m => m.Magnitude == data.Magnitude));
-
-            if (currentCount > samplesToKeep) //keep only last x samples
+            if (currentCount >= samplesToKeep) //keep only last x samples
             {
-                var numToRemove = currentCount - samplesToKeep - 1; // -1 because we will add new record in next lines
-                var toRemove = Context.NodeData.Where(s => s.NodeId == nodeId && s.Magnitudes.Any(x => x.Magnitude == data.Magnitude))
-                    .OrderBy(s => s.TimeStamp)
-                    .Take(numToRemove);
-
+                var numToRemove = currentCount - samplesToKeep + 1; // 1 because we will add new record in next lines
+                var toRemove = Context.NodeData
+                    .Where(x => x.NodeId == data.NodeId && x.Magnitude == data.Magnitude)
+                    .OrderBy(s => s.Id)
+                    .Take(numToRemove)
+                    .AsNoTracking();
+                
                 Context.NodeData.RemoveRange(toRemove);
             }
 
-            var nodeData = new NodeData
-            {
-                TimeStamp = DateTime.UtcNow,
-                Magnitudes = new List<NodeDataMagnitude>
-                {
-                    data
-                },
-                NodeId = nodeId
-            };
-
-            return await base.CreateAsync(nodeData);
+            return await base.CreateAsync(data);
         }
 
-        public async Task<NodeData> AddManyAsync(int nodeId, int samplesToKeep, ICollection<NodeDataMagnitude> data)
-        {
-            foreach (var magnitude in data)
-            {
-                var currentCount = await Context.NodeData.CountAsync(x =>
-                    x.NodeId == nodeId && x.Magnitudes.Any(m => m.Magnitude == magnitude.Magnitude));
+        //public async Task<NodeData> AddManyAsync(int nodeId, int samplesToKeep, ICollection<NodeDataMagnitude> data)
+        //{
+        //    foreach (var magnitude in data)
+        //    {
+        //        int currentCount = await Context.NodeData
+        //            .AsNoTracking()
+        //            .CountAsync(x => x.NodeId == nodeId && x.Magnitudes.Any(m => m.Magnitude == magnitude.Magnitude));
 
-                if (currentCount > samplesToKeep) //keep only last x samples
-                {
-                    var numToRemove = currentCount - samplesToKeep - 1; // -1 because we will add new record in next lines
-                    var toRemove = Context.NodeData.Where(s => s.NodeId == nodeId && s.Magnitudes.Any(x => x.Magnitude == magnitude.Magnitude))
-                        .OrderBy(s => s.TimeStamp)
-                        .Take(numToRemove);
+        //        if (currentCount > samplesToKeep) //keep only last x samples
+        //        {
+        //            int numToRemove = currentCount - samplesToKeep - 1; // -1 because we will add new record in next lines
+        //            IQueryable<NodeData> toRemove = Context.NodeData
+        //                .AsNoTracking()
+        //                .Where(s => s.NodeId == nodeId && s.Magnitudes.Any(x => x.Magnitude == magnitude.Magnitude))
+        //                .OrderBy(s => s.Id)
+        //                .Take(numToRemove);
 
-                    Context.NodeData.RemoveRange(toRemove);
-                }
-            }
+        //            Context.NodeData.RemoveRange(toRemove);
+        //        }
+        //    }
 
-            var nodeData = new NodeData
-            {
-                TimeStamp = DateTime.UtcNow,
-                Magnitudes = data,
-                NodeId = nodeId
-            };
+        //    var nodeData = new NodeData
+        //    {
+        //        TimeStamp = DateTime.UtcNow,
+        //        Magnitudes = data,
+        //        NodeId = nodeId
+        //    };
 
-            return await base.CreateAsync(nodeData);
-        }
+        //    return await base.CreateAsync(nodeData);
+        //}
     }
 }

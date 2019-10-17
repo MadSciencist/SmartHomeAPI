@@ -1,4 +1,5 @@
-﻿using SmartHome.Core.Entities.Entity;
+﻿using Matty.Framework.Abstractions;
+using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Data.Repository
 {

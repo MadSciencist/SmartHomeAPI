@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SmartHome.Core.Entities.SchedulingEntity
 {
     [Table("tbl_scheduling_schedules")]
-    public class ScheduleEntity : EntityBase<int>, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
+    public class ScheduleEntity : EntityBase<int>, IConcurrentEntity, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
     {
         /// <summary>
         /// User display name
@@ -49,6 +49,10 @@ namespace SmartHome.Core.Entities.SchedulingEntity
         public int? UpdatedById { get; set; }
         public AppUser UpdatedBy { get; set; }
         public DateTime? Updated { get; set; }
+        #endregion
+
+        #region IConcurrentEntity impl
+        public byte[] RowVersion { get; set; }
         #endregion
 
         public override string ToString()

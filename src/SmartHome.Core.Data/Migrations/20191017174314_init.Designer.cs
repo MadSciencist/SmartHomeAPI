@@ -9,7 +9,7 @@ using SmartHome.Core.Data;
 namespace SmartHome.Core.Data.Migrations
 {
     [DbContext(typeof(EntityFrameworkContext))]
-    [Migration("20191015120404_init")]
+    [Migration("20191017174314_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -113,6 +113,8 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.Property<bool>("ReadOnly");
 
+                    b.Property<byte[]>("RowVersion");
+
                     b.HasKey("Id");
 
                     b.ToTable("tbl_dictionary");
@@ -134,6 +136,8 @@ namespace SmartHome.Core.Data.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Metadata");
+
+                    b.Property<byte[]>("RowVersion");
 
                     b.HasKey("Id");
 
@@ -245,6 +249,8 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.Property<int>("Port");
 
+                    b.Property<byte[]>("RowVersion");
+
                     b.Property<DateTime?>("Updated");
 
                     b.Property<int?>("UpdatedById");
@@ -273,25 +279,11 @@ namespace SmartHome.Core.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Magnitude");
+
                     b.Property<int>("NodeId");
 
                     b.Property<DateTime>("TimeStamp");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NodeId");
-
-                    b.ToTable("tbl_node_data");
-                });
-
-            modelBuilder.Entity("SmartHome.Core.Entities.Entity.NodeDataMagnitude", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Magnitude");
-
-                    b.Property<int>("NodeDataId");
 
                     b.Property<string>("Unit");
 
@@ -299,9 +291,9 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NodeDataId");
+                    b.HasIndex("NodeId");
 
-                    b.ToTable("tbl_node_data_magnitude");
+                    b.ToTable("tbl_node_data");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.RegisteredMagnitude", b =>
@@ -328,6 +320,8 @@ namespace SmartHome.Core.Data.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Data");
+
+                    b.Property<byte[]>("RowVersion");
 
                     b.Property<int>("Type");
 
@@ -419,6 +413,8 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.Property<string>("Name")
                         .HasMaxLength(255);
+
+                    b.Property<byte[]>("RowVersion");
 
                     b.Property<int>("ScheduleTypeid");
 
@@ -630,14 +626,6 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.Entity.Node", "Node")
                         .WithMany("NodeData")
                         .HasForeignKey("NodeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartHome.Core.Entities.Entity.NodeDataMagnitude", b =>
-                {
-                    b.HasOne("SmartHome.Core.Entities.Entity.NodeData", "NodeData")
-                        .WithMany("Magnitudes")
-                        .HasForeignKey("NodeDataId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

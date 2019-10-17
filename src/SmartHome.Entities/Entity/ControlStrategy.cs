@@ -38,5 +38,16 @@ namespace SmartHome.Core.Entities.Entity
         public AppUser UpdatedBy { get; set; }
         public DateTime? Updated { get; set; }
         #endregion
+
+        /// <summary>
+        /// Gets fully qualified name of command executor class
+        /// Convention is SmartHome.Core.Contracts.{name}.Commands.Command
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        public string GetCommandFullyQuallifiedName(string command)
+        {
+            return ContractAssembly.Split(".dll")[0] + ".Commands." + command;
+        }
     }
 }

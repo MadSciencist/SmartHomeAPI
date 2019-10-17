@@ -1,8 +1,8 @@
-﻿using System;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Quartz;
 using SmartHome.Core.Security;
 using SmartHome.Core.Services.Abstractions;
+using System;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Scheduling.Jobs
@@ -28,7 +28,7 @@ namespace SmartHome.Core.Scheduling.Jobs
             var parameters = new JObject();
             var commandParams = context.JobDetail.JobDataMap.Get(nameof(NodeJobSchedule.CommandParams));
             if (commandParams != null) parameters = new JObject(commandParams);
-            
+
             await _nodeService.ExecuteCommand(nodeId, command, parameters);
         }
     }

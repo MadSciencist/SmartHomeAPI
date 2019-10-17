@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using Matty.Framework.Abstractions;
 using SmartHome.Core.Entities.Entity;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Data.Repository
 {

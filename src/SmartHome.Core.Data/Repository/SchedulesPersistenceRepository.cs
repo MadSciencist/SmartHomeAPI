@@ -23,6 +23,7 @@ namespace SmartHome.Core.Data.Repository
                 .Include(x => x.JobStatusEntity)
                 .Include(x => x.JobType)
                 .Include(x => x.ScheduleType)
+                .OrderBy(x => x.Id)
                 .ToListAsync();
         }
 
@@ -33,7 +34,7 @@ namespace SmartHome.Core.Data.Repository
                 .Include(x => x.UpdatedBy)
                 .Include(x => x.JobStatusEntity)
                 .Include(x => x.JobType)
-                 .Include(x => x.ScheduleType)
+                .Include(x => x.ScheduleType)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -57,6 +58,7 @@ namespace SmartHome.Core.Data.Repository
                 .Include(x => x.JobType)
                 .Include(x => x.ScheduleType)
                 .Where(predicate)
+                .OrderBy(x => x.Id)
                 .ToListAsync();
         }
     }

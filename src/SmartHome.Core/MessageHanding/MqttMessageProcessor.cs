@@ -36,7 +36,7 @@ namespace SmartHome.Core.MessageHanding
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "MQTT processing exception");
+                Logger.LogError(ex, "MQTT message processing exception");
                 throw;
             }
         }

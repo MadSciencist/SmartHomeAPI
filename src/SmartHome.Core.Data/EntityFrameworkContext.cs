@@ -18,7 +18,6 @@ namespace SmartHome.Core.Data
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
         public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
         public DbSet<NodeData> NodeData { get; set; }
-        public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<ScheduleEntity> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
         public DbSet<ScheduleType> ScheduleTypes { get; set; }
@@ -110,6 +109,9 @@ namespace SmartHome.Core.Data
                 .HasForeignKey(x => x.DictionaryId);
 
             builder.Entity<UiConfiguration>()
+                .HasKey(x => x.Id);
+
+            builder.Entity<NodeData>()
                 .HasKey(x => x.Id);
         }
     }

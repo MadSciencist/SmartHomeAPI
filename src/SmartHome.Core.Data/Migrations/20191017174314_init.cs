@@ -17,7 +17,8 @@ namespace SmartHome.Core.Data.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Metadata = table.Column<string>(nullable: true),
-                    ReadOnly = table.Column<bool>(nullable: false)
+                    ReadOnly = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -124,7 +125,8 @@ namespace SmartHome.Core.Data.Migrations
                     InternalValue = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: true, defaultValue: true),
                     Metadata = table.Column<string>(nullable: true),
-                    DictionaryId = table.Column<int>(nullable: false)
+                    DictionaryId = table.Column<int>(nullable: false),
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -299,7 +301,8 @@ namespace SmartHome.Core.Data.Migrations
                     CreatedById = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     UpdatedById = table.Column<int>(nullable: true),
-                    Updated = table.Column<DateTime>(nullable: true)
+                    Updated = table.Column<DateTime>(nullable: true),
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -344,7 +347,8 @@ namespace SmartHome.Core.Data.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<int>(nullable: false),
                     Data = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false),
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -380,6 +384,7 @@ namespace SmartHome.Core.Data.Migrations
                     CreatedById = table.Column<int>(nullable: false),
                     UpdatedById = table.Column<int>(nullable: true),
                     Updated = table.Column<DateTime>(nullable: true),
+                    RowVersion = table.Column<byte[]>(nullable: true),
                     AppUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -438,6 +443,9 @@ namespace SmartHome.Core.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     TimeStamp = table.Column<DateTime>(nullable: false),
+                    Magnitude = table.Column<string>(nullable: true),
+                    Value = table.Column<string>(nullable: true),
+                    Unit = table.Column<string>(nullable: true),
                     NodeId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -473,28 +481,6 @@ namespace SmartHome.Core.Data.Migrations
                         name: "FK_tbl_user_node_link_tbl_user_UserId",
                         column: x => x.UserId,
                         principalTable: "tbl_user",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_node_data_magnitude",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Magnitude = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true),
-                    Unit = table.Column<string>(nullable: true),
-                    NodeDataId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_node_data_magnitude", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_node_data_magnitude_tbl_node_data_NodeDataId",
-                        column: x => x.NodeDataId,
-                        principalTable: "tbl_node_data",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -569,11 +555,6 @@ namespace SmartHome.Core.Data.Migrations
                 name: "IX_tbl_node_data_NodeId",
                 table: "tbl_node_data",
                 column: "NodeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_node_data_magnitude_NodeDataId",
-                table: "tbl_node_data_magnitude",
-                column: "NodeDataId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_registered_magnitude_ControlStrategyId",
@@ -664,7 +645,7 @@ namespace SmartHome.Core.Data.Migrations
                 name: "tbl_dictionary_value");
 
             migrationBuilder.DropTable(
-                name: "tbl_node_data_magnitude");
+                name: "tbl_node_data");
 
             migrationBuilder.DropTable(
                 name: "tbl_registered_magnitude");
@@ -683,9 +664,6 @@ namespace SmartHome.Core.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_dictionary");
-
-            migrationBuilder.DropTable(
-                name: "tbl_node_data");
 
             migrationBuilder.DropTable(
                 name: "tbl_scheduling_job_status");

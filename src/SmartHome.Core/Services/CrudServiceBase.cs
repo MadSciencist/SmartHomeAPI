@@ -2,7 +2,6 @@
 using AutoMapper;
 using FluentValidation;
 using Matty.Framework.Abstractions;
-using SmartHome.Core.Data.Repository;
 
 namespace SmartHome.Core.Services
 {

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Matty.Framework.Abstractions;
 using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.Data;
 using SmartHome.Core.Entities.User;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Data.Repository
 {
@@ -38,7 +37,7 @@ namespace SmartHome.Core.Data.Repository
 
         public virtual async Task<T> CreateAsync(T entity)
         {
-            var currentUser = HttpContextAccessor.HttpContext.User;
+            var currentUser = HttpContextAccessor.HttpContext?.User;
 
             if (entity is ICreationAudit<AppUser, int> audit)
             {
@@ -99,7 +98,7 @@ namespace SmartHome.Core.Data.Repository
 
         public virtual async Task<T> UpdateAsync(T entity)
         {
-            var currentUser = HttpContextAccessor.HttpContext.User;
+            var currentUser = HttpContextAccessor.HttpContext?.User;
 
             if (entity is IModificationAudit<AppUser, int?> audit)
             {
@@ -126,8 +125,32 @@ namespace SmartHome.Core.Data.Repository
             return entity;
         }
 
-        // TODO to refactor - dont want to return IQueryable
+        /// <summary>
+        /// Releases all resources used by the WarrantManagement.DataExtract.Dal.ReportDataBase
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-        public virtual IQueryable<T> AsQueryableNoTrack() => Context.Set<T>().AsNoTracking().AsQueryable();
+        /// <summary>
+        /// Releases all resources
+        /// </summary>
+        /// <param name="disposing">A boolean value indicating whether or not to dispose managed resources</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_context != null)
+                {
+
+                    _context.Dispose();
+
+                    _context = null;
+
+                }
+            }
+        }
     }
 }
