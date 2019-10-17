@@ -16,11 +16,12 @@ namespace SmartHome.Core.Data
 
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
-        public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
+        public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; } // TODO link this to physical properties
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<ScheduleEntity> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
         public DbSet<ScheduleType> ScheduleTypes { get; set; }
+        public DbSet<PhysicalProperty> PhysicalProperties { get; set; }
         public DbSet<JobStatusEntity> JobStatusEntity { get; set; }
         public DbSet<UiConfiguration> UiConfigurations { get; set; }
         public DbSet<Dictionary> Dictionaries { get; set; }

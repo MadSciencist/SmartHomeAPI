@@ -9,7 +9,7 @@ namespace SmartHome.Contracts.GenericRest
         protected override void InitializeMapping()
         {
             // Use same properties as system - because this is generic handler
-            base.Mapping = SystemMagnitudes.Properties.ToDictionary(x => x.Magnitude, x => x.Magnitude);
+            //base.Mapping = SystemMagnitudes.Properties.ToDictionary(x => x.Magnitude, x => x.Magnitude);
         }
     }
 }

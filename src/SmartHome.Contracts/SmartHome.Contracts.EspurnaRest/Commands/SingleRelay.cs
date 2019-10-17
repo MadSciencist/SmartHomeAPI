@@ -37,10 +37,8 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
 
             if (response != null)
             {
-                INodeDataMapper mapper = base.GetNodeMapper(Node);
-
                 // Espurna response for SingleRelay has key relay/0
-                var property = mapper?.GetPhysicalPropertyByContractMagnitude(RelayKey);
+                var property = await GetNodeMapper(Node)?.GetPhysicalPropertyByContractMagnitudeAsync(RelayKey);
 
                 // Check if there is associated system value
                 if (property != null)

@@ -8,18 +8,13 @@ namespace SmartHome.Core.Data
     {
         public Guid Identifier => _transaction.TransactionId;
 
-        private readonly IDbContextTransaction _transaction;
+        private IDbContextTransaction _transaction;
 
         public EntityFrameworkTransaction(EntityFrameworkContext context)
         {
             _transaction = context.Database.BeginTransaction();
         }
-
-        public void Dispose()
-        {
-            _transaction.Dispose();
-        }
-
+        
         public void Commit()
         {
             _transaction.Commit();
@@ -28,6 +23,24 @@ namespace SmartHome.Core.Data
         public void Rollback()
         {
             _transaction.Rollback();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_transaction != null)
+                {
+                    _transaction.Dispose();
+                    _transaction = null;
+                }
+            }
         }
     }
 }

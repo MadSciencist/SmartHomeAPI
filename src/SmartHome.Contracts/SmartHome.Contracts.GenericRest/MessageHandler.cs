@@ -36,7 +36,7 @@ namespace SmartHome.Contracts.GenericRest
 
         private async Task ExtractSaveData(int nodeId, string magnitude, string value)
         {
-            var property = base.DataMapper.GetPhysicalPropertyByContractMagnitude(magnitude);
+            var property = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync(magnitude);
 
             // Check if there is associated system property
             if (property is null) return;

@@ -57,7 +57,7 @@ namespace SmartHome.Core.Services
             AddCommandExecutorsDict();
             AddContractPropertiesDict();
             AddJobTypesDict().Wait();
-            AddJobSchedueTypesDict().Wait();
+            AddJobScheduleTypesDict().Wait();
             AddJobStatusDict().Wait();
 
             _cache.Set(CacheKey, Dictionaries, TimeSpan.FromHours(12));
@@ -85,9 +85,10 @@ namespace SmartHome.Core.Services
                     ReadOnly = true,
                     Values = dataMapper.GetAllContractPhysicalProperties().Select(x => new DictionaryValue
                     {
-                        DisplayValue = string.IsNullOrEmpty(x.Description) ? x.Magnitude : x.Description,
+                        DisplayValue = x.Name,
                         InternalValue = x.Magnitude,
-                        Metadata = $"unit={x.Unit}",
+                        Metadata = $"unit={x.Unit},isComplex={x.IsComplex}",
+                        Id = x.Id,
                         IsActive = true
                     }).ToList()
                 });
@@ -160,7 +161,7 @@ namespace SmartHome.Core.Services
             });
         }
 
-        private async Task AddJobSchedueTypesDict()
+        private async Task AddJobScheduleTypesDict()
         {
             var jobRepo = _container.Resolve<IGenericRepository<ScheduleType>>();
             var jobs = await jobRepo.GetAllAsync();

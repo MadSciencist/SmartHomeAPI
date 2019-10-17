@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Data.InitialLoad
 {
@@ -71,6 +72,137 @@ namespace SmartHome.Core.Data.InitialLoad
                         .ToList();
 
                     await context.AddRangeAsync(entities);
+                    await context.SaveChangesAsync();
+                }
+
+                //        new PhysicalProperty("Light", "light", nameof(LightParam)),
+
+ 
+                //        new PhysicalProperty("energy", "kWh"),
+                //        new PhysicalProperty("energy_delta", "kWh"),
+                //        new PhysicalProperty("Generic Analog Sensor", "generic_analog", "bit"),
+                //        new PhysicalProperty("Generic digital (binary) Sensor", "generic_digital", "binary"),
+                //        new PhysicalProperty("generic_event", ""),
+                //        new PhysicalProperty("pm1dot0", "ppm"),
+                //        new PhysicalProperty("pm1dot5", "ppm"),
+                //        new PhysicalProperty("pm10", "ppm"),
+                //        new PhysicalProperty("co2", "ppm"),
+                //        new PhysicalProperty("lux", "lux"),
+                //        new PhysicalProperty("distance", "m"),
+                //        new PhysicalProperty("ldr_cpm", "events"),
+                //        new PhysicalProperty("ldr_uSvh", "mSv"),
+                //        new PhysicalProperty("count", "events"),
+                if (!context.PhysicalProperties.Any())
+                {
+                    var properties = new List<PhysicalProperty>
+                    {
+                        new PhysicalProperty
+                        {
+                            Id = 100,
+                            Name = "Temperature",
+                            Magnitude = "temperature",
+                            Unit = "C",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 101,
+                            Name = "Humidity",
+                            Magnitude = "humidity",
+                            Unit = "%",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 102,
+                            Name = "Pressure",
+                            Magnitude = "pressure",
+                            Unit = "hPa",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 103,
+                            Name = "Current",
+                            Magnitude = "current",
+                            Unit = "A",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 104,
+                            Name = "Voltage",
+                            Magnitude = "voltage",
+                            Unit = "V",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 105,
+                            Name = "Active power",
+                            Magnitude = "power_active",
+                            Unit = "W",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 106,
+                            Name = "Apparent power",
+                            Magnitude = "power_apparent",
+                            Unit = "VA",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 107,
+                            Name = "Reactive power",
+                            Magnitude = "power_reactive",
+                            Unit = "var",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 108,
+                            Name = "Power factor",
+                            Magnitude = "power_factor",
+                            Unit = "%",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 109,
+                            Name = "Relay #1",
+                            Magnitude = "relay0",
+                            Unit = "",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 110,
+                            Name = "Relay #2",
+                            Magnitude = "relay1",
+                            Unit = "",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 111,
+                            Name = "Relay #3",
+                            Magnitude = "relay2",
+                            Unit = "",
+                            IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 112,
+                            Name = "Relay #4",
+                            Magnitude = "relay3",
+                            Unit = "",
+                            IsComplex = false
+                        }
+                    };
+
+                    await context.AddRangeAsync(properties);
                     await context.SaveChangesAsync();
                 }
             }

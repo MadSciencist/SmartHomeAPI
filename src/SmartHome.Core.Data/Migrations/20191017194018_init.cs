@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
 
 namespace SmartHome.Core.Data.Migrations
 {
@@ -23,6 +23,21 @@ namespace SmartHome.Core.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_dictionary", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_physical_property",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    IsComplex = table.Column<bool>(nullable: false),
+                    Unit = table.Column<string>(nullable: true),
+                    Magnitude = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_physical_property", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -446,7 +461,8 @@ namespace SmartHome.Core.Data.Migrations
                     Magnitude = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
                     Unit = table.Column<string>(nullable: true),
-                    NodeId = table.Column<int>(nullable: false)
+                    NodeId = table.Column<int>(nullable: false),
+                    PhysicalPropertyId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -455,6 +471,12 @@ namespace SmartHome.Core.Data.Migrations
                         name: "FK_tbl_node_data_tbl_node_NodeId",
                         column: x => x.NodeId,
                         principalTable: "tbl_node",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_node_data_tbl_physical_property_PhysicalPropertyId",
+                        column: x => x.PhysicalPropertyId,
+                        principalTable: "tbl_physical_property",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -555,6 +577,11 @@ namespace SmartHome.Core.Data.Migrations
                 name: "IX_tbl_node_data_NodeId",
                 table: "tbl_node_data",
                 column: "NodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_node_data_PhysicalPropertyId",
+                table: "tbl_node_data",
+                column: "PhysicalPropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_registered_magnitude_ControlStrategyId",
@@ -664,6 +691,9 @@ namespace SmartHome.Core.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "tbl_dictionary");
+
+            migrationBuilder.DropTable(
+                name: "tbl_physical_property");
 
             migrationBuilder.DropTable(
                 name: "tbl_scheduling_job_status");

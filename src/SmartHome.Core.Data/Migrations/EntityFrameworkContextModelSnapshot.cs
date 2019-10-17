@@ -14,7 +14,7 @@ namespace SmartHome.Core.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -281,6 +281,8 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.Property<int>("NodeId");
 
+                    b.Property<int>("PhysicalPropertyId");
+
                     b.Property<DateTime>("TimeStamp");
 
                     b.Property<string>("Unit");
@@ -291,7 +293,26 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.HasIndex("NodeId");
 
+                    b.HasIndex("PhysicalPropertyId");
+
                     b.ToTable("tbl_node_data");
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Entities.Entity.PhysicalProperty", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<bool>("IsComplex");
+
+                    b.Property<string>("Magnitude");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Unit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_physical_property");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.RegisteredMagnitude", b =>
@@ -624,6 +645,11 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.Entity.Node", "Node")
                         .WithMany("NodeData")
                         .HasForeignKey("NodeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Core.Entities.Entity.PhysicalProperty", "PhysicalProperty")
+                        .WithMany()
+                        .HasForeignKey("PhysicalPropertyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

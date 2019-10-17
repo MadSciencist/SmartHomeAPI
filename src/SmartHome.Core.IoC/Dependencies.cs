@@ -42,6 +42,7 @@ namespace SmartHome.Core.IoC
             RegisterContractsDynamically();
 
             Builder.RegisterType<SyntheticDictionaryService>().InstancePerDependency();
+            Builder.RegisterType<PhysicalPropertyService>().As<IPhysicalPropertyService>().InstancePerDependency();
             Builder.RegisterType<MessageInterceptor>().InstancePerDependency();
             Builder.RegisterType<NodeAuthorizationProvider>().As<IAuthorizationProvider<Node>>().InstancePerDependency();
             Builder.RegisterType<ScheduleAuthorizationProvider>().As<IAuthorizationProvider<ScheduleEntity>>().InstancePerDependency();
@@ -87,22 +88,24 @@ namespace SmartHome.Core.IoC
                     .ToDictionary(x => x.FullName);
 
                 var commandExecutors = asmClasses.Where(x => typeof(IControlCommand).IsAssignableFrom(x.Value));
-                RegisterNamed(commandExecutors);
+                RegisterNamed<IControlCommand>(commandExecutors);
 
                 var messageHandlers = asmClasses.Where(x => AssemblyUtils.IsAssignableToGenericType(typeof(IMessageHandler<>), x.Value));
-                RegisterNamed(messageHandlers);
+                RegisterNamed<object>(messageHandlers);
 
                 var mappers = asmClasses.Where(x => typeof(INodeDataMapper).IsAssignableFrom(x.Value));
-                RegisterNamed(mappers);
+                RegisterNamed<INodeDataMapper>(mappers);
             }
         }
 
-        private static void RegisterNamed(IEnumerable<KeyValuePair<string, Type>> commandExecutors)
+        private static void RegisterNamed<T>(IEnumerable<KeyValuePair<string, Type>> contractLibs)
         {
-            foreach (var (key, value) in commandExecutors)
+            foreach (var (key, value) in contractLibs)
             {
                 Builder.RegisterType(value)
-                    .Named<object>(key);
+                    .Named<object>(key)
+                    .As<T>()
+                    .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
             }
         }
     }

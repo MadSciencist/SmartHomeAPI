@@ -13,5 +13,7 @@ namespace SmartHome.Core.Entities.Entity
         public string Unit { get; set; }
         public int NodeId { get; set; }
         public Node Node { get; set; }
+        public int PhysicalPropertyId { get; set; }
+        public PhysicalProperty PhysicalProperty { get; set; }
     }
 }

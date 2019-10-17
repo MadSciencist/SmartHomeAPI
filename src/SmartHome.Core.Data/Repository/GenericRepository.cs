@@ -125,19 +125,12 @@ namespace SmartHome.Core.Data.Repository
             return entity;
         }
 
-        /// <summary>
-        /// Releases all resources used by the WarrantManagement.DataExtract.Dal.ReportDataBase
-        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Releases all resources
-        /// </summary>
-        /// <param name="disposing">A boolean value indicating whether or not to dispose managed resources</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

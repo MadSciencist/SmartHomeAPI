@@ -9,25 +9,25 @@ namespace SmartHome.Contracts.TasmotaMqtt
     {
         protected override void InitializeMapping()
         {
-            base.Mapping = new Dictionary<string, string>
+            base.AddMappings(new Dictionary<string, string>
             {
-                { "POWER", "relay0" },
-                { "light", "light" },
-                { "Voltage", "voltage" },
-                { "Current", "current" },
-                { "Power", "power_active" },
-                { "ReactivePower", "power_reactive" },
-                { "ApparentPower", "power_apparent" },
-                { "Factor", "power_factor" },
-            };
+                {"POWER", "relay0"},
+                {"light", "light"},
+                {"Voltage", "voltage"},
+                {"Current", "current"},
+                {"Power", "power_active"},
+                {"ReactivePower", "power_reactive"},
+                {"ApparentPower", "power_apparent"},
+                {"Factor", "power_factor"},
+            });
         }
 
         protected override void InitializeConverters()
         {
-            base.Converters = new Dictionary<string, Type>
+            base.AddConverters(new Dictionary<string, Type>
             {
                 {"relay0", typeof(OnOffToBinaryConverter)}
-            };
+            });
         }
     }
 }
