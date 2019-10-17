@@ -7,13 +7,13 @@ using Matty.Framework.Enums;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Quartz;
-using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
+using SmartHome.Core.Repositories;
 using SmartHome.Core.Scheduling;
 using SmartHome.Core.Services.Abstractions;
 using System;
@@ -34,9 +34,9 @@ namespace SmartHome.Core.Services
         private readonly INodeRepository _nodeRepository;
         private readonly ISchedulesPersistenceRepository _scheduleRepository;
 
-        public SchedulingService(ILifetimeScope container, 
+        public SchedulingService(ILifetimeScope container,
             IMapper mapper,
-            ISchedulerFactory schedulerFactory, 
+            ISchedulerFactory schedulerFactory,
             INodeRepository nodeRepository,
             ISchedulesPersistenceRepository scheduleRepository,
             IGenericRepository<JobType> jobTypeRepository,
@@ -75,7 +75,7 @@ namespace SmartHome.Core.Services
             var (node, executorType) = await GetNodeAndJobTypeEntities(param);
 
             var jobSchedule = new NodeJobSchedule(executorType, node.Id, param.Command, param.CommandParams, param.CronExpression);
-            
+
             using (var transaction = _scheduleRepository.BeginTransaction())
             {
                 try

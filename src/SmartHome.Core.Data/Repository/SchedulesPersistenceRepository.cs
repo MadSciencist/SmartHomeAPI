@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Entities.SchedulingEntity;
+using SmartHome.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

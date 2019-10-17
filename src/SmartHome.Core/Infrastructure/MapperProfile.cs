@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Dto;
-using System.Linq;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.SchedulingEntity;
+using System.Linq;
 
 namespace SmartHome.Core.Infrastructure
 {

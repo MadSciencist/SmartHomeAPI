@@ -1,6 +1,6 @@
 ﻿using SmartHome.Core.Entities.ContractParams;
-using System.Collections.Generic;
 using SmartHome.Core.Entities.Entity;
+using System.Collections.Generic;
 
 namespace SmartHome.Core.Entities
 {

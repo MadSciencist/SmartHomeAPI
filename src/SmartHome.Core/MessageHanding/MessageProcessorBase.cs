@@ -1,6 +1,6 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.Data.Repository;
+using SmartHome.Core.Repositories;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.MessageHanding

@@ -107,7 +107,7 @@ namespace SmartHome.API
             }
 
             services.AddMediatR(Assembly.GetAssembly(typeof(Startup)), Assembly.GetAssembly(typeof(INodeService)));
-            
+
             // Register SmartHome dependencies using Autofac container
             var builder = CoreDependencies.Register();
             builder.Populate(services);
@@ -171,7 +171,7 @@ namespace SmartHome.API
 
             var useHealthChecks = Configuration.GetValue<bool>("HealthChecks:Enable");
             if (useHealthChecks)
-            { 
+            {
                 app.UseHealthChecks(Configuration["HealthChecks:Endpoint"], new HealthCheckOptions
                 {
                     Predicate = _ => true,

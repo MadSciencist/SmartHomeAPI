@@ -2,7 +2,7 @@
 using SmartHome.Core.Entities.Entity;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.Data.Repository
+namespace SmartHome.Core.Repositories
 {
     public interface INodeDataRepository : IGenericRepository<NodeData>
     {

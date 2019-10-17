@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -7,11 +8,10 @@ using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Matty.Framework.Utils;
 
 namespace SmartHome.Core.Services
 {
-    public abstract class ServiceBase : IServiceBase 
+    public abstract class ServiceBase : IServiceBase
     {
         public ClaimsPrincipal Principal { get; set; }
         protected ILifetimeScope Container { get; set; }

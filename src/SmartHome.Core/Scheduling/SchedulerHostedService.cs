@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Quartz;
 using Quartz.Spi;
-using SmartHome.Core.Data.Repository;
+using SmartHome.Core.Repositories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

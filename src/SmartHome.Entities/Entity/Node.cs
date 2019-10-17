@@ -84,7 +84,7 @@ namespace SmartHome.Core.Entities.Entity
         {
             return ControlStrategy.RegisteredMagnitudes.Any(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0);
         }
-        
+
         /// <summary>
         /// Check whether node is online by sending ICMP packet
         /// Uses configurable timeout via appSettings

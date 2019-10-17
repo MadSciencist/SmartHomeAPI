@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Matty.Framework\Matty.Framework.csproj" />
+    <ProjectReference Include="..\SmartHome.Core\SmartHome.Core.csproj" />
     <ProjectReference Include="..\SmartHome.Entities\SmartHome.Core.Entities.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Matty.Framework;
 using Matty.Framework.Enums;
 using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +11,6 @@ using SmartHome.Core.Services.Abstractions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Matty.Framework;
 
 namespace SmartHome.Core.Services
 {

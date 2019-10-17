@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Matty.Framework.Abstractions;
+﻿using Matty.Framework.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Matty.Framework.Validation
 {

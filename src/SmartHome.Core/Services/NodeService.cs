@@ -2,6 +2,7 @@
 using Matty.Framework;
 using Matty.Framework.Abstractions;
 using Matty.Framework.Enums;
+using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema.Generation;
@@ -12,14 +13,12 @@ using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
+using SmartHome.Core.Repositories;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using Matty.Framework.Utils;
-using SmartHome.Core.Data.Repository;
 
 namespace SmartHome.Core.Services
 {
@@ -159,7 +158,7 @@ namespace SmartHome.Core.Services
             catch (SmartHomeNodeOfflineException)
             {
                 if (Principal.Identity.Name != "system") throw;
-                return response; 
+                return response;
             }
             catch (Exception ex)
             {

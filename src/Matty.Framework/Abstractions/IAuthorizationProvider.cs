@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using Matty.Framework.Enums;
+﻿using Matty.Framework.Enums;
+using System.Security.Claims;
 
 namespace Matty.Framework.Abstractions
 {

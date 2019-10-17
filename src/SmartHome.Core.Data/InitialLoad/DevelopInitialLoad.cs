@@ -112,7 +112,7 @@ namespace SmartHome.Core.Data.InitialLoad
 
                 if (!context.Nodes.Any())
                 {
-                    var node1= new Node
+                    var node1 = new Node
                     {
                         Name = "BlitzWolf Socket Tasmota",
                         ControlStrategyId = 4,

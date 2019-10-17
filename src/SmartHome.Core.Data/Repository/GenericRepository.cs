@@ -25,7 +25,7 @@ namespace SmartHome.Core.Data.Repository
         protected ILogger Logger => _logger ?? (_logger = Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName));
 
         private IHttpContextAccessor _accessor;
-        protected IHttpContextAccessor HttpContextAccessor =>_accessor ?? (_accessor = Container.Resolve<IHttpContextAccessor>());
+        protected IHttpContextAccessor HttpContextAccessor => _accessor ?? (_accessor = Container.Resolve<IHttpContextAccessor>());
 
         public GenericRepository(ILifetimeScope container)
         {
@@ -90,10 +90,10 @@ namespace SmartHome.Core.Data.Repository
         public virtual async Task<IEnumerable<T>> GetManyFiltered(Expression<Func<T, bool>> predicate)
             => await Context.Set<T>().Where(predicate).ToListAsync();
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync() 
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
             => await Context.Set<T>().ToListAsync();
 
-        public virtual async Task<T> GetByIdAsync(int id) 
+        public virtual async Task<T> GetByIdAsync(int id)
             => await Context.Set<T>().FindAsync(id);
 
         public virtual async Task<T> UpdateAsync(T entity)

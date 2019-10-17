@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Entities.DictionaryEntity;
+using SmartHome.Core.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Autofac;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Entities.DictionaryEntity;
 
 namespace SmartHome.Core.Data.Repository
 {

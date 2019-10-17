@@ -1,19 +1,15 @@
 ﻿using Autofac;
 using Matty.Framework;
 using Matty.Framework.Enums;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Infrastructure;
 using SmartHome.Core.Infrastructure.Exceptions;
+using SmartHome.Core.Repositories;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services

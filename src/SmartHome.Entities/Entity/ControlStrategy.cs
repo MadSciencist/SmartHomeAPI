@@ -1,10 +1,10 @@
-﻿using Matty.Framework.Abstractions;
+﻿using Matty.Framework;
+using Matty.Framework.Abstractions;
 using SmartHome.Core.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Matty.Framework;
 
 namespace SmartHome.Core.Entities.Entity
 {

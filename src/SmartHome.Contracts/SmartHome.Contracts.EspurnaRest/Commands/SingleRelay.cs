@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using SmartHome.Core.Abstractions;
 using SmartHome.Core.Control;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Attributes;

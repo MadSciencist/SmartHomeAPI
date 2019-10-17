@@ -1,8 +1,9 @@
 ﻿using Autofac;
+using SmartHome.Core.Control;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.RestClient;
 
-namespace SmartHome.Core.Control
+namespace SmartHome.Core.Abstractions
 {
     public abstract class RestControlCommand : ControlCommandBase
     {

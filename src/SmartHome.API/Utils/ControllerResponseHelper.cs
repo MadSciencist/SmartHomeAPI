@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Matty.Framework;
+using Matty.Framework.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Security;
-using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
 using System;
 using System.Linq;
-using Matty.Framework;
-using Matty.Framework.Enums;
 
 namespace SmartHome.API.Utils
 {

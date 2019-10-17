@@ -1,11 +1,23 @@
 ﻿using Autofac;
+using Matty.Framework.Abstractions;
+using Matty.Framework.Utils;
+using Microsoft.Extensions.Hosting;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
 using SmartHome.Core.Control;
+using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.MqttBroker;
 using SmartHome.Core.MqttBroker.MessageHandling;
+using SmartHome.Core.Repositories;
 using SmartHome.Core.RestClient;
+using SmartHome.Core.Scheduling;
+using SmartHome.Core.Scheduling.Jobs;
 using SmartHome.Core.Security;
 using SmartHome.Core.Services;
 using SmartHome.Core.Services.Abstractions;
@@ -13,17 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Matty.Framework.Abstractions;
-using Matty.Framework.Utils;
-using Microsoft.Extensions.Hosting;
-using Quartz;
-using Quartz.Impl;
-using Quartz.Spi;
-using SmartHome.Core.Data.Repository;
-using SmartHome.Core.Scheduling;
-using SmartHome.Core.Scheduling.Jobs;
-using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.SchedulingEntity;
 
 namespace SmartHome.Core.IoC
 {
@@ -48,7 +49,7 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<RestMessageProcessor>().As<IMessageProcessor<RestMessageDto>>().InstancePerDependency();
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
-            Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency(); 
+            Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
             Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
             Builder.RegisterType<AppUserNodeLinkRepository>().As<IAppUserNodeLinkRepository>().InstancePerDependency();
             Builder.RegisterType<DictionaryRepository>().As<IDictionaryRepository>().InstancePerDependency();

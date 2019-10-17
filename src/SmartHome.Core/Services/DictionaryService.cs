@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Matty.Framework;
 using Matty.Framework.Enums;
-using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Infrastructure.Exceptions;
+using SmartHome.Core.Repositories;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace SmartHome.Core.Services
             {
                 var names = await _dictionaryRepository.GetNames();
                 response.Data = names.ToList();
-                    
+
                 response.Data.AddRange(_syntheticDictionary.GetNames());
 
                 return response;

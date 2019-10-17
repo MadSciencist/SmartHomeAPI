@@ -3,7 +3,7 @@ using SmartHome.Core.Entities.Entity;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.Data.Repository
+namespace SmartHome.Core.Repositories
 {
     public interface INodeRepository : IGenericRepository<Node>
     {
