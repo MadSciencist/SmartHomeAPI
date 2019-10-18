@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Matty.Framework.Abstractions
 {
-    public interface IGenericRepository<TEntity, TKey> : IDisposable where TEntity : IEntity
+    public interface IGenericRepository<TEntity, in TKey> : IDisposable where TEntity : IEntity
     {
         /// <summary>
         /// Gets all entities

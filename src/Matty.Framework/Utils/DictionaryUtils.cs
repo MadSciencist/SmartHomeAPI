@@ -7,10 +7,10 @@ namespace Matty.Framework.Utils
         /// <summary>
         /// Gets the value from dictionary without throwing exception.
         /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="dictionary"></param>
-        /// <param name="key"></param>
+        /// <typeparam name="TKey">Type of dictionary key.</typeparam>
+        /// <typeparam name="TValue">Type of dictionary value.</typeparam>
+        /// <param name="dictionary">Dictionary.</param>
+        /// <param name="key">Request key.</param>
         /// <returns>Value if key is present, null otherwise.</returns>
         public static TValue GetValue<TKey, TValue>(IDictionary<TKey, TValue> dictionary, TKey key)
         {
