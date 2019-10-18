@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace SmartHome.Core.Entities.SchedulingEntity
 {
     [Table("tbl_scheduling_schedules")]
-    public class ScheduleEntity : EntityBase<int>, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
+    public class ScheduleEntity : EntityBase<int>, IConcurrentEntity, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
     {
         /// <summary>
         /// User display name
@@ -31,6 +31,11 @@ namespace SmartHome.Core.Entities.SchedulingEntity
         public JobType JobType { get; set; }
         public int JobTypeId { get; set; }
 
+        [Required]
+        public ScheduleType ScheduleType { get; set; }
+        public int ScheduleTypeid { get; set; }
+        public string SerializedJobSchedule { get; set; }
+
         [Required, MinLength(8), MaxLength(20)]
         public string CronExpression { get; set; }
 
@@ -46,10 +51,9 @@ namespace SmartHome.Core.Entities.SchedulingEntity
         public DateTime? Updated { get; set; }
         #endregion
 
-        /// <summary>
-        /// List of semicolon separated key-value pairs
-        /// </summary>
-        public string JobParams { get; set; }
+        #region IConcurrentEntity impl
+        public byte[] RowVersion { get; set; }
+        #endregion
 
         public override string ToString()
         {

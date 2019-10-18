@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Core.Entities.Entity
 {
     [Table("tbl_node")]
-    public class Node : EntityBase<int>, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
+    public class Node : EntityBase<int>, IConcurrentEntity, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
     {
         [Required, MaxLength(50)]
         public string Name { get; set; }
@@ -70,6 +70,10 @@ namespace SmartHome.Core.Entities.Entity
         public DateTime? Updated { get; set; }
         #endregion
 
+        #region IConcurrentEntity impl
+        public byte[] RowVersion { get; set; }
+        #endregion
+
         #region Public methods
         /// <summary>
         /// Checks whether magnitude should be saved in DB
@@ -80,7 +84,7 @@ namespace SmartHome.Core.Entities.Entity
         {
             return ControlStrategy.RegisteredMagnitudes.Any(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0);
         }
-        
+
         /// <summary>
         /// Check whether node is online by sending ICMP packet
         /// Uses configurable timeout via appSettings
@@ -96,8 +100,15 @@ namespace SmartHome.Core.Entities.Entity
 
             using (var ping = new Ping())
             {
-                var result = await ping.SendPingAsync(IpAddress, timeout, new byte[1]);
-                return result.Status == IPStatus.Success;
+                try
+                {
+                    var result = await ping.SendPingAsync(IpAddress, timeout, new byte[1]);
+                    return result.Status == IPStatus.Success;
+                }
+                catch (PingException)
+                {
+                    return false;
+                }
             }
         }
 

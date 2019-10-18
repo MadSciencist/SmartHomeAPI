@@ -6,7 +6,7 @@ using SmartHome.Core.Entities.Role;
 using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Entities.User;
 
-namespace SmartHome.Core.DataAccess
+namespace SmartHome.Core.Data
 {
     public class EntityFrameworkContext : IdentityDbContext<AppUser, AppRole, int>
     {
@@ -16,11 +16,12 @@ namespace SmartHome.Core.DataAccess
 
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
-        public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
+        public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; } // TODO link this to physical properties
         public DbSet<NodeData> NodeData { get; set; }
-        public DbSet<NodeDataMagnitude> DataMagnitudes { get; set; }
         public DbSet<ScheduleEntity> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
+        public DbSet<ScheduleType> ScheduleTypes { get; set; }
+        public DbSet<PhysicalProperty> PhysicalProperties { get; set; }
         public DbSet<JobStatusEntity> JobStatusEntity { get; set; }
         public DbSet<UiConfiguration> UiConfigurations { get; set; }
         public DbSet<Dictionary> Dictionaries { get; set; }
@@ -109,6 +110,9 @@ namespace SmartHome.Core.DataAccess
                 .HasForeignKey(x => x.DictionaryId);
 
             builder.Entity<UiConfiguration>()
+                .HasKey(x => x.Id);
+
+            builder.Entity<NodeData>()
                 .HasKey(x => x.Id);
         }
     }

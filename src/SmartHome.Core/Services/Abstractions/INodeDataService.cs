@@ -1,11 +1,11 @@
-﻿using Matty.Framework.Enums;
+﻿using Matty.Framework;
+using Matty.Framework.Enums;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Entities.Entity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Matty.Framework;
 
 namespace SmartHome.Core.Services.Abstractions
 {
@@ -25,7 +25,7 @@ namespace SmartHome.Core.Services.Abstractions
         /// <param name="nodeId"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        Task<NodeData> AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data);
+        Task AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data);
 
         /// <summary>
         /// Query data repository

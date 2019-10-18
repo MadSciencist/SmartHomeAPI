@@ -1,5 +1,4 @@
 ﻿using Matty.Framework;
-using Matty.Framework.Abstractions;
 using SmartHome.Core.Entities.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;

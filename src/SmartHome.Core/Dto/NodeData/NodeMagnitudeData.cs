@@ -11,5 +11,5 @@ namespace SmartHome.Core.Dto.NodeData
 
         [JsonProperty("records")]
         public ICollection<NodeMagnitudeRecord> Data { get; set; }
-    }   
+    }
 }

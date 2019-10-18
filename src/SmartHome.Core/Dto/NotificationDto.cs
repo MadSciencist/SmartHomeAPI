@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
-using System;
 using SmartHome.Core.Entities.Entity;
+using System;
 
 namespace SmartHome.Core.Dto
 {

@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Entities.User;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Entities.SchedulingEntity;
+using SmartHome.Core.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Data.Repository
 {
-    public class SchedulesPersistenceRepository : GenericRepository<ScheduleEntity>, ISchedulesPersistenceRepository
+    public class SchedulesPersistenceRepository : GenericRepository<ScheduleEntity, int>, ISchedulesPersistenceRepository
     {
         public SchedulesPersistenceRepository(ILifetimeScope container) : base(container)
         {
@@ -22,6 +23,8 @@ namespace SmartHome.Core.Data.Repository
                 .Include(x => x.UpdatedBy)
                 .Include(x => x.JobStatusEntity)
                 .Include(x => x.JobType)
+                .Include(x => x.ScheduleType)
+                .OrderBy(x => x.Id)
                 .ToListAsync();
         }
 
@@ -32,6 +35,7 @@ namespace SmartHome.Core.Data.Repository
                 .Include(x => x.UpdatedBy)
                 .Include(x => x.JobStatusEntity)
                 .Include(x => x.JobType)
+                .Include(x => x.ScheduleType)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -42,6 +46,7 @@ namespace SmartHome.Core.Data.Repository
                 .Include(x => x.UpdatedBy)
                 .Include(x => x.JobStatusEntity)
                 .Include(x => x.JobType)
+                .Include(x => x.ScheduleType)
                 .FirstOrDefaultAsync(predicate);
         }
 
@@ -52,7 +57,9 @@ namespace SmartHome.Core.Data.Repository
                 .Include(x => x.UpdatedBy)
                 .Include(x => x.JobStatusEntity)
                 .Include(x => x.JobType)
+                .Include(x => x.ScheduleType)
                 .Where(predicate)
+                .OrderBy(x => x.Id)
                 .ToListAsync();
         }
     }

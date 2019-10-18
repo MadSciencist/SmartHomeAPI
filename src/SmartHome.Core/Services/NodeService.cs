@@ -2,6 +2,7 @@
 using Matty.Framework;
 using Matty.Framework.Abstractions;
 using Matty.Framework.Enums;
+using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema.Generation;
@@ -12,13 +13,12 @@ using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
+using SmartHome.Core.Repositories;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Matty.Framework.Utils;
-using SmartHome.Core.Data.Repository;
 
 namespace SmartHome.Core.Services
 {
@@ -28,8 +28,8 @@ namespace SmartHome.Core.Services
         private readonly IAuthorizationProvider<Node> _authProvider;
         private readonly IAppUserNodeLinkRepository _appUserNodeLinkRepository;
 
-        public NodeService(ILifetimeScope container, 
-            INodeRepository nodeRepository, 
+        public NodeService(ILifetimeScope container,
+            INodeRepository nodeRepository,
             IAuthorizationProvider<Node> authorizationProvider,
             IAppUserNodeLinkRepository appUserNodeLinkRepository) : base(container)
         {
@@ -77,9 +77,6 @@ namespace SmartHome.Core.Services
             var nodeToCreate = Mapper.Map<Node>(nodeDto);
             nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
 
-            nodeToCreate.CreatedById = userId;
-            nodeToCreate.Created = DateTime.UtcNow;
-
             return await SaveNode(nodeToCreate, userId, response);
         }
 
@@ -93,7 +90,8 @@ namespace SmartHome.Core.Services
             };
         }
 
-        private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
+        private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId,
+            ServiceResult<NodeDto> response)
         {
             using (var transaction = _nodeRepository.BeginTransaction())
             {
@@ -141,18 +139,25 @@ namespace SmartHome.Core.Services
             try
             {
                 // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
-                var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
+                var executorFullyQualifiedName = node.ControlStrategy.GetCommandFullyQuallifiedName(command);
 
                 if (!Container.IsRegisteredWithName<object>(executorFullyQualifiedName))
                 {
-                    response.Alerts.Add(new Alert($"Given command is invalid in this context: {command}",  MessageType.Error));
+                    response.Alerts.Add(new Alert($"Given command is invalid in this context: {command}",
+                        MessageType.Error));
                     return response;
                 }
 
-                var executor = Container.ResolveNamed<object>(executorFullyQualifiedName, new NamedParameter("node", node)) as IControlCommand;
-                if (executor != null) await executor.Execute(commandParams);
+                if (Container.ResolveNamed<object>(executorFullyQualifiedName, new NamedParameter("node", node)) is
+                    IControlCommand executor)
+                    await executor.Execute(commandParams);
 
                 response.ResponseStatusCodeOverride = StatusCodes.Status202Accepted;
+                return response;
+            }
+            catch (SmartHomeNodeOfflineException)
+            {
+                if (Principal.Identity.Name != "system") throw;
                 return response;
             }
             catch (Exception ex)
@@ -161,6 +166,7 @@ namespace SmartHome.Core.Services
                 throw;
             }
         }
+
 
         public async Task<ServiceResult<object>> GetCommandParamSchema(int nodeId, string command)
         {
@@ -179,7 +185,7 @@ namespace SmartHome.Core.Services
             try
             {
                 // resolve control executor - convention is SmartHome.Core.Contracts.{name}.Commands.CommandClass
-                var executorFullyQualifiedName = node.ControlStrategy.ContractAssembly.Split(".dll")[0] + ".Commands." + command;
+                var executorFullyQualifiedName = node.ControlStrategy.GetCommandFullyQuallifiedName(command);
 
                 if (!Container.IsRegisteredWithName<object>(executorFullyQualifiedName))
                 {

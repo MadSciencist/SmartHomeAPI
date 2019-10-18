@@ -1,5 +1,5 @@
-﻿using System;
-using Quartz;
+﻿using Quartz;
+using System;
 
 namespace SmartHome.Core.Scheduling
 {
@@ -8,7 +8,7 @@ namespace SmartHome.Core.Scheduling
         /// <summary>
         /// Node that will be target od the job.
         /// </summary>
-        public int NodeId{ get; }
+        public int NodeId { get; }
 
         /// <summary>
         /// Command to execute on the node on job trigger

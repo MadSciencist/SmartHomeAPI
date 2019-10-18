@@ -11,7 +11,7 @@ namespace Matty.Framework.Abstractions
         /// Unique transaction identifier
         /// </summary>
         Guid Identifier { get; }
-        
+
         /// <summary>
         /// Save transaction
         /// </summary>

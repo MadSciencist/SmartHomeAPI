@@ -3,18 +3,18 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SmartHome.Core.DataAccess;
+using SmartHome.Core.Data;
 
-namespace SmartHome.Core.DataAccess.Migrations
+namespace SmartHome.Core.Data.Migrations
 {
     [DbContext(typeof(EntityFrameworkContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    partial class EntityFrameworkContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -111,6 +111,8 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.Property<bool>("ReadOnly");
 
+                    b.Property<byte[]>("RowVersion");
+
                     b.HasKey("Id");
 
                     b.ToTable("tbl_dictionary");
@@ -132,6 +134,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .HasDefaultValue(true);
 
                     b.Property<string>("Metadata");
+
+                    b.Property<byte[]>("RowVersion");
 
                     b.HasKey("Id");
 
@@ -197,22 +201,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.ToTable("tbl_control_strategy");
                 });
 
-            modelBuilder.Entity("SmartHome.Core.Entities.Entity.DataRequestReason", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("Reason")
-                        .HasMaxLength(50);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_data_request_reason");
-                });
-
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.Node", b =>
                 {
                     b.Property<int>("Id")
@@ -259,6 +247,8 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.Property<int>("Port");
 
+                    b.Property<byte[]>("RowVersion");
+
                     b.Property<DateTime?>("Updated");
 
                     b.Property<int?>("UpdatedById");
@@ -289,37 +279,36 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.Property<int>("NodeId");
 
-                    b.Property<int>("RequestReasonId");
+                    b.Property<int>("PhysicalPropertyId");
 
                     b.Property<DateTime>("TimeStamp");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NodeId");
-
-                    b.HasIndex("RequestReasonId");
-
-                    b.ToTable("tbl_node_data");
-                });
-
-            modelBuilder.Entity("SmartHome.Core.Entities.Entity.NodeDataMagnitude", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Magnitude");
-
-                    b.Property<int>("NodeDataId");
-
-                    b.Property<string>("Unit");
 
                     b.Property<string>("Value");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NodeDataId");
+                    b.HasIndex("NodeId");
 
-                    b.ToTable("tbl_node_data_magnitude");
+                    b.HasIndex("PhysicalPropertyId");
+
+                    b.ToTable("tbl_node_data");
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Entities.Entity.PhysicalProperty", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<bool>("IsComplex");
+
+                    b.Property<string>("Magnitude");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Unit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_physical_property");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.RegisteredMagnitude", b =>
@@ -346,6 +335,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Data");
+
+                    b.Property<byte[]>("RowVersion");
 
                     b.Property<int>("Type");
 
@@ -431,14 +422,18 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.Property<string>("JobName")
                         .IsRequired();
 
-                    b.Property<string>("JobParams");
-
                     b.Property<int>("JobStatusEntityId");
 
                     b.Property<int>("JobTypeId");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255);
+
+                    b.Property<byte[]>("RowVersion");
+
+                    b.Property<int>("ScheduleTypeid");
+
+                    b.Property<string>("SerializedJobSchedule");
 
                     b.Property<DateTime?>("Updated");
 
@@ -452,9 +447,32 @@ namespace SmartHome.Core.DataAccess.Migrations
 
                     b.HasIndex("JobTypeId");
 
+                    b.HasIndex("ScheduleTypeid");
+
                     b.HasIndex("UpdatedById");
 
                     b.ToTable("tbl_scheduling_schedules");
+                });
+
+            modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.ScheduleType", b =>
+                {
+                    b.Property<int>("Id");
+
+                    b.Property<string>("AssemblyName")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.Property<string>("FullyQualifiedName")
+                        .IsRequired()
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tbl_scheduling_schedule_type");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.User.AppUser", b =>
@@ -625,17 +643,9 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .HasForeignKey("NodeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SmartHome.Core.Entities.Entity.DataRequestReason", "RequestReason")
-                        .WithMany("NodeData")
-                        .HasForeignKey("RequestReasonId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartHome.Core.Entities.Entity.NodeDataMagnitude", b =>
-                {
-                    b.HasOne("SmartHome.Core.Entities.Entity.NodeData", "NodeData")
-                        .WithMany("Magnitudes")
-                        .HasForeignKey("NodeDataId")
+                    b.HasOne("SmartHome.Core.Entities.Entity.PhysicalProperty", "PhysicalProperty")
+                        .WithMany()
+                        .HasForeignKey("PhysicalPropertyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -670,6 +680,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                     b.HasOne("SmartHome.Core.Entities.SchedulingEntity.JobType", "JobType")
                         .WithMany()
                         .HasForeignKey("JobTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Core.Entities.SchedulingEntity.ScheduleType", "ScheduleType")
+                        .WithMany()
+                        .HasForeignKey("ScheduleTypeid")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "UpdatedBy")

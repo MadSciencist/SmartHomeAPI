@@ -1,78 +1,76 @@
-﻿using System;
+﻿using Autofac;
+using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Entities.Entity;
+using SmartHome.Core.Repositories;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Autofac;
-using Microsoft.EntityFrameworkCore;
-using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Data.Repository
 {
-    public class NodeDataRepository : GenericRepository<NodeData>, INodeDataRepository
+    public class NodeDataRepository : GenericRepository<NodeData, int>, INodeDataRepository
     {
         public NodeDataRepository(ILifetimeScope container) : base(container)
         {
         }
 
-        public override IQueryable<NodeData> AsQueryableNoTrack()
+        public async Task<NodeData> AddSingleAsync(NodeData data, int samplesToKeep)
         {
-            return base.AsQueryableNoTrack().Include(x => x.Magnitudes);
-        }
+            var currentCount = await Context.NodeData
+                .AsNoTracking()
+                .CountAsync(x => x.NodeId == data.NodeId && x.PhysicalProperty.Magnitude == data.PhysicalProperty.Magnitude);
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, int samplesToKeep, NodeDataMagnitude data)
-        {
-            var currentCount = await Context.NodeData.CountAsync(x =>
-                x.NodeId == nodeId && x.Magnitudes.Any(m => m.Magnitude == data.Magnitude));
-
-            if (currentCount > samplesToKeep) //keep only last x samples
+            if (currentCount >= samplesToKeep) //keep only last x samples
             {
-                var numToRemove = currentCount - samplesToKeep - 1; // -1 because we will add new record in next lines
-                var toRemove = Context.NodeData.Where(s => s.NodeId == nodeId && s.Magnitudes.Any(x => x.Magnitude == data.Magnitude))
-                    .OrderBy(s => s.TimeStamp)
-                    .Take(numToRemove);
+                var numToRemove = currentCount - samplesToKeep + 1; // 1 because we will add new record in next lines
+                var toRemove = Context.NodeData
+                    .Where(x => x.NodeId == data.NodeId && x.PhysicalProperty.Magnitude == data.PhysicalProperty.Magnitude)
+                    .OrderBy(s => s.Id)
+                    .Take(numToRemove)
+                    .AsNoTracking();
 
                 Context.NodeData.RemoveRange(toRemove);
             }
 
-            var nodeData = new NodeData
-            {
-                TimeStamp = DateTime.UtcNow,
-                Magnitudes = new List<NodeDataMagnitude>
-                {
-                    data
-                },
-                NodeId = nodeId
-            };
+            // without that EF tries to insert this property again
+            data.PhysicalProperty = null;
 
-            return await base.CreateAsync(nodeData);
+            return await base.CreateAsync(data);
         }
 
-        public async Task<NodeData> AddManyAsync(int nodeId, int samplesToKeep, ICollection<NodeDataMagnitude> data)
+        public async Task AddManyAsync(int nodeId, int samplesToKeep, IEnumerable<NodeData> dataPlural)
         {
-            foreach (var magnitude in data)
+            // TODO refactor to delete with single fire
+            foreach (var data in dataPlural)
             {
-                var currentCount = await Context.NodeData.CountAsync(x =>
-                    x.NodeId == nodeId && x.Magnitudes.Any(m => m.Magnitude == magnitude.Magnitude));
+                var currentCount = await Context.NodeData
+                    .AsNoTracking()
+                    .CountAsync(x => x.NodeId == data.NodeId && x.PhysicalProperty.Magnitude == data.PhysicalProperty.Magnitude);
 
-                if (currentCount > samplesToKeep) //keep only last x samples
+                if (currentCount >= samplesToKeep) //keep only last x samples
                 {
-                    var numToRemove = currentCount - samplesToKeep - 1; // -1 because we will add new record in next lines
-                    var toRemove = Context.NodeData.Where(s => s.NodeId == nodeId && s.Magnitudes.Any(x => x.Magnitude == magnitude.Magnitude))
-                        .OrderBy(s => s.TimeStamp)
-                        .Take(numToRemove);
+                    var numToRemove = currentCount - samplesToKeep + 1; // 1 because we will add new record in next lines
+                    var toRemove = Context.NodeData
+                        .Where(x => x.NodeId == data.NodeId && x.PhysicalProperty.Magnitude == data.PhysicalProperty.Magnitude)
+                        .OrderBy(s => s.Id)
+                        .Take(numToRemove)
+                        .AsNoTracking();
 
                     Context.NodeData.RemoveRange(toRemove);
                 }
             }
 
-            var nodeData = new NodeData
+            var toAdd = dataPlural.ToList().Select(x => new NodeData
             {
-                TimeStamp = DateTime.UtcNow,
-                Magnitudes = data,
-                NodeId = nodeId
-            };
+                Node = x.Node,
+                PhysicalPropertyId = x.PhysicalPropertyId,
+                TimeStamp = x.TimeStamp,
+                Value = x.Value,
+                NodeId = x.NodeId
+            });
 
-            return await base.CreateAsync(nodeData);
+            await Context.NodeData.AddRangeAsync(toAdd);
+            await Context.SaveChangesAsync();
         }
     }
 }

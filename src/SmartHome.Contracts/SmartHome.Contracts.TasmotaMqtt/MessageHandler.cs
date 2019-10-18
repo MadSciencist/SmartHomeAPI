@@ -40,7 +40,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
             const string relay0Key = "POWER";
             if (payload.ContainsKey(relay0Key))
             {
-                var mappedProperty = DataMapper.Mapping[relay0Key];
+                var mappedProperty = DataMapper.GetMapping(relay0Key);
                 if (Node.ShouldMagnitudeBeStored(mappedProperty))
                 {
                     var sensorValue = payload.GetValue(relay0Key).ToString();
@@ -66,7 +66,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
 
                     var value = JsonConvert.SerializeObject(param);
                     await ExtractSaveData(Node.Id, "light", value);
-                    var property = base.DataMapper.GetPhysicalPropertyByContractMagnitude("light");
+                    var property = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync("light");
                     NotificationService.PushDataNotification(Node.Id,
                         new NodeDataMagnitudeDto { PhysicalProperty = property, Value = value });
                     return true;
@@ -96,7 +96,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
 
                 foreach (var (key, value) in energyMap)
                 {
-                    var mapped = base.DataMapper.GetPhysicalPropertyByContractMagnitude(key);
+                    var mapped = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync(key);
                     if (Node.ShouldMagnitudeBeStored(mapped.Magnitude))
                     {
                         magnitudesDto.Add(new NodeDataMagnitudeDto(mapped, base.ApplyConversion(key, value)));
@@ -113,7 +113,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
 
         private async Task ExtractSaveData(int nodeId, string magnitude, string value)
         {
-            var property = base.DataMapper.GetPhysicalPropertyByContractMagnitude(magnitude);
+            var property = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync(magnitude);
 
             // Check if there is associated system property
             if (property is null) return;

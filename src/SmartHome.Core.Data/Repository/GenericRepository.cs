@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Matty.Framework.Abstractions;
 using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SmartHome.Core.DataAccess;
 using SmartHome.Core.Entities.User;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace SmartHome.Core.Data.Repository
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity, new()
+    public class GenericRepository<TEntity, TKey> : ITransactionalRepository<TEntity, TKey> where TEntity : class, IEntity, new()
     {
         protected ILifetimeScope Container { get; }
 
@@ -26,7 +25,7 @@ namespace SmartHome.Core.Data.Repository
         protected ILogger Logger => _logger ?? (_logger = Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName));
 
         private IHttpContextAccessor _accessor;
-        protected IHttpContextAccessor HttpContextAccessor =>_accessor ?? (_accessor = Container.Resolve<IHttpContextAccessor>());
+        protected IHttpContextAccessor HttpContextAccessor => _accessor ?? (_accessor = Container.Resolve<IHttpContextAccessor>());
 
         public GenericRepository(ILifetimeScope container)
         {
@@ -36,9 +35,9 @@ namespace SmartHome.Core.Data.Repository
         public ITransaction BeginTransaction()
             => new EntityFrameworkTransaction(Context);
 
-        public virtual async Task<T> CreateAsync(T entity)
+        public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
-            var currentUser = HttpContextAccessor.HttpContext.User;
+            var currentUser = HttpContextAccessor.HttpContext?.User;
 
             if (entity is ICreationAudit<AppUser, int> audit)
             {
@@ -66,7 +65,7 @@ namespace SmartHome.Core.Data.Repository
             return entity;
         }
 
-        public virtual async Task DeleteAsync(T entity)
+        public virtual async Task DeleteAsync(TEntity entity)
         {
             Context.Remove(entity);
 
@@ -85,21 +84,21 @@ namespace SmartHome.Core.Data.Repository
             }
         }
 
-        public virtual async Task<T> GetFiltered(Expression<Func<T, bool>> predicate)
-            => await Context.Set<T>().FirstOrDefaultAsync(predicate);
+        public virtual async Task<TEntity> GetFiltered(Expression<Func<TEntity, bool>> predicate)
+            => await Context.Set<TEntity>().FirstOrDefaultAsync(predicate);
 
-        public virtual async Task<IEnumerable<T>> GetManyFiltered(Expression<Func<T, bool>> predicate)
-            => await Context.Set<T>().Where(predicate).ToListAsync();
+        public virtual async Task<IEnumerable<TEntity>> GetManyFiltered(Expression<Func<TEntity, bool>> predicate)
+            => await Context.Set<TEntity>().Where(predicate).ToListAsync();
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync() 
-            => await Context.Set<T>().ToListAsync();
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
+            => await Context.Set<TEntity>().ToListAsync();
 
-        public virtual async Task<T> GetByIdAsync(int id) 
-            => await Context.Set<T>().FindAsync(id);
+        public virtual async Task<TEntity> GetByIdAsync(TKey id)
+            => await Context.Set<TEntity>().FindAsync(id);
 
-        public virtual async Task<T> UpdateAsync(T entity)
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            var currentUser = HttpContextAccessor.HttpContext.User;
+            var currentUser = HttpContextAccessor.HttpContext?.User;
 
             if (entity is IModificationAudit<AppUser, int?> audit)
             {
@@ -107,7 +106,7 @@ namespace SmartHome.Core.Data.Repository
                 audit.UpdatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
             }
 
-            Context.Set<T>().Update(entity);
+            Context.Entry(entity).State = EntityState.Modified;
 
             try
             {
@@ -126,8 +125,25 @@ namespace SmartHome.Core.Data.Repository
             return entity;
         }
 
-        // TODO to refactor - dont want to return IQueryable
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-        public virtual IQueryable<T> AsQueryableNoTrack() => Context.Set<T>().AsNoTracking().AsQueryable();
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_context != null)
+                {
+
+                    _context.Dispose();
+
+                    _context = null;
+
+                }
+            }
+        }
     }
 }

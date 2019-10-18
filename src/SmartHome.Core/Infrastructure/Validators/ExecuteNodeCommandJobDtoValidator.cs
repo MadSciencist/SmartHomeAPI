@@ -13,7 +13,7 @@ namespace SmartHome.Core.Infrastructure.Validators
 
             RuleFor(x => x.NodeId)
                 .NotEmpty()
-                .GreaterThan(1);
+                .GreaterThan(0);
 
             RuleFor(x => x.JobTypeId)
                 .NotEmpty()

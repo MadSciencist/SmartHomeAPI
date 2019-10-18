@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartHome.Core.DataAccess.InitialLoad
+namespace SmartHome.Core.Data.InitialLoad
 {
     public static class DevelopInitialLoad
     {
@@ -110,88 +110,41 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                     await context.SaveChangesAsync();
                 }
 
-                if (!context.Nodes.Any(x => x.Name == "Dev"))
+                if (!context.Nodes.Any())
                 {
-                    var node = new Node
+                    var node1 = new Node
                     {
-                        Name = "Dev",
-                        ControlStrategyId = 1,
-                        Created = DateTime.UtcNow,
-                        CreatedById = 1,
-                        IpAddress = "http://192.168.0.211",
-                        Port = 80,
-                        GatewayIpAddress = "http://192.168.0.1",
-                        Description = "Dev test node",
-                        ApiKey = "03102E55CD7BBE35",
-                        ClientId = "clientId",
-                        BaseTopic = "root"
-                    };
-
-                    var createdNode = await context.Nodes.AddAsync(node);
-                    await context.SaveChangesAsync();
-
-                    context.Add(new AppUserNodeLink
-                    {
-                        NodeId = createdNode.Entity.Id,
-                        UserId = 1
-                    });
-
-                    var node2 = new Node
-                    {
-                        Name = "Dev2",
-                        ControlStrategyId = 1,
-                        Created = DateTime.UtcNow,
-                        CreatedById = 1,
-                        IpAddress = "http://192.168.0.210",
-                        Port = 80,
-                        GatewayIpAddress = "http://192.168.0.1",
-                        Description = "Dev test node",
-                        ApiKey = "03102E55CD7BBE35",
-                        ClientId = "clientId100",
-                        BaseTopic = "root"
-                    };
-
-                    var createdNode2 = await context.Nodes.AddAsync(node2);
-                    context.Add(new AppUserNodeLink
-                    {
-                        NodeId = createdNode2.Entity.Id,
-                        UserId = 1
-                    });
-                    await context.SaveChangesAsync();
-
-                    var node3 = new Node
-                    {
-                        Name = "Blitzwolf Socket Tasmota",
+                        Name = "BlitzWolf Socket Tasmota",
                         ControlStrategyId = 4,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
-                        IpAddress = "http://192.168.0.220",
+                        UriSchema = "http://",
+                        IpAddress = "192.168.0.220",
                         Port = 80,
                         GatewayIpAddress = null,
                         Description = "Blitzwolf Socket Tasmota",
                         ApiKey = null,
                         ClientId = "DVES_2323B9",
-                        BaseTopic = "cmnd/sonoff/blitzwolf0"
+                        BaseTopic = "cmnd/sonoff/blitzwolf0",
                     };
 
-                    var createdNode3 = await context.Nodes.AddAsync(node3);
+                    var createdNode1 = await context.Nodes.AddAsync(node1);
                     await context.SaveChangesAsync();
-
 
                     context.Add(new AppUserNodeLink
                     {
-                        NodeId = createdNode3.Entity.Id,
+                        NodeId = createdNode1.Entity.Id,
                         UserId = 1
                     });
 
-
-                    var node4 = new Node
+                    var node2 = new Node
                     {
                         Name = "Sonoff B1 Light",
                         ControlStrategyId = 5,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
-                        IpAddress = "http://192.168.0.221",
+                        UriSchema = "http://",
+                        IpAddress = "192.168.0.221",
                         Port = 80,
                         GatewayIpAddress = null,
                         Description = "Sonoff B1 Light Tasmota",
@@ -200,15 +153,16 @@ namespace SmartHome.Core.DataAccess.InitialLoad
                         BaseTopic = "cmnd/sonoff/sonoffb1"
                     };
 
-                    var createdNode4 = await context.Nodes.AddAsync(node4);
+                    var createdNode2 = await context.Nodes.AddAsync(node2);
                     await context.SaveChangesAsync();
-
 
                     context.Add(new AppUserNodeLink
                     {
-                        NodeId = createdNode4.Entity.Id,
+                        NodeId = createdNode2.Entity.Id,
                         UserId = 1
                     });
+
+                    await context.SaveChangesAsync();
                 }
             }
         }

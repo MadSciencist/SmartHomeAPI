@@ -8,7 +8,7 @@ namespace Matty.Framework
     /// <summary>
     /// Container class for business logic response
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Type of Data property.</typeparam>
     public class ServiceResult<T>
     {
         [JsonProperty("data", NullValueHandling = NullValueHandling.Include)]

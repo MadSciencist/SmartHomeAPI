@@ -1,17 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Matty.Framework;
+using Matty.Framework.Enums;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SmartHome.API.Security;
-using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Infrastructure.Exceptions;
 using System;
 using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
-using Matty.Framework;
-using Matty.Framework.Enums;
 
 namespace SmartHome.API.Extensions
 {

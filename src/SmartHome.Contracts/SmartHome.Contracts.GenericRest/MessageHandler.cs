@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.GenericRest
 {
     /// <summary>
-    /// This class handles all messages which match witch SmartHome.Core.Domain.SystemMagnitudes properties
+    /// This class handles all messages
     /// It assumes that payload of message is in JSON format
     /// </summary>
     public class Handler : MessageHandlerBase<RestMessageDto>
@@ -36,7 +36,7 @@ namespace SmartHome.Contracts.GenericRest
 
         private async Task ExtractSaveData(int nodeId, string magnitude, string value)
         {
-            var property = base.DataMapper.GetPhysicalPropertyByContractMagnitude(magnitude);
+            var property = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync(magnitude);
 
             // Check if there is associated system property
             if (property is null) return;

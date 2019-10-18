@@ -2,6 +2,7 @@
 using MQTTnet;
 using Newtonsoft.Json.Linq;
 using SmartHome.Contracts.TasmotaMqtt.Domain;
+using SmartHome.Core.Abstractions;
 using SmartHome.Core.Control;
 using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.ContractParams;
@@ -21,7 +22,7 @@ namespace SmartHome.Contracts.TasmotaMqtt.Commands
         public async Task Execute(JObject commandParams)
         {
             var param = commandParams.ToObject<LightParam>().Validate();
-            await EnsureNodeOnline();   
+            await EnsureNodeOnline();
 
             var logic = new LightLogic();
             var (topic, payload) = logic.GetTopicPayloadForLight(param);

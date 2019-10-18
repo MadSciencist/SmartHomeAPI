@@ -5,17 +5,17 @@ using Matty.Framework;
 using Matty.Framework.Abstractions;
 using Matty.Framework.Enums;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Quartz;
-using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.SchedulingEntity;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
+using SmartHome.Core.Repositories;
 using SmartHome.Core.Scheduling;
 using SmartHome.Core.Services.Abstractions;
-using SmartHome.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -27,19 +27,19 @@ namespace SmartHome.Core.Services
     {
         private readonly IMapper _mapper;
         private readonly ISchedulerFactory _schedulerFactory;
-        private readonly IGenericRepository<JobType> _jobTypeRepository;
+        private readonly ITransactionalRepository<JobType, int> _jobTypeRepository;
         private readonly IValidator<ScheduleNodeCommandJobDto> _validator;
         private readonly IAuthorizationProvider<Node> _nodeAuth;
         private readonly IAuthorizationProvider<ScheduleEntity> _schedulesAuth;
         private readonly INodeRepository _nodeRepository;
         private readonly ISchedulesPersistenceRepository _scheduleRepository;
 
-        public SchedulingService(ILifetimeScope container, 
+        public SchedulingService(ILifetimeScope container,
             IMapper mapper,
-            ISchedulerFactory schedulerFactory, 
+            ISchedulerFactory schedulerFactory,
             INodeRepository nodeRepository,
             ISchedulesPersistenceRepository scheduleRepository,
-            IGenericRepository<JobType> jobTypeRepository,
+            ITransactionalRepository<JobType, int> jobTypeRepository,
             IValidator<ScheduleNodeCommandJobDto> validator,
             IAuthorizationProvider<Node> nodeAuth,
             IAuthorizationProvider<ScheduleEntity> schedulesAuth) : base(container)
@@ -75,7 +75,7 @@ namespace SmartHome.Core.Services
             var (node, executorType) = await GetNodeAndJobTypeEntities(param);
 
             var jobSchedule = new NodeJobSchedule(executorType, node.Id, param.Command, param.CommandParams, param.CronExpression);
-            
+
             using (var transaction = _scheduleRepository.BeginTransaction())
             {
                 try
@@ -86,15 +86,12 @@ namespace SmartHome.Core.Services
                     {
                         Name = param.Name,
                         JobName = jobSchedule.GetIdentity(),
-                        JobGroup = "DEFAULT",
+                        JobGroup = "DEFAULT", // quartz default name
                         JobStatusEntityId = (int)JobStatus.Running,
                         CronExpression = param.CronExpression,
-                        JobTypeId = param.JobTypeId,
-                        JobParams = new SerializableParamBuilder()
-                            .Add(nameof(param.NodeId), param.NodeId)
-                            .Add(nameof(param.Command), param.Command)
-                            .Add(nameof(param.CommandParams), param.CommandParams) // TODO validate params against schema
-                            .Build()
+                        SerializedJobSchedule = JsonConvert.SerializeObject(jobSchedule),
+                        ScheduleTypeid = 2001, // NodeJobSchedule
+                        JobTypeId = param.JobTypeId
                     };
 
                     var created = await _scheduleRepository.CreateAsync(entity);
@@ -117,6 +114,19 @@ namespace SmartHome.Core.Services
             }
 
             return response;
+        }
+
+        private async Task<Tuple<Node, Type>> GetNodeAndJobTypeEntities(ScheduleNodeCommandJobDto param)
+        {
+            var node = await _nodeRepository.GetByIdAsync(param.NodeId);
+            var jobType = await _jobTypeRepository.GetByIdAsync(param.JobTypeId);
+
+            if (node is null || jobType is null)
+                throw new SmartHomeEntityNotFoundException($"Either given nodeId or jobTypeId doesn't exists");
+
+            var executorType = jobType.GetJobType();
+
+            return new Tuple<Node, Type>(node, executorType);
         }
 
         public async Task<ServiceResult<JobScheduleDto>> UpdateJobStatus(int id, JobStatus status)
@@ -189,19 +199,6 @@ namespace SmartHome.Core.Services
                     throw;
                 }
             }
-        }
-
-        private async Task<Tuple<Node, Type>> GetNodeAndJobTypeEntities(ScheduleNodeCommandJobDto param)
-        {
-            var node = await _nodeRepository.GetByIdAsync(param.NodeId);
-            var jobType = await _jobTypeRepository.GetByIdAsync(param.JobTypeId);
-
-            if (node is null || jobType is null)
-                throw new SmartHomeEntityNotFoundException($"Either given nodeId or jobTypeId doesn't exists");
-
-            var executorType = jobType.GetJobType();
-
-            return new Tuple<Node, Type>(node, executorType);
         }
 
         public async Task<ServiceResult<IEnumerable<JobScheduleDto>>> GetJobs()

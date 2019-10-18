@@ -1,27 +1,13 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
-namespace SmartHome.Core.DataAccess.Migrations
+namespace SmartHome.Core.Data.Migrations
 {
     public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "tbl_data_request_reason",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Reason = table.Column<string>(maxLength: 50, nullable: true),
-                    Description = table.Column<string>(maxLength: 255, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_data_request_reason", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "tbl_dictionary",
                 columns: table => new
@@ -31,11 +17,27 @@ namespace SmartHome.Core.DataAccess.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Metadata = table.Column<string>(nullable: true),
-                    ReadOnly = table.Column<bool>(nullable: false)
+                    ReadOnly = table.Column<bool>(nullable: false),
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_dictionary", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_physical_property",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    IsComplex = table.Column<bool>(nullable: false),
+                    Unit = table.Column<string>(nullable: true),
+                    Magnitude = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_physical_property", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -77,6 +79,20 @@ namespace SmartHome.Core.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_scheduling_job_type", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbl_scheduling_schedule_type",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    FullyQualifiedName = table.Column<string>(maxLength: 255, nullable: false),
+                    AssemblyName = table.Column<string>(maxLength: 255, nullable: false),
+                    DisplayName = table.Column<string>(maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbl_scheduling_schedule_type", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,7 +140,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                     InternalValue = table.Column<string>(nullable: true),
                     IsActive = table.Column<bool>(nullable: true, defaultValue: true),
                     Metadata = table.Column<string>(nullable: true),
-                    DictionaryId = table.Column<int>(nullable: false)
+                    DictionaryId = table.Column<int>(nullable: false),
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -293,12 +310,14 @@ namespace SmartHome.Core.DataAccess.Migrations
                     JobGroup = table.Column<string>(nullable: true),
                     JobStatusEntityId = table.Column<int>(nullable: false),
                     JobTypeId = table.Column<int>(nullable: false),
+                    ScheduleTypeid = table.Column<int>(nullable: false),
+                    SerializedJobSchedule = table.Column<string>(nullable: true),
                     CronExpression = table.Column<string>(maxLength: 20, nullable: false),
                     CreatedById = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     UpdatedById = table.Column<int>(nullable: true),
                     Updated = table.Column<DateTime>(nullable: true),
-                    JobParams = table.Column<string>(nullable: true)
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -322,6 +341,12 @@ namespace SmartHome.Core.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_tbl_scheduling_schedules_tbl_scheduling_schedule_type_Schedu~",
+                        column: x => x.ScheduleTypeid,
+                        principalTable: "tbl_scheduling_schedule_type",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_tbl_scheduling_schedules_tbl_user_UpdatedById",
                         column: x => x.UpdatedById,
                         principalTable: "tbl_user",
@@ -337,7 +362,8 @@ namespace SmartHome.Core.DataAccess.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Type = table.Column<int>(nullable: false),
                     Data = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false)
+                    UserId = table.Column<int>(nullable: false),
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -373,6 +399,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                     CreatedById = table.Column<int>(nullable: false),
                     UpdatedById = table.Column<int>(nullable: true),
                     Updated = table.Column<DateTime>(nullable: true),
+                    RowVersion = table.Column<byte[]>(nullable: true),
                     AppUserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -431,8 +458,9 @@ namespace SmartHome.Core.DataAccess.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     TimeStamp = table.Column<DateTime>(nullable: false),
+                    Value = table.Column<string>(nullable: true),
                     NodeId = table.Column<int>(nullable: false),
-                    RequestReasonId = table.Column<int>(nullable: false)
+                    PhysicalPropertyId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -444,9 +472,9 @@ namespace SmartHome.Core.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tbl_node_data_tbl_data_request_reason_RequestReasonId",
-                        column: x => x.RequestReasonId,
-                        principalTable: "tbl_data_request_reason",
+                        name: "FK_tbl_node_data_tbl_physical_property_PhysicalPropertyId",
+                        column: x => x.PhysicalPropertyId,
+                        principalTable: "tbl_physical_property",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -473,28 +501,6 @@ namespace SmartHome.Core.DataAccess.Migrations
                         name: "FK_tbl_user_node_link_tbl_user_UserId",
                         column: x => x.UserId,
                         principalTable: "tbl_user",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tbl_node_data_magnitude",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Magnitude = table.Column<string>(nullable: true),
-                    Value = table.Column<string>(nullable: true),
-                    Unit = table.Column<string>(nullable: true),
-                    NodeDataId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tbl_node_data_magnitude", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_node_data_magnitude_tbl_node_data_NodeDataId",
-                        column: x => x.NodeDataId,
-                        principalTable: "tbl_node_data",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -571,14 +577,9 @@ namespace SmartHome.Core.DataAccess.Migrations
                 column: "NodeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_node_data_RequestReasonId",
+                name: "IX_tbl_node_data_PhysicalPropertyId",
                 table: "tbl_node_data",
-                column: "RequestReasonId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_node_data_magnitude_NodeDataId",
-                table: "tbl_node_data_magnitude",
-                column: "NodeDataId");
+                column: "PhysicalPropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_registered_magnitude_ControlStrategyId",
@@ -605,6 +606,11 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "IX_tbl_scheduling_schedules_JobTypeId",
                 table: "tbl_scheduling_schedules",
                 column: "JobTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_scheduling_schedules_ScheduleTypeid",
+                table: "tbl_scheduling_schedules",
+                column: "ScheduleTypeid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_scheduling_schedules_UpdatedById",
@@ -664,7 +670,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "tbl_dictionary_value");
 
             migrationBuilder.DropTable(
-                name: "tbl_node_data_magnitude");
+                name: "tbl_node_data");
 
             migrationBuilder.DropTable(
                 name: "tbl_registered_magnitude");
@@ -685,7 +691,7 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "tbl_dictionary");
 
             migrationBuilder.DropTable(
-                name: "tbl_node_data");
+                name: "tbl_physical_property");
 
             migrationBuilder.DropTable(
                 name: "tbl_scheduling_job_status");
@@ -694,10 +700,10 @@ namespace SmartHome.Core.DataAccess.Migrations
                 name: "tbl_scheduling_job_type");
 
             migrationBuilder.DropTable(
-                name: "tbl_node");
+                name: "tbl_scheduling_schedule_type");
 
             migrationBuilder.DropTable(
-                name: "tbl_data_request_reason");
+                name: "tbl_node");
 
             migrationBuilder.DropTable(
                 name: "tbl_control_strategy");

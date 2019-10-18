@@ -1,13 +1,13 @@
 ﻿using Autofac;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using SmartHome.Core.Abstractions;
 using SmartHome.Core.Control;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.ContractParams;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.Exceptions;
-using SmartHome.Core.MessageHanding;
 using SmartHome.Core.RestClient;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,10 +36,8 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
 
             if (response != null)
             {
-                INodeDataMapper mapper = base.GetNodeMapper(Node);
-
                 // Espurna response for SingleRelay has key relay/0
-                var property = mapper?.GetPhysicalPropertyByContractMagnitude(RelayKey);
+                var property = await GetNodeMapper(Node)?.GetPhysicalPropertyByContractMagnitudeAsync(RelayKey);
 
                 // Check if there is associated system value
                 if (property != null)

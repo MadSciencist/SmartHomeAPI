@@ -16,9 +16,7 @@ namespace Matty.Framework.Utils
         public static T[] GetAttributes<T>(this Type type) where T : Attribute
         {
             object[] attributes = type.GetCustomAttributes(typeof(T), false);
-            if (attributes == null || attributes.Length == 0)
-                return null;
-            return attributes.OfType<T>().ToArray();
+            return attributes.Length == 0 ? null : attributes.OfType<T>().ToArray();
         }
 
         public static T[] GetAttributes<T>(this Assembly asm) where T : Attribute

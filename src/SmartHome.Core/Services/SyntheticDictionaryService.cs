@@ -1,8 +1,8 @@
 ﻿using Autofac;
+using Matty.Framework.Abstractions;
 using Matty.Framework.Extensions;
 using Matty.Framework.Utils;
 using Microsoft.Extensions.Caching.Memory;
-using SmartHome.Core.Data.Repository;
 using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.DictionaryEntity;
 using SmartHome.Core.Entities.SchedulingEntity;
@@ -55,13 +55,15 @@ namespace SmartHome.Core.Services
             Dictionaries = new List<Dictionary>();
             AddContractsDict();
             AddCommandExecutorsDict();
-            AddContractPropertiesDict();
+            AddContractPropertiesDict().Wait();
             AddJobTypesDict().Wait();
+            AddJobScheduleTypesDict().Wait();
+            AddJobStatusDict().Wait();
 
-            _cache.Set(CacheKey, Dictionaries, TimeSpan.FromMinutes(30));
+            _cache.Set(CacheKey, Dictionaries, TimeSpan.FromHours(12));
         }
 
-        private void AddContractPropertiesDict()
+        private async Task AddContractPropertiesDict()
         {
             IDictionary<string, IEnumerable<Type>> mappers = AssemblyScanner.GetDataMappers();
             foreach (var mapper in mappers)
@@ -75,17 +77,20 @@ namespace SmartHome.Core.Services
                 var dataMapper = _container.ResolveNamed<object>(mapperName) as INodeDataMapper;
                 if (dataMapper is null) throw new InvalidOperationException($"{asmLocation} has no mapper");
 
+                var contractProperties = await dataMapper.GetAllContractPhysicalProperties();
+
                 Dictionaries.Add(new Dictionary
                 {
                     Name = $"{info.ProductName}-properties",
                     Description = info.Comments,
                     Metadata = "synthetic=true",
                     ReadOnly = true,
-                    Values = dataMapper.GetAllContractPhysicalProperties().Select(x => new DictionaryValue
+                    Values = contractProperties.Select(x => new DictionaryValue
                     {
-                        DisplayValue = string.IsNullOrEmpty(x.Description) ? x.Magnitude : x.Description,
+                        DisplayValue = x.Name,
                         InternalValue = x.Magnitude,
-                        Metadata = $"unit={x.Unit}",
+                        Metadata = $"unit={x.Unit},isComplex={x.IsComplex}",
+                        Id = x.Id,
                         IsActive = true
                     }).ToList()
                 });
@@ -139,7 +144,7 @@ namespace SmartHome.Core.Services
 
         private async Task AddJobTypesDict()
         {
-            var jobRepo = _container.Resolve<IGenericRepository<JobType>>();
+            var jobRepo = _container.Resolve<ITransactionalRepository<JobType, int>>();
             var jobs = await jobRepo.GetAllAsync();
 
             Dictionaries.Add(new Dictionary
@@ -152,6 +157,49 @@ namespace SmartHome.Core.Services
                 {
                     InternalValue = job.Id.ToString(),
                     DisplayValue = job.DisplayName,
+                    Id = job.Id,
+                    IsActive = true
+                }).ToList()
+            });
+        }
+
+        private async Task AddJobScheduleTypesDict()
+        {
+            var jobRepo = _container.Resolve<ITransactionalRepository<ScheduleType, int>>();
+            var jobs = await jobRepo.GetAllAsync();
+
+            Dictionaries.Add(new Dictionary
+            {
+                Name = nameof(ScheduleType),
+                Description = string.Empty,
+                Metadata = "synthetic=true",
+                ReadOnly = true,
+                Values = jobs.Select(job => new DictionaryValue
+                {
+                    InternalValue = job.Id.ToString(),
+                    DisplayValue = job.DisplayName,
+                    Id = job.Id,
+                    IsActive = true
+                }).ToList()
+            });
+        }
+
+        private async Task AddJobStatusDict()
+        {
+            var jobRepo = _container.Resolve<ITransactionalRepository<JobStatusEntity, int>>();
+            var jobs = await jobRepo.GetAllAsync();
+
+            Dictionaries.Add(new Dictionary
+            {
+                Name = "JobStatus",
+                Description = string.Empty,
+                Metadata = "synthetic=true",
+                ReadOnly = true,
+                Values = jobs.Select(job => new DictionaryValue
+                {
+                    InternalValue = job.Id.ToString(),
+                    DisplayValue = job.Name,
+                    Id = job.Id,
                     IsActive = true
                 }).ToList()
             });

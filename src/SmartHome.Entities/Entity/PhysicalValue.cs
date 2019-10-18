@@ -1,28 +1,17 @@
-﻿namespace SmartHome.Core.Entities.Entity
+﻿using Matty.Framework;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace SmartHome.Core.Entities.Entity
 {
-    public class PhysicalProperty
+    [Table("tbl_physical_property")]
+    public class PhysicalProperty : EntityBase<int>
     {
-        public string Description { get; set; }
-        public string Magnitude { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public override int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsComplex { get; set; }
         public string Unit { get; set; }
-
-        #region ctors
-        public PhysicalProperty()
-        {
-        }
-
-        public PhysicalProperty(string description, string magnitude, string unit)
-        {
-            Description = description;
-            Magnitude = magnitude;
-            Unit = unit;
-        }
-
-        public PhysicalProperty(string magnitude, string unit)
-        {
-            Magnitude = magnitude;
-            Unit = unit;
-        }
-        #endregion
+        public string Magnitude { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace SmartHome.Core.Security
                 new Claim(ClaimTypes.Email, "system@system.com"),
             };
 
-            claims.AddRange(new[] {Roles.Admin, Roles.User}.Select(role => new Claim(ClaimTypes.Role, role)));
+            claims.AddRange(new[] { Roles.Admin, Roles.User }.Select(role => new Claim(ClaimTypes.Role, role)));
 
             return new ClaimsPrincipal(new ClaimsIdentity(claims));
         }

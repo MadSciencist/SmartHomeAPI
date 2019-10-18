@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Matty.Framework.Abstractions;
+﻿using Matty.Framework.Abstractions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Matty.Framework.Validation
 {
-    public abstract class ValidatableParamBase<T> : IValidatable<T> where T : class, new()
+    public abstract class ValidatableParamBase<T> : IThrowableValidator<T> where T : class, new()
     {
         public virtual T Validate()
         {

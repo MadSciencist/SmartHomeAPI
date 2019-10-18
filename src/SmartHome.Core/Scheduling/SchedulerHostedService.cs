@@ -1,14 +1,12 @@
-﻿using System;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Quartz;
 using Quartz.Spi;
-using SmartHome.Core.Entities.SchedulingEntity;
-using System.Collections.Generic;
+using SmartHome.Core.Repositories;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using SmartHome.Core.Data.Repository;
 
 namespace SmartHome.Core.Scheduling
 {
@@ -20,8 +18,8 @@ namespace SmartHome.Core.Scheduling
         private readonly ISchedulesPersistenceRepository _scheduleRepository;
         private readonly ILogger<SchedulerHostedService> _logger;
 
-        public SchedulerHostedService(ISchedulerFactory schedulerFactory, 
-            IJobFactory jobFactory, 
+        public SchedulerHostedService(ISchedulerFactory schedulerFactory,
+            IJobFactory jobFactory,
             ISchedulesPersistenceRepository scheduleRepo,
             ILogger<SchedulerHostedService> logger)
         {
@@ -43,11 +41,15 @@ namespace SmartHome.Core.Scheduling
 
                 foreach (var job in persistedJobs)
                 {
-                    _logger.LogInformation($"Adding scheduled job: {job.ToString()}");
+                    if (job.JobStatusEntity.AsEnum() == Entities.Enums.JobStatus.Running)
+                    {
+                        _logger.LogInformation($"Adding scheduled job: {job}");
 
-                    var jobSchedule = CreateJobSchedule(job);
-                    await _scheduler.ScheduleJob(jobSchedule.CreateJob(), jobSchedule.CreateTrigger(),
-                        cancellationToken);
+                        var jobSchedule = JsonConvert.DeserializeObject(job.SerializedJobSchedule, job.ScheduleType.GetScheduleType()) as JobSchedule;
+
+                        await _scheduler.ScheduleJob(jobSchedule.CreateJob(), jobSchedule.CreateTrigger(),
+                            cancellationToken);
+                    }
                 }
 
                 await _scheduler.Start(cancellationToken);
@@ -64,22 +66,6 @@ namespace SmartHome.Core.Scheduling
         {
             _logger.LogInformation("Shutting down scheduling service.");
             if (_scheduler != null) await _scheduler.Shutdown(cancellationToken);
-        }
-
-        private JobSchedule CreateJobSchedule(ScheduleEntity job)
-        {
-            // TODO Think of more polymorphic way...
-            var jobParams = JsonConvert.DeserializeObject<Dictionary<string, object>>(job.JobParams);
-            if (jobParams.ContainsKey(nameof(NodeJobSchedule.NodeId)) && jobParams.ContainsKey(nameof(NodeJobSchedule.Command)))
-            {
-                var nodeId = (int)(long)jobParams[nameof(NodeJobSchedule.NodeId)];
-                var command = jobParams[nameof(NodeJobSchedule.Command)] as string;
-                var commandParams = jobParams[nameof(NodeJobSchedule.CommandParams)];
-
-                return new NodeJobSchedule(job.JobType.GetJobType(), nodeId, command, commandParams, job.CronExpression);
-            }
-
-            return new JobSchedule(job.JobType.GetJobType(), job.CronExpression);
         }
     }
 }

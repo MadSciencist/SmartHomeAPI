@@ -41,14 +41,10 @@ namespace SmartHome.Core.MessageHanding
 
         protected string ApplyConversion(string magnitude, string value)
         {
-            if (DataMapper.Converters.TryGetValue(magnitude, out var converterType))
-            {
-                var converter = Activator.CreateInstance(converterType) as IDataConverter;
-                return converter?.Convert(value);
-            }
-
-            // Converter not registered for given property - return original value
-            return value;
+            var converterType = DataMapper.GetConverter(magnitude);
+            if (converterType == null) return value; // no converter required short circuit
+            var converter = Activator.CreateInstance(converterType) as IDataConverter;
+            return converter?.Convert(value);
         }
 
         #region ctor
