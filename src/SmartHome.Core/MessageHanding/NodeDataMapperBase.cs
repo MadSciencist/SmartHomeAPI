@@ -1,4 +1,4 @@
-﻿using Autofac;
+﻿using Matty.Framework.Utils;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Services.Abstractions;
 using System;
@@ -10,29 +10,39 @@ namespace SmartHome.Core.MessageHanding
 {
     public abstract class NodeDataMapperBase : INodeDataMapper
     {
-        public IPhysicalPropertyService PhysicalPropertyService { get; set; }
-
         private Dictionary<string, string> _mappings;
         private Dictionary<string, Type> _converters;
 
-        public void AddMappings(Dictionary<string, string> mappings)
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
+        // Autowired by Autofac
+        // Dirty hack: the auto-wiring happens AFTER finishing constructor
+        // So that's why initialize method was put here.
+        // I did not wanted to pollute the contract classes
+        // with a must of explicitly calling base constructor.
+        private IPhysicalPropertyService _physicalPropertyService;
+        public IPhysicalPropertyService PhysicalPropertyService
         {
-            _mappings = mappings;
+            get => _physicalPropertyService;
+            set
+            {
+                var initialize = (_physicalPropertyService == null);
+                _physicalPropertyService = value;
+                if (initialize)
+                {
+                    Initialize();
+                }
+            }
         }
 
-        public void AddConverters(Dictionary<string, Type> converters)
+        /// <summary>
+        /// Is executed right after the constructor
+        /// </summary>
+        private void Initialize()
         {
-            _converters = converters;
-        }
-
-        #region ctor
-        protected NodeDataMapperBase()
-        {
-            // ReSharper disable VirtualMemberCallInConstructor
             InitializeMapping();
             InitializeConverters();
         }
-        #endregion
+
 
         #region INodeDataMapper impl
         public bool IsPropertyValid(string property)
@@ -42,33 +52,42 @@ namespace SmartHome.Core.MessageHanding
         }
 
         public string GetMapping(string property)
-        {   // todo error handling
-            return _mappings[property];
+        {
+            return DictionaryUtils.GetValue(_mappings, property);
         }
 
         public Type GetConverter(string magnitude)
-        {// todo error handling
-            return _converters[magnitude];
+        {
+            return DictionaryUtils.GetValue(_converters, magnitude);
         }
 
         public async Task<PhysicalProperty> GetPhysicalPropertyByContractMagnitudeAsync(string magnitude)
         {
             var systemMagnitude = _mappings[magnitude];
+            if (systemMagnitude == null) return null;
             return await PhysicalPropertyService.GetByMagnitudeAsync(systemMagnitude);
         }
 
-        public ICollection<PhysicalProperty> GetAllContractPhysicalProperties()
+        public async Task<IEnumerable<PhysicalProperty>> GetAllContractPhysicalProperties()
         {
-            //var intersection = SystemMagnitudes.Properties.Select(x => x.Magnitude).Intersect(Mapping.Values);
-            //return SystemMagnitudes.Properties.Where(x => intersection.Contains(x.Magnitude)).ToList();
-            return null;
+            var mappedMagnitudes = _mappings.Select(x => x.Value);
+            return await PhysicalPropertyService.GetFilteredByMagnitudes(mappedMagnitudes);
         }
         #endregion
+
+        protected void AddMappings(Dictionary<string, string> mappings)
+        {
+            _mappings = mappings;
+        }
+
+        protected void AddConverters(Dictionary<string, Type> converters)
+        {
+            _converters = converters;
+        }
 
         // Required to override
         protected abstract void InitializeMapping();
 
-        // It is possible that no conversion is required
         protected virtual void InitializeConverters()
         {
         }

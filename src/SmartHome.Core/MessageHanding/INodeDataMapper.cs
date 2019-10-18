@@ -1,14 +1,12 @@
-﻿using System;
-using SmartHome.Core.Entities.Entity;
+﻿using SmartHome.Core.Entities.Entity;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartHome.Core.Services.Abstractions;
 
 namespace SmartHome.Core.MessageHanding
 {
     public interface INodeDataMapper
     {
-        //IPhysicalPropertyService PhysicalPropertyService { get; set; }
         /// <summary>
         /// Check if ValidProperties collection contains property
         /// </summary>
@@ -16,7 +14,18 @@ namespace SmartHome.Core.MessageHanding
         /// <returns></returns>
         bool IsPropertyValid(string property);
 
-        string GetMapping(string property);
+        /// <summary>
+        /// Get system value of vendor magnitude
+        /// </summary>
+        /// <param name="magnitude"></param>
+        /// <returns></returns>
+        string GetMapping(string magnitude);
+
+        /// <summary>
+        /// Gets registered type of converter by vendor magnitude
+        /// </summary>
+        /// <param name="magnitude"></param>
+        /// <returns></returns>
         Type GetConverter(string magnitude);
 
         /// <summary>
@@ -30,6 +39,6 @@ namespace SmartHome.Core.MessageHanding
         /// Returns all system physical properties in specific contract
         /// </summary>
         /// <returns></returns>
-        ICollection<PhysicalProperty> GetAllContractPhysicalProperties();
+        Task<IEnumerable<PhysicalProperty>> GetAllContractPhysicalProperties();
     }
 }

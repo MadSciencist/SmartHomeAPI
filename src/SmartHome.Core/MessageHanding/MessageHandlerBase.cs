@@ -42,6 +42,7 @@ namespace SmartHome.Core.MessageHanding
         protected string ApplyConversion(string magnitude, string value)
         {
             var converterType = DataMapper.GetConverter(magnitude);
+            if (converterType == null) return value; // no converter required short circuit
             var converter = Activator.CreateInstance(converterType) as IDataConverter;
             return converter?.Convert(value);
         }

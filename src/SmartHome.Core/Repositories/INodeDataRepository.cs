@@ -1,13 +1,13 @@
 ﻿using Matty.Framework.Abstractions;
 using SmartHome.Core.Entities.Entity;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Repositories
 {
-    public interface INodeDataRepository : IGenericRepository<NodeData>
+    public interface INodeDataRepository : ITransactionalRepository<NodeData, int>
     {
         Task<NodeData> AddSingleAsync(NodeData data, int samplesToKeep);
-
-        //Task<NodeData> AddManyAsync(int nodeId, int samplesToKeep, ICollection<NodeDataMagnitude> data);
+        Task AddManyAsync(int nodeId, int samplesToKeep, IEnumerable<NodeData> dataPlural);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Entities.SchedulingEntity;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Data.InitialLoad
 {
@@ -77,7 +77,7 @@ namespace SmartHome.Core.Data.InitialLoad
 
                 //        new PhysicalProperty("Light", "light", nameof(LightParam)),
 
- 
+
                 //        new PhysicalProperty("energy", "kWh"),
                 //        new PhysicalProperty("energy_delta", "kWh"),
                 //        new PhysicalProperty("Generic Analog Sensor", "generic_analog", "bit"),

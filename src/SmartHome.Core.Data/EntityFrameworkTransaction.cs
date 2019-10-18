@@ -14,7 +14,7 @@ namespace SmartHome.Core.Data
         {
             _transaction = context.Database.BeginTransaction();
         }
-        
+
         public void Commit()
         {
             _transaction.Commit();

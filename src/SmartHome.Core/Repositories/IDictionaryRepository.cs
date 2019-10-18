@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Repositories
 {
-    public interface IDictionaryRepository : IGenericRepository<Dictionary>
+    public interface IDictionaryRepository : ITransactionalRepository<Dictionary, int>
     {
         Task<IEnumerable<string>> GetNames();
     }

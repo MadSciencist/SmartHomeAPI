@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Data.Repository
 {
-    public class SchedulesPersistenceRepository : GenericRepository<ScheduleEntity>, ISchedulesPersistenceRepository
+    public class SchedulesPersistenceRepository : GenericRepository<ScheduleEntity, int>, ISchedulesPersistenceRepository
     {
         public SchedulesPersistenceRepository(ILifetimeScope container) : base(container)
         {

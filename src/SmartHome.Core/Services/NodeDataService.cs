@@ -10,6 +10,7 @@ using SmartHome.Core.Repositories;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
@@ -39,14 +40,30 @@ namespace SmartHome.Core.Services
 
             var nodeData = new NodeData
             {
-                Magnitude = data.PhysicalProperty.Magnitude,
-                Unit = data.PhysicalProperty.Unit,
+                PhysicalProperty = data.PhysicalProperty,
+                PhysicalPropertyId = data.PhysicalProperty.Id,
                 Value = data.Value,
                 NodeId = nodeId,
                 TimeStamp = DateTime.UtcNow
             };
 
             return await _nodeDataRepository.AddSingleAsync(nodeData, samplesToKeep);
+        }
+
+        public async Task AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data)
+        {
+            var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
+
+            var nodeData = data.Select(x => new NodeData
+            {
+                PhysicalProperty = x.PhysicalProperty,
+                PhysicalPropertyId = x.PhysicalProperty.Id,
+                Value = x.Value,
+                NodeId = nodeId,
+                TimeStamp = DateTime.UtcNow
+            });
+
+            await _nodeDataRepository.AddManyAsync(nodeId, samplesToKeep, nodeData);
         }
 
         //public async Task<NodeData> AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data)

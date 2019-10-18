@@ -15,9 +15,9 @@ namespace SmartHome.Core.Services
         protected IValidator<TValidator> Validator
             => _validator ?? (_validator = Container.Resolve<IValidator<TValidator>>());
 
-        private IGenericRepository<TRepository> _repository;
-        protected IGenericRepository<TRepository> GenericRepository
-            => _repository ?? (_repository = Container.Resolve<IGenericRepository<TRepository>>());
+        private ITransactionalRepository<TRepository, int> _repository;
+        protected ITransactionalRepository<TRepository, int> GenericRepository
+            => _repository ?? (_repository = Container.Resolve<ITransactionalRepository<TRepository, int>>());
 
 
         #region constructor

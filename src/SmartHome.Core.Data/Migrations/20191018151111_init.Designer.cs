@@ -9,7 +9,7 @@ using SmartHome.Core.Data;
 namespace SmartHome.Core.Data.Migrations
 {
     [DbContext(typeof(EntityFrameworkContext))]
-    [Migration("20191017194018_init")]
+    [Migration("20191018151111_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -279,15 +279,11 @@ namespace SmartHome.Core.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Magnitude");
-
                     b.Property<int>("NodeId");
 
                     b.Property<int>("PhysicalPropertyId");
 
                     b.Property<DateTime>("TimeStamp");
-
-                    b.Property<string>("Unit");
 
                     b.Property<string>("Value");
 

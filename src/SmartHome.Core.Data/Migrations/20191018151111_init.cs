@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace SmartHome.Core.Data.Migrations
 {
@@ -458,9 +458,7 @@ namespace SmartHome.Core.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     TimeStamp = table.Column<DateTime>(nullable: false),
-                    Magnitude = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
-                    Unit = table.Column<string>(nullable: true),
                     NodeId = table.Column<int>(nullable: false),
                     PhysicalPropertyId = table.Column<int>(nullable: false)
                 },

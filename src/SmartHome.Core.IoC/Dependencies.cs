@@ -55,7 +55,8 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<AppUserNodeLinkRepository>().As<IAppUserNodeLinkRepository>().InstancePerDependency();
             Builder.RegisterType<DictionaryRepository>().As<IDictionaryRepository>().InstancePerDependency();
             Builder.RegisterType<SchedulesPersistenceRepository>().As<ISchedulesPersistenceRepository>().InstancePerDependency();
-            Builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>)).InstancePerDependency();
+            Builder.RegisterType<PhysicalPropertyRepository>().As<IPhysicalPropertyRepository>().InstancePerDependency();
+            Builder.RegisterGeneric(typeof(GenericRepository<,>)).As(typeof(ITransactionalRepository<,>)).InstancePerDependency();
 
             Builder.RegisterType<NodeService>().As<INodeService>().InstancePerDependency();
             Builder.RegisterType<NodeDataService>().As<INodeDataService>().InstancePerDependency();
@@ -98,14 +99,14 @@ namespace SmartHome.Core.IoC
             }
         }
 
-        private static void RegisterNamed<T>(IEnumerable<KeyValuePair<string, Type>> contractLibs)
+        private static void RegisterNamed<TResolvable>(IEnumerable<KeyValuePair<string, Type>> contractLibs)
         {
             foreach (var (key, value) in contractLibs)
             {
                 Builder.RegisterType(value)
                     .Named<object>(key)
-                    .As<T>()
-                    .PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+                    .As<TResolvable>()
+                    .PropertiesAutowired();
             }
         }
     }

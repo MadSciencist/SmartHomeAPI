@@ -103,7 +103,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
                     }
                 }
 
-                //await NodeDataService.AddManyAsync(Node.Id, magnitudesDto);
+                await NodeDataService.AddManyAsync(Node.Id, magnitudesDto);
                 NotificationService.PushDataNotification(Node.Id, magnitudesDto);
                 return true;
             }

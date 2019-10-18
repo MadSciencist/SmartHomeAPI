@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Repositories
 {
-    public interface INodeRepository : IGenericRepository<Node>
+    public interface INodeRepository : ITransactionalRepository<Node, int>
     {
         Task<IEnumerable<string>> GetAllClientIdsAsync();
         Task<Node> GetByClientIdAsync(string clientId);

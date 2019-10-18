@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SmartHome.Contracts.GenericRest
 {
     /// <summary>
-    /// This class handles all messages which match witch SmartHome.Core.Domain.SystemMagnitudes properties
+    /// This class handles all messages
     /// It assumes that payload of message is in JSON format
     /// </summary>
     public class Handler : MessageHandlerBase<RestMessageDto>

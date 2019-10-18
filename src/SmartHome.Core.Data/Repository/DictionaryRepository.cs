@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Data.Repository
 {
-    public class DictionaryRepository : GenericRepository<Dictionary>, IDictionaryRepository
+    public class DictionaryRepository : GenericRepository<Dictionary, int>, IDictionaryRepository
     {
         public DictionaryRepository(ILifetimeScope container) : base(container)
         {

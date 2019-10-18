@@ -3,7 +3,7 @@ using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Repositories
 {
-    public interface IAppUserNodeLinkRepository : ITransactionalRepository<AppUserNodeLink, int>
+    public interface IPhysicalPropertyRepository : ITransactionalRepository<PhysicalProperty, int>
     {
     }
 }

@@ -25,7 +25,7 @@ namespace SmartHome.Core.Services.Abstractions
         /// <param name="nodeId"></param>
         /// <param name="data"></param>
         /// <returns></returns>
-        //Task<NodeData> AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data);
+        Task AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data);
 
         /// <summary>
         /// Query data repository

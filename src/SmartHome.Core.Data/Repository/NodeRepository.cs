@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SmartHome.Core.Data.Repository
 {
-    public class NodeRepository : GenericRepository<Node>, INodeRepository
+    public class NodeRepository : GenericRepository<Node, int>, INodeRepository
     {
         public NodeRepository(ILifetimeScope container) : base(container)
         {

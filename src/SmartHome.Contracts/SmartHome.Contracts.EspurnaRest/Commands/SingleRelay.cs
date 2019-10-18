@@ -8,7 +8,6 @@ using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.ContractParams;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.Exceptions;
-using SmartHome.Core.MessageHanding;
 using SmartHome.Core.RestClient;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -3,7 +3,7 @@ using SmartHome.Core.Entities.Entity;
 
 namespace SmartHome.Core.Repositories
 {
-    public interface IStrategyRepository : IGenericRepository<ControlStrategy>
+    public interface IStrategyRepository : ITransactionalRepository<ControlStrategy, int>
     {
     }
 }

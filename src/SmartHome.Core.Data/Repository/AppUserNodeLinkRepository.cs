@@ -4,7 +4,7 @@ using SmartHome.Core.Repositories;
 
 namespace SmartHome.Core.Data.Repository
 {
-    public class AppUserNodeLinkRepository : GenericRepository<AppUserNodeLink>, IAppUserNodeLinkRepository
+    public class AppUserNodeLinkRepository : GenericRepository<AppUserNodeLink, int>, IAppUserNodeLinkRepository
     {
         public AppUserNodeLinkRepository(ILifetimeScope container) : base(container)
         {

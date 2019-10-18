@@ -277,15 +277,11 @@ namespace SmartHome.Core.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Magnitude");
-
                     b.Property<int>("NodeId");
 
                     b.Property<int>("PhysicalPropertyId");
 
                     b.Property<DateTime>("TimeStamp");
-
-                    b.Property<string>("Unit");
 
                     b.Property<string>("Value");
 

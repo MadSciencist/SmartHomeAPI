@@ -55,7 +55,7 @@ namespace SmartHome.Core.Services
             Dictionaries = new List<Dictionary>();
             AddContractsDict();
             AddCommandExecutorsDict();
-            AddContractPropertiesDict();
+            AddContractPropertiesDict().Wait();
             AddJobTypesDict().Wait();
             AddJobScheduleTypesDict().Wait();
             AddJobStatusDict().Wait();
@@ -63,7 +63,7 @@ namespace SmartHome.Core.Services
             _cache.Set(CacheKey, Dictionaries, TimeSpan.FromHours(12));
         }
 
-        private void AddContractPropertiesDict()
+        private async Task AddContractPropertiesDict()
         {
             IDictionary<string, IEnumerable<Type>> mappers = AssemblyScanner.GetDataMappers();
             foreach (var mapper in mappers)
@@ -77,13 +77,15 @@ namespace SmartHome.Core.Services
                 var dataMapper = _container.ResolveNamed<object>(mapperName) as INodeDataMapper;
                 if (dataMapper is null) throw new InvalidOperationException($"{asmLocation} has no mapper");
 
+                var contractProperties = await dataMapper.GetAllContractPhysicalProperties();
+
                 Dictionaries.Add(new Dictionary
                 {
                     Name = $"{info.ProductName}-properties",
                     Description = info.Comments,
                     Metadata = "synthetic=true",
                     ReadOnly = true,
-                    Values = dataMapper.GetAllContractPhysicalProperties().Select(x => new DictionaryValue
+                    Values = contractProperties.Select(x => new DictionaryValue
                     {
                         DisplayValue = x.Name,
                         InternalValue = x.Magnitude,
@@ -142,7 +144,7 @@ namespace SmartHome.Core.Services
 
         private async Task AddJobTypesDict()
         {
-            var jobRepo = _container.Resolve<IGenericRepository<JobType>>();
+            var jobRepo = _container.Resolve<ITransactionalRepository<JobType, int>>();
             var jobs = await jobRepo.GetAllAsync();
 
             Dictionaries.Add(new Dictionary
@@ -163,7 +165,7 @@ namespace SmartHome.Core.Services
 
         private async Task AddJobScheduleTypesDict()
         {
-            var jobRepo = _container.Resolve<IGenericRepository<ScheduleType>>();
+            var jobRepo = _container.Resolve<ITransactionalRepository<ScheduleType, int>>();
             var jobs = await jobRepo.GetAllAsync();
 
             Dictionaries.Add(new Dictionary
@@ -184,7 +186,7 @@ namespace SmartHome.Core.Services
 
         private async Task AddJobStatusDict()
         {
-            var jobRepo = _container.Resolve<IGenericRepository<JobStatusEntity>>();
+            var jobRepo = _container.Resolve<ITransactionalRepository<JobStatusEntity, int>>();
             var jobs = await jobRepo.GetAllAsync();
 
             Dictionaries.Add(new Dictionary
