@@ -23,9 +23,9 @@ namespace SmartHome.Core.Entities.Entity
         public bool IsActive { get; set; }
 
         // Navigation & relationship properties
-        public ICollection<Node> Nodes { get; set; }
+        public IEnumerable<Node> Nodes { get; set; }
 
-        public ICollection<RegisteredMagnitude> RegisteredMagnitudes { get; set; }
+        public IEnumerable<PhysicalPropertyControlStrategyLink> PhysicalProperties { get; set; }
 
         #region ICreationAudit impl
         public int CreatedById { get; set; }

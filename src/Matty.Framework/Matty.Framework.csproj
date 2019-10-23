@@ -3,6 +3,18 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.0.2</Version>
+    <Authors>Mateusz Kryszczak</Authors>
+    <Description>Set of common functions for starting new ASP.NET Core projects.</Description>
+    <Copyright>Copyright 2019 Mateusz K.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MadSciencist</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MadSciencist</RepositoryUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <PackageTags>asp.net core common utilities framework</PackageTags>
+    <AssemblyVersion>0.0.1.1</AssemblyVersion>
+    <FileVersion>0.0.1.1</FileVersion>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

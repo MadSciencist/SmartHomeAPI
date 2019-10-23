@@ -44,7 +44,7 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
                 .ForMember(x => x.ControlStrategyName, opt => opt.MapFrom(x => x.ControlStrategy.AssemblyProduct))
-                .ForMember(x => x.Magnitudes, opt => opt.MapFrom(x => x.ControlStrategy.RegisteredMagnitudes.Select(m => m.Magnitude)))
+                //.ForMember(x => x.Magnitudes, opt => opt.MapFrom(x => x.ControlStrategy.RegisteredMagnitudes.Select(m => m.Magnitude)))
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<UiConfiguration, UiConfigurationDto>()

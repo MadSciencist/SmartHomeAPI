@@ -199,6 +199,14 @@ namespace SmartHome.Core.Data.InitialLoad
                             Magnitude = "relay3",
                             Unit = "",
                             IsComplex = false
+                        },
+                        new PhysicalProperty
+                        {
+                            Id = 300,
+                            Name = "Light",
+                            Magnitude = "light",
+                            Unit = "",
+                            IsComplex = true
                         }
                     };
 

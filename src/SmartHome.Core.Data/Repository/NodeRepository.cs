@@ -18,7 +18,8 @@ namespace SmartHome.Core.Data.Repository
         {
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
-                    .ThenInclude(x => x.RegisteredMagnitudes)
+                    .ThenInclude(x => x.PhysicalProperties)
+                        .ThenInclude(x => x.PhysicalProperty)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .ToListAsync();
@@ -35,7 +36,8 @@ namespace SmartHome.Core.Data.Repository
         {
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
-                    .ThenInclude(x => x.RegisteredMagnitudes)
+                    .ThenInclude(x => x.PhysicalProperties)
+                        .ThenInclude(x => x.PhysicalProperty)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -50,7 +52,8 @@ namespace SmartHome.Core.Data.Repository
 
             return await Context.Nodes
                 .Include(x => x.ControlStrategy)
-                    .ThenInclude(x => x.RegisteredMagnitudes)
+                    .ThenInclude(x => x.PhysicalProperties)
+                        .ThenInclude(x => x.PhysicalProperty)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .FirstOrDefaultAsync(x => x.ClientId == clientId);

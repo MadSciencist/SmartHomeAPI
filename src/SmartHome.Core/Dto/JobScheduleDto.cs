@@ -10,7 +10,6 @@ namespace SmartHome.Core.Dto
         public int JobStatusId { get; set; }
         public int JobTypeId { get; set; }
         public int CreatedById { get; set; }
-        public object JobParams { get; set; }
         public string CreatedBy { get; set; }
         public DateTime Created { get; set; }
         public int? LastUpdatedById { get; set; }

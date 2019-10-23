@@ -6,6 +6,7 @@ using SmartHome.Core.Services;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Threading.Tasks;
+using SmartHome.Core.Dto;
 
 namespace SmartHome.Core.MessageHanding
 {
@@ -42,9 +43,39 @@ namespace SmartHome.Core.MessageHanding
         protected string ApplyConversion(string magnitude, string value)
         {
             var converterType = DataMapper.GetConverter(magnitude);
-            if (converterType == null) return value; // no converter required short circuit
+            if (converterType is null) return value; // no converter required short circuit
+
             var converter = Activator.CreateInstance(converterType) as IDataConverter;
             return converter?.Convert(value);
+        }
+
+        /// <summary>
+        /// Saves the data in DB and notifies the client via SignalR.
+        /// </summary>
+        /// <param name="magnitude">Mapped magnitude</param>
+        /// <param name="value">Value of magnitude</param>
+        /// <returns></returns>
+        protected async Task ProcessNodeMagnitude(string magnitude, string value)
+        {
+            var magnitudeDto = await BuildNodeDto(magnitude, value);
+
+            await NodeDataService.AddSingleAsync(Node.Id, magnitudeDto);
+            NotificationService.PushDataNotification(Node.Id, magnitudeDto);
+        }
+
+        private async Task<NodeDataDto> BuildNodeDto(string magnitude, string value)
+        {
+            var property = await DataMapper.GetPhysicalPropertyByMagnitudeAsync(magnitude);
+
+            // Check if there is associated system property
+            if (property is null)
+                throw new InvalidOperationException($"{magnitude} does not maps to existing PhysicalProperty");
+
+            return new NodeDataDto
+            {
+                Value = ApplyConversion(magnitude, value),
+                PhysicalProperty = property
+            };
         }
 
         #region ctor

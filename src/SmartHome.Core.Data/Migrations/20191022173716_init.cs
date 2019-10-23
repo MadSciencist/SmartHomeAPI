@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
 
 namespace SmartHome.Core.Data.Migrations
 {
@@ -416,7 +416,7 @@ namespace SmartHome.Core.Data.Migrations
                         column: x => x.ControlStrategyId,
                         principalTable: "tbl_control_strategy",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_tbl_node_tbl_user_CreatedById",
                         column: x => x.CreatedById,
@@ -432,21 +432,27 @@ namespace SmartHome.Core.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tbl_registered_magnitude",
+                name: "tbl_physicalproperty_controlstrategy_link",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Magnitude = table.Column<string>(maxLength: 250, nullable: false),
+                    PhysicalPropertyId = table.Column<int>(nullable: false),
                     ControlStrategyId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tbl_registered_magnitude", x => x.Id);
+                    table.PrimaryKey("PK_tbl_physicalproperty_controlstrategy_link", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tbl_registered_magnitude_tbl_control_strategy_ControlStrateg~",
+                        name: "FK_tbl_physicalproperty_controlstrategy_link_tbl_control_strate~",
                         column: x => x.ControlStrategyId,
                         principalTable: "tbl_control_strategy",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tbl_physicalproperty_controlstrategy_link_tbl_physical_prope~",
+                        column: x => x.PhysicalPropertyId,
+                        principalTable: "tbl_physical_property",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -582,9 +588,14 @@ namespace SmartHome.Core.Data.Migrations
                 column: "PhysicalPropertyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_registered_magnitude_ControlStrategyId",
-                table: "tbl_registered_magnitude",
+                name: "IX_tbl_physicalproperty_controlstrategy_link_ControlStrategyId",
+                table: "tbl_physicalproperty_controlstrategy_link",
                 column: "ControlStrategyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbl_physicalproperty_controlstrategy_link_PhysicalPropertyId",
+                table: "tbl_physicalproperty_controlstrategy_link",
+                column: "PhysicalPropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -673,7 +684,7 @@ namespace SmartHome.Core.Data.Migrations
                 name: "tbl_node_data");
 
             migrationBuilder.DropTable(
-                name: "tbl_registered_magnitude");
+                name: "tbl_physicalproperty_controlstrategy_link");
 
             migrationBuilder.DropTable(
                 name: "tbl_scheduling_schedules");

@@ -9,7 +9,7 @@ using SmartHome.Core.Data;
 namespace SmartHome.Core.Data.Migrations
 {
     [DbContext(typeof(EntityFrameworkContext))]
-    [Migration("20191018151111_init")]
+    [Migration("20191022173716_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -313,22 +313,22 @@ namespace SmartHome.Core.Data.Migrations
                     b.ToTable("tbl_physical_property");
                 });
 
-            modelBuilder.Entity("SmartHome.Core.Entities.Entity.RegisteredMagnitude", b =>
+            modelBuilder.Entity("SmartHome.Core.Entities.Entity.PhysicalPropertyControlStrategyLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("ControlStrategyId");
 
-                    b.Property<string>("Magnitude")
-                        .IsRequired()
-                        .HasMaxLength(250);
+                    b.Property<int>("PhysicalPropertyId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ControlStrategyId");
 
-                    b.ToTable("tbl_registered_magnitude");
+                    b.HasIndex("PhysicalPropertyId");
+
+                    b.ToTable("tbl_physicalproperty_controlstrategy_link");
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.UiConfiguration", b =>
@@ -625,8 +625,7 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.HasOne("SmartHome.Core.Entities.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany("Nodes")
-                        .HasForeignKey("ControlStrategyId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ControlStrategyId");
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "CreatedBy")
                         .WithMany()
@@ -651,11 +650,16 @@ namespace SmartHome.Core.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SmartHome.Core.Entities.Entity.RegisteredMagnitude", b =>
+            modelBuilder.Entity("SmartHome.Core.Entities.Entity.PhysicalPropertyControlStrategyLink", b =>
                 {
                     b.HasOne("SmartHome.Core.Entities.Entity.ControlStrategy", "ControlStrategy")
-                        .WithMany("RegisteredMagnitudes")
+                        .WithMany("PhysicalProperties")
                         .HasForeignKey("ControlStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartHome.Core.Entities.Entity.PhysicalProperty", "PhysicalProperty")
+                        .WithMany("ControlStrategies")
+                        .HasForeignKey("PhysicalPropertyId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

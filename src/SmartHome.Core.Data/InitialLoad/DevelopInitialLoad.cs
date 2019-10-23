@@ -21,87 +21,36 @@ namespace SmartHome.Core.Data.InitialLoad
                     {
                         new ControlStrategy
                         {
-                            Id = 1,
-                            IsActive = true,
-                            Description = "Control Espurna over MQTT",
-                            ContractAssembly = "SmartHome.Contracts.EspurnaMqtt.dll",
-                            AssemblyProduct = "Espurna-MQTT-v1",
-                            CreatedById = 1,
-                            Created = DateTime.UtcNow,
-                            RegisteredMagnitudes = new List<RegisteredMagnitude>
-                            {
-                                new RegisteredMagnitude { Magnitude = "generic_analog" },
-                                new RegisteredMagnitude { Magnitude = "relay2" },
-                                new RegisteredMagnitude { Magnitude = "relay1" },
-                                new RegisteredMagnitude { Magnitude = "relay0" }
-                            }
-                        },
-                        new ControlStrategy
-                        {
-                            Id = 2,
-                            IsActive = true,
-                            Description = "Control Espurna over REST",
-                            ContractAssembly = "SmartHome.Contracts.EspurnaRest.dll",
-                            AssemblyProduct = "Espurna-REST-v1",
-                            CreatedById = 1,
-                            Created = DateTime.UtcNow,
-                            RegisteredMagnitudes = new List<RegisteredMagnitude>
-                            {
-                                new RegisteredMagnitude { Magnitude = "generic_analog" },
-                                new RegisteredMagnitude { Magnitude = "relay2" },
-                                new RegisteredMagnitude { Magnitude = "relay1" },
-                                new RegisteredMagnitude { Magnitude = "relay0" }
-                            }
-                        },
-                        new ControlStrategy
-                        {
-                            Id = 3,
-                            IsActive = true,
-                            Description = "Control generic devices over REST",
-                            ContractAssembly = "SmartHome.Contracts.GenericRest.dll",
-                            AssemblyProduct = "Generic-REST-v1",
-                            CreatedById = 1,
-                            Created = DateTime.UtcNow,
-                            RegisteredMagnitudes = new List<RegisteredMagnitude>
-                            {
-                                new RegisteredMagnitude { Magnitude = "generic_analog" },
-                                new RegisteredMagnitude { Magnitude = "relay2" },
-                                new RegisteredMagnitude { Magnitude = "relay1" },
-                                new RegisteredMagnitude { Magnitude = "relay0" }
-                            }
-                        },
-                        new ControlStrategy
-                        {
                             Id = 4,
                             IsActive = true,
-                            Description = "Control Tasmota Socket with power measurment",
+                            Description = "Control Tasmota Socket with power measurement",
                             ContractAssembly = "SmartHome.Contracts.TasmotaMqtt.dll",
                             AssemblyProduct = "Tasmota-MQTT-v1",
                             CreatedById = 1,
                             Created = DateTime.UtcNow,
-                            RegisteredMagnitudes = new List<RegisteredMagnitude>
+                            PhysicalProperties = new List<PhysicalPropertyControlStrategyLink>
                             {
-                                new RegisteredMagnitude { Magnitude = "relay0" },
-                                new RegisteredMagnitude { Magnitude = "voltage" },
-                                new RegisteredMagnitude { Magnitude = "current" },
-                                new RegisteredMagnitude { Magnitude = "power_active" },
-                                new RegisteredMagnitude { Magnitude = "power_reactive" },
-                                new RegisteredMagnitude { Magnitude = "power_apparent" },
-                                new RegisteredMagnitude { Magnitude = "power_factor"}
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 103 }, // Current
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 104 }, // Voltage
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 105 }, // Active power
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 106 }, // Apparent Power
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 107 }, // Reactive power
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 108 }, // Power factor
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 109 }, // Relay #1
                             }
                         },
                         new ControlStrategy
                         {
                             Id = 5,
                             IsActive = true,
-                            Description = "Control Tasmota Socket with power measurment",
+                            Description = "Control Tasmota Light",
                             ContractAssembly = "SmartHome.Contracts.TasmotaMqtt.dll",
                             AssemblyProduct = "Tasmota-MQTT-v1",
                             CreatedById = 1,
                             Created = DateTime.UtcNow,
-                            RegisteredMagnitudes = new List<RegisteredMagnitude>
+                            PhysicalProperties = new List<PhysicalPropertyControlStrategyLink>
                             {
-                                new RegisteredMagnitude { Magnitude = "light" }
+                                new PhysicalPropertyControlStrategyLink  { ControlStrategyId = 4, PhysicalPropertyId = 300 }, // Light
                             }
                         }
                     };
@@ -140,7 +89,7 @@ namespace SmartHome.Core.Data.InitialLoad
                     var node2 = new Node
                     {
                         Name = "Sonoff B1 Light",
-                        ControlStrategyId = 5,
+                        ControlStrategyId = 4,
                         Created = DateTime.UtcNow,
                         CreatedById = 1,
                         UriSchema = "http://",

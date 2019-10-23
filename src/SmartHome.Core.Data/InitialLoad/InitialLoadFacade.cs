@@ -20,7 +20,6 @@ namespace SmartHome.Core.Data.InitialLoad
 
             await DictionaryInitialLoad.Seed(_serviceProvider);
             await ConfigInitialLoad.Seed(_serviceProvider);
-
             await DevelopInitialLoad.Seed(_serviceProvider);
         }
     }

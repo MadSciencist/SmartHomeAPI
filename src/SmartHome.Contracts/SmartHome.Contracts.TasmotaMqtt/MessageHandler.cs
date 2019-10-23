@@ -6,13 +6,20 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.ContractParams;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.MessageHanding;
-using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace SmartHome.Contracts.TasmotaMqtt
 {
     public class Handler : MessageHandlerBase<MqttMessageDto>
     {
+        private const string TasmotaLightKey = "light";
+        private const string TasmotaRelay0Key = "POWER";
+        private const string TasmotaDimmerKey = "Dimmer";
+        private const string TasmotaColorTemperatureKey = "CT";
+        private const string TasmotaEnergyStatusKey = "StatusSNS";
+
         public Handler(ILifetimeScope container, Node node) : base(container, node)
         {
         }
@@ -24,7 +31,7 @@ namespace SmartHome.Contracts.TasmotaMqtt
                 var payload = JObject.Parse(message.Payload);
 
                 // Due to tasmota complex responses, we need to check for complex types 'manually'
-                if (await SaveLightbulbComplexParam(payload)) return;
+                if (await SaveLightComplexParam(payload)) return;
                 if (await SavePowerConsumptionParam(payload)) return;
                 if (await SaveRelayParam(payload)) return;
             }
@@ -35,97 +42,76 @@ namespace SmartHome.Contracts.TasmotaMqtt
             }
         }
 
+        /// <summary>
+        /// Check if the payload contains relay key.
+        /// If so, then map it to system property and check if user wants to store this key data.
+        /// Finally, save it.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
         private async Task<bool> SaveRelayParam(JObject payload)
         {
-            const string relay0Key = "POWER";
-            if (payload.ContainsKey(relay0Key))
-            {
-                var mappedProperty = DataMapper.GetMapping(relay0Key);
-                if (Node.ShouldMagnitudeBeStored(mappedProperty))
-                {
-                    var sensorValue = payload.GetValue(relay0Key).ToString();
-                    await ExtractSaveData(base.Node.Id, relay0Key, sensorValue);
-                    return true;
-                }
-            }
-            return false;
+            if (!payload.ContainsKey(TasmotaRelay0Key)) return false;
+
+            var mappedProperty = DataMapper.GetMapping(TasmotaRelay0Key);
+            if (!Node.ShouldMagnitudeBeStored(mappedProperty)) return false;
+
+            var sensorValue = payload.GetValue(TasmotaRelay0Key).ToString();
+            await ProcessNodeMagnitude(mappedProperty, sensorValue);
+            return true;
         }
 
-        private async Task<bool> SaveLightbulbComplexParam(JObject payload)
+        /// <summary>
+        /// Check if the payload contains light key.
+        /// If so, then map it to system property and check if user wants to store this key data.
+        /// Finally, save it.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        private async Task<bool> SaveLightComplexParam(JObject payload)
         {
-            if (payload.ContainsKey("POWER") && payload.ContainsKey("Dimmer") && payload.ContainsKey("CT"))
+            if (!payload.ContainsKey(TasmotaLightKey) ||
+                !payload.ContainsKey(TasmotaDimmerKey) ||
+                !payload.ContainsKey(TasmotaColorTemperatureKey))
+                return false;
+
+            var mappedMagnitudeKey = DataMapper.GetMapping(TasmotaLightKey);
+            if (!Node.ShouldMagnitudeBeStored(mappedMagnitudeKey)) return false;
+
+            var param = new LightParam
             {
-                if (Node.ShouldMagnitudeBeStored("light"))
-                {
-                    var param = new LightParam
-                    {
-                        State = int.Parse(ApplyConversion("relay0", payload.GetValue("POWER").ToString())),
-                        Brightness = int.Parse(payload.GetValue("Dimmer").ToString()),
-                        LightTemperature = int.Parse(payload.GetValue("CT").ToString())
-                    };
-
-                    var value = JsonConvert.SerializeObject(param);
-                    await ExtractSaveData(Node.Id, "light", value);
-                    var property = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync("light");
-                    NotificationService.PushDataNotification(Node.Id,
-                        new NodeDataMagnitudeDto { PhysicalProperty = property, Value = value });
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private async Task<bool> SavePowerConsumptionParam(JObject payload)
-        {
-            const string energyStatusKey = "StatusSNS";
-
-            if (payload.ContainsKey(energyStatusKey))
-            {
-                var magnitudesDto = new List<NodeDataMagnitudeDto>();
-                var obj = payload[energyStatusKey].ToObject<EnergyStatusWrapperModel>();
-                var energyMap = new Dictionary<string, string>
-                {
-                    { "Voltage", obj.Energy.Voltage },
-                    { "Current", obj.Energy.Current },
-                    { "Power", obj.Energy.Power },
-                    { "ReactivePower", obj.Energy.ReactivePower },
-                    { "ApparentPower", obj.Energy.ApparentPower },
-                    { "Factor", obj.Energy.Factor }
-                };
-
-                foreach (var (key, value) in energyMap)
-                {
-                    var mapped = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync(key);
-                    if (Node.ShouldMagnitudeBeStored(mapped.Magnitude))
-                    {
-                        magnitudesDto.Add(new NodeDataMagnitudeDto(mapped, base.ApplyConversion(key, value)));
-                    }
-                }
-
-                await NodeDataService.AddManyAsync(Node.Id, magnitudesDto);
-                NotificationService.PushDataNotification(Node.Id, magnitudesDto);
-                return true;
-            }
-
-            return false;
-        }
-
-        private async Task ExtractSaveData(int nodeId, string magnitude, string value)
-        {
-            var property = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync(magnitude);
-
-            // Check if there is associated system property
-            if (property is null) return;
-
-            var magnitudeDto = new NodeDataMagnitudeDto
-            {
-                Value = base.ApplyConversion(property.Magnitude, value),
-                PhysicalProperty = property
+                State = int.Parse(ApplyConversion("relay0", payload.GetValue(TasmotaRelay0Key).ToString())), // TODO complex physical properties
+                Brightness = int.Parse(payload.GetValue(TasmotaDimmerKey).ToString()),
+                LightTemperature = int.Parse(payload.GetValue("CT").ToString())
             };
 
-            await NodeDataService.AddSingleAsync(nodeId, magnitudeDto);
-            NotificationService.PushDataNotification(nodeId, magnitudeDto);
+            var value = JsonConvert.SerializeObject(param);
+            await ProcessNodeMagnitude(mappedMagnitudeKey, value);
+            return true;
+        }
+
+        /// <summary>
+        /// Check if the payload contains power consumption key. If so, then map it to system property and check if user wants to store this key data.
+        /// Finally, save it.
+        /// </summary>
+        /// <param name="payload"></param>
+        /// <returns></returns>
+        private async Task<bool> SavePowerConsumptionParam(JObject payload)
+        {
+            if (!payload.ContainsKey(TasmotaEnergyStatusKey)) return false;
+
+            var energyModel = payload[TasmotaEnergyStatusKey].ToObject<EnergyStatusWrapperModel>()?.Energy;
+
+            // TODO bulk processing
+            foreach (var modelProperty in energyModel?.GetType()?.GetProperties())
+            {
+                if (modelProperty.CustomAttributes.All(att => att.AttributeType != typeof(DataMemberAttribute))) continue;
+                var mappedMagnitudeKey = DataMapper.GetMapping(modelProperty.Name);
+                if (!Node.ShouldMagnitudeBeStored(mappedMagnitudeKey)) continue;
+                var value = modelProperty.GetValue(energyModel) as string;
+                await ProcessNodeMagnitude(mappedMagnitudeKey, value);
+            }
+            return true;
         }
     }
 }

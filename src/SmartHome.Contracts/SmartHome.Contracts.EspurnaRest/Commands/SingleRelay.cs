@@ -37,13 +37,13 @@ namespace SmartHome.Contracts.EspurnaRest.Commands
             if (response != null)
             {
                 // Espurna response for SingleRelay has key relay/0
-                var property = await GetNodeMapper(Node)?.GetPhysicalPropertyByContractMagnitudeAsync(RelayKey);
+                var property = await GetNodeMapper(Node)?.GetPhysicalPropertyByMagnitudeAsync(RelayKey);
 
                 // Check if there is associated system value
                 if (property != null)
                 {
                     var value = response[RelayKey];
-                    var magnitudeDto = new NodeDataMagnitudeDto(property, value);
+                    var magnitudeDto = new NodeDataDto(property, value);
                     NotificationService.PushDataNotification(Node.Id, magnitudeDto);
                     await NodeDataService.AddSingleAsync(Node.Id, magnitudeDto);
                 }

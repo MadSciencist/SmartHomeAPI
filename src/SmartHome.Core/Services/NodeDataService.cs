@@ -34,7 +34,7 @@ namespace SmartHome.Core.Services
             return response;
         }
 
-        public async Task<NodeData> AddSingleAsync(int nodeId, NodeDataMagnitudeDto data)
+        public async Task<NodeData> AddSingleAsync(int nodeId, NodeDataDto data)
         {
             var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
 
@@ -50,7 +50,7 @@ namespace SmartHome.Core.Services
             return await _nodeDataRepository.AddSingleAsync(nodeData, samplesToKeep);
         }
 
-        public async Task AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data)
+        public async Task AddManyAsync(int nodeId, IEnumerable<NodeDataDto> data)
         {
             var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
 

@@ -16,7 +16,6 @@ namespace SmartHome.Core.Data
 
         public DbSet<Node> Nodes { get; set; }
         public DbSet<ControlStrategy> ControlStrategies { get; set; }
-        public DbSet<RegisteredMagnitude> RegisteredMagnitudes { get; set; } // TODO link this to physical properties
         public DbSet<NodeData> NodeData { get; set; }
         public DbSet<ScheduleEntity> SchedulesPersistence { get; set; }
         public DbSet<JobType> JobTypes { get; set; }
@@ -61,17 +60,24 @@ namespace SmartHome.Core.Data
             builder.Entity<Node>()
                 .HasOne(x => x.UpdatedBy);
 
-            builder.Entity<Node>()
-                .HasOne(x => x.ControlStrategy)
-                .WithMany(x => x.Nodes)
-                .OnDelete(DeleteBehavior.SetNull)
-                .IsRequired(false);
+            //builder.Entity<Node>()
+            //    .HasOne(x => x.ControlStrategy)
+            //    .WithMany(x => x.Nodes)
+            //    .OnDelete(DeleteBehavior.SetNull)
+            //    .IsRequired(false);
 
-            builder.Entity<ControlStrategy>()
-                .HasMany(x => x.RegisteredMagnitudes)
-                .WithOne(x => x.ControlStrategy)
-                .HasForeignKey(x => x.ControlStrategyId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<PhysicalPropertyControlStrategyLink>()
+                .HasKey(x => x.Id);
+
+            builder.Entity<PhysicalPropertyControlStrategyLink>()
+                .HasOne(x => x.ControlStrategy)
+                .WithMany(x => x.PhysicalProperties)
+                .HasForeignKey(x => x.ControlStrategyId);
+
+            builder.Entity<PhysicalPropertyControlStrategyLink>()
+                .HasOne(x => x.PhysicalProperty)
+                .WithMany(x => x.ControlStrategies)
+                .HasForeignKey(x => x.PhysicalPropertyId);
 
             builder.Entity<ControlStrategy>()
                 .HasOne(x => x.CreatedBy);

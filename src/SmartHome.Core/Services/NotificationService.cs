@@ -23,13 +23,13 @@ namespace SmartHome.Core.Services
             _connectedUsers = new Dictionary<string, AppUser>();
         }
 
-        public void PushDataNotification(int nodeId, NodeDataMagnitudeDto dto)
+        public void PushDataNotification(int nodeId, NodeDataDto dto)
         {
             var notification = new NotificationDto(nodeId, dto.PhysicalProperty, dto.Value);
             _mediator.Publish(notification);
         }
 
-        public void PushDataNotification(int nodeId, IEnumerable<NodeDataMagnitudeDto> dtos)
+        public void PushDataNotification(int nodeId, IEnumerable<NodeDataDto> dtos)
         {
             foreach (var dto in dtos)
             {

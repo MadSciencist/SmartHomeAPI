@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.MessageHanding;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartHome.Contracts.EspurnaMqtt
@@ -21,37 +20,15 @@ namespace SmartHome.Contracts.EspurnaMqtt
             {
                 var payload = JObject.Parse(message.Payload);
 
-                // TODO: instead of checking one by one, gather all of them and use NodeDataService.AddManyAsync
-                foreach (KeyValuePair<string, JToken> token in payload)
+                // TODO: Bulk processing
+                foreach (var (magnitude, value) in payload)
                 {
-                    // Check if current token is valid espurna sensor
-                    if (base.DataMapper.IsPropertyValid(token.Key))
-                    {
-                        var sensorName = token.Key;
-                        var sensorValue = token.Value.Value<string>();
+                    var mappedMagnitudeKey = DataMapper.GetMapping(magnitude);
+                    if (!Node.ShouldMagnitudeBeStored(mappedMagnitudeKey)) continue;
 
-                        await ExtractSaveData(base.Node.Id, sensorName, sensorValue);
-                    }
+                    await ProcessNodeMagnitude(magnitude, value.Value<string>());
                 }
             }
-        }
-
-        private async Task ExtractSaveData(int nodeId, string magnitude, string value)
-        {
-            var property = await DataMapper.GetPhysicalPropertyByContractMagnitudeAsync(magnitude);
-
-            // Check if there is associated system property
-            if (property is null) return;
-
-            var magnitudeDto = new NodeDataMagnitudeDto
-            {
-                Value = value,
-                PhysicalProperty = property
-            };
-
-            await NodeDataService.AddSingleAsync(nodeId, magnitudeDto);
-
-            NotificationService.PushDataNotification(nodeId, magnitudeDto);
         }
     }
 }

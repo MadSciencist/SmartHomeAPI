@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using Matty.Framework.Extensions;
 
 namespace SmartHome.Core.Entities.Entity
 {
@@ -56,7 +57,7 @@ namespace SmartHome.Core.Entities.Entity
         public ControlStrategy ControlStrategy { get; set; }
         public int? ControlStrategyId { get; set; }
 
-        public ICollection<AppUserNodeLink> AllowedUsers { get; set; }
+        public IEnumerable<AppUserNodeLink> AllowedUsers { get; set; }
 
         #region ICreationAudit impl
         public DateTime Created { get; set; }
@@ -82,7 +83,7 @@ namespace SmartHome.Core.Entities.Entity
         /// <returns></returns>
         public bool ShouldMagnitudeBeStored(string magnitude)
         {
-            return ControlStrategy.RegisteredMagnitudes.Any(x => string.Compare(x.Magnitude, magnitude, StringComparison.InvariantCultureIgnoreCase) == 0);
+            return ControlStrategy.PhysicalProperties.Any(x => x.PhysicalProperty.Magnitude.CompareInvariant(magnitude));
         }
 
         /// <summary>

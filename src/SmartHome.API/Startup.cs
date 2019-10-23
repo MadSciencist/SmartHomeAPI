@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Server;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using SmartHome.API.Extensions;
 using SmartHome.API.Hubs;
@@ -123,7 +124,7 @@ namespace SmartHome.API
             ContractAssemblyAssertions.AssertValidConfig();
             autoMapper.ConfigurationProvider.AssertConfigurationIsValid();
 
-            InitializeDatabase(app);
+            InitializeDatabase(app, logger);
 
             var mqttOptions = new MqttServerOptionsBuilder()
                 .WithDefaultEndpointPort(Configuration.GetValue<int>("MqttBroker:Port"))
@@ -190,12 +191,28 @@ namespace SmartHome.API
             }
         }
 
-        private static void InitializeDatabase(IApplicationBuilder app)
+        private static void InitializeDatabase(IApplicationBuilder app, ILogger logger)
         {
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            try
             {
-                var initialLoadFacade = new InitialLoadFacade(scope.ServiceProvider);
-                initialLoadFacade.Seed().Wait();
+                using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+                {
+                    var initialLoadFacade = new InitialLoadFacade(scope.ServiceProvider);
+                    initialLoadFacade.Seed().Wait();
+                }
+            }
+            catch (Exception ex)
+            when (ex is AggregateException
+                    && ex.InnerException is InvalidOperationException iox
+                    && iox.InnerException is MySqlException mysqlEx)
+            {
+                logger.LogError("Cannot seed database, MySQL-level exception. DB server might be off.", mysqlEx);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Cannot seed database, DB server might be off.", ex);
+                throw;
             }
         }
     }

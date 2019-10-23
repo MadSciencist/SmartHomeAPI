@@ -1,4 +1,5 @@
-﻿using Matty.Framework;
+﻿using System.Collections.Generic;
+using Matty.Framework;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,5 +14,8 @@ namespace SmartHome.Core.Entities.Entity
         public bool IsComplex { get; set; }
         public string Unit { get; set; }
         public string Magnitude { get; set; }
+
+        // Many-to-many relationship navigation property
+        public IEnumerable<PhysicalPropertyControlStrategyLink> ControlStrategies { get; set; }
     }
 }

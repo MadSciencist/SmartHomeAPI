@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using SmartHome.Core.Data.InitialLoad;
 using System;
 
 namespace SmartHome.API
@@ -16,7 +14,6 @@ namespace SmartHome.API
             try
             {
                 var host = CreateWebHostBuilder(args).Build();
-                InitializeDatabase(host.Services);
                 host.Run();
 
                 return 0;
@@ -62,15 +59,6 @@ namespace SmartHome.API
                 .ReadFrom.Configuration(configuration)
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", Serilog.Events.LogEventLevel.Warning)
                 .CreateLogger();
-        }
-
-        private static void InitializeDatabase(IServiceProvider services)
-        {
-            using (var scope = services.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                var initialLoadFacade = new InitialLoadFacade(scope.ServiceProvider);
-                initialLoadFacade.Seed().Wait();
-            }
         }
     }
 }

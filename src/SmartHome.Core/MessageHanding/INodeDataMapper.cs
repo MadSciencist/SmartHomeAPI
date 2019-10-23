@@ -8,13 +8,6 @@ namespace SmartHome.Core.MessageHanding
     public interface INodeDataMapper
     {
         /// <summary>
-        /// Check if ValidProperties collection contains property
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        bool IsPropertyValid(string property);
-
-        /// <summary>
         /// Get system value of vendor magnitude
         /// </summary>
         /// <param name="magnitude"></param>
@@ -33,7 +26,7 @@ namespace SmartHome.Core.MessageHanding
         /// </summary>
         /// <param name="magnitude"></param>
         /// <returns></returns>
-        Task<PhysicalProperty> GetPhysicalPropertyByContractMagnitudeAsync(string magnitude);
+        Task<PhysicalProperty> GetPhysicalPropertyByMagnitudeAsync(string magnitude);
 
         /// <summary>
         /// Returns all system physical properties in specific contract

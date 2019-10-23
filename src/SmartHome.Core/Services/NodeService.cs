@@ -86,7 +86,7 @@ namespace SmartHome.Core.Services
             {
                 AssemblyProduct = nodeDto.ControlStrategyName,
                 ContractAssembly = AssemblyScanner.GetAssemblyModuleNameByProductInfo(nodeDto.ControlStrategyName),
-                RegisteredMagnitudes = nodeDto.Magnitudes.Select(x => new RegisteredMagnitude { Magnitude = x }).ToList()
+                //RegisteredMagnitudes = nodeDto.Magnitudes.Select(x => new RegisteredMagnitude { Magnitude = x }).ToList()
             };
         }
 

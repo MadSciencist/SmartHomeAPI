@@ -45,12 +45,6 @@ namespace SmartHome.Core.MessageHanding
 
 
         #region INodeDataMapper impl
-        public bool IsPropertyValid(string property)
-        {
-            // We assume that valid property is one which has mapping
-            return _mappings.Keys.Any(x => x == property);
-        }
-
         public string GetMapping(string property)
         {
             return DictionaryUtils.GetValue(_mappings, property);
@@ -61,11 +55,9 @@ namespace SmartHome.Core.MessageHanding
             return DictionaryUtils.GetValue(_converters, magnitude);
         }
 
-        public async Task<PhysicalProperty> GetPhysicalPropertyByContractMagnitudeAsync(string magnitude)
+        public async Task<PhysicalProperty> GetPhysicalPropertyByMagnitudeAsync(string magnitude)
         {
-            var systemMagnitude = _mappings[magnitude];
-            if (systemMagnitude == null) return null;
-            return await PhysicalPropertyService.GetByMagnitudeAsync(systemMagnitude);
+            return await PhysicalPropertyService.GetByMagnitudeAsync(magnitude);
         }
 
         public async Task<IEnumerable<PhysicalProperty>> GetAllContractPhysicalProperties()
