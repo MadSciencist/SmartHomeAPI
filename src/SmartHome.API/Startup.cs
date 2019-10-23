@@ -12,10 +12,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet.Server;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SmartHome.API.Extensions;
 using SmartHome.API.Hubs;
 using SmartHome.Core.Data.InitialLoad;
@@ -33,10 +35,10 @@ namespace SmartHome.API
     public class Startup
     {
         public IContainer ApplicationContainer { get; private set; }
-        public IHostingEnvironment Environment { get; }
+        public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             Environment = env;
@@ -45,16 +47,16 @@ namespace SmartHome.API
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(json =>
+                .AddNewtonsoftJson(options =>
                 {
-                    json.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    json.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-                    json.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 })
-                .AddFluentValidation(x =>
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .AddFluentValidation(options =>
                 {
-                    x.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>();
+                    options.RegisterValidatorsFromAssemblyContaining<NodeDtoValidator>();
                 });
 
             // Create custom BadRequest response for built-in validator
@@ -94,7 +96,8 @@ namespace SmartHome.API
             // This allows access http context and user in constructor
             services.AddHttpContextAccessor();
 
-            services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); });
+            services.AddSignalR(settings => { settings.EnableDetailedErrors = Environment.IsDevelopment(); })
+                .AddNewtonsoftJsonProtocol();
 
             var useHealthChecks = Configuration.GetValue<bool>("HealthChecks:Enable");
             if (useHealthChecks)
@@ -117,7 +120,7 @@ namespace SmartHome.API
             return new AutofacServiceProvider(ApplicationContainer);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMapper autoMapper,
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMapper autoMapper,
             ILogger<Startup> logger)
         {
             ContractAssemblyAssertions.Logger = logger;
@@ -137,49 +140,19 @@ namespace SmartHome.API
             mqttService.ServerOptions = mqttOptions;
             mqttService.StartAsync().Wait();
 
+            var signalREndpoint = Configuration["NotificationEndpoint"];
+            var healthCheckEndpoint = Configuration["HealthChecks:Endpoint"];
+            var useHealthChecks = Configuration.GetValue<bool>("HealthChecks:Enable");
+
             /* App pipeline */
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
                 app.UseStatusCodePages();
             }
 
-            app.UseCors("CorsPolicy");
-
-            // serve statics
-            app.UseDefaultFiles(); // will run index.html by default
-            app.UseStaticFiles(); // will serve wwwroot by default
-
-            // auth middleware
-            app.UseAuthentication();
-
-            // custom logging middleware 
-            app.UseLoggingExceptionHandler();
-
-            // standard MVC middleware
-            app.UseMvc();
-
-            app.UseSignalR(routes =>
-            {
-                var endpoint = Configuration["NotificationEndpoint"];
-                routes.MapHub<NotificationHub>(endpoint);
-            });
-
-            // docs gen and UI
-            app.UseSwagger();
-            app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/dev/swagger.json", "v1"); });
-
-            var useHealthChecks = Configuration.GetValue<bool>("HealthChecks:Enable");
             if (useHealthChecks)
             {
-                app.UseHealthChecks(Configuration["HealthChecks:Endpoint"], new HealthCheckOptions
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-                    AllowCachingResponses = true
-                });
-
                 app.UseHealthChecksUI(options =>
                 {
                     options.ApiPath = "/api/health-ui-api";
@@ -189,17 +162,52 @@ namespace SmartHome.API
                     options.UIPath = Configuration["HealthChecks:UiEndpoint"];
                 });
             }
+
+            /* MVC Pipeline */
+            // serve statics - must be called before UseRouting
+            app.UseDefaultFiles(); // will run index.html by default
+            app.UseStaticFiles(); // will serve wwwroot by default
+
+            app.UseRouting();
+
+            // must be called after UseRouting
+            app.UseCors("CorsPolicy");
+
+            // auth middleware - must be after UseRouting and UseCors but before UseEndpoints
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            // custom logging middleware 
+            app.UseLoggingExceptionHandler();
+            
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHub<NotificationHub>(signalREndpoint);
+
+                if (useHealthChecks)
+                {
+                    endpoints.MapHealthChecks(healthCheckEndpoint, new HealthCheckOptions
+                    {
+                        Predicate = _ => true,
+                        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                        AllowCachingResponses = true
+                    });
+                }
+            });
+
+            // Open-API doc gen
+            app.UseSwagger();
+            app.UseSwaggerUI(s => { s.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
         }
 
         private static void InitializeDatabase(IApplicationBuilder app, ILogger logger)
         {
             try
             {
-                using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-                {
-                    var initialLoadFacade = new InitialLoadFacade(scope.ServiceProvider);
-                    initialLoadFacade.Seed().Wait();
-                }
+                using var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
+                var initialLoadFacade = new InitialLoadFacade(scope.ServiceProvider);
+                initialLoadFacade.Seed().Wait();
             }
             catch (Exception ex)
             when (ex is AggregateException

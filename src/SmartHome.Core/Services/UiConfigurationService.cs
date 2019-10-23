@@ -34,7 +34,7 @@ namespace SmartHome.Core.Services
 
             var entities = await GenericRepository.GetManyFiltered(x => x.UserId == userId);
 
-            if (entities is null || entities.Count() == 0)
+            if (entities is null || !entities.Any())
             {
                 response.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
                 return response;

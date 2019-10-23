@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Description>Control Espurna Devices over MQTT protocol</Description>
     <Product>Espurna-MQTT-v1</Product>
   </PropertyGroup>

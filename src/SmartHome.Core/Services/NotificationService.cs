@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.User;
 using System.Collections.Generic;
@@ -40,12 +39,7 @@ namespace SmartHome.Core.Services
 
         public async Task AddClientAsync(string connectionId, int userId)
         {
-            var user = await _userManager
-                .Users
-                .Include(x => x.CreatedNodes)
-                .Include(x => x.EligibleNodes)
-                .SingleAsync(x => x.Id == userId);
-
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             _connectedUsers.Add(connectionId, user);
         }
 

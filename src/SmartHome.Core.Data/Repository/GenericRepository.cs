@@ -19,13 +19,13 @@ namespace SmartHome.Core.Data.Repository
 
         private EntityFrameworkContext _context;
 
-        public EntityFrameworkContext Context => _context ?? (_context = Container.Resolve<EntityFrameworkContext>());
+        public EntityFrameworkContext Context => _context ??= Container.Resolve<EntityFrameworkContext>();
 
         private ILogger _logger;
-        protected ILogger Logger => _logger ?? (_logger = Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName));
+        protected ILogger Logger => _logger ??= Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName);
 
         private IHttpContextAccessor _accessor;
-        protected IHttpContextAccessor HttpContextAccessor => _accessor ?? (_accessor = Container.Resolve<IHttpContextAccessor>());
+        protected IHttpContextAccessor HttpContextAccessor => _accessor ??= Container.Resolve<IHttpContextAccessor>();
 
         public GenericRepository(ILifetimeScope container)
         {
@@ -137,11 +137,8 @@ namespace SmartHome.Core.Data.Repository
             {
                 if (_context != null)
                 {
-
                     _context.Dispose();
-
                     _context = null;
-
                 }
             }
         }

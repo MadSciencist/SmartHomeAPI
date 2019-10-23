@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using SmartHome.API.Security;
@@ -14,6 +15,7 @@ using SmartHome.Core.Entities.Role;
 using SmartHome.Core.Entities.User;
 using SmartHome.Core.Security;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -30,7 +32,7 @@ namespace SmartHome.API.Extensions
             services.AddTransient<HubTokenDecoder>();
         }
 
-        public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment env)
+        public static void AddSqlIdentityPersistence(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             var connectionString = configuration["ConnectionStrings:MySql"];
 
@@ -95,7 +97,7 @@ namespace SmartHome.API.Extensions
             });
         }
 
-        public static void AddDefaultCorsPolicy(this IServiceCollection services, IHostingEnvironment env)
+        public static void AddDefaultCorsPolicy(this IServiceCollection services, IWebHostEnvironment env)
         {
             if (!env.IsDevelopment()) return;
             services.AddCors(settings =>
@@ -112,21 +114,37 @@ namespace SmartHome.API.Extensions
 
         public static void AddConfiguredSwagger(this IServiceCollection services)
         {
-            services.AddSwaggerGen(swagger =>
+            services.AddSwaggerGen(options =>
             {
-                var contact = new Contact { Email = "mkrysz1337@gmail.com", Name = "Matty" };
-                swagger.SwaggerDoc("dev", new Info { Title = "Home Sensor Server API", Version = "v1", Contact = contact });
-                swagger.AddSecurityDefinition("Bearer", new ApiKeyScheme()
+                var contact = new OpenApiContact { Email = "mkrysz1337@gmail.com", Name = "Matty" };
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Home Sensor Server API", Version = "v1", Contact = contact});
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
                 });
 
-                swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
-                    {"Bearer", new string[]{}}
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                    }
                 });
             });
         }

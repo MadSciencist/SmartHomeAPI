@@ -17,7 +17,6 @@ using SmartHome.Core.Repositories;
 using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SmartHome.Core.Services
@@ -92,57 +91,32 @@ namespace SmartHome.Core.Services
         };
         }
 
-        private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId,
-            ServiceResult<NodeDto> response)
+        private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
         {
-            //try
-            //{
-            //    var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
-            //    await _appUserNodeLinkRepository.CreateAsync(new AppUserNodeLink
-            //    {
-            //        NodeId = createdNode.Id,
-            //        UserId = userId
-            //    });
-
-            //    response.Data = Mapper.Map<NodeDto>(createdNode);
-            //    response.Data.CreatedById = userId;
-            //    response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
-
-            //    return response;
-            //}
-            //catch (Exception ex)
-            //{
-            //    response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
-            //    throw;
-            //}
-
-
-            using (var transaction = _nodeRepository.BeginTransaction())
+            using var transaction = _nodeRepository.BeginTransaction();
+            try
             {
-                try
+                var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
+
+                // create entry in link table
+                await _appUserNodeLinkRepository.CreateAsync(new AppUserNodeLink
                 {
-                    var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
+                    NodeId = createdNode.Id,
+                    UserId = userId
+                });
 
-                    // create entry in link table
-                    await _appUserNodeLinkRepository.CreateAsync(new AppUserNodeLink
-                    {
-                        NodeId = createdNode.Id,
-                        UserId = userId
-                    });
+                transaction.Commit();
+                response.Data = Mapper.Map<NodeDto>(createdNode);
+                response.Data.CreatedById = userId;
+                response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
 
-                    transaction.Commit();
-                    response.Data = Mapper.Map<NodeDto>(createdNode);
-                    response.Data.CreatedById = userId;
-                    response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
-
-                    return response;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
-                    throw;
-                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+                throw;
             }
         }
 
