@@ -85,7 +85,7 @@ namespace SmartHome.Core.Services
                 Data = new NodeDataResultDto
                 {
                     Values = results.Select(x => new NodeDataRecordDto(x.TimeStamp, x.Value)),
-                    PhysicalProperty = physicalProperty
+                    PhysicalProperty = physicalProperty.Data
                 }
             };
         }

@@ -17,13 +17,13 @@ namespace SmartHome.Core.Services
         protected ILifetimeScope Container { get; set; }
 
         private IConfiguration _config;
-        protected IConfiguration Config => _config ?? (_config = Container.Resolve<IConfiguration>());
+        protected IConfiguration Config => _config ??= Container.Resolve<IConfiguration>();
 
         private ILogger _logger;
-        protected ILogger Logger => _logger ?? (_logger = Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName));
+        protected ILogger Logger => _logger ??= Container.Resolve<ILoggerFactory>().CreateLogger(this.GetType().FullName);
 
         private UserManager<AppUser> _userManager;
-        protected UserManager<AppUser> UserManager => _userManager ?? (_userManager = Container.Resolve<UserManager<AppUser>>());
+        protected UserManager<AppUser> UserManager => _userManager ??= Container.Resolve<UserManager<AppUser>>();
 
 
         #region constructor

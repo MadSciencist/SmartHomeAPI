@@ -26,15 +26,18 @@ namespace SmartHome.Core.Services
         private readonly INodeRepository _nodeRepository;
         private readonly IAuthorizationProvider<Node> _authProvider;
         private readonly IAppUserNodeLinkRepository _appUserNodeLinkRepository;
+        private readonly IPhysicalPropertyService _physicalPropertyService;
 
         public NodeService(ILifetimeScope container,
             INodeRepository nodeRepository,
             IAuthorizationProvider<Node> authorizationProvider,
-            IAppUserNodeLinkRepository appUserNodeLinkRepository) : base(container)
+            IAppUserNodeLinkRepository appUserNodeLinkRepository,
+            IPhysicalPropertyService physicalPropertyService) : base(container)
         {
             _nodeRepository = nodeRepository;
             _authProvider = authorizationProvider;
             _appUserNodeLinkRepository = appUserNodeLinkRepository;
+            _physicalPropertyService = physicalPropertyService;
         }
 
         public async Task<ServiceResult<IEnumerable<NodeDto>>> GetAll()
@@ -74,7 +77,7 @@ namespace SmartHome.Core.Services
 
             var userId = GetCurrentUserId();
             var nodeToCreate = Mapper.Map<Node>(nodeDto);
-            //nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
+            nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
 
             return await SaveNode(nodeToCreate, userId, response);
         }
@@ -86,9 +89,9 @@ namespace SmartHome.Core.Services
                 AssemblyProduct = nodeDto.ControlStrategyName,
                 ContractAssembly = AssemblyScanner.GetAssemblyModuleNameByProductInfo(nodeDto.ControlStrategyName),
                 CreatedById = GetCurrentUserId(),
-                Created = DateTime.UtcNow
-            //RegisteredMagnitudes = nodeDto.Magnitudes.Select(x => new RegisteredMagnitude { Magnitude = x }).ToList()
-        };
+                Created = DateTime.UtcNow,
+                PhysicalProperties = null
+            };
         }
 
         private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
@@ -164,7 +167,6 @@ namespace SmartHome.Core.Services
                 throw;
             }
         }
-
 
         public async Task<ServiceResult<object>> GetCommandParamSchema(int nodeId, string command)
         {

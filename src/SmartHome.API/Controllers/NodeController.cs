@@ -1,4 +1,5 @@
-﻿using Matty.Framework;
+﻿using System;
+using Matty.Framework;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +13,7 @@ using System.Threading.Tasks;
 namespace SmartHome.API.Controllers
 {
     [ApiController]
-    [Authorize(Policy = "Admin")]
-    [Authorize(Policy = "User")]
+    [Authorize]
     [Route("api/[controller]")]
     [Produces("application/json")]
     public class NodeController : ControllerBase
@@ -56,7 +56,7 @@ namespace SmartHome.API.Controllers
         }
 
         /// <summary>
-        /// Execute a command on a node
+        /// Execute a command on a node.
         /// </summary>
         /// <param name="nodeId"></param>
         /// <param name="command"></param>
@@ -71,7 +71,7 @@ namespace SmartHome.API.Controllers
         }
 
         /// <summary>
-        /// Get parameter schema for given command5
+        /// Get parameter schema for given command.
         /// </summary>
         /// <param name="nodeId"></param>
         /// <param name="command"></param>
@@ -82,6 +82,26 @@ namespace SmartHome.API.Controllers
             var serviceResult = await _nodeService.GetCommandParamSchema(nodeId, command);
 
             return ControllerResponseHelper.GetDefaultResponse(serviceResult);
+        }
+
+        /// <summary>
+        /// Delete existing node.
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("{nodeId}")]
+        public IActionResult DeleteNode()
+        {
+            throw new NotImplementedException(nameof(DeleteNode));
+        }
+
+        /// <summary>
+        /// Update existing node.
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("{nodeId}")]
+        public IActionResult UpdateNode(NodeDto nodeDto)
+        {
+            throw new NotImplementedException(nameof(UpdateNode));
         }
     }
 }

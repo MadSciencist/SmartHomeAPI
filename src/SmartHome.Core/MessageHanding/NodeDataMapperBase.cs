@@ -57,13 +57,15 @@ namespace SmartHome.Core.MessageHanding
 
         public async Task<PhysicalProperty> GetPhysicalPropertyByMagnitudeAsync(string magnitude)
         {
-            return await PhysicalPropertyService.GetByMagnitudeAsync(magnitude);
+            var serviceResult = await PhysicalPropertyService.GetByMagnitudeAsync(magnitude);
+            return serviceResult.Data;
         }
 
         public async Task<IEnumerable<PhysicalProperty>> GetAllContractPhysicalProperties()
         {
             var mappedMagnitudes = _mappings.Select(x => x.Value);
-            return await PhysicalPropertyService.GetFilteredByMagnitudes(mappedMagnitudes);
+            var serviceResult = await PhysicalPropertyService.GetFilteredByMagnitudes(mappedMagnitudes);
+            return serviceResult.Data;
         }
         #endregion
 

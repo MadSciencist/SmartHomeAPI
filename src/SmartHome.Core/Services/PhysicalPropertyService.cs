@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Matty.Framework;
 
 namespace SmartHome.Core.Services
 {
@@ -23,16 +24,22 @@ namespace SmartHome.Core.Services
             _cache = cache;
         }
 
-        public async Task<IEnumerable<PhysicalProperty>> GetAll()
+        public async Task<ServiceResult<IEnumerable<PhysicalProperty>>> GetAll()
         {
-            return GetFromCache() ?? await StoreInCache();
+            return new ServiceResult<IEnumerable<PhysicalProperty>>(Principal)
+            {
+                Data = GetFromCache() ?? await StoreInCache()
+            };
         }
 
-        public async Task<IEnumerable<PhysicalProperty>> GetFilteredByMagnitudes(IEnumerable<string> magnitudes)
+        public async Task<ServiceResult<IEnumerable<PhysicalProperty>>> GetFilteredByMagnitudes(IEnumerable<string> magnitudes)
         {
             var properties = GetFromCache() ?? await StoreInCache();
 
-            return properties.Where(property => magnitudes.Any(mag => mag == property.Magnitude));
+            return new ServiceResult<IEnumerable<PhysicalProperty>>(Principal)
+            {
+                Data = properties.Where(property => magnitudes.Any(mag => mag == property.Magnitude))
+            };
         }
 
         private IEnumerable<PhysicalProperty> GetFromCache()
@@ -46,11 +53,14 @@ namespace SmartHome.Core.Services
             return _cache.Set(CacheKey, properties, CacheLifeTime);
         }
 
-        public async Task<PhysicalProperty> GetByMagnitudeAsync(string magnitude)
+        public async Task<ServiceResult<PhysicalProperty>> GetByMagnitudeAsync(string magnitude)
         {
             var properties = GetFromCache() ?? await StoreInCache();
 
-            return properties.FirstOrDefault(x => x.Magnitude == magnitude);
+            return new ServiceResult<PhysicalProperty>(Principal)
+            {
+                Data = properties.FirstOrDefault(x => x.Magnitude == magnitude)
+            };
         }
     }
 }

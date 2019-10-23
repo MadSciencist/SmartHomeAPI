@@ -51,7 +51,7 @@ namespace SmartHome.Core.IoC
 
             Builder.RegisterType<NodeRepository>().As<INodeRepository>().InstancePerDependency();
             Builder.RegisterType<NodeDataRepository>().As<INodeDataRepository>().InstancePerDependency();
-            Builder.RegisterType<StrategyRepository>().As<IStrategyRepository>().InstancePerDependency();
+            Builder.RegisterType<StrategyRepository>().As<IControlStrategyRepository>().InstancePerDependency();
             Builder.RegisterType<AppUserNodeLinkRepository>().As<IAppUserNodeLinkRepository>().InstancePerDependency();
             Builder.RegisterType<DictionaryRepository>().As<IDictionaryRepository>().InstancePerDependency();
             Builder.RegisterType<SchedulesPersistenceRepository>().As<ISchedulesPersistenceRepository>().InstancePerDependency();
@@ -63,6 +63,7 @@ namespace SmartHome.Core.IoC
             Builder.RegisterType<DictionaryService>().As<IDictionaryService>().InstancePerDependency();
             Builder.RegisterType<UiConfigurationService>().As<IUiConfigurationService>().InstancePerDependency();
             Builder.RegisterType<SchedulingService>().As<ISchedulingService>().InstancePerDependency();
+            Builder.RegisterType<ControlStrategyService>().As<IControlStrategyService>().InstancePerDependency();
 
             Builder.RegisterType<MqttBroker.MqttBroker>().As<IMqttBroker>().SingleInstance();
             Builder.RegisterType<PersistentHttpClient>().SingleInstance();
