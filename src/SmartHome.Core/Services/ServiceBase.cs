@@ -35,12 +35,12 @@ namespace SmartHome.Core.Services
 
         #endregion
 
-        public async Task<AppUser> GetCurrentUser()
+        protected async Task<AppUser> GetCurrentUser()
         {
             return await UserManager.FindByIdAsync(ClaimsPrincipalHelper.GetClaimedIdentifier(Principal));
         }
 
-        public virtual int GetCurrentUserId()
+        protected virtual int GetCurrentUserId()
         {
             return Convert.ToInt32(ClaimsPrincipalHelper.GetClaimedIdentifier(Principal));
         }

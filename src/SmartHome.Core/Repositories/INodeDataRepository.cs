@@ -9,5 +9,6 @@ namespace SmartHome.Core.Repositories
     {
         Task<NodeData> AddSingleAsync(NodeData data, int samplesToKeep);
         Task AddManyAsync(int nodeId, int samplesToKeep, IEnumerable<NodeData> dataPlural);
+        Task<IEnumerable<NodeData>> GetByMagnitudeAsync(int nodeId, string magnitude, int limit);
     }
 }

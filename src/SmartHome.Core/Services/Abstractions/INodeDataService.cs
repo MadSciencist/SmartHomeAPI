@@ -1,9 +1,6 @@
 ﻿using Matty.Framework;
-using Matty.Framework.Enums;
 using SmartHome.Core.Dto;
-using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Entities.Entity;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -28,19 +25,13 @@ namespace SmartHome.Core.Services.Abstractions
         Task AddManyAsync(int nodeId, IEnumerable<NodeDataDto> data);
 
         /// <summary>
-        /// Query data repository
+        /// Query for stored NodeData.
+        /// Ordered by date descending.
         /// </summary>
-        /// <param name="nodeId">ID of the node</param>
-        /// <param name="pageNumber">Paging: number of current page</param>
-        /// <param name="pageSize">Paging: items per page</param>
-        /// <param name="properties">Collection of properties to retrieve</param>
-        /// <param name="from">Starts date</param>
-        /// <param name="to">Ends date</param>
-        /// <param name="order">Order data by timestamps (ASC or DESC)</param>
-        /// <param name="maxCount">Limit count</param>
-        /// <param name="paged">Should result be paged</param>
+        /// <param name="nodeId">IF od the node</param>
+        /// <param name="magnitude">Physical's property magnitude</param>
+        /// <param name="limit">Limit of results</param>
         /// <returns></returns>
-        Task<ServiceResult<ICollection<NodeMagnitudeData>>> GetNodeDatas(int nodeId, int pageNumber,
-            int pageSize, string[] properties, DateTime from, DateTime to, DataOrder order, int maxCount = 1000, bool paged = false);
+        Task<ServiceResult<NodeDataResultDto>> GetNodeDataByMagnitude(int nodeId, string magnitude, int limit);
     }
 }

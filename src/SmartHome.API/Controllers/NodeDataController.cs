@@ -9,7 +9,9 @@ using SmartHome.Core.Dto;
 using SmartHome.Core.MessageHanding;
 using SmartHome.Core.Services.Abstractions;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Matty.Framework;
 
 namespace SmartHome.API.Controllers
 {
@@ -35,50 +37,20 @@ namespace SmartHome.API.Controllers
             _nodeDataService.Principal = contextAccessor.HttpContext.User;
         }
 
-
-        /// <summary>
-        /// Get node data
-        /// </summary>
-        /// <param name="nodeId">Id of node</param>
-        /// <param name="properties">Collection of included properties</param>
-        /// <param name="page">Page number</param>
-        /// <param name="pageSize">Size of page</param>
-        /// <param name="from">Date from (UTC)</param>
-        /// <param name="to">Date to (UTC)</param>
-        /// <param name="orderByDate">Order by time (ASC, DESC)</param>
-        /// <returns></returns>
-        //[HttpGet("node/{nodeId}")]
-        //public async Task<IActionResult> GetPaged(int nodeId, [FromQuery] string[] properties, int? page, int? pageSize,
-        //    DateTime? from, DateTime? to, DataOrder? orderByDate)
-        //{
-        //    int pageInt = page ?? _config.GetValue<int>("Defaults:Paging:PageNumber");
-        //    int pageSizeInt = pageSize ?? _config.GetValue<int>("Defaults:Paging:PageSize");
-        //    DateTime dateFrom = from ?? _config.GetValue<DateTime>("Defaults:Paging:DateFrom");
-        //    DateTime dateTo = to ?? DateTime.Now;
-        //    DataOrder order = orderByDate ?? DataOrder.Asc;
-
-        //    var serviceResult = await _nodeDataService.GetNodeData(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order);
-
-        //    return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
-        //}
-
         [HttpGet("node/{nodeId}")]
-        public async Task<IActionResult> GetPaged(int nodeId, [FromQuery] string[] properties, int? page, int? pageSize,
-            DateTime? from, DateTime? to, DataOrder? orderByDate)
+        [ProducesResponseType(typeof(ServiceResult<NodeDataResultDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSingleMagnitude(int nodeId, string magnitude, int? limit)
         {
-            int pageInt = page ?? _config.GetValue<int>("Defaults:Paging:PageNumber");
-            int pageSizeInt = pageSize ?? _config.GetValue<int>("Defaults:Paging:PageSize");
-            DateTime dateFrom = from ?? _config.GetValue<DateTime>("Defaults:Paging:DateFrom");
-            DateTime dateTo = to ?? DateTime.Now;
-            DataOrder order = orderByDate ?? DataOrder.Asc;
-            int maxCount = _config.GetValue<int>("Defaults:MaxCount");
+            int limitInt = limit ?? _config.GetValue<int>("Defaults:MaxCount");
 
-            var paged = from is null && to is null;
+            var serviceResult = await _nodeDataService.GetNodeDataByMagnitude(nodeId, magnitude, limitInt);
 
-            var serviceResult = await _nodeDataService.GetNodeDatas(nodeId, pageInt, pageSizeInt, properties, dateFrom, dateTo, order, maxCount, paged);
+            if (!serviceResult.Data.Values.Any())
+                serviceResult.ResponseStatusCodeOverride = StatusCodes.Status404NotFound;
 
-            return serviceResult.Data is null ? NotFound() : ControllerResponseHelper.GetDefaultResponse(serviceResult);
+            return ControllerResponseHelper.GetDefaultResponse(serviceResult);
         }
+
 
         //TODO special node endpoint
         //Todo maybe extra endpoint with basic auth?

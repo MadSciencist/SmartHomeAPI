@@ -1,9 +1,9 @@
 ﻿using Autofac;
 using Matty.Framework;
+using Matty.Framework.Abstractions;
 using Matty.Framework.Enums;
 using Microsoft.Extensions.Configuration;
 using SmartHome.Core.Dto;
-using SmartHome.Core.Dto.NodeData;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Repositories;
@@ -17,21 +17,21 @@ namespace SmartHome.Core.Services
 {
     public class NodeDataService : CrudServiceBase<object, EntityBase>, INodeDataService
     {
+        private readonly INodeRepository _nodeRepository;
         private readonly INodeDataRepository _nodeDataRepository;
+        private readonly IAuthorizationProvider<Node> _authorizationProvider;
+        private readonly IPhysicalPropertyService _physicalPropertyService;
 
-        public NodeDataService(ILifetimeScope container, INodeDataRepository nodeDataRepository) : base(container)
+        public NodeDataService(ILifetimeScope container,
+            INodeRepository nodeRepository,
+            INodeDataRepository nodeDataRepository,
+            IAuthorizationProvider<Node> authorizationProvider,
+            IPhysicalPropertyService physicalPropertyService) : base(container)
         {
+            _nodeRepository = nodeRepository;
             _nodeDataRepository = nodeDataRepository;
-        }
-
-        public async Task<ServiceResult<ICollection<NodeMagnitudeData>>> GetNodeDatas(int nodeId, int pageNumber, int pageSize,
-            string[] properties, DateTime from, DateTime to, DataOrder order, int maxCount = 1000, bool paged = false)
-        {
-            if (properties.Length == 0 || properties is null) throw new SmartHomeException("No properties selected.");
-
-            var response = new ServiceResult<ICollection<NodeMagnitudeData>>(Principal);
-
-            return response;
+            _authorizationProvider = authorizationProvider;
+            _physicalPropertyService = physicalPropertyService;
         }
 
         public async Task<NodeData> AddSingleAsync(int nodeId, NodeDataDto data)
@@ -66,17 +66,28 @@ namespace SmartHome.Core.Services
             await _nodeDataRepository.AddManyAsync(nodeId, samplesToKeep, nodeData);
         }
 
-        //public async Task<NodeData> AddManyAsync(int nodeId, IEnumerable<NodeDataMagnitudeDto> data)
-        //{
-        //    var samplesToKeep = Config.GetValue<int>("Defaults:NodeDataRetention:SamplesToKeep");
+        public async Task<ServiceResult<NodeDataResultDto>> GetNodeDataByMagnitude(int nodeId, string magnitude, int limit)
+        {
+            var node = await _nodeRepository.GetByIdAsync(nodeId);
+            if (node is null) throw new SmartHomeEntityNotFoundException($"Node with id: {nodeId} does not exists.");
 
-        //    return await _nodeDataRepository.AddManyAsync(nodeId, samplesToKeep, data.Select(x =>
-        //        new NodeDataMagnitude
-        //        {
-        //            Magnitude = x.PhysicalProperty.Magnitude,
-        //            Unit = x.PhysicalProperty.Unit,
-        //            Value = x.Value
-        //        }).ToList());
-        //}
+            var physicalProperty = await _physicalPropertyService.GetByMagnitudeAsync(magnitude);
+            if (physicalProperty is null) throw new SmartHomeEntityNotFoundException($"Physical property with id: {magnitude} does not exists.");
+
+            if (!_authorizationProvider.Authorize(null, Principal, OperationType.Read))
+                throw new SmartHomeUnauthorizedException(
+                    $"User ${Principal.Identity.Name} is not authorized to add new node");
+
+            var results = await _nodeDataRepository.GetByMagnitudeAsync(nodeId, magnitude, limit);
+
+            return new ServiceResult<NodeDataResultDto>(Principal)
+            {
+                Data = new NodeDataResultDto
+                {
+                    Values = results.Select(x => new NodeDataRecordDto(x.TimeStamp, x.Value)),
+                    PhysicalProperty = physicalProperty
+                }
+            };
+        }
     }
 }

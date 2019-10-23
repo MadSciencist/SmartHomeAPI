@@ -54,10 +54,10 @@ namespace SmartHome.API.Controllers
         /// <returns>JWT token</returns>
         [AllowAnonymous]
         [HttpPost("login")]
-        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login(LoginDto login)
         {
             var result = await _userService.LoginAsync(login);
@@ -103,7 +103,6 @@ namespace SmartHome.API.Controllers
         /// <summary>
         /// Get configuration
         /// </summary>
-        /// <param name="config"></param>
         /// <param name="userId"></param>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -200,31 +199,5 @@ namespace SmartHome.API.Controllers
             return ControllerResponseHelper.GetDefaultResponse(result);
         }
         #endregion
-
-        // TODO
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Update([FromBody] RegisterDto updatedModel, string id)
-        //{
-        //    var user = await _userManager.FindByIdAsync(id);
-        //    if (user == null) return NotFound();
-
-        //    // only resource owner can modify it
-        //    if (!ClaimsPrincipalHelper.HasUserClaimedIdentifier(User, id))
-        //        return Forbid();
-
-        //    var passwordValidationResult = await _passwordValidator.ValidateAsync(_userManager, user, updatedModel.Password);
-        //    if (!passwordValidationResult.Succeeded) return BadRequest(passwordValidationResult.Errors);
-
-        //    user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, updatedModel.Password);
-        //    user.Email = updatedModel.Email;
-
-        //    var userValidationResult = await _userValidator.ValidateAsync(_userManager, user);
-        //    if (!userValidationResult.Succeeded) return BadRequest(userValidationResult.Errors);
-
-        //    var updateResult = await _userManager.UpdateAsync(user);
-        //    if (!updateResult.Succeeded) return BadRequest(updateResult.Errors);
-
-        //    return Ok();
-        //}
     }
 }

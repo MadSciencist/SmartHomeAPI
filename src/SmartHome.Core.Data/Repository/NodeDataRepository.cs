@@ -72,5 +72,14 @@ namespace SmartHome.Core.Data.Repository
             await Context.NodeData.AddRangeAsync(toAdd);
             await Context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<NodeData>> GetByMagnitudeAsync(int nodeId, string magnitude, int limit)
+        {
+            return await Context.NodeData
+                .Where(x => x.PhysicalProperty.Magnitude == magnitude && x.NodeId == nodeId)
+                .OrderByDescending(x => x.TimeStamp)
+                .Take(limit)
+                .ToListAsync();
+        }
     }
 }

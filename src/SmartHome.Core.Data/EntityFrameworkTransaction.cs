@@ -1,6 +1,7 @@
 ﻿using Matty.Framework.Abstractions;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
+using System.Transactions;
 
 namespace SmartHome.Core.Data
 {
@@ -9,20 +10,26 @@ namespace SmartHome.Core.Data
         public Guid Identifier => _transaction.TransactionId;
 
         private IDbContextTransaction _transaction;
+        private TransactionScope _scope;
 
-        public EntityFrameworkTransaction(EntityFrameworkContext context)
+        public EntityFrameworkTransaction()
         {
-            _transaction = context.Database.BeginTransaction();
+            //_transaction = context.Database.BeginTransaction();
+            _scope = new TransactionScope(TransactionScopeOption.Required,
+                new TransactionOptions {IsolationLevel = IsolationLevel.ReadCommitted},
+                TransactionScopeAsyncFlowOption.Enabled);
         }
 
         public void Commit()
         {
-            _transaction.Commit();
+            //_transaction.Commit();
+            _scope.Complete();
         }
 
         public void Rollback()
         {
-            _transaction.Rollback();
+            //_transaction.Rollback();
+            _scope.Dispose();
         }
 
         public void Dispose()
@@ -35,10 +42,16 @@ namespace SmartHome.Core.Data
         {
             if (disposing)
             {
-                if (_transaction != null)
+                //if (_transaction != null)
+                //{
+                //    _transaction.Dispose();
+                //    _transaction = null;
+                //}
+
+                if (_scope != null)
                 {
-                    _transaction.Dispose();
-                    _transaction = null;
+                    _scope.Dispose();
+                    _scope = null;
                 }
             }
         }

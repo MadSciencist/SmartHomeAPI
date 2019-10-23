@@ -75,24 +75,48 @@ namespace SmartHome.Core.Services
 
             var userId = GetCurrentUserId();
             var nodeToCreate = Mapper.Map<Node>(nodeDto);
-            nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
+            //nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
 
             return await SaveNode(nodeToCreate, userId, response);
         }
 
-        private static ControlStrategy CreateStrategy(NodeDto nodeDto)
+        private ControlStrategy CreateStrategy(NodeDto nodeDto)
         {
             return new ControlStrategy
             {
                 AssemblyProduct = nodeDto.ControlStrategyName,
                 ContractAssembly = AssemblyScanner.GetAssemblyModuleNameByProductInfo(nodeDto.ControlStrategyName),
-                //RegisteredMagnitudes = nodeDto.Magnitudes.Select(x => new RegisteredMagnitude { Magnitude = x }).ToList()
-            };
+                CreatedById = GetCurrentUserId(),
+                Created = DateTime.UtcNow
+            //RegisteredMagnitudes = nodeDto.Magnitudes.Select(x => new RegisteredMagnitude { Magnitude = x }).ToList()
+        };
         }
 
         private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId,
             ServiceResult<NodeDto> response)
         {
+            //try
+            //{
+            //    var createdNode = await _nodeRepository.CreateAsync(nodeToCreate);
+            //    await _appUserNodeLinkRepository.CreateAsync(new AppUserNodeLink
+            //    {
+            //        NodeId = createdNode.Id,
+            //        UserId = userId
+            //    });
+
+            //    response.Data = Mapper.Map<NodeDto>(createdNode);
+            //    response.Data.CreatedById = userId;
+            //    response.Alerts.Add(new Alert("Successfully created", MessageType.Success));
+
+            //    return response;
+            //}
+            //catch (Exception ex)
+            //{
+            //    response.Alerts.Add(new Alert(ex.Message, MessageType.Exception));
+            //    throw;
+            //}
+
+
             using (var transaction = _nodeRepository.BeginTransaction())
             {
                 try

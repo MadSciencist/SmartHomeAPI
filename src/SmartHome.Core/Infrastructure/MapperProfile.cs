@@ -34,6 +34,7 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
+                .ForMember(x => x.UriSchema, opt => opt.MapFrom(x => x.UriSchema))
                 .ForMember(x => x.IpAddress, opt => opt.MapFrom(x => x.IpAddress))
                 .ForMember(x => x.Port, opt => opt.MapFrom(x => x.Port))
                 .ForMember(x => x.GatewayIpAddress, opt => opt.MapFrom(x => x.GatewayIpAddress))
@@ -44,7 +45,13 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
                 .ForMember(x => x.ControlStrategyName, opt => opt.MapFrom(x => x.ControlStrategy.AssemblyProduct))
-                //.ForMember(x => x.Magnitudes, opt => opt.MapFrom(x => x.ControlStrategy.RegisteredMagnitudes.Select(m => m.Magnitude)))
+                .ForMember(x => x.PhysicalProperties, opt => opt.MapFrom(x => x.ControlStrategy.PhysicalProperties.Select(link => link.PhysicalProperty)))
+                .ForMember(x => x.CreatedById, opt => opt.MapFrom(x => x.CreatedById))
+                .ForMember(x => x.CreatedBy, opt => opt.MapFrom(x => x.CreatedBy.UserName))
+                .ForMember(x => x.Created, opt => opt.MapFrom(x => x.Created))
+                .ForMember(x => x.LastUpdatedById, opt => opt.MapFrom(x => x.UpdatedById))
+                .ForMember(x => x.LastUpdatedBy, opt => opt.MapFrom(x => x.UpdatedBy.UserName))
+                .ForMember(x => x.LastUpdated, opt => opt.MapFrom(x => x.Updated))
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<UiConfiguration, UiConfigurationDto>()

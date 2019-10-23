@@ -33,7 +33,7 @@ namespace SmartHome.Core.Data.Repository
         }
 
         public ITransaction BeginTransaction()
-            => new EntityFrameworkTransaction(Context);
+            => new EntityFrameworkTransaction();
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
