@@ -1,4 +1,5 @@
 ﻿using Matty.Framework.Utils;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Services.Abstractions;
 using System;
@@ -55,13 +56,13 @@ namespace SmartHome.Core.MessageHanding
             return DictionaryUtils.GetValue(_converters, magnitude);
         }
 
-        public async Task<PhysicalProperty> GetPhysicalPropertyByMagnitudeAsync(string magnitude)
+        public async Task<PhysicalPropertyDto> GetPhysicalPropertyByMagnitudeAsync(string magnitude)
         {
             var serviceResult = await PhysicalPropertyService.GetByMagnitudeAsync(magnitude);
             return serviceResult.Data;
         }
 
-        public async Task<IEnumerable<PhysicalProperty>> GetAllContractPhysicalProperties()
+        public async Task<IEnumerable<PhysicalPropertyDto>> GetAllContractPhysicalProperties()
         {
             var mappedMagnitudes = _mappings.Select(x => x.Value);
             var serviceResult = await PhysicalPropertyService.GetFilteredByMagnitudes(mappedMagnitudes);

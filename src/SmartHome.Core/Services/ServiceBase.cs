@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using Matty.Framework.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,9 @@ namespace SmartHome.Core.Services
     {
         public ClaimsPrincipal Principal { get; set; }
         protected ILifetimeScope Container { get; set; }
+
+        private IMapper _mapper;
+        protected IMapper Mapper => _mapper ??= Container.Resolve<IMapper>();
 
         private IConfiguration _config;
         protected IConfiguration Config => _config ??= Container.Resolve<IConfiguration>();

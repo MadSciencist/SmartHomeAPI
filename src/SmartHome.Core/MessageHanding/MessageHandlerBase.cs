@@ -17,12 +17,10 @@ namespace SmartHome.Core.MessageHanding
         protected ILifetimeScope Container { get; }
 
         private INodeDataService _nodeDataService;
-        protected INodeDataService NodeDataService =>
-            _nodeDataService ?? (_nodeDataService = Container.Resolve<INodeDataService>());
+        protected INodeDataService NodeDataService => _nodeDataService ??= Container.Resolve<INodeDataService>();
 
         private NotificationService _notificationService;
-        protected NotificationService NotificationService =>
-            _notificationService ?? (_notificationService = Container.Resolve<NotificationService>());
+        protected NotificationService NotificationService => _notificationService ??= Container.Resolve<NotificationService>();
 
         private INodeDataMapper _nodeDataMapper;
         protected INodeDataMapper DataMapper
@@ -31,7 +29,7 @@ namespace SmartHome.Core.MessageHanding
             {
                 if (_nodeDataMapper is null)
                 {
-                    var productName = Node.ControlStrategy.AssemblyProduct;
+                    var productName = Node.ControlStrategy.Connector;
                     var mapperName = AssemblyScanner.GetMapperClassFullNameByProductName(productName);
                     _nodeDataMapper = Container.ResolveNamed<object>(mapperName) as INodeDataMapper;
                 }

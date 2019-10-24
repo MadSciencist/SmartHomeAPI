@@ -11,20 +11,44 @@ namespace SmartHome.Core.Entities.Entity
     [Table("tbl_control_strategy")]
     public class ControlStrategy : EntityBase<int>, ICreationAudit<AppUser, int>, IModificationAudit<AppUser, int?>
     {
+        /// <summary>
+        /// The name of control strategy. Is indicating the device type.
+        /// </summary>
         [Required, MaxLength(250)]
-        public string AssemblyProduct { get; set; }
+        public string Name { get; set; }
 
-        [Required, MaxLength(250)]
-        public string ContractAssembly { get; set; }
-
+        /// <summary>
+        /// Description of the control strategy.
+        /// </summary>
         [MaxLength(250)]
         public string Description { get; set; }
 
+        /// <summary>
+        /// This links the strategy to the contract DLL (to Assembly Product).
+        /// </summary>
+        [Required, MaxLength(250)]
+        public string Connector { get; set; }
+
+        /// <summary>
+        /// Fully quallified name of the contract assembly.
+        /// </summary>
+        [Required, MaxLength(250)]
+        public string ContractAssembly { get; set; }
+
+        /// <summary>
+        /// Indicating whether is active and can be used for new entities.
+        /// </summary>
         public bool IsActive { get; set; }
 
         // Navigation & relationship properties
+        /// <summary>
+        /// Nodes relationship property.
+        /// </summary>
         public IEnumerable<Node> Nodes { get; set; }
 
+        /// <summary>
+        /// Many-to-many relationship with PhysicalProperty
+        /// </summary>
         public IEnumerable<PhysicalPropertyControlStrategyLink> PhysicalProperties { get; set; }
 
         #region ICreationAudit impl

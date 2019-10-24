@@ -23,9 +23,10 @@ namespace SmartHome.Core.Data.InitialLoad
                         {
                             Id = 4,
                             IsActive = true,
+                            Name = "Control Tasmota Socket with power measurement",
                             Description = "Control Tasmota Socket with power measurement",
                             ContractAssembly = "SmartHome.Contracts.TasmotaMqtt.dll",
-                            AssemblyProduct = "Tasmota-MQTT-v1",
+                            Connector = "Tasmota-MQTT-v1",
                             CreatedById = 1,
                             Created = DateTime.UtcNow,
                             PhysicalProperties = new List<PhysicalPropertyControlStrategyLink>
@@ -43,9 +44,10 @@ namespace SmartHome.Core.Data.InitialLoad
                         {
                             Id = 5,
                             IsActive = true,
+                            Name = "Control Tasmota Light",
                             Description = "Control Tasmota Light",
                             ContractAssembly = "SmartHome.Contracts.TasmotaMqtt.dll",
-                            AssemblyProduct = "Tasmota-MQTT-v1",
+                            Connector = "Tasmota-MQTT-v1",
                             CreatedById = 1,
                             Created = DateTime.UtcNow,
                             PhysicalProperties = new List<PhysicalPropertyControlStrategyLink>

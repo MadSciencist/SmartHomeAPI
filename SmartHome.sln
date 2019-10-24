@@ -37,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Solution Items", "_Solutio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{62E3BC64-CC3E-4CC8-A78C-A5165328BD2A}"
 	ProjectSection(SolutionItems) = preProject
+		scripts\InstallEntityFrameworkCLI.bat = scripts\InstallEntityFrameworkCLI.bat
 		scripts\MigrateAndUpdateDb.ps1 = scripts\MigrateAndUpdateDb.ps1
 		scripts\RenewDb.ps1 = scripts\RenewDb.ps1
 	EndProjectSection

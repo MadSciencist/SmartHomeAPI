@@ -23,7 +23,7 @@ namespace SmartHome.Core.MessageHanding
 
             try
             {
-                var handlerName = AssemblyScanner.GetHandlerClassFullNameByProductName(node.ControlStrategy.AssemblyProduct);
+                var handlerName = AssemblyScanner.GetHandlerClassFullNameByProductName(node.ControlStrategy.Connector);
                 var rawHandler = Container.ResolveNamed<object>(handlerName, new NamedParameter("node", node));
 
                 if (!(rawHandler is IMessageHandler<RestMessageDto> messageHandler))

@@ -89,7 +89,7 @@ namespace SmartHome.Core.Services
                     {
                         DisplayValue = x.Name,
                         InternalValue = x.Magnitude,
-                        Metadata = $"unit={x.Unit},isComplex={x.IsComplex}",
+                        Metadata = $"unit={x.Unit}",
                         Id = x.Id,
                         IsActive = true
                     }).ToList()

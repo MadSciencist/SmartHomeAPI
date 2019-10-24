@@ -1,4 +1,4 @@
-﻿using SmartHome.Core.Entities.Entity;
+﻿using SmartHome.Core.Dto;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,12 +26,12 @@ namespace SmartHome.Core.MessageHanding
         /// </summary>
         /// <param name="magnitude"></param>
         /// <returns></returns>
-        Task<PhysicalProperty> GetPhysicalPropertyByMagnitudeAsync(string magnitude);
+        Task<PhysicalPropertyDto> GetPhysicalPropertyByMagnitudeAsync(string magnitude);
 
         /// <summary>
         /// Returns all system physical properties in specific contract
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<PhysicalProperty>> GetAllContractPhysicalProperties();
+        Task<IEnumerable<PhysicalPropertyDto>> GetAllContractPhysicalProperties();
     }
 }

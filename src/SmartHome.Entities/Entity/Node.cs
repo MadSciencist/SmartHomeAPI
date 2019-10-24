@@ -55,7 +55,7 @@ namespace SmartHome.Core.Entities.Entity
 
         // Navigation & relationship properties
         public ControlStrategy ControlStrategy { get; set; }
-        public int? ControlStrategyId { get; set; }
+        public int ControlStrategyId { get; set; }
 
         public IEnumerable<AppUserNodeLink> AllowedUsers { get; set; }
 

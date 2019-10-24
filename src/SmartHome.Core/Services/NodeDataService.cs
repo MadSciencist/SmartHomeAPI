@@ -12,22 +12,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace SmartHome.Core.Services
 {
     public class NodeDataService : CrudServiceBase<object, EntityBase>, INodeDataService
     {
+        private readonly IMapper _mapper;
         private readonly INodeRepository _nodeRepository;
         private readonly INodeDataRepository _nodeDataRepository;
         private readonly IAuthorizationProvider<Node> _authorizationProvider;
         private readonly IPhysicalPropertyService _physicalPropertyService;
 
         public NodeDataService(ILifetimeScope container,
+            IMapper mapper,
             INodeRepository nodeRepository,
             INodeDataRepository nodeDataRepository,
             IAuthorizationProvider<Node> authorizationProvider,
             IPhysicalPropertyService physicalPropertyService) : base(container)
         {
+            _mapper = mapper;
             _nodeRepository = nodeRepository;
             _nodeDataRepository = nodeDataRepository;
             _authorizationProvider = authorizationProvider;
@@ -40,7 +44,7 @@ namespace SmartHome.Core.Services
 
             var nodeData = new NodeData
             {
-                PhysicalProperty = data.PhysicalProperty,
+                PhysicalProperty = _mapper.Map<PhysicalProperty>(data.PhysicalProperty),
                 PhysicalPropertyId = data.PhysicalProperty.Id,
                 Value = data.Value,
                 NodeId = nodeId,
@@ -56,7 +60,7 @@ namespace SmartHome.Core.Services
 
             var nodeData = data.Select(x => new NodeData
             {
-                PhysicalProperty = x.PhysicalProperty,
+                PhysicalProperty = _mapper.Map<PhysicalProperty>(x.PhysicalProperty),
                 PhysicalPropertyId = x.PhysicalProperty.Id,
                 Value = x.Value,
                 NodeId = nodeId,

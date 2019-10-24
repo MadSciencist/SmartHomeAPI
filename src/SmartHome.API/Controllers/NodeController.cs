@@ -46,7 +46,7 @@ namespace SmartHome.API.Controllers
         /// <param name="node"></param>
         /// <returns></returns>
         [HttpPost]
-        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ServiceResult<NodeDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(NodeDto node)
         {

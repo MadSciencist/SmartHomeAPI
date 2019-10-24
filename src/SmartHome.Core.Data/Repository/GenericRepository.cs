@@ -18,7 +18,6 @@ namespace SmartHome.Core.Data.Repository
         protected ILifetimeScope Container { get; }
 
         private EntityFrameworkContext _context;
-
         public EntityFrameworkContext Context => _context ??= Container.Resolve<EntityFrameworkContext>();
 
         private ILogger _logger;
@@ -32,18 +31,11 @@ namespace SmartHome.Core.Data.Repository
             Container = container;
         }
 
-        public ITransaction BeginTransaction()
-            => new EntityFrameworkTransaction();
+        public ITransaction BeginTransaction() => new ScopedTransaction();
 
         public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
-            var currentUser = HttpContextAccessor.HttpContext?.User;
-
-            if (entity is ICreationAudit<AppUser, int> audit)
-            {
-                audit.Created = DateTime.UtcNow;
-                audit.CreatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
-            }
+            SetCreationAudit(entity);
 
             await Context.AddAsync(entity);
 
@@ -98,13 +90,7 @@ namespace SmartHome.Core.Data.Repository
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            var currentUser = HttpContextAccessor.HttpContext?.User;
-
-            if (entity is IModificationAudit<AppUser, int?> audit)
-            {
-                audit.Updated = DateTime.UtcNow;
-                audit.UpdatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
-            }
+            SetModificationAudit(entity);
 
             Context.Entry(entity).State = EntityState.Modified;
 
@@ -123,6 +109,28 @@ namespace SmartHome.Core.Data.Repository
             }
 
             return entity;
+        }
+
+        protected void SetModificationAudit(TEntity entity)
+        {
+            var currentUser = HttpContextAccessor.HttpContext?.User;
+
+            if (entity is IModificationAudit<AppUser, int?> audit)
+            {
+                audit.Updated = DateTime.UtcNow;
+                audit.UpdatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
+            }
+        }
+
+        protected void SetCreationAudit(TEntity entity)
+        {
+            var currentUser = HttpContextAccessor.HttpContext?.User;
+
+            if (entity is ICreationAudit<AppUser, int> audit)
+            {
+                audit.Created = DateTime.UtcNow;
+                audit.CreatedById = ClaimsPrincipalHelper.GetClaimedIdentifierInt(currentUser);
+            }
         }
 
         public void Dispose()

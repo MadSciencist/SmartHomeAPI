@@ -30,7 +30,7 @@ namespace SmartHome.Core.Control
 
         protected virtual INodeDataMapper GetNodeMapper(Node node)
         {
-            var productName = node.ControlStrategy.AssemblyProduct;
+            var productName = node.ControlStrategy.Connector;
             var mapperName = AssemblyScanner.GetMapperClassFullNameByProductName(productName);
             return Container.ResolveNamed<object>(mapperName) as INodeDataMapper;
         }

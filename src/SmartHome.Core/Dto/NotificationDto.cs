@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Newtonsoft.Json;
-using SmartHome.Core.Entities.Entity;
 using System;
 
 namespace SmartHome.Core.Dto
@@ -11,7 +10,7 @@ namespace SmartHome.Core.Dto
         public int NodeId { get; }
 
         [JsonProperty("physicalProperty")]
-        public PhysicalProperty PhysicalProperty { get; }
+        public PhysicalPropertyDto PhysicalProperty { get; }
 
         [JsonProperty("value")]
         public string Value { get; }
@@ -19,7 +18,7 @@ namespace SmartHome.Core.Dto
         [JsonProperty("timeStamp")]
         public DateTime TimeStamp { get; }
 
-        public NotificationDto(int nodeId, PhysicalProperty physicalProperty, string value)
+        public NotificationDto(int nodeId, PhysicalPropertyDto physicalProperty, string value)
         {
             NodeId = nodeId;
             PhysicalProperty = physicalProperty;

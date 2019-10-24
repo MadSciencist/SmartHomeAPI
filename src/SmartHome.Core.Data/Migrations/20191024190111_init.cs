@@ -266,9 +266,10 @@ namespace SmartHome.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    AssemblyProduct = table.Column<string>(maxLength: 250, nullable: false),
-                    ContractAssembly = table.Column<string>(maxLength: 250, nullable: false),
+                    Name = table.Column<string>(maxLength: 250, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: true),
+                    Connector = table.Column<string>(maxLength: 250, nullable: false),
+                    ContractAssembly = table.Column<string>(maxLength: 250, nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
                     CreatedById = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
@@ -394,7 +395,7 @@ namespace SmartHome.Core.Data.Migrations
                     BaseTopic = table.Column<string>(maxLength: 100, nullable: true),
                     ClientId = table.Column<string>(maxLength: 100, nullable: true),
                     ConfigMetadata = table.Column<string>(maxLength: 2147483647, nullable: true),
-                    ControlStrategyId = table.Column<int>(nullable: true),
+                    ControlStrategyId = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<int>(nullable: false),
                     UpdatedById = table.Column<int>(nullable: true),
@@ -416,7 +417,7 @@ namespace SmartHome.Core.Data.Migrations
                         column: x => x.ControlStrategyId,
                         principalTable: "tbl_control_strategy",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tbl_node_tbl_user_CreatedById",
                         column: x => x.CreatedById,

@@ -77,23 +77,10 @@ namespace SmartHome.Core.Services
 
             var userId = GetCurrentUserId();
             var nodeToCreate = Mapper.Map<Node>(nodeDto);
-            nodeToCreate.ControlStrategy = CreateStrategy(nodeDto);
 
             return await SaveNode(nodeToCreate, userId, response);
         }
-
-        private ControlStrategy CreateStrategy(NodeDto nodeDto)
-        {
-            return new ControlStrategy
-            {
-                AssemblyProduct = nodeDto.ControlStrategyName,
-                ContractAssembly = AssemblyScanner.GetAssemblyModuleNameByProductInfo(nodeDto.ControlStrategyName),
-                CreatedById = GetCurrentUserId(),
-                Created = DateTime.UtcNow,
-                PhysicalProperties = null
-            };
-        }
-
+        
         private async Task<ServiceResult<NodeDto>> SaveNode(Node nodeToCreate, int userId, ServiceResult<NodeDto> response)
         {
             using var transaction = _nodeRepository.BeginTransaction();

@@ -21,13 +21,13 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.IpAddress, opt => opt.MapFrom(x => x.IpAddress))
                 .ForMember(x => x.Port, opt => opt.MapFrom(x => x.Port))
                 .ForMember(x => x.GatewayIpAddress, opt => opt.MapFrom(x => x.GatewayIpAddress))
+                .ForMember(x => x.ControlStrategyId, opt => opt.MapFrom(x => x.ControlStrategyId))
                 .ForMember(x => x.Login, opt => opt.MapFrom(x => x.Login))
                 .ForMember(x => x.Password, opt => opt.MapFrom(x => x.Password))
                 .ForMember(x => x.ApiKey, opt => opt.MapFrom(x => x.ApiKey))
                 .ForMember(x => x.BaseTopic, opt => opt.MapFrom(x => x.BaseTopic))
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
-                .ForMember(x => x.ControlStrategyId, opt => opt.Ignore())
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<Node, NodeDto>()
@@ -44,7 +44,7 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.BaseTopic, opt => opt.MapFrom(x => x.BaseTopic))
                 .ForMember(x => x.ClientId, opt => opt.MapFrom(x => x.ClientId))
                 .ForMember(x => x.ConfigMetadata, opt => opt.MapFrom(x => x.ConfigMetadata))
-                .ForMember(x => x.ControlStrategyName, opt => opt.MapFrom(x => x.ControlStrategy.AssemblyProduct))
+                .ForMember(x => x.ControlStrategyId, opt => opt.MapFrom(x => x.ControlStrategy.Id))
                 .ForMember(x => x.PhysicalProperties, opt => opt.MapFrom(x => x.ControlStrategy.PhysicalProperties.Select(link => link.PhysicalProperty)))
                 .ForMember(x => x.CreatedById, opt => opt.MapFrom(x => x.CreatedById))
                 .ForMember(x => x.CreatedBy, opt => opt.MapFrom(x => x.CreatedBy.UserName))
@@ -52,6 +52,43 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.LastUpdatedById, opt => opt.MapFrom(x => x.UpdatedById))
                 .ForMember(x => x.LastUpdatedBy, opt => opt.MapFrom(x => x.UpdatedBy.UserName))
                 .ForMember(x => x.LastUpdated, opt => opt.MapFrom(x => x.Updated))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<PhysicalProperty, PhysicalPropertyDto>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
+                .ForMember(x => x.Unit, opt => opt.MapFrom(x => x.Unit))
+                .ForMember(x => x.Magnitude, opt => opt.MapFrom(x => x.Magnitude))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<PhysicalPropertyDto, PhysicalProperty>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
+                .ForMember(x => x.Unit, opt => opt.MapFrom(x => x.Unit))
+                .ForMember(x => x.Magnitude, opt => opt.MapFrom(x => x.Magnitude))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<ControlStrategy, ControlStrategyDto>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
+                .ForMember(x => x.Connector, opt => opt.MapFrom(x => x.Connector))
+                .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
+                .ForMember(x => x.IsActive, opt => opt.MapFrom(x => x.IsActive))
+                .ForMember(x => x.PhysicalProperties, opt => opt.MapFrom(x => x.PhysicalProperties.Select(link => link.PhysicalProperty)))
+                .ForMember(x => x.CreatedById, opt => opt.MapFrom(x => x.CreatedById))
+                .ForMember(x => x.CreatedBy, opt => opt.MapFrom(x => x.CreatedBy.UserName))
+                .ForMember(x => x.Created, opt => opt.MapFrom(x => x.Created))
+                .ForMember(x => x.LastUpdatedById, opt => opt.MapFrom(x => x.UpdatedById))
+                .ForMember(x => x.LastUpdatedBy, opt => opt.MapFrom(x => x.UpdatedBy.UserName))
+                .ForMember(x => x.LastUpdated, opt => opt.MapFrom(x => x.Updated))
+                .ForAllOtherMembers(x => x.Ignore());
+
+            CreateMap<ControlStrategyDto, ControlStrategy>()
+                .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
+                .ForMember(x => x.Connector, opt => opt.MapFrom(x => x.Connector))
+                .ForMember(x => x.Description, opt => opt.MapFrom(x => x.Description))
+                .ForMember(x => x.IsActive, opt => opt.MapFrom(x => x.IsActive))
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<UiConfiguration, UiConfigurationDto>()

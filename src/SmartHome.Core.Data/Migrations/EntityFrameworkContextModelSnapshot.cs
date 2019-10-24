@@ -14,19 +14,23 @@ namespace SmartHome.Core.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
 
-                    b.Property<int>("RoleId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -38,13 +42,17 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -55,13 +63,17 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(95)");
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("varchar(95)");
 
-                    b.Property<string>("ProviderDisplayName");
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("longtext");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -72,9 +84,11 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("RoleId");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -85,13 +99,17 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(95)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(95)");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -101,17 +119,23 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.DictionaryEntity.Dictionary", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Metadata");
+                    b.Property<string>("Metadata")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
 
-                    b.Property<bool>("ReadOnly");
+                    b.Property<bool>("ReadOnly")
+                        .HasColumnType("bit");
 
-                    b.Property<byte[]>("RowVersion");
+                    b.Property<byte[]>("RowVersion")
+                        .HasColumnType("longblob");
 
                     b.HasKey("Id");
 
@@ -121,21 +145,28 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.DictionaryEntity.DictionaryValue", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("DictionaryId");
+                    b.Property<int>("DictionaryId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("DisplayValue");
+                    b.Property<string>("DisplayValue")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("InternalValue");
+                    b.Property<string>("InternalValue")
+                        .HasColumnType("longtext");
 
                     b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
                         .HasDefaultValue(true);
 
-                    b.Property<string>("Metadata");
+                    b.Property<string>("Metadata")
+                        .HasColumnType("longtext");
 
-                    b.Property<byte[]>("RowVersion");
+                    b.Property<byte[]>("RowVersion")
+                        .HasColumnType("longblob");
 
                     b.HasKey("Id");
 
@@ -147,11 +178,14 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.AppUserNodeLink", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("NodeId");
+                    b.Property<int>("NodeId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -165,30 +199,45 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.ControlStrategy", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int?>("AppUserId");
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("AssemblyProduct")
+                    b.Property<string>("Connector")
                         .IsRequired()
+                        .HasColumnType("varchar(250)")
                         .HasMaxLength(250);
 
                     b.Property<string>("ContractAssembly")
                         .IsRequired()
+                        .HasColumnType("varchar(250)")
                         .HasMaxLength(250);
 
-                    b.Property<DateTime>("Created");
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("CreatedById");
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .HasColumnType("varchar(250)")
                         .HasMaxLength(250);
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTime?>("Updated");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(250)")
+                        .HasMaxLength(250);
 
-                    b.Property<int?>("UpdatedById");
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -204,56 +253,76 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.Node", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("ApiKey")
+                        .HasColumnType("varchar(30)")
                         .HasMaxLength(30);
 
-                    b.Property<int?>("AppUserId");
+                    b.Property<int?>("AppUserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("BaseTopic")
+                        .HasColumnType("varchar(100)")
                         .HasMaxLength(100);
 
                     b.Property<string>("ClientId")
+                        .HasColumnType("varchar(100)")
                         .HasMaxLength(100);
 
                     b.Property<string>("ConfigMetadata")
+                        .HasColumnType("longtext")
                         .HasMaxLength(2147483647);
 
-                    b.Property<int?>("ControlStrategyId");
+                    b.Property<int>("ControlStrategyId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("Created");
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("CreatedById");
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
+                        .HasColumnType("varchar(500)")
                         .HasMaxLength(500);
 
                     b.Property<string>("GatewayIpAddress")
+                        .HasColumnType("varchar(20)")
                         .HasMaxLength(20);
 
                     b.Property<string>("IpAddress")
+                        .HasColumnType("varchar(20)")
                         .HasMaxLength(20);
 
                     b.Property<string>("Login")
+                        .HasColumnType("varchar(40)")
                         .HasMaxLength(40);
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
                     b.Property<string>("Password")
+                        .HasColumnType("varchar(40)")
                         .HasMaxLength(40);
 
-                    b.Property<int>("Port");
+                    b.Property<int>("Port")
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("RowVersion");
+                    b.Property<byte[]>("RowVersion")
+                        .HasColumnType("longblob");
 
-                    b.Property<DateTime?>("Updated");
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("UpdatedById");
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
 
                     b.Property<string>("UriSchema")
+                        .HasColumnType("varchar(10)")
                         .HasMaxLength(10);
 
                     b.HasKey("Id");
@@ -275,15 +344,20 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.NodeData", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("NodeId");
+                    b.Property<int>("NodeId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("PhysicalPropertyId");
+                    b.Property<int>("PhysicalPropertyId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("TimeStamp");
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -296,15 +370,20 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.PhysicalProperty", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsComplex");
+                    b.Property<bool>("IsComplex")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Magnitude");
+                    b.Property<string>("Magnitude")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Unit");
+                    b.Property<string>("Unit")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -314,11 +393,14 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.PhysicalPropertyControlStrategyLink", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("ControlStrategyId");
+                    b.Property<int>("ControlStrategyId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("PhysicalPropertyId");
+                    b.Property<int>("PhysicalPropertyId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -332,15 +414,20 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.UiConfiguration", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Data");
+                    b.Property<string>("Data")
+                        .HasColumnType("longtext");
 
-                    b.Property<byte[]>("RowVersion");
+                    b.Property<byte[]>("RowVersion")
+                        .HasColumnType("longblob");
 
-                    b.Property<int>("Type");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
-                    b.Property<int>("UserId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -352,15 +439,19 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.Role.AppRole", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
+                        .HasColumnType("varchar(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
+                        .HasColumnType("varchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -374,9 +465,11 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.JobStatusEntity", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
@@ -385,18 +478,22 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.JobType", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("AssemblyName")
                         .IsRequired()
+                        .HasColumnType("varchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
+                        .HasColumnType("varchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("FullyQualifiedName")
                         .IsRequired()
+                        .HasColumnType("varchar(255)")
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
@@ -407,37 +504,51 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.ScheduleEntity", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("Created");
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int>("CreatedById");
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int");
 
                     b.Property<string>("CronExpression")
                         .IsRequired()
+                        .HasColumnType("varchar(20)")
                         .HasMaxLength(20);
 
-                    b.Property<string>("JobGroup");
+                    b.Property<string>("JobGroup")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("JobName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<int>("JobStatusEntityId");
+                    b.Property<int>("JobStatusEntityId")
+                        .HasColumnType("int");
 
-                    b.Property<int>("JobTypeId");
+                    b.Property<int>("JobTypeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .HasColumnType("varchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<byte[]>("RowVersion");
+                    b.Property<byte[]>("RowVersion")
+                        .HasColumnType("longblob");
 
-                    b.Property<int>("ScheduleTypeid");
+                    b.Property<int>("ScheduleTypeid")
+                        .HasColumnType("int");
 
-                    b.Property<string>("SerializedJobSchedule");
+                    b.Property<string>("SerializedJobSchedule")
+                        .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("Updated");
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("UpdatedById");
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -456,18 +567,22 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.ScheduleType", b =>
                 {
-                    b.Property<int>("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("AssemblyName")
                         .IsRequired()
+                        .HasColumnType("varchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
+                        .HasColumnType("varchar(255)")
                         .HasMaxLength(255);
 
                     b.Property<string>("FullyQualifiedName")
                         .IsRequired()
+                        .HasColumnType("varchar(255)")
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
@@ -478,45 +593,63 @@ namespace SmartHome.Core.Data.Migrations
             modelBuilder.Entity("SmartHome.Core.Entities.User.AppUser", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<int>("AccessFailedCount");
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ActivatedById");
+                    b.Property<int?>("ActivatedById")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("ActivationDate");
+                    b.Property<DateTime>("ActivationDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
+                        .HasColumnType("varchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<bool>("EmailConfirmed");
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("IsActive");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
-                    b.Property<bool>("LockoutEnabled");
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NormalizedEmail")
+                        .HasColumnType("varchar(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
+                        .HasColumnType("varchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<string>("PasswordHash");
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("PhoneNumber");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
 
-                    b.Property<bool>("PhoneNumberConfirmed");
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("SecurityStamp");
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("longtext");
 
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("UserName")
+                        .HasColumnType("varchar(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -535,47 +668,53 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.Role.AppRole")
+                    b.HasOne("SmartHome.Core.Entities.Role.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser")
+                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser")
+                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.Role.AppRole")
+                    b.HasOne("SmartHome.Core.Entities.Role.AppRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser")
+                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser")
+                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.DictionaryEntity.DictionaryValue", b =>
@@ -583,7 +722,8 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.DictionaryEntity.Dictionary", "Dictionary")
                         .WithMany("Values")
                         .HasForeignKey("DictionaryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.AppUserNodeLink", b =>
@@ -591,24 +731,27 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.Entity.Node", "Node")
                         .WithMany("AllowedUsers")
                         .HasForeignKey("NodeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "User")
                         .WithMany("EligibleNodes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.ControlStrategy", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser")
+                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
                         .WithMany("CreatedControlStrategies")
                         .HasForeignKey("AppUserId");
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "UpdatedBy")
                         .WithMany()
@@ -617,18 +760,21 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.Node", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser")
+                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
                         .WithMany("CreatedNodes")
                         .HasForeignKey("AppUserId");
 
                     b.HasOne("SmartHome.Core.Entities.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany("Nodes")
-                        .HasForeignKey("ControlStrategyId");
+                        .HasForeignKey("ControlStrategyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "UpdatedBy")
                         .WithMany()
@@ -640,12 +786,14 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.Entity.Node", "Node")
                         .WithMany("NodeData")
                         .HasForeignKey("NodeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.Entity.PhysicalProperty", "PhysicalProperty")
                         .WithMany()
                         .HasForeignKey("PhysicalPropertyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.PhysicalPropertyControlStrategyLink", b =>
@@ -653,12 +801,14 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany("PhysicalProperties")
                         .HasForeignKey("ControlStrategyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.Entity.PhysicalProperty", "PhysicalProperty")
                         .WithMany("ControlStrategies")
                         .HasForeignKey("PhysicalPropertyId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.UiConfiguration", b =>
@@ -666,7 +816,8 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "User")
                         .WithMany("UiConfiguration")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SmartHome.Core.Entities.SchedulingEntity.ScheduleEntity", b =>
@@ -674,22 +825,26 @@ namespace SmartHome.Core.Data.Migrations
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.SchedulingEntity.JobStatusEntity", "JobStatusEntity")
                         .WithMany()
                         .HasForeignKey("JobStatusEntityId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.SchedulingEntity.JobType", "JobType")
                         .WithMany()
                         .HasForeignKey("JobTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.SchedulingEntity.ScheduleType", "ScheduleType")
                         .WithMany()
                         .HasForeignKey("ScheduleTypeid")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "UpdatedBy")
                         .WithMany()
