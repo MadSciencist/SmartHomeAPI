@@ -57,7 +57,6 @@ namespace SmartHome.API.Controllers
         [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ServiceResult<TokenDto>), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login(LoginDto login)
         {
             var result = await _userService.LoginAsync(login);
@@ -74,7 +73,6 @@ namespace SmartHome.API.Controllers
         [HttpPost("register")]
         [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ServiceResult<UserDto>), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Register(RegisterDto register)
         {
             var result = await _userService.RegisterAsync(register);

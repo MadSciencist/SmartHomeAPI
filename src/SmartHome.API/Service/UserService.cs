@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SmartHome.Core.Entities.Role;
 
 namespace SmartHome.API.Service
 {
@@ -23,15 +24,17 @@ namespace SmartHome.API.Service
     {
         public ClaimsPrincipal Principal { get; set; }
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<AppRole> _roleManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ITokenBuilder _tokenBuilder;
         private readonly IPasswordValidator<AppUser> _passwordValidator;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenBuilder tokenBuilder,
+        public UserService(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager, SignInManager<AppUser> signInManager, ITokenBuilder tokenBuilder,
             IPasswordValidator<AppUser> passwordValidator, IMapper mapper)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _signInManager = signInManager;
             _tokenBuilder = tokenBuilder;
             _passwordValidator = passwordValidator;
@@ -59,7 +62,7 @@ namespace SmartHome.API.Service
 
             // only admin or user itself can access
             if (ClaimsPrincipalHelper.IsInRole(Principal, Roles.Admin) || ClaimsPrincipalHelper.HasUserClaimedIdentifier(Principal, userId))
-            {
+            { 
                 response.Data = new UserDto
                 {
                     Id = user.Id,
@@ -67,13 +70,14 @@ namespace SmartHome.API.Service
                     UserName = user.UserName,
                     PhoneNumber = user.PhoneNumber,
                     TwoFactorEnabled = user.TwoFactorEnabled,
-                    EmailConformed = user.EmailConfirmed,
+                    EmailConfirmed = user.EmailConfirmed,
                     ActivatedById = user.ActivatedBy?.Id ?? 0,
                     ActivationDate = user.ActivationDate,
                     IsActive = user.IsActive,
                     CreatedControlStrategies = user.CreatedControlStrategies?.Select(x => x.Id).ToList(),
                     CreatedNodes = user.CreatedNodes?.Select(x => x.Id).ToList(),
                     EligibleNodes = user.EligibleNodes?.Select(x => x.Id).ToList(),
+                    Roles = await _userManager.GetRolesAsync(user),
                     UiConfigurations = _mapper.Map<List<UiConfigurationDto>>(user.UiConfiguration)
                 };
 
@@ -114,8 +118,9 @@ namespace SmartHome.API.Service
                 return response;
             }
 
-            var roles = await _userManager.GetRolesAsync(user);
-            var (token, validTo) = _tokenBuilder.Build(user, roles);
+            var claims = await GetClaimsAsync(user);
+
+            var (token, validTo) = _tokenBuilder.Build(user, claims);
 
             response.Data = new TokenDto
             {
@@ -126,6 +131,20 @@ namespace SmartHome.API.Service
             };
 
             return response;
+        }
+
+        private async Task<List<Claim>> GetClaimsAsync(AppUser user)
+        {
+            var claims = new List<Claim>(await _userManager.GetClaimsAsync(user));
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                var currentRole = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Name == role);
+                var roleClaims = await _roleManager.GetClaimsAsync(currentRole);
+                claims.AddRange(roleClaims);
+            }
+
+            return claims;
         }
 
         public async Task<ServiceResult<TokenDto>> RegisterAsync(RegisterDto register)
@@ -171,8 +190,9 @@ namespace SmartHome.API.Service
 
             // SingIn user and create token
             await _signInManager.PasswordSignInAsync(user, register.Password, false, false);
-            var roles = await _userManager.GetRolesAsync(user);
-            var (token, validTo) = _tokenBuilder.Build(user, roles);
+            var claims = await GetClaimsAsync(user);
+
+            var (token, validTo) = _tokenBuilder.Build(user, claims);
 
             response.Data = new TokenDto
             {

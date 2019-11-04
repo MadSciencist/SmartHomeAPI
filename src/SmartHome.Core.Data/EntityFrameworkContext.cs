@@ -39,10 +39,14 @@ namespace SmartHome.Core.Data
                 .HasForeignKey(x => x.UserId);
 
             builder.Entity<AppUser>()
-                .HasMany(x => x.CreatedNodes);
+                .HasMany(x => x.CreatedNodes)
+                .WithOne(x => x.CreatedBy)
+                .HasForeignKey(x => x.CreatedById);
 
             builder.Entity<AppUser>()
-                .HasMany(x => x.CreatedControlStrategies);
+                .HasMany(x => x.CreatedControlStrategies)
+                .WithOne(x => x.CreatedBy)
+                .HasForeignKey(x => x.CreatedById);
 
             builder.Entity<AppRole>()
                 .ToTable("tbl_role");
@@ -60,11 +64,9 @@ namespace SmartHome.Core.Data
             builder.Entity<Node>()
                 .HasOne(x => x.UpdatedBy);
 
-            //builder.Entity<Node>()
-            //    .HasOne(x => x.ControlStrategy)
-            //    .WithMany(x => x.Nodes)
-            //    .OnDelete(DeleteBehavior.SetNull)
-            //    .IsRequired(false);
+            builder.Entity<Node>()
+                .Property(x => x.RowVersion)
+                .IsConcurrencyToken();
 
             builder.Entity<PhysicalPropertyControlStrategyLink>()
                 .HasKey(x => x.Id);
@@ -78,6 +80,15 @@ namespace SmartHome.Core.Data
                 .HasOne(x => x.PhysicalProperty)
                 .WithMany(x => x.ControlStrategies)
                 .HasForeignKey(x => x.PhysicalPropertyId);
+
+            builder.Entity<ControlStrategy>()
+                .HasKey(x => x.Id);
+
+            builder.Entity<ControlStrategy>()
+                .HasMany(x => x.Nodes)
+                .WithOne(x => x.ControlStrategy)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
 
             builder.Entity<ControlStrategy>()
                 .HasOne(x => x.CreatedBy);

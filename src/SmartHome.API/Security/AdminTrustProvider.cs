@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using SmartHome.Core.Entities.Enums;
+using System.Security.Claims;
 
 namespace SmartHome.API.Security
 {
@@ -6,7 +7,7 @@ namespace SmartHome.API.Security
     {
         public bool IsTrustedRequest(ClaimsPrincipal principal)
         {
-            return principal.IsInRole("admin");
+            return principal.IsInRole(Roles.Admin);
         }
     }
 }

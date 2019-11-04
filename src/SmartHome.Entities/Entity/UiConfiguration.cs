@@ -9,7 +9,9 @@ namespace SmartHome.Core.Entities.Entity
     [Table("tbl_ui_configuration")]
     public class UiConfiguration : EntityBase<int>, IConcurrentEntity
     {
+        public int ParentId { get; set; }
         public UiConfigurationType Type { get; set; }
+        public string Name { get; set; }
         public string Data { get; set; }
 
         // Navigation property

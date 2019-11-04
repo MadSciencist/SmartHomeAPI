@@ -4,16 +4,16 @@ namespace SmartHome.Core.Entities.Enums
 {
     public enum UiConfigurationType
     {
-        [EnumMember(Value = "dashboard")]
-        Dashboard = 1,
+        /// <summary>
+        /// Config of whole page
+        /// </summary>
+        [EnumMember(Value = "page")]
+        Page = 1,
 
-        [EnumMember(Value = "dashboardMembers")]
-        DashboardMembers = 2,
-
-        [EnumMember(Value = "control")]
-        Control = 10,
-
-        [EnumMember(Value = "controlMembers")]
-        ControlMembers = 11
+        /// <summary>
+        /// Page member config
+        /// </summary>
+        [EnumMember(Value = "member")]
+        Member = 2
     }
 }

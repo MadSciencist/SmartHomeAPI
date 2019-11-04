@@ -59,6 +59,7 @@ namespace SmartHome.API.Extensions
                     options.User.RequireUniqueEmail = true;
                     options.SignIn.RequireConfirmedEmail = false;
                 })
+                .AddRoleManager<RoleManager<AppRole>>()
                 .AddEntityFrameworkStores<EntityFrameworkContext>()
                 .AddDefaultTokenProviders()
                 .AddRoles<AppRole>();
@@ -91,8 +92,8 @@ namespace SmartHome.API.Extensions
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
-                options.AddPolicy("User", policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
+                options.AddPolicy(Roles.Admin, policy => policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
+                options.AddPolicy(Roles.User, policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
             });
         }
 

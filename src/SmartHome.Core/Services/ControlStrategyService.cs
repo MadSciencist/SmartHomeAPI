@@ -120,6 +120,10 @@ namespace SmartHome.Core.Services
             var existing = await _strategyRepository.GetByIdAsync(id);
             if (existing is null) throw new SmartHomeEntityNotFoundException($"ControlStrategy with id: {id} not found.");
 
+            if (existing.Nodes.Any())
+                throw new SmartHomeInvalidOperationException(
+                    $"Cannot delete strategy that has nodes assigned. Please remove nodes first.");
+
             await _strategyRepository.DeleteAsync(existing);
 
             var result = new ServiceResult<object>(Principal);

@@ -93,12 +93,16 @@ namespace SmartHome.Core.Infrastructure
 
             CreateMap<UiConfiguration, UiConfigurationDto>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.ParentId, opt => opt.MapFrom(x => x.ParentId))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
                 .ForMember(x => x.Data, opt => opt.MapFrom(x => x.Data))
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<UiConfigurationDto, UiConfiguration>()
                 .ForMember(x => x.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(x => x.ParentId, opt => opt.MapFrom(x => x.ParentId))
+                .ForMember(x => x.Name, opt => opt.MapFrom(x => x.Name))
                 .ForMember(x => x.Type, opt => opt.MapFrom(x => x.Type))
                 .ForMember(x => x.Data, opt => opt.MapFrom(x => x.Data))
                 .ForAllOtherMembers(x => x.Ignore());

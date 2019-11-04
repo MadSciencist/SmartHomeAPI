@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartHome.API.Utils;
 using SmartHome.Core.Dto;
+using SmartHome.Core.Entities.Enums;
 using SmartHome.Core.Services.Abstractions;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -44,6 +44,7 @@ namespace SmartHome.API.Controllers
         /// <param name="node"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize( Policy = Roles.Admin)]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(ControlStrategyDto node)
@@ -60,6 +61,7 @@ namespace SmartHome.API.Controllers
         /// <param name="node"></param>
         /// <returns></returns>
         [HttpPut("{id:int}")]
+        [Authorize(Policy = Roles.Admin)]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ServiceResult<ControlStrategyDto>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Edit(int id, ControlStrategyDto node)
@@ -75,6 +77,7 @@ namespace SmartHome.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id:int}")]
+        [Authorize(Policy = Roles.Admin)]
         [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ServiceResult<object>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete(int id)

@@ -274,18 +274,11 @@ namespace SmartHome.Core.Data.Migrations
                     CreatedById = table.Column<int>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
                     UpdatedById = table.Column<int>(nullable: true),
-                    Updated = table.Column<DateTime>(nullable: true),
-                    AppUserId = table.Column<int>(nullable: true)
+                    Updated = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_control_strategy", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tbl_control_strategy_tbl_user_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "tbl_user",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_tbl_control_strategy_tbl_user_CreatedById",
                         column: x => x.CreatedById,
@@ -361,7 +354,9 @@ namespace SmartHome.Core.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ParentId = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     Data = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false),
                     RowVersion = table.Column<byte[]>(nullable: true)
@@ -400,24 +395,17 @@ namespace SmartHome.Core.Data.Migrations
                     CreatedById = table.Column<int>(nullable: false),
                     UpdatedById = table.Column<int>(nullable: true),
                     Updated = table.Column<DateTime>(nullable: true),
-                    RowVersion = table.Column<byte[]>(nullable: true),
-                    AppUserId = table.Column<int>(nullable: true)
+                    RowVersion = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tbl_node", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tbl_node_tbl_user_AppUserId",
-                        column: x => x.AppUserId,
-                        principalTable: "tbl_user",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_tbl_node_tbl_control_strategy_ControlStrategyId",
                         column: x => x.ControlStrategyId,
                         principalTable: "tbl_control_strategy",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_tbl_node_tbl_user_CreatedById",
                         column: x => x.CreatedById,
@@ -533,11 +521,6 @@ namespace SmartHome.Core.Data.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbl_control_strategy_AppUserId",
-                table: "tbl_control_strategy",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tbl_control_strategy_CreatedById",
                 table: "tbl_control_strategy",
                 column: "CreatedById");
@@ -551,11 +534,6 @@ namespace SmartHome.Core.Data.Migrations
                 name: "IX_tbl_dictionary_value_DictionaryId",
                 table: "tbl_dictionary_value",
                 column: "DictionaryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tbl_node_AppUserId",
-                table: "tbl_node",
-                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tbl_node_ClientId",

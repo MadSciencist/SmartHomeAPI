@@ -8,7 +8,7 @@ namespace SmartHome.Core.Dto
         public int Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
-        public bool EmailConformed { get; set; }
+        public bool EmailConfirmed { get; set; }
         public string PhoneNumber { get; set; }
         public bool TwoFactorEnabled { get; set; }
         public int ActivatedById { get; set; }
@@ -18,5 +18,6 @@ namespace SmartHome.Core.Dto
         public ICollection<int> CreatedControlStrategies { get; set; }
         public ICollection<int> EligibleNodes { get; set; }
         public ICollection<UiConfigurationDto> UiConfigurations { get; set; }
+        public ICollection<string> Roles { get; set; }
     }
 }

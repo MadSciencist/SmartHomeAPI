@@ -2,7 +2,9 @@
 using SmartHome.Core.Dto;
 using SmartHome.Core.Repositories;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Matty.Framework.Utils;
 
 namespace SmartHome.Core.Infrastructure.Validators
 {
@@ -20,6 +22,10 @@ namespace SmartHome.Core.Infrastructure.Validators
 
             RuleFor(x => x.Name)
                 .NotEmpty();
+
+            RuleFor(x => x.IpAddress)
+                .NotEmpty()
+                .Must(ip => new Regex(RegexPatterns.IPv4).IsMatch(ip));
 
             WhenAsync((node, ct) => ShouldValidateClientId(node), () =>
             {

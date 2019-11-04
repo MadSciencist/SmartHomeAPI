@@ -10,7 +10,6 @@ using SmartHome.Core.Control;
 using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Attributes;
 using SmartHome.Core.Entities.Entity;
-using SmartHome.Core.Infrastructure.AssemblyScanning;
 using SmartHome.Core.Infrastructure.Exceptions;
 using SmartHome.Core.Infrastructure.Validators;
 using SmartHome.Core.Repositories;

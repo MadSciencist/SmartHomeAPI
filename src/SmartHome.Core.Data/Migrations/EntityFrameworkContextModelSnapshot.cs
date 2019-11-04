@@ -202,9 +202,6 @@ namespace SmartHome.Core.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Connector")
                         .IsRequired()
                         .HasColumnType("varchar(250)")
@@ -241,8 +238,6 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
-
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("UpdatedById");
@@ -259,9 +254,6 @@ namespace SmartHome.Core.Data.Migrations
                     b.Property<string>("ApiKey")
                         .HasColumnType("varchar(30)")
                         .HasMaxLength(30);
-
-                    b.Property<int?>("AppUserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("BaseTopic")
                         .HasColumnType("varchar(100)")
@@ -313,6 +305,7 @@ namespace SmartHome.Core.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
                         .HasColumnType("longblob");
 
                     b.Property<DateTime?>("Updated")
@@ -326,8 +319,6 @@ namespace SmartHome.Core.Data.Migrations
                         .HasMaxLength(10);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.HasIndex("ClientId")
                         .IsUnique();
@@ -419,6 +410,12 @@ namespace SmartHome.Core.Data.Migrations
 
                     b.Property<string>("Data")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("int");
 
                     b.Property<byte[]>("RowVersion")
                         .HasColumnType("longblob");
@@ -743,12 +740,8 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.ControlStrategy", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
-                        .WithMany("CreatedControlStrategies")
-                        .HasForeignKey("AppUserId");
-
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "CreatedBy")
-                        .WithMany()
+                        .WithMany("CreatedControlStrategies")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -760,18 +753,14 @@ namespace SmartHome.Core.Data.Migrations
 
             modelBuilder.Entity("SmartHome.Core.Entities.Entity.Node", b =>
                 {
-                    b.HasOne("SmartHome.Core.Entities.User.AppUser", null)
-                        .WithMany("CreatedNodes")
-                        .HasForeignKey("AppUserId");
-
                     b.HasOne("SmartHome.Core.Entities.Entity.ControlStrategy", "ControlStrategy")
                         .WithMany("Nodes")
                         .HasForeignKey("ControlStrategyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SmartHome.Core.Entities.User.AppUser", "CreatedBy")
-                        .WithMany()
+                        .WithMany("CreatedNodes")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

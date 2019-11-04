@@ -95,19 +95,14 @@ namespace SmartHome.Core.Services
         public async Task<ServiceResult<UiConfigurationDto>> AddConfiguration(int userId, UiConfigurationDto configDto)
         {
             var response = new ServiceResult<UiConfigurationDto>(Principal);
+            configDto.Id = 0; // clear it, we are adding new one
 
-            if (configDto.Type == UiConfigurationType.Control || configDto.Type == UiConfigurationType.Dashboard)
+            if (configDto.Type == UiConfigurationType.Page)
             {
-                var existing = await GenericRepository.GetManyFiltered(x =>
-                    x.Type == UiConfigurationType.Control || x.Type == UiConfigurationType.Dashboard);
+                var existing = await GenericRepository.GetManyFiltered(x => x.Type == UiConfigurationType.Page && x.Name == configDto.Name);
 
-                switch (configDto.Type)
-                {
-                    case UiConfigurationType.Dashboard when existing.Any(x => x.Type == UiConfigurationType.Dashboard):
-                        throw new SmartHomeException("Only one 'Dashboard' type config is allowed");
-                    case UiConfigurationType.Control when existing.Any(x => x.Type == UiConfigurationType.Control):
-                        throw new SmartHomeException("Only one 'Control' type config is allowed");
-                }
+                if (existing.Any())
+                    throw new SmartHomeException("Only one page config with given name is allowed");
             }
 
             var entity = Mapper.Map<UiConfiguration>(configDto);
