@@ -52,6 +52,7 @@ namespace SmartHome.Core.Infrastructure
                 .ForMember(x => x.LastUpdatedById, opt => opt.MapFrom(x => x.UpdatedById))
                 .ForMember(x => x.LastUpdatedBy, opt => opt.MapFrom(x => x.UpdatedBy.UserName))
                 .ForMember(x => x.LastUpdated, opt => opt.MapFrom(x => x.Updated))
+                .ForMember(x => x.LastSeen, opt => opt.MapFrom(x => x.LastSeen))
                 .ForAllOtherMembers(x => x.Ignore());
 
             CreateMap<PhysicalProperty, PhysicalPropertyDto>()

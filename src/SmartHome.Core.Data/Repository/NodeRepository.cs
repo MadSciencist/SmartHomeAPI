@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Repositories;
 using System.Collections.Generic;
@@ -16,13 +17,31 @@ namespace SmartHome.Core.Data.Repository
 
         public override async Task<IEnumerable<Node>> GetAllAsync()
         {
-            return await Context.Nodes
+
+            var lastSeens = (await Context.NodeData
+                .Select(x => new { x.NodeId, x.TimeStamp })
+                .ToListAsync()
+                ).GroupBy(x => x.NodeId, (NodeId, TimeStamps) => // TODO: evaluate on DB for performance (ef 3.0 doesn't support it natively)
+                new NodeLastSeenDto
+                {
+                    NodeId = NodeId,
+                    LastSeen = TimeStamps.Max(x => x.TimeStamp)
+                });
+
+            var nodes = await Context.Nodes
                 .Include(x => x.ControlStrategy)
                     .ThenInclude(x => x.PhysicalProperties)
                         .ThenInclude(x => x.PhysicalProperty)
                 .Include(x => x.CreatedBy)
                 .Include(x => x.AllowedUsers)
                 .ToListAsync();
+
+            foreach(var node in nodes)
+            {
+                node.LastSeen = lastSeens.FirstOrDefault(x => x.NodeId == node.Id).LastSeen;
+            }
+
+            return nodes;
         }
 
         public async Task<IEnumerable<string>> GetAllClientIdsAsync()

@@ -43,12 +43,11 @@ namespace SmartHome.API.Extensions
                     mySqlOptions.MigrationsHistoryTable("__migrationHistory");
                 });
 
-                if (env.IsDevelopment())
-                {
-                    options.EnableSensitiveDataLogging();
-                    options.EnableDetailedErrors();
-                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-                }
+                if (!env.IsDevelopment()) return;
+
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             }, ServiceLifetime.Transient);
 
             services.AddIdentity<AppUser, AppRole>(options =>
@@ -93,7 +92,15 @@ namespace SmartHome.API.Extensions
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Roles.Admin, policy => policy.RequireClaim(ClaimTypes.Role, Roles.Admin));
-                options.AddPolicy(Roles.User, policy => policy.RequireClaim(ClaimTypes.Role, Roles.User));
+                
+                // User policy is also valid for admin role, so we don't have to explicitly specify two roles
+                options.AddPolicy(Roles.User,
+                    policy =>
+                    {
+                        policy.RequireAssertion(context => 
+                            context.User.HasClaim(c => 
+                                c.Type == ClaimTypes.Role && (c.Value == Roles.User || c.Type == Roles.Admin)));
+                    });
             });
         }
 

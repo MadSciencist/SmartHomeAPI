@@ -79,8 +79,8 @@ namespace SmartHome.Core.Data.InitialLoad
                 {
                     new UiConfiguration
                     {
-                        Type = Entities.Enums.UiConfigurationType.Page,
-                        Name = "Home page",
+                        Type = UiConfigurationType.Page,
+                        Name = "Home Page",
                         Data = "{}",
                         UserId = 2,
                     }

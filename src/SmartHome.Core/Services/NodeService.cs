@@ -17,6 +17,7 @@ using SmartHome.Core.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace SmartHome.Core.Services
 {
@@ -25,18 +26,15 @@ namespace SmartHome.Core.Services
         private readonly INodeRepository _nodeRepository;
         private readonly IAuthorizationProvider<Node> _authProvider;
         private readonly IAppUserNodeLinkRepository _appUserNodeLinkRepository;
-        private readonly IPhysicalPropertyService _physicalPropertyService;
 
         public NodeService(ILifetimeScope container,
             INodeRepository nodeRepository,
             IAuthorizationProvider<Node> authorizationProvider,
-            IAppUserNodeLinkRepository appUserNodeLinkRepository,
-            IPhysicalPropertyService physicalPropertyService) : base(container)
+            IAppUserNodeLinkRepository appUserNodeLinkRepository) : base(container)
         {
             _nodeRepository = nodeRepository;
             _authProvider = authorizationProvider;
             _appUserNodeLinkRepository = appUserNodeLinkRepository;
-            _physicalPropertyService = physicalPropertyService;
         }
 
         public async Task<ServiceResult<IEnumerable<NodeDto>>> GetAll()

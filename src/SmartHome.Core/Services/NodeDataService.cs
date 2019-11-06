@@ -93,5 +93,15 @@ namespace SmartHome.Core.Services
                 }
             };
         }
+
+        public async Task<ServiceResult<IEnumerable<NodeLastSeenDto>>> GetNodesLastSeen()
+        {
+            var repoResult = await _nodeDataRepository.GetNodesLastSeen();
+
+            return new ServiceResult<IEnumerable<NodeLastSeenDto>>(Principal)
+            {
+                Data = repoResult
+            };
+        }
     }
 }

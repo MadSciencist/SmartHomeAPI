@@ -59,6 +59,9 @@ namespace SmartHome.Core.Entities.Entity
 
         public IEnumerable<AppUserNodeLink> AllowedUsers { get; set; }
 
+        [NotMapped]
+        public DateTime? LastSeen { get; set; }
+
         #region ICreationAudit impl
         public DateTime Created { get; set; }
         public int CreatedById { get; set; }

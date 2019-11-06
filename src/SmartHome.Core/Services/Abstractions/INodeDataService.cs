@@ -33,5 +33,11 @@ namespace SmartHome.Core.Services.Abstractions
         /// <param name="limit">Limit of results</param>
         /// <returns></returns>
         Task<ServiceResult<NodeDataResultDto>> GetNodeDataByMagnitude(int nodeId, string magnitude, int limit);
+
+        /// <summary>
+        /// Gets last seen datetime of each node.
+        /// </summary>
+        /// <returns></returns>
+        Task<ServiceResult<IEnumerable<NodeLastSeenDto>>> GetNodesLastSeen();
     }
 }

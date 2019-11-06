@@ -26,5 +26,6 @@ namespace SmartHome.Core.Dto
         public int? LastUpdatedById { get; set; }
         public string LastUpdatedBy { get; set; }
         public DateTime? LastUpdated { get; set; }
+        public DateTime? LastSeen { get; set; }
     }
 }

@@ -9,7 +9,7 @@ using SmartHome.Core.Data;
 namespace SmartHome.Core.Data.Migrations
 {
     [DbContext(typeof(EntityFrameworkContext))]
-    [Migration("20191104160307_init")]
+    [Migration("20191104165225_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

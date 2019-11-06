@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
+using SmartHome.Core.Dto;
 using SmartHome.Core.Entities.Entity;
 using SmartHome.Core.Repositories;
 using System.Collections.Generic;
@@ -79,6 +80,13 @@ namespace SmartHome.Core.Data.Repository
                 .Where(x => x.PhysicalProperty.Magnitude == magnitude && x.NodeId == nodeId)
                 .OrderByDescending(x => x.TimeStamp)
                 .Take(limit)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<NodeLastSeenDto>> GetNodesLastSeen()
+        {
+            return await Context.NodeData
+                .Select(x => new NodeLastSeenDto { NodeId = x.NodeId, LastSeen = x.TimeStamp })
                 .ToListAsync();
         }
     }
