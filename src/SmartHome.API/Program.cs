@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using SmartHome.Core.Data.InitialLoad;
 using System;
 
 namespace SmartHome.API
@@ -14,6 +16,7 @@ namespace SmartHome.API
             try
             {
                 var host = CreateWebHostBuilder(args).Build();
+                InitializeDatabase(host);
                 host.Run();
 
                 return 0;
@@ -47,6 +50,15 @@ namespace SmartHome.API
                     options.Limits.MaxConcurrentConnections = 100;
                     options.Limits.MaxConcurrentUpgradedConnections = 100;
                 });
+
+        private static void InitializeDatabase(IWebHost host)
+        {
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+
+            var initialLoadFacade = new InitialLoadFacade(services);
+            initialLoadFacade.Seed().Wait();
+        }
 
         private static void SetupLogger(string env)
         {
